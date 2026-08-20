@@ -39,33 +39,79 @@
             <button class="active" data-tab="header">Header</button><button data-tab="sections">Sections</button><button data-tab="form">Registration</button><button data-tab="navigation">Navigation</button><button data-tab="pages">Pages</button>
           </div>
 
-          <div class="wb19-panel active" data-panel="header">
-            <div class="wb19-panel-title"><div><small>EVENT FOUNDATION</small><h2>Header & basics</h2></div><span class="wb19-status">Live</span></div>
-            <p class="wb19-help big-help">These details power the hero, nomination CTA and public navigation.</p>
-            <div class="wb19-basic-card">
-              <label class="wb19-field"><span>Event name</span><input id="basicEventName"></label>
-              <label class="wb19-field"><span>Event category</span><input id="basicEventCategory"></label>
-              <label class="wb19-field"><span>Short description</span><textarea id="basicDescription"></textarea></label>
-              <div class="wb19-two"><label class="wb19-field"><span>Venue</span><input id="basicVenue"></label><label class="wb19-field"><span>City</span><input id="basicCity"></label></div>
-              <div class="wb19-two"><label class="wb19-field"><span>Event start</span><input id="basicEventStart" type="datetime-local"></label><label class="wb19-field"><span>Event end</span><input id="basicEventEnd" type="datetime-local"></label></div>
-              <div class="wb19-two"><label class="wb19-field"><span>Nomination starts</span><input id="basicNominationStart" type="datetime-local"></label><label class="wb19-field"><span>Nomination ends</span><input id="basicNominationEnd" type="datetime-local"></label></div>
+          <div class="wb19-panel active premium-header-panel" data-panel="header">
+            <div class="header-studio-intro">
+              <div><small>PUBLIC IDENTITY</small><h2>Header Studio</h2><p>Control the first impression of your award website — event details, hero imagery, brand assets, social sharing and visual style.</p></div>
+              <div class="header-readiness"><b id="headerAssetScore">0%</b><span>Header ready</span></div>
             </div>
-            <label class="wb19-field"><span>Hero design</span><select id="heroDesign"><option value="immersive">Immersive Award Night</option><option value="split">Split Editorial</option><option value="editorial">Premium Editorial</option><option value="minimal">Minimal Light</option></select></label>
-            <div class="wb19-upload-grid">
-              <label class="wb19-upload"><span>Desktop banner</span><input type="file" id="desktopBanner" accept="image/*"><div id="desktopBannerLabel">Upload 1600 × 720 image</div></label>
-              <label class="wb19-upload"><span>Mobile banner</span><input type="file" id="mobileBanner" accept="image/*"><div id="mobileBannerLabel">Upload 720 × 1000 image</div></label>
+
+            <div class="header-subtabs" role="tablist">
+              <button type="button" class="active" data-header-tab="basics"><span>01</span> Basics</button>
+              <button type="button" data-header-tab="media"><span>02</span> Hero Media</button>
+              <button type="button" data-header-tab="brand"><span>03</span> Brand & SEO</button>
+              <button type="button" data-header-tab="style"><span>04</span> Style</button>
             </div>
-            <label class="wb19-range"><span><b>Banner overlay</b><em id="overlayValue">64%</em></span><input id="overlay" type="range" min="25" max="90" value="64"></label>
-            <div class="wb19-divider"></div>
-            <div class="wb19-panel-title small"><div><small>VISUAL SYSTEM</small><h2>Theme</h2></div></div>
-            <div class="wb19-theme-grid">
-              <button data-preset="awards-night" class="active"><i class="night"></i><b>Awards Night</b><small>Black · ET red · gold</small></button>
-              <button data-preset="executive"><i class="executive"></i><b>Executive</b><small>Navy · white · gold</small></button>
-              <button data-preset="editorial"><i class="editorial"></i><b>Editorial</b><small>Ivory · burgundy</small></button>
-              <button data-preset="modern"><i class="modern"></i><b>Modern</b><small>Clean · energetic</small></button>
-            </div>
-            <div class="wb19-color-row"><label><span>Primary</span><input type="color" id="primaryColor"></label><label><span>Accent</span><input type="color" id="accentColor"></label><label><span>Surface</span><input type="color" id="surfaceColor"></label></div>
-            <label class="wb19-field"><span>Heading style</span><select id="fontStyle"><option value="editorial">Editorial Serif</option><option value="modern">Modern Sans</option><option value="condensed">Condensed Display</option></select></label>
+
+            <section class="header-subpanel active" data-header-panel="basics">
+              <div class="header-section-heading"><div><small>EVENT FOUNDATION</small><h3>Basic award details</h3></div><span class="wb19-status">Live</span></div>
+              <p class="wb19-help big-help">These details power the hero, smart nomination CTA and public navigation.</p>
+              <div class="wb19-basic-card premium-basic-card">
+                <label class="wb19-field"><span>Event name</span><input id="basicEventName"></label>
+                <label class="wb19-field"><span>Event category / hashtag</span><input id="basicEventCategory"></label>
+                <label class="wb19-field"><span>Short description</span><textarea id="basicDescription"></textarea></label>
+                <div class="wb19-two"><label class="wb19-field"><span>Venue</span><input id="basicVenue"></label><label class="wb19-field"><span>City</span><input id="basicCity"></label></div>
+                <div class="date-card"><div class="date-card-title"><span>EVENT DATE</span><small>Shown before nominations open</small></div><div class="wb19-two"><label class="wb19-field"><span>Event start</span><input id="basicEventStart" type="datetime-local"></label><label class="wb19-field"><span>Event end</span><input id="basicEventEnd" type="datetime-local"></label></div></div>
+                <div class="date-card nomination"><div class="date-card-title"><span>NOMINATION WINDOW</span><small>Automatically changes Express Interest → Nominate Now</small></div><div class="wb19-two"><label class="wb19-field"><span>Nomination starts</span><input id="basicNominationStart" type="datetime-local"></label><label class="wb19-field"><span>Nomination ends</span><input id="basicNominationEnd" type="datetime-local"></label></div></div>
+              </div>
+              <div class="header-tip-card"><span>✦</span><div><b>Smart CTA enabled</b><p>Before nominations open visitors see <strong>Express Interest</strong>. During the nomination window it changes to <strong>Nominate Now</strong>.</p></div></div>
+            </section>
+
+            <section class="header-subpanel" data-header-panel="media">
+              <div class="header-section-heading"><div><small>HERO MEDIA</small><h3>Images & illustration</h3></div><span class="asset-count" id="heroAssetCount">0 / 3</span></div>
+              <p class="wb19-help big-help">Upload once, crop in the built-in studio and ETB2B automatically compresses the image for the public site.</p>
+              <div class="asset-grid hero-assets">
+                <article class="asset-card wide" data-asset-card="desktopImage"><div class="asset-preview ratio-hero" data-asset-preview="desktopImage"><span>Desktop background</span></div><div class="asset-copy"><div><b>Desktop background</b><small>Recommended 1600 × 720 · JPG/PNG/WebP</small></div><div class="asset-actions"><button type="button" data-upload-asset="desktopImage" data-aspect="hero" data-title="Desktop hero background">Upload / replace</button><button type="button" class="danger-link" data-remove-asset="desktopImage">Remove</button></div></div></article>
+                <article class="asset-card" data-asset-card="mobileImage"><div class="asset-preview ratio-mobile" data-asset-preview="mobileImage"><span>Mobile background</span></div><div class="asset-copy"><div><b>Mobile background</b><small>Recommended 768 × 1024</small></div><div class="asset-actions"><button type="button" data-upload-asset="mobileImage" data-aspect="mobile" data-title="Mobile hero background">Upload</button><button type="button" class="danger-link" data-remove-asset="mobileImage">Remove</button></div></div></article>
+                <article class="asset-card" data-asset-card="illustrationImage"><div class="asset-preview ratio-square checker" data-asset-preview="illustrationImage"><span>Hero illustration</span></div><div class="asset-copy"><div><b>Foreground illustration</b><small>Transparent PNG works best · up to 1200 × 1200</small></div><div class="asset-actions"><button type="button" data-upload-asset="illustrationImage" data-aspect="illustration" data-title="Hero illustration / foreground">Upload</button><button type="button" class="danger-link" data-remove-asset="illustrationImage">Remove</button></div></div></article>
+              </div>
+              <div class="hero-media-settings">
+                <label class="wb19-field"><span>Hero layout</span><select id="heroDesign"><option value="immersive">Immersive Award Night</option><option value="split">Split Editorial</option><option value="editorial">Premium Editorial</option><option value="minimal">Minimal Light</option></select></label>
+                <label class="wb19-field"><span>Background focus</span><select id="heroPosition"><option value="center">Center</option><option value="left">Left</option><option value="right">Right</option><option value="top">Top</option><option value="bottom">Bottom</option></select></label>
+                <label class="wb19-range"><span><b>Banner overlay</b><em id="overlayValue">64%</em></span><input id="overlay" type="range" min="15" max="90" value="64"></label>
+                <label class="wb19-range"><span><b>Illustration size</b><em id="illustrationSizeValue">34%</em></span><input id="illustrationSize" type="range" min="18" max="52" value="34"></label>
+              </div>
+            </section>
+
+            <section class="header-subpanel" data-header-panel="brand">
+              <div class="header-section-heading"><div><small>BRAND & DISCOVERY</small><h3>Brand assets & SEO</h3></div><span class="asset-count" id="brandAssetCount">0 / 5</span></div>
+              <p class="wb19-help big-help">Keep all share, sponsor and identity assets in one place. These assets are stored with the award website configuration.</p>
+              <div class="asset-grid brand-assets">
+                <article class="asset-card" data-asset-card="brandingBanner"><div class="asset-preview ratio-brand" data-asset-preview="brandingBanner"><span>Branding strip</span></div><div class="asset-copy"><div><b>Branding banner</b><small>Recommended 1200 × 260</small></div><div class="asset-actions"><button type="button" data-upload-asset="brandingBanner" data-aspect="brand" data-title="Branding banner">Upload</button><button type="button" class="danger-link" data-remove-asset="brandingBanner">Remove</button></div></div></article>
+                <article class="asset-card" data-asset-card="sponsorLogo"><div class="asset-preview ratio-logo checker" data-asset-preview="sponsorLogo"><span>Presented by</span></div><div class="asset-copy"><div><b>Top sponsor / Presented by</b><small>Transparent PNG recommended</small></div><div class="asset-actions"><button type="button" data-upload-asset="sponsorLogo" data-aspect="logo" data-title="Top sponsor logo">Upload</button><button type="button" class="danger-link" data-remove-asset="sponsorLogo">Remove</button></div></div></article>
+                <article class="asset-card" data-asset-card="bottomSponsor"><div class="asset-preview ratio-logo checker" data-asset-preview="bottomSponsor"><span>Powered by</span></div><div class="asset-copy"><div><b>Bottom sponsor / Powered by</b><small>Transparent PNG recommended</small></div><div class="asset-actions"><button type="button" data-upload-asset="bottomSponsor" data-aspect="logo" data-title="Bottom sponsor logo">Upload</button><button type="button" class="danger-link" data-remove-asset="bottomSponsor">Remove</button></div></div></article>
+                <article class="asset-card wide seo-asset" data-asset-card="seoImage"><div class="asset-preview ratio-seo" data-asset-preview="seoImage"><span>1200 × 630</span></div><div class="asset-copy"><div><b>SEO / Social share image</b><small>1200 × 630 · Used for social previews and share cards</small></div><div class="asset-actions"><button type="button" data-upload-asset="seoImage" data-aspect="seo" data-title="SEO social share image">Upload / crop</button><button type="button" class="danger-link" data-remove-asset="seoImage">Remove</button></div></div></article>
+                <article class="asset-card" data-asset-card="thumbnailImage"><div class="asset-preview ratio-thumb" data-asset-preview="thumbnailImage"><span>300 × 300</span></div><div class="asset-copy"><div><b>Thumbnail image</b><small>300 × 300 · Award card / listing thumbnail</small></div><div class="asset-actions"><button type="button" data-upload-asset="thumbnailImage" data-aspect="thumbnail" data-title="Award thumbnail">Upload / crop</button><button type="button" class="danger-link" data-remove-asset="thumbnailImage">Remove</button></div></div></article>
+              </div>
+              <div class="seo-fields-card">
+                <div class="seo-fields-head"><span>SEO</span><div><b>Search & social preview</b><small>Metadata for the public award website.</small></div></div>
+                <label class="wb19-field"><span>SEO page title</span><input id="seoTitle" maxlength="65" placeholder="ETDesignscape Awards 2026 | Nominations & Winners"><small class="field-hint"><b id="seoTitleCount">0</b>/65 characters</small></label>
+                <label class="wb19-field"><span>Meta description</span><textarea id="seoDescription" maxlength="165" placeholder="Enter a concise description for search and social sharing."></textarea><small class="field-hint"><b id="seoDescriptionCount">0</b>/165 characters</small></label>
+                <div class="seo-preview-card"><small>SEARCH PREVIEW</small><b id="seoPreviewTitle">Your award title</b><span id="seoPreviewUrl">etb2baward.vercel.app</span><p id="seoPreviewDescription">Your award description will appear here.</p></div>
+              </div>
+            </section>
+
+            <section class="header-subpanel" data-header-panel="style">
+              <div class="header-section-heading"><div><small>VISUAL SYSTEM</small><h3>Theme & typography</h3></div></div>
+              <p class="wb19-help big-help">Start with a curated award theme, then fine tune the palette and typography.</p>
+              <div class="wb19-theme-grid premium-theme-grid">
+                <button data-preset="awards-night" class="active"><i class="night"></i><b>Awards Night</b><small>Black · ET red · gold</small></button>
+                <button data-preset="executive"><i class="executive"></i><b>Executive</b><small>Navy · white · gold</small></button>
+                <button data-preset="editorial"><i class="editorial"></i><b>Editorial</b><small>Ivory · burgundy</small></button>
+                <button data-preset="modern"><i class="modern"></i><b>Modern</b><small>Clean · energetic</small></button>
+              </div>
+              <div class="wb19-color-row premium-color-row"><label><span>Primary</span><input type="color" id="primaryColor"></label><label><span>Accent</span><input type="color" id="accentColor"></label><label><span>Surface</span><input type="color" id="surfaceColor"></label></div>
+              <label class="wb19-field"><span>Heading style</span><select id="fontStyle"><option value="editorial">Editorial Serif</option><option value="modern">Modern Sans</option><option value="condensed">Condensed Display</option></select></label>
+            </section>
           </div>
 
           <div class="wb19-panel" data-panel="sections">
@@ -144,7 +190,7 @@
       <div class="photo-stage"><div class="photo-canvas-shell"><canvas id="photoCanvas"></canvas></div><div class="photo-stats"><span><b id="photoOriginalSize">0 KB</b><small>Original</small></span><span>→</span><span><b id="photoOutputSize">Preview</b><small>Auto compressed</small></span></div></div>
       <div class="photo-controls">
         <div class="auto-compress-badge"><span>✓</span><div><b>Auto compression ON</b><small>Optimized for fast public pages and local demo storage.</small></div></div>
-        <label class="wb19-field"><span>Crop format</span><select id="photoAspect"><option value="portrait">Portrait 4:5</option><option value="square">Square 1:1</option><option value="landscape">Landscape 16:10</option></select></label>
+        <label class="wb19-field"><span>Crop format</span><select id="photoAspect"><option value="portrait">Portrait 4:5</option><option value="square">Square 1:1</option><option value="landscape">Landscape 16:10</option><option value="hero">Hero 1600:720</option><option value="mobile">Mobile 768:1024</option><option value="illustration">Illustration 1:1</option><option value="brand">Brand banner 1200:260</option><option value="logo">Logo 3:2</option><option value="seo">SEO 1200:630</option><option value="thumbnail">Thumbnail 300:300</option></select></label>
         <label class="wb19-range"><span><b>Zoom</b><em id="photoZoomValue">100%</em></span><input id="photoZoom" type="range" min="100" max="260" value="100"></label>
         <label class="wb19-range"><span><b>Move left / right</b><em id="photoPanXValue">0</em></span><input id="photoPanX" type="range" min="-100" max="100" value="0"></label>
         <label class="wb19-range"><span><b>Move up / down</b><em id="photoPanYValue">0</em></span><input id="photoPanY" type="range" min="-100" max="100" value="0"></label>
