@@ -6,370 +6,104 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Create Award · ETB2B Awards</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="create-award-v19.css">
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
     <div class="brand"><div class="brandmark et-brandmark"><img src="et-logo.jpg" alt="ET Business Verticals logo"></div><b>ETB2B Awards</b></div>
-    <div class="award-switch">
-      <small>Current award</small>
-      <strong>India FinTech Awards 2027</strong>
-    </div>
+    <div class="award-switch"><small>Current award</small><strong>India FinTech Awards 2027</strong></div>
     <nav class="nav">
       <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
-      <div class="nav-label">Build</div>
-      <a href="award.html"><span class="ico">◇</span><span>Award</span></a>
-      <a href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
-      <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
-      <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
-      <a href="website.html"><span class="ico">▣</span><span>Website</span></a>
-      <div class="nav-label">Operate</div>
-      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
-      <div class="nav-label">Grow</div>
-      <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
-      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
-      <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
-      <div class="nav-label">Judge</div>
-      <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
-      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
-      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
-      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
-      <div class="nav-label">Celebrate</div>
-      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
-      <a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
-      <a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
-      <div class="nav-label">Insights</div>
-      <a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
-      <div class="nav-label">System</div>
-      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+      <div class="nav-label">Build</div><a href="award.html"><span class="ico">◇</span><span>Award</span></a><a href="website.html"><span class="ico">▣</span><span>Website</span></a><a href="categories.html"><span class="ico">▦</span><span>Categories</span></a><a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a><a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a><div class="nav-label">Operate</div><a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div><a href="audience.html"><span class="ico">◉</span><span>Audience</span></a><a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a><a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div><a href="judges.html"><span class="ico">♟</span><span>Judges</span></a><a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a><a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a><a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div><a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a><a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a><a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div><a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div><a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
     </nav>
   </aside>
 
   <div class="content">
     <header class="topbar">
-      <div class="crumb"><a href="index.html">Awards</a> / Create new award</div>
-      <div class="top-actions">
-        <button class="btn secondary" id="saveDraftBtn">Save draft</button>
-        <div class="avatar">VM</div>
-      </div>
+      <div class="crumb"><a href="index.html">Awards</a> / Create Award</div>
+      <div class="top-actions"><button class="btn secondary" id="saveDraftBtn" type="button">Save draft</button><div class="avatar">VM</div></div>
     </header>
 
-    <main class="main create-award-page">
-      <section id="builderView">
-        <div class="page-head ca-head">
-          <div>
-            <span class="eyebrow">NEW AWARD</span>
-            <h1>Create a new award</h1>
-            <p>Start with a short description or set up the award manually. You can change everything before launch.</p>
+    <main class="main ca19-page">
+      <div class="ca19-head">
+        <div><span class="ca19-kicker">NEW AWARD WORKSPACE</span><h1>Create the award first. Build the site next.</h1><p>Enter the event basics once. ETB2B Awards will carry them into the website, category setup, nomination journey and reports.</p></div>
+        <button class="btn secondary" id="sampleBtn" type="button">Use test award</button>
+      </div>
+
+      <div class="ca19-steps" aria-label="Build journey">
+        <div class="ca19-step active"><span>1</span><b>Award basics</b><small>Name, venue & dates</small></div><i></i>
+        <div class="ca19-step"><span>2</span><b>Build website</b><small>Live design studio</small></div><i></i>
+        <div class="ca19-step"><span>3</span><b>Categories</b><small>Nomination choices</small></div><i></i>
+        <div class="ca19-step"><span>4</span><b>Entry form</b><small>Questions & files</small></div><i></i>
+        <div class="ca19-step"><span>5</span><b>Pricing</b><small>Fees & offers</small></div>
+      </div>
+
+      <div class="ca19-layout">
+        <section class="card ca19-form-card">
+          <div class="ca19-section-head"><div><span>01</span><h2>Basic details</h2><p>These details appear automatically on your public award site.</p></div><em>Required fields *</em></div>
+          <div class="ca19-grid two">
+            <label class="ca19-field"><span>Event / Award name *</span><input id="eventName" placeholder="e.g. ET Future Forward Awards 2027"></label>
+            <label class="ca19-field"><span>Event category *</span><select id="eventCategory"><option value="">Select category</option><option>Business & Leadership</option><option>Finance & FinTech</option><option>Technology</option><option>Healthcare</option><option>HR & Talent Management</option><option>Marketing & Media</option><option>Design & Architecture</option><option>Other</option></select></label>
           </div>
-          <a class="btn secondary" href="index.html">← Back to dashboard</a>
-        </div>
-
-        <div class="ca-setup-track" aria-label="Award setup progress">
-          <div class="ca-track-item active"><span>1</span><div><b>Award</b><small>Basics & dates</small></div></div>
-          <i></i>
-          <div class="ca-track-item"><span>2</span><div><b>Categories</b><small>What people enter</small></div></div>
-          <i></i>
-          <div class="ca-track-item"><span>3</span><div><b>Entry form</b><small>Questions & files</small></div></div>
-          <i></i>
-          <div class="ca-track-item"><span>4</span><div><b>Pricing</b><small>Free or paid</small></div></div>
-          <i></i>
-          <div class="ca-track-item"><span>5</span><div><b>Website</b><small>Brand & publish</small></div></div>
-        </div>
-
-        <div class="ca-mode-label">How would you like to start?</div>
-        <div class="ca-mode-grid">
-          <button class="ca-mode-card active" data-mode="ai" type="button">
-            <div class="ca-mode-icon">✦</div>
-            <div><strong>Create with Award Copilot</strong><span>Describe your program and get a ready-to-edit starting point.</span></div>
-            <div class="ca-radio">●</div>
-          </button>
-          <button class="ca-mode-card" data-mode="manual" type="button">
-            <div class="ca-mode-icon manual">⚙</div>
-            <div><strong>Set up manually</strong><span>Enter the award basics yourself, step by step.</span></div>
-            <div class="ca-radio">○</div>
-          </button>
-        </div>
-
-        <div class="ca-layout">
-          <div>
-            <section class="card pad ca-ai-panel" id="aiPanel">
-              <div class="section-title">
-                <div><h2>Tell us about your award</h2><span class="ca-subtitle">A sentence or two is enough.</span></div>
-                <span class="badge">AI-assisted demo</span>
-              </div>
-              <textarea id="aiPrompt" class="ca-prompt" placeholder="Example: I want to launch the India FinTech Awards 2027 for startups, banks and fintech companies. Entries should be paid and evaluated by industry experts."></textarea>
-              <div class="ca-example-row">
-                <span>Try:</span>
-                <button type="button" class="ca-chip" data-prompt="I want to launch the India FinTech Awards 2027 for startups, banks and fintech companies. Entries should be paid and judged by industry experts.">FinTech Awards</button>
-                <button type="button" class="ca-chip" data-prompt="Create a national healthcare excellence award for hospitals, doctors and health-tech companies. Paid entries, judging in November and winners in December.">Healthcare</button>
-                <button type="button" class="ca-chip" data-prompt="Create a creative design awards program for agencies, architects and designers. Entries should be paid and include project images and case studies.">Design Awards</button>
-              </div>
-              <div class="ca-ai-actions">
-                <button class="btn primary ca-generate" id="generateBtn" type="button">✦ Generate award setup</button>
-                <small>No publishing happens automatically.</small>
-              </div>
-              <div class="ca-generated" id="generatedNotice" hidden>
-                <div>✓</div>
-                <div><strong>Starting point generated</strong><span>I filled the award basics and prepared category suggestions. Review and edit anything below.</span></div>
-              </div>
-            </section>
-
-            <section class="card pad section ca-form-card" id="manualFormCard">
-              <div class="section-title ca-form-title">
-                <div><h2>Award basics</h2><span class="ca-subtitle">These details will also power the public website.</span></div>
-                <span class="ca-required">* Required</span>
-              </div>
-
-              <div class="form-grid">
-                <div class="field">
-                  <label for="awardName">Award name *</label>
-                  <input id="awardName" placeholder="e.g. India FinTech Awards 2027">
-                  <small class="field-error" id="awardNameError"></small>
-                </div>
-                <div class="field">
-                  <label for="awardType">Award type *</label>
-                  <select id="awardType">
-                    <option value="">Select type</option>
-                    <option>Industry</option><option>Corporate</option><option>Startup</option><option>Education</option><option>Media</option><option>Creative</option><option>Other</option>
-                  </select>
-                  <small class="field-error" id="awardTypeError"></small>
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="description">Short description *</label>
-                <textarea id="description" maxlength="240" placeholder="What does this award celebrate?"></textarea>
-                <div class="ca-field-meta"><small class="field-error" id="descriptionError"></small><small><span id="descCount">0</span>/240</small></div>
-              </div>
-
-              <div class="form-grid">
-                <div class="field"><label for="industry">Industry</label><input id="industry" placeholder="e.g. Financial Technology"></div>
-                <div class="field"><label for="country">Country *</label><select id="country"><option value="">Select country</option><option>India</option><option>United Arab Emirates</option><option>Singapore</option><option>United Kingdom</option><option>United States</option><option>Other</option></select><small class="field-error" id="countryError"></small></div>
-                <div class="field"><label for="currency">Currency *</label><select id="currency"><option value="">Select currency</option><option value="INR">INR · ₹</option><option value="USD">USD · $</option><option value="AED">AED · د.إ</option><option value="GBP">GBP · £</option><option value="SGD">SGD · S$</option></select><small class="field-error" id="currencyError"></small></div>
-                <div class="field"><label for="logo">Award logo</label><label class="ca-upload" for="logo"><span>↑</span><div><b id="logoText">Upload logo</b><small>PNG, JPG or SVG · demo only</small></div></label><input id="logo" type="file" accept=".png,.jpg,.jpeg,.svg" hidden></div>
-              </div>
-
-              <div class="ca-section-divider"><span>Timeline</span></div>
-              <div class="form-grid">
-                <div class="field"><label for="openDate">Entries open *</label><input id="openDate" type="date"><small class="field-error" id="openDateError"></small></div>
-                <div class="field"><label for="closeDate">Entry deadline *</label><input id="closeDate" type="date"><small class="field-error" id="closeDateError"></small></div>
-                <div class="field"><label for="judgingDate">Judging begins</label><input id="judgingDate" type="date"></div>
-                <div class="field"><label for="winnerDate">Winners announced</label><input id="winnerDate" type="date"></div>
-              </div>
-
-              <div class="ca-section-divider"><span>Entry model</span></div>
-              <div class="ca-choice-row" id="entryModel">
-                <button type="button" class="ca-choice active" data-entry="paid"><span>₹</span><div><b>Paid entries</b><small>Collect a fee per submission.</small></div></button>
-                <button type="button" class="ca-choice" data-entry="free"><span>✓</span><div><b>Free entries</b><small>No payment required.</small></div></button>
-              </div>
-              <div class="form-grid ca-fee-row" id="feeRow">
-                <div class="field"><label for="baseFee">Starting entry fee</label><div class="ca-money"><span id="currencySymbol">₹</span><input id="baseFee" type="number" min="0" value="2000"></div><small>Category-specific pricing can be added later.</small></div>
-                <div class="field"><label for="awardSlug">Public website URL</label><div class="ca-url"><span>etb2baward.vercel.app/</span><input id="awardSlug" placeholder="india-fintech-awards-2027"></div><small>You can connect a custom domain later.</small></div>
-              </div>
-
-              <div class="ca-form-footer">
-                <div><strong>Next: Categories</strong><span>After creating the award, you’ll define what people can enter.</span></div>
-                <button class="btn primary ca-create-btn" id="createBtn" type="button">Create award →</button>
-              </div>
-            </section>
+          <label class="ca19-field"><span>Short description *</span><textarea id="shortDescription" maxlength="260" placeholder="What is this award about and why should people participate?"></textarea><small><b id="descCount">0</b>/260</small></label>
+          <div class="ca19-grid two">
+            <label class="ca19-field"><span>Venue *</span><input id="venue" placeholder="e.g. The Leela Palace, New Delhi"></label>
+            <label class="ca19-field"><span>City *</span><input id="city" placeholder="e.g. New Delhi"></label>
           </div>
 
-          <aside class="ca-preview-col">
-            <div class="card ca-preview-card">
-              <div class="ca-preview-top">
-                <span>LIVE SETUP PREVIEW</span>
-                <span class="badge green">Draft</span>
-              </div>
-              <div class="ca-preview-hero">
-                <div class="ca-preview-logo" id="previewLogo">A</div>
-                <small id="previewType">YOUR AWARD</small>
-                <h2 id="previewName">Your award name</h2>
-                <p id="previewDesc">Add a short description to see how your award could appear.</p>
-                <button class="ca-preview-cta" type="button">Nominate now</button>
-              </div>
-              <div class="ca-preview-stats">
-                <div><small>Entries open</small><b id="previewOpen">Not set</b></div>
-                <div><small>Deadline</small><b id="previewClose">Not set</b></div>
-                <div><small>Entry fee</small><b id="previewFee">₹2,000</b></div>
-              </div>
-            </div>
+          <div class="ca19-divider"></div>
+          <div class="ca19-section-head compact"><div><span>02</span><h2>Event date</h2><p>Shown below the event name on the public website.</p></div><label class="ca19-switch"><input type="checkbox" id="hasEventDates" checked><i></i><b>Dates decided</b></label></div>
+          <div class="ca19-grid two" id="eventDatesWrap">
+            <label class="ca19-field"><span>Event start *</span><input id="eventStart" type="datetime-local"></label>
+            <label class="ca19-field"><span>Event end *</span><input id="eventEnd" type="datetime-local"></label>
+          </div>
 
-            <div class="card pad section ca-readiness">
-              <div class="section-title"><h2>Launch readiness</h2><b id="readinessPct">10%</b></div>
-              <div class="progress"><span id="readinessBar" style="width:10%"></span></div>
-              <div class="ca-mini-checks">
-                <div><span id="checkIdentity">○</span> Award identity</div>
-                <div><span id="checkDates">○</span> Timeline</div>
-                <div><span>○</span> Categories</div>
-                <div><span>○</span> Entry form</div>
-                <div><span>○</span> Website</div>
-              </div>
-            </div>
+          <div class="ca19-divider"></div>
+          <div class="ca19-section-head compact"><div><span>03</span><h2>Nomination window</h2><p>This controls the hero CTA automatically.</p></div><label class="ca19-switch"><input type="checkbox" id="hasNominationDates" checked><i></i><b>Use nomination dates</b></label></div>
+          <div class="ca19-grid two" id="nominationDatesWrap">
+            <label class="ca19-field"><span>Nomination starts *</span><input id="nominationStart" type="datetime-local"></label>
+            <label class="ca19-field"><span>Nomination ends *</span><input id="nominationEnd" type="datetime-local"></label>
+          </div>
+          <div class="ca19-cta-rule"><span class="ca19-rule-icon">↗</span><div><b>Smart CTA</b><p>Before nominations open: <strong>Express Interest</strong>. During the nomination window: <strong>Nominate Now</strong>. After closing: <strong>Nominations Closed</strong>.</p></div></div>
 
-            <div class="callout section">
-              <h3>✦ Why this is easier</h3>
-              <p>Organizers only enter the essentials now. Detailed category rules, pricing and judging are handled in the next guided steps.</p>
-            </div>
-          </aside>
-        </div>
-      </section>
+          <div class="ca19-divider"></div>
+          <div class="ca19-section-head compact"><div><span>04</span><h2>Brand starter</h2><p>You can fine-tune all design choices in the Website Studio next.</p></div></div>
+          <div class="ca19-grid two">
+            <label class="ca19-upload"><span>Event logo</span><div><input id="eventLogo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><b id="logoLabel">Upload logo</b><small>PNG/JPG/WebP · recommended square</small></div></label>
+            <label class="ca19-field"><span>Website slug</span><div class="ca19-slug"><em>etb2baward.vercel.app/</em><input id="slug" placeholder="my-awards-2027"></div></label>
+          </div>
 
-      <section id="successView" class="ca-success-wrap" hidden>
-        <div class="ca-success-card card">
-          <div class="ca-success-icon">✓</div>
-          <span class="eyebrow">AWARD CREATED</span>
-          <h1 id="successName">Your award is ready</h1>
-          <p>Your workspace is created. Complete the guided setup before publishing.</p>
+          <div class="ca19-errors" id="formError" hidden></div>
+          <div class="ca19-actions"><a class="btn secondary" href="index.html">Cancel</a><button class="btn primary ca19-create" id="createAwardBtn" type="button">Create award & build website →</button></div>
+        </section>
 
-          <div class="ca-success-grid">
-            <div class="card pad ca-success-progress">
-              <div class="section-title"><h2>Setup progress</h2><b>20%</b></div>
-              <div class="progress"><span style="width:20%"></span></div>
-              <div class="steps ca-success-steps">
-                <div class="step-row done"><div class="step-num">✓</div><div><strong>Award details</strong><small>Identity, dates and entry model</small></div><span class="badge green right">Done</span></div>
-                <a class="step-row" href="categories.html"><div class="step-num">2</div><div><strong>Add categories</strong><small>Define what people can enter</small></div><span class="right">→</span></a>
-                <a class="step-row" href="entry-form.html"><div class="step-num">3</div><div><strong>Build entry form</strong><small>Questions, evidence and files</small></div><span class="right">→</span></a>
-                <a class="step-row" href="pricing.html"><div class="step-num">4</div><div><strong>Configure pricing</strong><small>Fees, early bird and promo codes</small></div><span class="right">→</span></a>
-                <a class="step-row" href="website.html"><div class="step-num">5</div><div><strong>Design website</strong><small>Brand, pages and publish</small></div><span class="right">→</span></a>
-              </div>
-            </div>
-
-            <div class="ca-success-side">
-              <div class="card pad">
-                <small class="ca-muted-label">PUBLIC URL</small>
-                <div class="ca-success-url" id="successUrl">etb2baward.vercel.app/your-award</div>
-                <div class="ca-success-actions">
-                  <a class="btn secondary" href="website-preview.html">Preview website</a>
-                  <a class="btn primary" href="categories.html">Continue setup →</a>
-                </div>
-              </div>
-              <div class="callout section">
-                <h3>✦ Award Copilot prepared the next step</h3>
-                <p id="categorySuggestion">Suggested categories will appear when you continue to Categories.</p>
+        <aside class="ca19-side">
+          <div class="card ca19-preview-card">
+            <div class="ca19-preview-head"><span>LIVE STARTER PREVIEW</span><b id="previewState">Nomination open</b></div>
+            <div class="ca19-mini-site">
+              <div class="ca19-mini-nav"><img id="previewLogo" src="et-logo.jpg" alt="ET"><span>ETB2B Awards</span><i></i></div>
+              <div class="ca19-mini-hero">
+                <small id="previewCategory">AWARDS</small><h3 id="previewName">Your award name</h3><p id="previewDesc">Add a short description to see the public site take shape.</p>
+                <div class="ca19-mini-meta"><span>📍 <b id="previewVenue">Venue</b></span><span>◷ <b id="previewDate">Event date</b></span></div>
+                <button id="previewCta" type="button">Express Interest</button>
               </div>
             </div>
           </div>
-
-          <div class="ca-success-bottom"><a href="index.html">Go to Command Center</a><button type="button" class="btn secondary" id="createAnotherBtn">Create another award</button></div>
-        </div>
-      </section>
+          <div class="card ca19-next-card"><span class="ca19-next-icon">✦</span><div><small>NEXT AFTER CREATE</small><h3>Website Studio</h3><p>Your award details will already be filled. You can upload banners, turn sections on/off, choose a design for each section and watch the site update live.</p><div class="ca19-next-list"><span>✓ Live desktop/mobile preview</span><span>✓ Section-by-section themes</span><span>✓ Registration form controls</span><span>✓ Public navigation & pages</span></div></div></div>
+        </aside>
+      </div>
       <div class="footer-note">Vikas Mishra</div>
     </main>
   </div>
 </div>
 <div id="toast" class="toast"></div>
 <script src="app.js"></script>
-<script>
-(function(){
-  const $ = id => document.getElementById(id);
-  const fields = ['awardName','awardType','description','industry','country','currency','openDate','closeDate','judgingDate','winnerDate','baseFee','awardSlug'];
-  let mode = 'ai';
-  let entryType = 'paid';
-  let generatedCategories = [];
-
-  const examples = {
-    fintech: {
-      name:'India FinTech Awards 2027', type:'Industry', industry:'Financial Technology', country:'India', currency:'INR',
-      description:'Celebrating the companies, products and people shaping the future of financial technology in India.',
-      open:'2027-06-01', close:'2027-09-30', judging:'2027-10-14', winner:'2027-11-05', fee:2000,
-      categories:['Best FinTech Startup','Best Digital Banking Innovation','Best Payments Solution','FinTech Leader of the Year','Best AI in Financial Services']
-    },
-    healthcare: {
-      name:'India Healthcare Excellence Awards 2027', type:'Industry', industry:'Healthcare', country:'India', currency:'INR',
-      description:'Recognising hospitals, healthcare leaders and health-tech innovators delivering outstanding impact and patient outcomes.',
-      open:'2027-07-01', close:'2027-10-15', judging:'2027-11-01', winner:'2027-12-05', fee:3500,
-      categories:['Hospital of the Year','Healthcare Leader of the Year','Best HealthTech Innovation','Patient Experience Excellence','Clinical Innovation Award']
-    },
-    design: {
-      name:'DesignScape Awards 2027', type:'Creative', industry:'Design & Architecture', country:'India', currency:'INR',
-      description:'Celebrating exceptional design, architecture and creative work that transforms spaces, brands and experiences.',
-      open:'2027-05-15', close:'2027-09-15', judging:'2027-10-01', winner:'2027-10-28', fee:2500,
-      categories:['Best Architecture Project','Best Interior Design','Agency of the Year','Best Brand Experience','Designer of the Year']
-    }
-  };
-
-  function slugify(v){return (v||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,55)}
-  function symbol(cur){return ({INR:'₹',USD:'$',AED:'د.إ',GBP:'£',SGD:'S$'})[cur] || '₹'}
-  function niceDate(v){if(!v)return 'Not set'; const d=new Date(v+'T00:00:00'); return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}
-  function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
-
-  function setMode(next){
-    mode=next;
-    document.querySelectorAll('.ca-mode-card').forEach(b=>{const on=b.dataset.mode===next;b.classList.toggle('active',on);b.querySelector('.ca-radio').textContent=on?'●':'○'});
-    $('aiPanel').hidden = next!=='ai';
-    $('manualFormCard').scrollIntoView({behavior:'smooth',block:'start'});
-  }
-  document.querySelectorAll('.ca-mode-card').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
-
-  document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{$('aiPrompt').value=b.dataset.prompt;}));
-
-  function applyTemplate(t){
-    $('awardName').value=t.name; $('awardType').value=t.type; $('industry').value=t.industry; $('country').value=t.country; $('currency').value=t.currency;
-    $('description').value=t.description; $('openDate').value=t.open; $('closeDate').value=t.close; $('judgingDate').value=t.judging; $('winnerDate').value=t.winner; $('baseFee').value=t.fee;
-    $('awardSlug').value=slugify(t.name); generatedCategories=t.categories; entryType='paid';
-    document.querySelectorAll('.ca-choice').forEach(b=>b.classList.toggle('active',b.dataset.entry==='paid')); $('feeRow').classList.remove('ca-fee-hidden');
-    $('generatedNotice').hidden=false; updatePreview();
-  }
-
-  $('generateBtn').addEventListener('click',()=>{
-    const p=$('aiPrompt').value.trim().toLowerCase();
-    if(!p){toast('Describe your award first');$('aiPrompt').focus();return;}
-    $('generateBtn').disabled=true;$('generateBtn').textContent='✦ Generating…';
-    setTimeout(()=>{
-      const t=p.includes('health')?examples.healthcare:(p.includes('design')||p.includes('architect')||p.includes('creative'))?examples.design:examples.fintech;
-      applyTemplate(t); $('generateBtn').disabled=false;$('generateBtn').textContent='✓ Setup generated';
-      $('manualFormCard').scrollIntoView({behavior:'smooth',block:'start'}); toast('Award setup generated');
-    },650);
-  });
-
-  document.querySelectorAll('.ca-choice').forEach(b=>b.addEventListener('click',()=>{
-    entryType=b.dataset.entry; document.querySelectorAll('.ca-choice').forEach(x=>x.classList.toggle('active',x===b));
-    $('feeRow').classList.toggle('ca-fee-hidden',entryType==='free'); updatePreview();
-  }));
-
-  $('description').addEventListener('input',()=>{$('descCount').textContent=$('description').value.length;updatePreview()});
-  $('awardName').addEventListener('input',()=>{if(!$('awardSlug').dataset.touched)$('awardSlug').value=slugify($('awardName').value);updatePreview()});
-  $('awardSlug').addEventListener('input',()=>{$('awardSlug').dataset.touched='1';$('awardSlug').value=slugify($('awardSlug').value)});
-  ['awardType','industry','country','currency','openDate','closeDate','baseFee'].forEach(id=>$(id).addEventListener('input',updatePreview));
-  $('logo').addEventListener('change',()=>{if($('logo').files[0]){$('logoText').textContent=$('logo').files[0].name;$('previewLogo').textContent=$('logo').files[0].name.charAt(0).toUpperCase()}});
-
-  function updatePreview(){
-    const name=$('awardName').value.trim(); const desc=$('description').value.trim(); const cur=$('currency').value||'INR'; const fee=Number($('baseFee').value||0);
-    $('previewName').textContent=name||'Your award name'; $('previewDesc').textContent=desc||'Add a short description to see how your award could appear.';
-    $('previewType').textContent=($('awardType').value||'YOUR AWARD').toUpperCase(); $('previewOpen').textContent=niceDate($('openDate').value); $('previewClose').textContent=niceDate($('closeDate').value);
-    $('currencySymbol').textContent=symbol(cur); $('previewFee').textContent=entryType==='free'?'Free':symbol(cur)+fee.toLocaleString('en-IN');
-    let score=10; if(name&&desc&&$('awardType').value&&$('country').value&&$('currency').value){score+=20;$('checkIdentity').textContent='✓';}else $('checkIdentity').textContent='○';
-    if($('openDate').value&&$('closeDate').value){score+=10;$('checkDates').textContent='✓';}else $('checkDates').textContent='○';
-    $('readinessPct').textContent=score+'%'; $('readinessBar').style.width=score+'%';
-  }
-
-  function clearErrors(){document.querySelectorAll('.field-error').forEach(e=>e.textContent='');document.querySelectorAll('.field input,.field textarea,.field select').forEach(e=>e.classList.remove('invalid'))}
-  function error(id,msg){$(id+'Error').textContent=msg;$(id).classList.add('invalid')}
-  function validate(){
-    clearErrors(); let ok=true;
-    [['awardName','Enter an award name'],['awardType','Select an award type'],['description','Add a short description'],['country','Select a country'],['currency','Select a currency'],['openDate','Choose the opening date'],['closeDate','Choose the deadline']].forEach(([id,msg])=>{if(!$(id).value.trim()){error(id,msg);ok=false}});
-    if($('openDate').value&&$('closeDate').value&&$('closeDate').value<$('openDate').value){error('closeDate','Deadline must be after the opening date');ok=false}
-    return ok;
-  }
-
-  function awardData(){return {name:$('awardName').value.trim(),type:$('awardType').value,description:$('description').value.trim(),industry:$('industry').value.trim(),country:$('country').value,currency:$('currency').value,openDate:$('openDate').value,closeDate:$('closeDate').value,judgingDate:$('judgingDate').value,winnerDate:$('winnerDate').value,entryType,baseFee:entryType==='paid'?Number($('baseFee').value||0):0,slug:$('awardSlug').value||slugify($('awardName').value),suggestedCategories:generatedCategories,createdAt:new Date().toISOString()}}
-
-  $('createBtn').addEventListener('click',()=>{
-    if(!validate()){toast('Complete the required fields');document.querySelector('.invalid')?.scrollIntoView({behavior:'smooth',block:'center'});return;}
-    const data=awardData(); localStorage.setItem('etb2b_awards_new_award',JSON.stringify(data));
-    $('successName').textContent=data.name+' is ready'; $('successUrl').textContent='etb2baward.vercel.app/'+data.slug;
-    $('categorySuggestion').textContent=data.suggestedCategories.length?'Suggested: '+data.suggestedCategories.slice(0,3).join(' · '):'Continue to Categories to add the first entry categories.';
-    $('builderView').hidden=true;$('successView').hidden=false;window.scrollTo({top:0,behavior:'smooth'});toast('Award created');
-  });
-
-  $('saveDraftBtn').addEventListener('click',()=>{localStorage.setItem('etb2b_awards_create_draft',JSON.stringify(awardData()));toast('Draft saved in this browser')});
-  $('createAnotherBtn').addEventListener('click',()=>{localStorage.removeItem('etb2b_awards_new_award');location.reload()});
-
-  const draft=localStorage.getItem('etb2b_awards_create_draft');
-  if(draft){try{const d=JSON.parse(draft);fields.forEach(id=>{if(d[id]!==undefined&&$(id))$(id).value=d[id]});entryType=d.entryType||'paid';generatedCategories=d.suggestedCategories||[];document.querySelectorAll('.ca-choice').forEach(b=>b.classList.toggle('active',b.dataset.entry===entryType));$('feeRow').classList.toggle('ca-fee-hidden',entryType==='free');$('descCount').textContent=$('description').value.length;updatePreview()}catch(e){}}
-  updatePreview();
-})();
-</script>
+<script src="create-award-v19.js"></script>
 </body>
 </html>

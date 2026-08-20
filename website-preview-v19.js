@@ -1,0 +1,9 @@
+(function(){
+  const award=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})()||{name:'ET Future Forward Awards 2026',eventCategory:'HR & Talent Management',description:'Celebrating organisations and leaders building the future of work.',venue:'Crowne Plaza Kuala Lumpur',city:'Kuala Lumpur',hasEventDates:true,eventStart:'2026-10-22T18:00',hasNominationDates:true,nominationStart:'2026-08-20T08:00',nominationEnd:'2026-09-30T23:59',slug:'et-future-forward-awards-2026'};
+  const key='etb2b_awards_website_'+(award.slug||'demo');let raw;try{raw=JSON.parse(localStorage.getItem(key)||'null')}catch(e){}const state=ETB2BSite.normalizeState(raw,award);
+  ETB2BSite.render(document.getElementById('publicSite'),award,state,{builder:false});
+  document.title=award.name+' · ETB2B Awards';
+  function toast(msg){const t=document.getElementById('publicToast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+  document.querySelectorAll('[data-hero-cta]').forEach(a=>a.addEventListener('click',e=>{const c=ETB2BSite.ctaFor(award);if(c.mode==='interest'){e.preventDefault();document.getElementById('interest')?.scrollIntoView({behavior:'smooth'})}if(c.mode==='closed')e.preventDefault()}));
+  document.querySelectorAll('[data-public-interest-form]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();const data=Object.fromEntries(new FormData(form).entries());data.award=award.name;data.createdAt=new Date().toISOString();const leads=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_public_leads')||'[]')}catch(e){return[]}})();leads.push(data);localStorage.setItem('etb2b_public_leads',JSON.stringify(leads));const c=ETB2BSite.ctaFor(award);if(c.mode==='nominate'){location.href='nominate.html'}else if(c.mode==='interest'){location.href='thank-you.html'}else toast('Nominations are currently closed')}));
+})();

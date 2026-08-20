@@ -1,30 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
   <link rel="icon" type="image/jpeg" href="et-logo.jpg">
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Award website preview">
-  <title>Award Website Preview</title>
-  <link rel="stylesheet" href="public-site.css">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ETB2B Awards · Public Website</title>
+  <link rel="stylesheet" href="site-runtime.css">
+  <link rel="stylesheet" href="public-pages-v19.css">
 </head>
-<body>
-  <div class="ps-preview-bar" id="previewBar"><span>Manager preview</span><b id="previewStatus">Draft website</b><a href="website.html">Back to builder</a></div>
-  <div class="ps-site" id="publicSite"></div>
-  <div class="ps-modal" id="nominateModal" aria-hidden="true">
-    <div class="ps-modal-backdrop" data-close-nominate></div>
-    <div class="ps-modal-card">
-      <button class="ps-close" data-close-nominate>&times;</button>
-      <span class="ps-modal-kicker">START YOUR ENTRY</span>
-      <h2 id="nominateTitle">Enter the awards</h2>
-      <p>Select a category to begin. In the production product this continues into the entrant registration and nomination journey.</p>
-      <label>Category<select id="nominateCategory"></select></label>
-      <label>Work email<input type="email" placeholder="you@company.com"></label>
-      <button class="ps-primary" id="startEntryBtn">Continue to entry</button>
-      <small>This is a manager-demo interaction. No entry is submitted.</small>
-    </div>
-  </div>
-  <div class="ps-toast" id="psToast"></div>
-  <script src="website-preview.js"></script>
-</body>
+<body class="public-body"><div id="publicSite"></div><div id="publicToast" class="public-toast"></div><script src="site-renderer.js"></script><script src="website-preview-v19.js"></script></body>
 </html>
