@@ -6,7 +6,7 @@ WHAT CHANGED
 - Hero Media now supports:
   * Desktop background (1600 x 720)
   * Mobile background (768 x 1024)
-  * Foreground illustration / ILU image
+  * Branding Banner Image (571 x 340)
   * Background focus position
   * Overlay strength
   * Illustration size
