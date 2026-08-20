@@ -1,0 +1,508 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pricing · AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">◇</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
+      <a class="active" href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">▣</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb"><span id="crumbAward">India FinTech Awards 2027</span> / Pricing</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="openCopilot">✦ Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main pr-main">
+      <div class="page-head pr-page-head">
+        <div>
+          <div class="pr-kicker">BUILD · STEP 4 OF 5</div>
+          <h1>Pricing & payments</h1>
+          <p>Set entry fees, time-based pricing, category overrides, discounts and taxes in one place.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn secondary" id="previewCheckoutTop">Preview checkout</button>
+          <button class="btn primary" id="savePricing">Save pricing</button>
+        </div>
+      </div>
+
+      <div class="stagebar"><div class="stage active">BUILD</div><div class="stage">GROW</div><div class="stage">DECIDE</div><div class="stage">CELEBRATE</div></div>
+
+      <div class="pr-setup-path">
+        <a href="award.html" class="done"><span>✓</span><b>Award</b></a>
+        <i></i>
+        <a href="categories.html" class="done"><span>✓</span><b>Categories</b></a>
+        <i></i>
+        <a href="entry-form.html" class="done"><span>✓</span><b>Entry form</b></a>
+        <i></i>
+        <a href="pricing.html" class="active"><span>4</span><b>Pricing</b></a>
+        <i></i>
+        <a href="website.html"><span>5</span><b>Website</b></a>
+      </div>
+
+      <section class="pr-copilot-banner">
+        <div class="pr-copilot-icon">✦</div>
+        <div class="pr-copilot-copy">
+          <span>AWARD COPILOT</span>
+          <h2>A simple 3-phase pricing plan can increase early conversions without discounting every entry.</h2>
+          <p id="copilotSummary">Try 20% early-bird savings, your standard fee during the main window, then a small late-entry premium.</p>
+        </div>
+        <div class="pr-copilot-actions">
+          <button class="btn primary" id="applyRecommendation">Apply recommendation</button>
+          <button class="btn secondary" id="dismissRecommendation">Not now</button>
+        </div>
+      </section>
+
+      <div class="pr-layout">
+        <div class="pr-content-col">
+          <section class="card pad pr-card" id="entryModelCard">
+            <div class="section-title pr-section-title">
+              <div><span class="pr-step">01</span><h2>How will entrants pay?</h2><p>Choose a free or paid entry model. You can change this later.</p></div>
+              <span class="badge green" id="entryModelBadge">Paid entries</span>
+            </div>
+            <div class="pr-choice-grid">
+              <button class="pr-choice" data-entry-mode="free">
+                <span class="pr-radio"></span>
+                <div><b>Free entries</b><small>No fee at checkout. Useful for internal awards or open nominations.</small></div>
+                <em>₹0</em>
+              </button>
+              <button class="pr-choice active" data-entry-mode="paid">
+                <span class="pr-radio"></span>
+                <div><b>Paid entries</b><small>Charge a base fee and optionally add phases, discounts and promo codes.</small></div>
+                <em id="paidChoiceAmount">₹2,000</em>
+              </button>
+            </div>
+          </section>
+
+          <div id="paidSettings">
+            <section class="card pad pr-card">
+              <div class="section-title pr-section-title">
+                <div><span class="pr-step">02</span><h2>Base price</h2><p>Your default fee for one entry before discounts, taxes or category-specific pricing.</p></div>
+                <span class="pr-save-state" id="baseSaveState">Auto-saved locally</span>
+              </div>
+              <div class="pr-base-grid">
+                <div class="field">
+                  <label>Currency</label>
+                  <select id="currency">
+                    <option value="INR">INR · Indian Rupee</option>
+                    <option value="USD">USD · US Dollar</option>
+                    <option value="GBP">GBP · British Pound</option>
+                    <option value="AED">AED · UAE Dirham</option>
+                    <option value="SGD">SGD · Singapore Dollar</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Standard entry fee</label>
+                  <div class="pr-money-input"><span id="baseCurrencySymbol">₹</span><input id="baseFee" type="number" min="0" step="1" value="2000"></div>
+                </div>
+                <div class="field">
+                  <label>Price display</label>
+                  <select id="priceDisplay">
+                    <option value="exclusive">Show fee + tax separately</option>
+                    <option value="inclusive">Show tax-inclusive price</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+
+            <section class="card pad pr-card">
+              <div class="section-title pr-section-title">
+                <div><span class="pr-step">03</span><h2>Pricing timeline</h2><p>Create early-bird, regular and late-entry windows. Turn off any phase you do not need.</p></div>
+                <button class="btn secondary pr-small-btn" id="resetPhases">Reset phases</button>
+              </div>
+
+              <div class="pr-phase-list">
+                <article class="pr-phase" data-phase="early">
+                  <div class="pr-phase-head">
+                    <button class="pr-toggle active" data-toggle-phase="early" aria-label="Toggle early bird"><i></i></button>
+                    <div class="pr-phase-icon">↘</div>
+                    <div class="pr-phase-title"><b>Early bird</b><small>Reward entrants who submit early</small></div>
+                    <span class="badge green" id="earlyBadge">20% off</span>
+                  </div>
+                  <div class="pr-phase-fields" id="earlyFields">
+                    <div class="field"><label>Discount</label><div class="pr-affix-input"><input id="earlyDiscount" type="number" min="0" max="90" value="20"><span>% off</span></div></div>
+                    <div class="field"><label>Starts</label><input id="earlyStart" type="date"></div>
+                    <div class="field"><label>Ends</label><input id="earlyEnd" type="date"></div>
+                    <div class="pr-phase-price"><small>Effective fee</small><b id="earlyPrice">₹1,600</b></div>
+                  </div>
+                </article>
+
+                <article class="pr-phase" data-phase="regular">
+                  <div class="pr-phase-head">
+                    <button class="pr-toggle active locked" aria-label="Regular pricing is always on"><i></i></button>
+                    <div class="pr-phase-icon">—</div>
+                    <div class="pr-phase-title"><b>Regular</b><small>Your standard entry fee</small></div>
+                    <span class="badge" id="regularBadge">Base price</span>
+                  </div>
+                  <div class="pr-phase-fields">
+                    <div class="field"><label>Price</label><div class="pr-money-input"><span class="currencyMirror">₹</span><input id="regularPrice" type="number" min="0" value="2000"></div></div>
+                    <div class="field"><label>Starts</label><input id="regularStart" type="date"></div>
+                    <div class="field"><label>Ends</label><input id="regularEnd" type="date"></div>
+                    <div class="pr-phase-price"><small>Effective fee</small><b id="regularPriceLabel">₹2,000</b></div>
+                  </div>
+                </article>
+
+                <article class="pr-phase" data-phase="late">
+                  <div class="pr-phase-head">
+                    <button class="pr-toggle active" data-toggle-phase="late" aria-label="Toggle late entry"><i></i></button>
+                    <div class="pr-phase-icon">↗</div>
+                    <div class="pr-phase-title"><b>Late entry</b><small>Add a premium after the main deadline</small></div>
+                    <span class="badge orange" id="lateBadge">10% premium</span>
+                  </div>
+                  <div class="pr-phase-fields" id="lateFields">
+                    <div class="field"><label>Premium</label><div class="pr-affix-input"><input id="latePremium" type="number" min="0" max="90" value="10"><span>% extra</span></div></div>
+                    <div class="field"><label>Starts</label><input id="lateStart" type="date"></div>
+                    <div class="field"><label>Ends</label><input id="lateEnd" type="date"></div>
+                    <div class="pr-phase-price"><small>Effective fee</small><b id="latePrice">₹2,200</b></div>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <section class="card pad pr-card">
+              <div class="section-title pr-section-title">
+                <div><span class="pr-step">04</span><h2>Category pricing</h2><p>Keep one price for everything or override selected categories.</p></div>
+                <span class="pr-muted" id="categoryCountLabel">0 categories</span>
+              </div>
+              <div class="pr-category-head"><span>Category</span><span>Pricing rule</span><span>Fee</span></div>
+              <div id="categoryPricingList" class="pr-category-list"></div>
+              <div id="categoryEmpty" class="pr-empty-state" hidden>
+                <div>▦</div><b>No categories yet</b><p>Add categories first, then return here to set category-specific fees.</p><a class="btn secondary" href="categories.html">Go to Categories</a>
+              </div>
+            </section>
+
+            <section class="card pad pr-card">
+              <div class="section-title pr-section-title">
+                <div><span class="pr-step">05</span><h2>Multi-entry discount</h2><p>Encourage entrants to submit more than one category in the same checkout.</p></div>
+                <button class="pr-toggle active" id="multiToggle" aria-label="Toggle multi-entry discount"><i></i></button>
+              </div>
+              <div class="pr-inline-config" id="multiSettings">
+                <div class="field"><label>Apply when entrant buys</label><div class="pr-affix-input"><input id="multiThreshold" type="number" min="2" value="3"><span>+ entries</span></div></div>
+                <div class="field"><label>Discount</label><div class="pr-affix-input"><input id="multiDiscount" type="number" min="0" max="90" value="10"><span>% off</span></div></div>
+                <div class="pr-config-preview"><span>Example</span><b id="multiExample">3 entries save ₹600</b></div>
+              </div>
+            </section>
+
+            <section class="card pad pr-card">
+              <div class="section-title pr-section-title">
+                <div><span class="pr-step">06</span><h2>Taxes</h2><p>Add GST, VAT or another tax. This prototype calculates tax at checkout.</p></div>
+                <button class="pr-toggle active" id="taxToggle" aria-label="Toggle tax"><i></i></button>
+              </div>
+              <div class="pr-inline-config" id="taxSettings">
+                <div class="field"><label>Tax name</label><input id="taxLabel" value="GST"></div>
+                <div class="field"><label>Tax rate</label><div class="pr-affix-input"><input id="taxRate" type="number" min="0" max="100" value="18"><span>%</span></div></div>
+                <div class="field"><label>Tax handling</label><select id="taxMode"><option value="exclusive">Add tax at checkout</option><option value="inclusive">Tax included in displayed fee</option></select></div>
+              </div>
+            </section>
+
+            <section class="card pad pr-card">
+              <div class="section-title pr-section-title">
+                <div><span class="pr-step">07</span><h2>Promo codes</h2><p>Create partner, sponsor or campaign codes without changing your public fee.</p></div>
+                <button class="btn secondary pr-small-btn" id="newPromo">+ New promo code</button>
+              </div>
+              <div class="pr-promo-table-wrap">
+                <table class="table pr-promo-table">
+                  <thead><tr><th>Code</th><th>Offer</th><th>Usage</th><th>Status</th><th></th></tr></thead>
+                  <tbody id="promoRows"></tbody>
+                </table>
+              </div>
+              <div class="pr-empty-state compact" id="promoEmpty" hidden><b>No promo codes yet</b><p>Create a code for partners, jury members or special campaigns.</p></div>
+            </section>
+
+            <section class="card pad pr-card">
+              <div class="section-title pr-section-title">
+                <div><span class="pr-step">08</span><h2>Payment setup</h2><p>Choose how payment should work after an entrant submits. Gateway buttons are demo-only.</p></div>
+                <span class="badge orange">Connect later</span>
+              </div>
+              <div class="pr-payment-grid">
+                <button class="pr-gateway active" data-gateway="razorpay"><span>R</span><div><b>Razorpay</b><small>UPI, cards, netbanking · India</small></div><em>Selected</em></button>
+                <button class="pr-gateway" data-gateway="stripe"><span>S</span><div><b>Stripe</b><small>Cards & international payments</small></div><em>Select</em></button>
+                <button class="pr-gateway" data-gateway="manual"><span>↗</span><div><b>Invoice / bank transfer</b><small>Approve payment manually</small></div><em>Select</em></button>
+              </div>
+              <div class="pr-payment-options">
+                <label><input id="invoiceToggle" type="checkbox" checked> Allow entrant to download an invoice</label>
+                <label><input id="partialToggle" type="checkbox"> Allow save-now, pay-later submissions</label>
+                <label><input id="receiptToggle" type="checkbox" checked> Send payment receipt automatically</label>
+              </div>
+            </section>
+          </div>
+
+          <div class="pr-bottom-actions">
+            <div><b>Pricing is part of your BUILD setup</b><span>Next, design the public award website and checkout experience.</span></div>
+            <div class="top-actions"><button class="btn secondary" id="saveDraftBottom">Save draft</button><a class="btn primary" href="website.html" id="continueWebsite">Continue to Website →</a></div>
+          </div>
+        </div>
+
+        <aside class="pr-side-col">
+          <section class="card pad pr-checkout-card">
+            <div class="section-title"><div><h2>Live checkout</h2><span>What an entrant would pay</span></div><span class="pr-live-dot">● LIVE</span></div>
+            <div class="pr-checkout-shell">
+              <div class="pr-checkout-brand"><div class="brandmark">A</div><div><b id="checkoutAwardName">India FinTech Awards 2027</b><small>Secure award entry</small></div></div>
+              <div class="field"><label>Category</label><select id="checkoutCategory"></select></div>
+              <div class="field"><label>Number of entries</label><select id="checkoutQty"><option value="1">1 entry</option><option value="2">2 entries</option><option value="3">3 entries</option><option value="4">4 entries</option><option value="5">5 entries</option></select></div>
+              <div class="field"><label>Pricing window</label><select id="checkoutPhase"><option value="early">Early bird</option><option value="regular" selected>Regular</option><option value="late">Late entry</option></select></div>
+              <div class="pr-promo-apply"><input id="checkoutPromo" placeholder="Promo code"><button id="applyPromo">Apply</button></div>
+              <div class="pr-applied-code" id="appliedCode" hidden><span id="appliedCodeText">PARTNER20 applied</span><button id="removePromo">×</button></div>
+              <div class="pr-price-lines">
+                <div><span>Entry fee</span><b id="lineEntryFee">₹2,000</b></div>
+                <div id="linePhaseRow"><span id="linePhaseLabel">Pricing adjustment</span><b id="linePhase">₹0</b></div>
+                <div id="lineMultiRow"><span>Multi-entry discount</span><b id="lineMulti">−₹0</b></div>
+                <div id="linePromoRow"><span>Promo discount</span><b id="linePromo">−₹0</b></div>
+                <div id="lineTaxRow"><span id="lineTaxLabel">GST (18%)</span><b id="lineTax">₹360</b></div>
+              </div>
+              <div class="pr-total"><span>Total</span><b id="checkoutTotal">₹2,360</b></div>
+              <div class="pr-savings" id="checkoutSavings" hidden>You're saving <b id="savingsAmount">₹0</b></div>
+              <button class="btn primary pr-pay-btn" id="testCheckout">Continue to payment →</button>
+              <small class="pr-checkout-note">Demo calculation only · no real payment will be processed</small>
+            </div>
+          </section>
+
+          <section class="card pad pr-health-card section">
+            <div class="section-title"><h2>Pricing health</h2><b id="pricingHealth">92%</b></div>
+            <div class="progress"><span id="pricingHealthBar" style="width:92%"></span></div>
+            <div class="pr-health-list">
+              <div><span id="healthBaseIcon">✓</span><p><b>Base fee configured</b><small id="healthBaseText">₹2,000 per entry</small></p></div>
+              <div><span id="healthPhasesIcon">✓</span><p><b>Pricing windows</b><small id="healthPhasesText">3 active phases</small></p></div>
+              <div><span id="healthTaxIcon">✓</span><p><b>Tax configured</b><small id="healthTaxText">18% GST at checkout</small></p></div>
+              <div><span id="healthGatewayIcon">○</span><p><b>Payment gateway</b><small>Connect before launch</small></p></div>
+            </div>
+          </section>
+
+          <section class="card pad pr-insight-card section">
+            <div class="pr-insight-head"><span>✦</span><div><b>Revenue scenario</b><small>Simple planning estimate</small></div></div>
+            <div class="field"><label>Expected paid entries</label><input id="projectedEntries" type="number" min="0" value="250"></div>
+            <div class="pr-projection"><small>Projected gross revenue</small><b id="projectedRevenue">₹5,00,000</b><span id="projectionNote">before discounts and tax</span></div>
+          </section>
+        </aside>
+      </div>
+
+      <div class="footer-note">Interactive manager-demo prototype · Pricing calculations are simulated · No real payment gateway connected</div>
+    </main>
+  </div>
+</div>
+
+<div class="pr-drawer" id="promoDrawer" aria-hidden="true">
+  <div class="pr-drawer-backdrop" data-close-drawer></div>
+  <div class="pr-drawer-panel">
+    <div class="pr-drawer-head"><div><span class="pr-kicker">PROMO CODE</span><h2 id="promoDrawerTitle">Create promo code</h2></div><button data-close-drawer>×</button></div>
+    <div class="pr-drawer-body">
+      <div class="field"><label>Code</label><input id="promoCode" placeholder="PARTNER20" maxlength="24"></div>
+      <div class="form-grid pr-two-col">
+        <div class="field"><label>Discount type</label><select id="promoType"><option value="percent">Percentage off</option><option value="fixed">Fixed amount off</option><option value="free">100% free entry</option></select></div>
+        <div class="field" id="promoValueField"><label>Value</label><div class="pr-affix-input"><input id="promoValue" type="number" min="0" value="20"><span id="promoValueSuffix">%</span></div></div>
+      </div>
+      <div class="form-grid pr-two-col">
+        <div class="field"><label>Usage limit</label><input id="promoLimit" type="number" min="0" value="100"></div>
+        <div class="field"><label>Status</label><select id="promoStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+      </div>
+      <div class="form-grid pr-two-col"><div class="field"><label>Starts</label><input id="promoStart" type="date"></div><div class="field"><label>Ends</label><input id="promoEnd" type="date"></div></div>
+      <div class="pr-drawer-preview"><span>Checkout preview</span><b id="promoPreviewText">20% off</b><small id="promoPreviewCode">PARTNER20</small></div>
+    </div>
+    <div class="pr-drawer-foot"><button class="btn secondary" id="deletePromo" hidden>Delete</button><span></span><button class="btn secondary" data-close-drawer>Cancel</button><button class="btn primary" id="savePromo">Save promo code</button></div>
+  </div>
+</div>
+
+<div class="pr-copilot-panel" id="copilotPanel" aria-hidden="true">
+  <div class="pr-copilot-head"><div><span class="pr-kicker">AWARD COPILOT</span><h2>Pricing assistant</h2></div><button id="closeCopilot">×</button></div>
+  <p>Choose a question. This prototype uses preset recommendations based on your current configuration.</p>
+  <div class="pr-copilot-prompts">
+    <button data-copilot="simple">Make my pricing simpler</button>
+    <button data-copilot="conversion">How can I improve early conversions?</button>
+    <button data-copilot="revenue">How can I increase revenue?</button>
+    <button data-copilot="promos">Which promo codes should I create?</button>
+  </div>
+  <div class="pr-copilot-answer" id="copilotAnswer">Choose a prompt to see a recommendation.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('awardflow_new_award')||'null')}catch(e){return null}})();
+  const award=savedAward||{name:'India FinTech Awards 2027',currency:'INR',baseFee:2000,entryType:'paid',slug:'india-fintech-awards-2027',openDate:'2027-06-01',closeDate:'2027-09-30'};
+  const categoryKey=savedAward&&savedAward.slug?'awardflow_categories_'+savedAward.slug:'awardflow_categories_demo';
+  let categories=(()=>{try{return JSON.parse(localStorage.getItem(categoryKey)||'[]')}catch(e){return []}})();
+  if(!categories.length&&!savedAward){categories=[
+    {id:1,name:'Best Startup',feeMode:'base',fee:2000,status:'open'},
+    {id:2,name:'Best CEO',feeMode:'base',fee:2000,status:'open'},
+    {id:3,name:'Best Product',feeMode:'custom',fee:2500,status:'open'},
+    {id:4,name:'Best Campaign',feeMode:'custom',fee:1500,status:'draft'}
+  ]}
+  const storeKey='awardflow_pricing_'+(award.slug||'demo');
+  const symbols={INR:'₹',USD:'$',GBP:'£',AED:'د.إ',SGD:'S$'};
+  const localeMap={INR:'en-IN',USD:'en-US',GBP:'en-GB',AED:'en-US',SGD:'en-SG'};
+  const state={
+    entryMode:award.entryType||'paid',currency:award.currency||'INR',baseFee:Number(award.baseFee||2000),priceDisplay:'exclusive',
+    phases:{early:{enabled:true,discount:20,start:'',end:''},regular:{enabled:true,price:Number(award.baseFee||2000),start:'',end:''},late:{enabled:true,premium:10,start:'',end:''}},
+    multi:{enabled:true,threshold:3,discount:10},tax:{enabled:true,label:'GST',rate:18,mode:'exclusive'},gateway:'razorpay',invoice:true,partial:false,receipt:true,
+    categoryOverrides:{},promos:[
+      {id:'p1',code:'PARTNER20',type:'percent',value:20,limit:100,used:24,status:'active',start:'',end:''},
+      {id:'p2',code:'JURYVIP',type:'free',value:100,limit:25,used:7,status:'active',start:'',end:''}
+    ],projectedEntries:250
+  };
+  let appliedPromoId=null,editingPromoId=null;
+
+  const saved=(()=>{try{return JSON.parse(localStorage.getItem(storeKey)||'null')}catch(e){return null}})();
+  if(saved)deepAssign(state,saved);
+  seedDates();
+  seedCategoryOverrides();
+
+  function deepAssign(target,src){Object.keys(src||{}).forEach(k=>{if(src[k]&&typeof src[k]==='object'&&!Array.isArray(src[k])&&target[k]&&typeof target[k]==='object'&&!Array.isArray(target[k]))deepAssign(target[k],src[k]);else target[k]=src[k]})}
+  function symbol(){return symbols[state.currency]||state.currency+' '}
+  function money(n){const value=Math.max(0,Number(n||0));try{return symbol()+Math.round(value).toLocaleString(localeMap[state.currency]||'en-US')}catch(e){return symbol()+Math.round(value)}}
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+  function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+  function persist(silent=true){localStorage.setItem(storeKey,JSON.stringify(state));if(!silent)toast('Pricing saved in this browser')}
+  function dateAdd(value,days){if(!value)return'';const d=new Date(value+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
+  function seedDates(){
+    const open=award.openDate||'2027-06-01',close=award.closeDate||'2027-09-30';
+    if(!state.phases.early.start)state.phases.early.start=open;
+    if(!state.phases.early.end)state.phases.early.end=dateAdd(open,30);
+    if(!state.phases.regular.start)state.phases.regular.start=dateAdd(state.phases.early.end,1);
+    if(!state.phases.regular.end)state.phases.regular.end=close;
+    if(!state.phases.late.start)state.phases.late.start=dateAdd(close,1);
+    if(!state.phases.late.end)state.phases.late.end=dateAdd(close,14);
+  }
+  function seedCategoryOverrides(){categories.forEach(c=>{const key=String(c.id);if(!state.categoryOverrides[key])state.categoryOverrides[key]={enabled:c.feeMode==='custom',fee:Number(c.fee||state.baseFee)}})}
+  function effectiveBaseForCategory(catId){const c=state.categoryOverrides[String(catId)];return c&&c.enabled?Number(c.fee||0):Number(state.baseFee||0)}
+  function phaseUnitPrice(base,phase){if(phase==='early'&&state.phases.early.enabled)return base*(1-Number(state.phases.early.discount||0)/100);if(phase==='late'&&state.phases.late.enabled)return base*(1+Number(state.phases.late.premium||0)/100);if(phase==='regular')return base;return base}
+  function activePromos(){return (state.promos||[]).filter(p=>p.status==='active')}
+  function currentPromo(){return state.promos.find(p=>p.id===appliedPromoId&&p.status==='active')||null}
+  function setText(){
+    $('sideAwardName').textContent=award.name||'Untitled Award';$('crumbAward').textContent=award.name||'Untitled Award';$('checkoutAwardName').textContent=award.name||'Untitled Award';
+  }
+  function syncInputs(){
+    $('currency').value=state.currency;$('baseFee').value=state.baseFee;$('priceDisplay').value=state.priceDisplay;
+    $('earlyDiscount').value=state.phases.early.discount;$('earlyStart').value=state.phases.early.start;$('earlyEnd').value=state.phases.early.end;
+    $('regularPrice').value=state.baseFee;$('regularStart').value=state.phases.regular.start;$('regularEnd').value=state.phases.regular.end;
+    $('latePremium').value=state.phases.late.premium;$('lateStart').value=state.phases.late.start;$('lateEnd').value=state.phases.late.end;
+    $('multiThreshold').value=state.multi.threshold;$('multiDiscount').value=state.multi.discount;
+    $('taxLabel').value=state.tax.label;$('taxRate').value=state.tax.rate;$('taxMode').value=state.tax.mode;
+    $('invoiceToggle').checked=!!state.invoice;$('partialToggle').checked=!!state.partial;$('receiptToggle').checked=!!state.receipt;$('projectedEntries').value=state.projectedEntries;
+    document.querySelectorAll('[data-entry-mode]').forEach(b=>b.classList.toggle('active',b.dataset.entryMode===state.entryMode));
+    $('paidSettings').classList.toggle('pr-settings-disabled',state.entryMode==='free');
+    $('entryModelBadge').textContent=state.entryMode==='free'?'Free entries':'Paid entries';$('entryModelBadge').className='badge '+(state.entryMode==='free'?'':'green');
+    $('multiToggle').classList.toggle('active',state.multi.enabled);$('multiSettings').classList.toggle('pr-disabled-row',!state.multi.enabled);
+    $('taxToggle').classList.toggle('active',state.tax.enabled);$('taxSettings').classList.toggle('pr-disabled-row',!state.tax.enabled);
+    document.querySelectorAll('[data-toggle-phase]').forEach(b=>{const ph=b.dataset.togglePhase;b.classList.toggle('active',!!state.phases[ph].enabled);$(ph+'Fields').classList.toggle('pr-disabled-row',!state.phases[ph].enabled)});
+    document.querySelectorAll('.pr-gateway').forEach(b=>{const on=b.dataset.gateway===state.gateway;b.classList.toggle('active',on);b.querySelector('em').textContent=on?'Selected':'Select'});
+  }
+  function renderCategoryPricing(){
+    $('categoryCountLabel').textContent=categories.length+' categor'+(categories.length===1?'y':'ies');$('categoryEmpty').hidden=categories.length>0;$('categoryPricingList').hidden=!categories.length;
+    $('categoryPricingList').innerHTML=categories.map(c=>{const cfg=state.categoryOverrides[String(c.id)]||{enabled:false,fee:state.baseFee};return `<div class="pr-category-row"><div><b>${esc(c.name)}</b><small>${c.status==='draft'?'Draft category':'Open category'}</small></div><div><button class="pr-rule-btn ${cfg.enabled?'active':''}" data-cat-toggle="${esc(c.id)}">${cfg.enabled?'Custom fee':'Use base fee'}</button></div><div class="pr-cat-fee ${cfg.enabled?'active':''}"><span>${esc(symbol())}</span><input type="number" min="0" value="${Number(cfg.fee||0)}" data-cat-fee="${esc(c.id)}" ${cfg.enabled?'':'disabled'}></div></div>`}).join('');
+    document.querySelectorAll('[data-cat-toggle]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.catToggle;state.categoryOverrides[id].enabled=!state.categoryOverrides[id].enabled;persist();renderAll()}));
+    document.querySelectorAll('[data-cat-fee]').forEach(inp=>inp.addEventListener('input',()=>{state.categoryOverrides[inp.dataset.catFee].fee=Math.max(0,Number(inp.value||0));persist();renderCheckout();renderProjection()}));
+  }
+  function promoOffer(p){if(p.type==='free')return'100% free';if(p.type==='fixed')return money(p.value)+' off';return Number(p.value||0)+'% off'}
+  function renderPromos(){
+    const rows=state.promos||[];$('promoEmpty').hidden=rows.length>0;$('promoRows').innerHTML=rows.map(p=>`<tr><td><b>${esc(p.code)}</b><small class="pr-table-sub">${p.start||p.end?'Scheduled':'Always available'}</small></td><td>${esc(promoOffer(p))}</td><td>${Number(p.used||0)} / ${Number(p.limit||0)||'∞'}</td><td><span class="badge ${p.status==='active'?'green':''}">${p.status==='active'?'Active':'Inactive'}</span></td><td><button class="pr-row-menu" data-edit-promo="${esc(p.id)}">Edit</button></td></tr>`).join('');
+    document.querySelectorAll('[data-edit-promo]').forEach(b=>b.addEventListener('click',()=>openPromo(b.dataset.editPromo)));
+  }
+  function renderCheckoutOptions(){
+    const current=$('checkoutCategory').value;const opts=categories.length?categories:[{id:'base',name:'Standard entry'}];$('checkoutCategory').innerHTML=opts.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');if(opts.some(c=>String(c.id)===String(current)))$('checkoutCategory').value=current;
+    ['early','late'].forEach(ph=>{$('checkoutPhase').querySelector(`option[value="${ph}"]`).disabled=!state.phases[ph].enabled});if($('checkoutPhase').selectedOptions[0]?.disabled)$('checkoutPhase').value='regular';
+  }
+  function renderCheckout(){
+    if(state.entryMode==='free'){
+      $('lineEntryFee').textContent=money(0);$('linePhase').textContent=money(0);$('lineMulti').textContent='−'+money(0);$('linePromo').textContent='−'+money(0);$('lineTax').textContent=money(0);$('checkoutTotal').textContent=money(0);$('checkoutSavings').hidden=true;return;
+    }
+    const catId=$('checkoutCategory').value||categories[0]?.id||'base',qty=Math.max(1,Number($('checkoutQty').value||1)),phase=$('checkoutPhase').value||'regular';
+    const base=catId==='base'?Number(state.baseFee):effectiveBaseForCategory(catId);const rawBase=base*qty;let unit=phaseUnitPrice(base,phase);let phaseSubtotal=unit*qty;let phaseAdjust=phaseSubtotal-rawBase;
+    let multi=0;if(state.multi.enabled&&qty>=Number(state.multi.threshold||3))multi=phaseSubtotal*Number(state.multi.discount||0)/100;
+    let afterMulti=Math.max(0,phaseSubtotal-multi);let promoDiscount=0;const promo=currentPromo();if(promo){if(promo.type==='free')promoDiscount=afterMulti;else if(promo.type==='percent')promoDiscount=afterMulti*Number(promo.value||0)/100;else promoDiscount=Math.min(afterMulti,Number(promo.value||0));}
+    let taxable=Math.max(0,afterMulti-promoDiscount),tax=0,total=taxable;if(state.tax.enabled){if(state.tax.mode==='exclusive'){tax=taxable*Number(state.tax.rate||0)/100;total=taxable+tax}else{tax=taxable*(Number(state.tax.rate||0)/(100+Number(state.tax.rate||0)));total=taxable;}}
+    $('lineEntryFee').textContent=money(rawBase);$('linePhaseLabel').textContent=phase==='early'?'Early bird discount':phase==='late'?'Late-entry premium':'Regular pricing';$('linePhase').textContent=(phaseAdjust<0?'−':phaseAdjust>0?'+':'')+money(Math.abs(phaseAdjust));$('linePhase').classList.toggle('pr-positive',phaseAdjust>0);
+    $('lineMulti').textContent='−'+money(multi);$('linePromo').textContent='−'+money(promoDiscount);$('lineTaxLabel').textContent=(state.tax.label||'Tax')+' ('+Number(state.tax.rate||0)+'%)';$('lineTax').textContent=money(tax);$('checkoutTotal').textContent=money(total);
+    $('lineMultiRow').hidden=!(state.multi.enabled&&qty>=Number(state.multi.threshold||3));$('linePromoRow').hidden=!promo;$('lineTaxRow').hidden=!state.tax.enabled;$('linePhaseRow').hidden=phaseAdjust===0;
+    const savings=Math.max(0,rawBase-total+(state.tax.enabled&&state.tax.mode==='exclusive'?tax:0));$('checkoutSavings').hidden=savings<=0;$('savingsAmount').textContent=money(savings);
+  }
+  function renderSummary(){
+    const base=Number(state.baseFee||0),early=base*(1-Number(state.phases.early.discount||0)/100),late=base*(1+Number(state.phases.late.premium||0)/100);
+    $('baseCurrencySymbol').textContent=symbol();document.querySelectorAll('.currencyMirror').forEach(e=>e.textContent=symbol());$('paidChoiceAmount').textContent=money(base);$('regularPrice').value=state.baseFee;$('earlyPrice').textContent=money(early);$('regularPriceLabel').textContent=money(state.baseFee);$('latePrice').textContent=money(late);$('earlyBadge').textContent=Number(state.phases.early.discount||0)+'% off';$('lateBadge').textContent=Number(state.phases.late.premium||0)+'% premium';
+    $('multiExample').textContent=Number(state.multi.threshold||3)+' entries save '+money(base*Number(state.multi.threshold||3)*Number(state.multi.discount||0)/100);
+    $('copilotSummary').textContent=`Try ${Number(state.phases.early.discount||20)}% early-bird savings, ${money(base)} during the main window, then a ${Number(state.phases.late.premium||10)}% late-entry premium.`;
+  }
+  function renderHealth(){
+    let score=state.entryMode==='free'?100:35;if(state.entryMode==='paid'){if(state.baseFee>0)score+=20;if(state.phases.early.enabled||state.phases.late.enabled)score+=15;if(state.tax.enabled)score+=10;if(state.gateway)score+=10;if(state.promos.length)score+=5;if(state.multi.enabled)score+=5;}score=Math.min(100,score);$('pricingHealth').textContent=score+'%';$('pricingHealthBar').style.width=score+'%';
+    $('healthBaseText').textContent=state.entryMode==='free'?'Free entries':money(state.baseFee)+' per entry';$('healthPhasesText').textContent=state.entryMode==='free'?'Not required':[state.phases.early.enabled,true,state.phases.late.enabled].filter(Boolean).length+' active phases';$('healthTaxText').textContent=state.tax.enabled?Number(state.tax.rate||0)+'% '+(state.tax.label||'Tax')+(state.tax.mode==='exclusive'?' at checkout':' included'):'Tax disabled';
+  }
+  function renderProjection(){const entries=Math.max(0,Number(state.projectedEntries||0));const gross=state.entryMode==='free'?0:entries*Number(state.baseFee||0);$('projectedRevenue').textContent=money(gross);$('projectionNote').textContent=state.entryMode==='free'?'free-entry award':'before discounts and tax'}
+  function renderAll(){syncInputs();renderSummary();renderCategoryPricing();renderPromos();renderCheckoutOptions();renderCheckout();renderHealth();renderProjection()}
+
+  function bindValue(id,fn,event='input'){const el=$(id);el.addEventListener(event,()=>{fn(el.value);persist();renderAll()})}
+  document.querySelectorAll('[data-entry-mode]').forEach(b=>b.addEventListener('click',()=>{state.entryMode=b.dataset.entryMode;persist();renderAll();toast(state.entryMode==='free'?'Free entry model selected':'Paid entry model selected')}));
+  bindValue('currency',v=>state.currency=v,'change');bindValue('baseFee',v=>{state.baseFee=Math.max(0,Number(v||0));if(!saved||Number(state.phases.regular.price)===Number(award.baseFee||2000))state.phases.regular.price=state.baseFee});bindValue('priceDisplay',v=>state.priceDisplay=v,'change');
+  bindValue('earlyDiscount',v=>state.phases.early.discount=Math.max(0,Number(v||0)));bindValue('earlyStart',v=>state.phases.early.start=v,'change');bindValue('earlyEnd',v=>state.phases.early.end=v,'change');
+  bindValue('regularPrice',v=>{state.baseFee=Math.max(0,Number(v||0));state.phases.regular.price=state.baseFee});bindValue('regularStart',v=>state.phases.regular.start=v,'change');bindValue('regularEnd',v=>state.phases.regular.end=v,'change');
+  bindValue('latePremium',v=>state.phases.late.premium=Math.max(0,Number(v||0)));bindValue('lateStart',v=>state.phases.late.start=v,'change');bindValue('lateEnd',v=>state.phases.late.end=v,'change');
+  document.querySelectorAll('[data-toggle-phase]').forEach(b=>b.addEventListener('click',()=>{const ph=b.dataset.togglePhase;state.phases[ph].enabled=!state.phases[ph].enabled;persist();renderAll()}));
+  $('resetPhases').addEventListener('click',()=>{state.phases.early.enabled=true;state.phases.early.discount=20;state.phases.late.enabled=true;state.phases.late.premium=10;state.phases.regular.price=state.baseFee;state.phases.early.start=award.openDate||state.phases.early.start;state.phases.early.end=dateAdd(state.phases.early.start,30);state.phases.regular.start=dateAdd(state.phases.early.end,1);state.phases.regular.end=award.closeDate||state.phases.regular.end;state.phases.late.start=dateAdd(state.phases.regular.end,1);state.phases.late.end=dateAdd(state.phases.regular.end,14);persist();renderAll();toast('Pricing phases reset')});
+  $('multiToggle').addEventListener('click',()=>{state.multi.enabled=!state.multi.enabled;persist();renderAll()});bindValue('multiThreshold',v=>state.multi.threshold=Math.max(2,Number(v||2)));bindValue('multiDiscount',v=>state.multi.discount=Math.max(0,Number(v||0)));
+  $('taxToggle').addEventListener('click',()=>{state.tax.enabled=!state.tax.enabled;persist();renderAll()});bindValue('taxLabel',v=>state.tax.label=v);bindValue('taxRate',v=>state.tax.rate=Math.max(0,Number(v||0)));bindValue('taxMode',v=>state.tax.mode=v,'change');
+  document.querySelectorAll('.pr-gateway').forEach(b=>b.addEventListener('click',()=>{state.gateway=b.dataset.gateway;persist();renderAll();toast(b.querySelector('b').textContent+' selected for demo')}));
+  [['invoiceToggle','invoice'],['partialToggle','partial'],['receiptToggle','receipt']].forEach(([id,key])=>$(id).addEventListener('change',()=>{state[key]=$(id).checked;persist()}));
+  $('projectedEntries').addEventListener('input',()=>{state.projectedEntries=Math.max(0,Number($('projectedEntries').value||0));persist();renderProjection()});
+  ['checkoutCategory','checkoutQty','checkoutPhase'].forEach(id=>$(id).addEventListener('change',renderCheckout));
+  $('applyPromo').addEventListener('click',()=>{const code=$('checkoutPromo').value.trim().toUpperCase();const promo=activePromos().find(p=>p.code.toUpperCase()===code);if(!promo){toast('Promo code not found or inactive');return}appliedPromoId=promo.id;$('appliedCode').hidden=false;$('appliedCodeText').textContent=promo.code+' · '+promoOffer(promo);$('checkoutPromo').value='';renderCheckout();toast('Promo code applied')});
+  $('removePromo').addEventListener('click',()=>{appliedPromoId=null;$('appliedCode').hidden=true;renderCheckout()});
+  $('testCheckout').addEventListener('click',()=>toast('Demo checkout only — payment gateway not connected'));
+  $('previewCheckoutTop').addEventListener('click',()=>{$('.pr-checkout-card').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>$('checkoutCategory').focus(),450)});
+  $('savePricing').addEventListener('click',()=>persist(false));$('saveDraftBottom').addEventListener('click',()=>persist(false));
+  $('continueWebsite').addEventListener('click',()=>persist());
+  $('applyRecommendation').addEventListener('click',()=>{state.entryMode='paid';state.phases.early.enabled=true;state.phases.early.discount=20;state.phases.regular.price=state.baseFee;state.phases.late.enabled=true;state.phases.late.premium=10;state.multi.enabled=true;state.multi.threshold=3;state.multi.discount=10;persist();renderAll();toast('Recommended pricing applied')});
+  $('dismissRecommendation').addEventListener('click',()=>{$('.pr-copilot-banner').style.display='none'});
+
+  function openPromo(id){editingPromoId=id||null;const p=id?state.promos.find(x=>x.id===id):{code:'',type:'percent',value:20,limit:100,used:0,status:'active',start:'',end:''};$('promoDrawerTitle').textContent=id?'Edit promo code':'Create promo code';$('promoCode').value=p.code;$('promoType').value=p.type;$('promoValue').value=p.value;$('promoLimit').value=p.limit||0;$('promoStatus').value=p.status||'active';$('promoStart').value=p.start||'';$('promoEnd').value=p.end||'';$('deletePromo').hidden=!id;updatePromoPreview();$('promoDrawer').classList.add('open');$('promoDrawer').setAttribute('aria-hidden','false');setTimeout(()=>$('promoCode').focus(),120)}
+  function closePromo(){$('promoDrawer').classList.remove('open');$('promoDrawer').setAttribute('aria-hidden','true');editingPromoId=null}
+  function updatePromoPreview(){const type=$('promoType').value,val=Number($('promoValue').value||0),code=$('promoCode').value.trim().toUpperCase()||'YOURCODE';$('promoValueField').hidden=type==='free';$('promoValueSuffix').textContent=type==='percent'?'%':symbol();$('promoPreviewCode').textContent=code;$('promoPreviewText').textContent=type==='free'?'100% free entry':type==='percent'?val+'% off':money(val)+' off'}
+  $('newPromo').addEventListener('click',()=>openPromo());document.querySelectorAll('[data-close-drawer]').forEach(b=>b.addEventListener('click',closePromo));['promoCode','promoType','promoValue'].forEach(id=>$(id).addEventListener(id==='promoType'?'change':'input',updatePromoPreview));
+  $('promoCode').addEventListener('input',()=>{$('promoCode').value=$('promoCode').value.toUpperCase().replace(/[^A-Z0-9_-]/g,'')});
+  $('savePromo').addEventListener('click',()=>{const code=$('promoCode').value.trim().toUpperCase();if(!code){toast('Enter a promo code');$('promoCode').focus();return}if(state.promos.some(p=>p.code.toUpperCase()===code&&p.id!==editingPromoId)){toast('That promo code already exists');return}const wasEditing=!!editingPromoId;const data={id:editingPromoId||'p'+Date.now(),code,type:$('promoType').value,value:$('promoType').value==='free'?100:Math.max(0,Number($('promoValue').value||0)),limit:Math.max(0,Number($('promoLimit').value||0)),used:editingPromoId?(state.promos.find(p=>p.id===editingPromoId)?.used||0):0,status:$('promoStatus').value,start:$('promoStart').value,end:$('promoEnd').value};if(editingPromoId){const i=state.promos.findIndex(p=>p.id===editingPromoId);state.promos[i]=data}else state.promos.push(data);persist();closePromo();renderAll();toast(wasEditing?'Promo code updated':'Promo code created')});
+  $('deletePromo').addEventListener('click',()=>{if(!editingPromoId)return;state.promos=state.promos.filter(p=>p.id!==editingPromoId);if(appliedPromoId===editingPromoId){appliedPromoId=null;$('appliedCode').hidden=true}persist();closePromo();renderAll();toast('Promo code deleted')});
+
+  $('openCopilot').addEventListener('click',()=>{$('copilotPanel').classList.add('open');$('copilotPanel').setAttribute('aria-hidden','false')});$('closeCopilot').addEventListener('click',()=>{$('copilotPanel').classList.remove('open');$('copilotPanel').setAttribute('aria-hidden','true')});
+  document.querySelectorAll('[data-copilot]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.copilot;const answers={simple:`Keep one base fee of ${money(state.baseFee)}, a ${state.phases.early.discount}% early-bird offer and no more than one late-entry premium. Avoid category overrides unless a category has materially higher review costs.`,conversion:`Your strongest conversion lever is urgency. Keep early bird around ${state.phases.early.discount}% and end it clearly before the main deadline. Pair it with an automated reminder campaign.`,revenue:`Use a modest late-entry premium and a multi-entry discount. The premium protects deadline discipline, while the multi-entry offer can increase average order value.`,promos:`Create PARTNER20 for strategic partners, SPONSOR100 for complimentary sponsor entries and a time-limited campaign code for low-performing categories.`};$('copilotAnswer').textContent=answers[a]}));
+
+  setText();syncInputs();renderAll();
+})();
+</script>
+</body>
+</html>

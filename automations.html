@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Automations · AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="automations.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">◇</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">▣</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a class="active" href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb"><span id="crumbAwardName">India FinTech Awards 2027</span> / Automations</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="copilotBtn">✦ Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main at-main">
+      <div class="page-head at-page-head">
+        <div>
+          <span class="eyebrow">GROW · STEP 3 OF 3</span>
+          <h1>Automations</h1>
+          <p>Let AwardFlow follow up at the right moment, then stop automatically when the entrant takes action.</p>
+        </div>
+        <div class="top-actions at-head-actions">
+          <button class="btn secondary" id="libraryBtn">Recipe library</button>
+          <button class="btn primary" id="createAutomationBtn">+ Create automation</button>
+        </div>
+      </div>
+
+      <div class="stagebar">
+        <div class="stage done">BUILD</div>
+        <div class="stage active">GROW</div>
+        <div class="stage">DECIDE</div>
+        <div class="stage">CELEBRATE</div>
+      </div>
+
+      <div class="at-grow-path" aria-label="Grow workflow">
+        <a href="audience.html"><span class="at-path-icon">◉</span><div><b>Audience</b><small>Find who to target</small></div><em>✓</em></a>
+        <span class="at-path-arrow">→</span>
+        <a href="campaigns.html"><span class="at-path-icon">✉</span><div><b>Campaigns</b><small>Create the message</small></div><em>✓</em></a>
+        <span class="at-path-arrow">→</span>
+        <a class="active" href="automations.html"><span class="at-path-icon">⚡</span><div><b>Automations</b><small>Run it at the right time</small></div><em>3</em></a>
+      </div>
+
+      <section class="at-kpis" aria-label="Automation summary">
+        <div class="card at-kpi"><div class="at-kpi-icon">⚡</div><div><small>Active automations</small><strong id="activeAutomationCount">6</strong><span>Across entrant + judge journeys</span></div></div>
+        <div class="card at-kpi"><div class="at-kpi-icon">◎</div><div><small>People processed</small><strong id="processedCount">2,418</strong><span>Last 30 days</span></div></div>
+        <div class="card at-kpi"><div class="at-kpi-icon">↗</div><div><small>Actions recovered</small><strong id="conversionCount">143</strong><span>Entries + payments completed</span></div></div>
+        <div class="card at-kpi"><div class="at-kpi-icon">₹</div><div><small>Revenue recovered</small><strong id="revenueRecovered">₹3.18L</strong><span>Attributed to automations</span></div></div>
+      </section>
+
+      <section class="at-copilot-banner">
+        <div class="at-copilot-icon">✦</div>
+        <div>
+          <span class="eyebrow">AWARD COPILOT · NEXT BEST ACTION</span>
+          <h2>18 submitted entries are still unpaid</h2>
+          <p>Turn on a two-step payment recovery flow: email after 6 hours, WhatsApp after 24 hours, then stop as soon as payment is received.</p>
+          <div class="at-impact-line"><span>Estimated impact</span><b>₹36,000 recoverable</b><span>·</span><b>18 people</b></div>
+        </div>
+        <div class="at-copilot-actions">
+          <button class="btn primary" id="enablePaymentRecipe">Enable recovery flow</button>
+          <button class="btn secondary" data-open-automation="payment-recovery">Preview flow</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-title at-section-title">
+          <div><h2>Recommended recipes</h2><span>One-click workflows based on your award activity</span></div>
+          <button class="at-text-btn" id="viewAllRecipes">View all recipes →</button>
+        </div>
+        <div class="at-recipe-grid" id="recommendedRecipes"></div>
+      </section>
+
+      <section class="at-workspace section">
+        <div class="card at-automation-card">
+          <div class="at-table-head">
+            <div>
+              <h2>Your automations</h2>
+              <p>Each automation has a trigger, follow-up sequence and a goal that stops unnecessary messages.</p>
+            </div>
+            <div class="at-search"><span>⌕</span><input id="automationSearch" placeholder="Search automations"></div>
+          </div>
+          <div class="at-filter-row" id="automationFilters">
+            <button class="active" data-filter="all">All <span id="filterAllCount">7</span></button>
+            <button data-filter="active">Active <span id="filterActiveCount">6</span></button>
+            <button data-filter="paused">Paused <span id="filterPausedCount">1</span></button>
+            <button data-filter="attention">Needs attention <span id="filterAttentionCount">1</span></button>
+          </div>
+          <div id="automationList" class="at-automation-list"></div>
+        </div>
+
+        <aside class="at-side-column">
+          <div class="card pad at-health-card">
+            <div class="section-title"><h2>Automation health</h2><span class="badge green">Healthy</span></div>
+            <div class="at-health-score"><strong>92</strong><span>/100</span><div><b>Strong setup</b><p>Your high-intent recovery flows are active.</p></div></div>
+            <div class="at-health-item"><div><span>Goal-based stop rules</span><b>6 / 7</b></div><div class="progress"><span style="width:86%"></span></div></div>
+            <div class="at-health-item"><div><span>Quiet hours enabled</span><b>5 / 7</b></div><div class="progress"><span style="width:71%"></span></div></div>
+            <div class="at-health-item"><div><span>Message templates ready</span><b>7 / 7</b></div><div class="progress"><span style="width:100%"></span></div></div>
+            <div class="at-health-note">⚠ Judge inactivity reminder has no quiet hours configured.</div>
+          </div>
+
+          <div class="card pad at-runs-card section">
+            <div class="section-title"><h2>Recent runs</h2><button class="at-text-btn" id="clearRunsBtn">Clear demo</button></div>
+            <div class="at-runs" id="recentRuns"></div>
+          </div>
+
+          <div class="card pad at-guard-card section">
+            <span class="eyebrow">GLOBAL SAFETY</span>
+            <h3>Frequency Guard</h3>
+            <p>Prevent people from receiving too many automated messages across different workflows.</p>
+            <label class="at-switch-row"><span><b>24-hour contact guard</b><small>Skip if another message was sent recently</small></span><input type="checkbox" id="frequencyGuard" checked><i></i></label>
+            <label class="at-switch-row"><span><b>WhatsApp quiet hours</b><small>Don't send from 9 PM to 9 AM</small></span><input type="checkbox" id="quietHours" checked><i></i></label>
+          </div>
+        </aside>
+      </section>
+
+      <div class="at-bottom-actions">
+        <div><b>GROW is ready</b><span>Audience, campaigns and automation now work as one journey.</span></div>
+        <div class="top-actions"><a class="btn secondary" href="campaigns.html">← Campaigns</a><a class="btn primary" href="judges.html">Continue to Judging →</a></div>
+      </div>
+
+      <div class="footer-note">Interactive manager-demo prototype · Sample data only · Automated sends are simulated</div>
+    </main>
+  </div>
+</div>
+
+<!-- Automation detail drawer -->
+<div class="at-drawer" id="automationDrawer" aria-hidden="true">
+  <div class="at-drawer-backdrop" data-close-drawer></div>
+  <aside class="at-drawer-panel">
+    <div class="at-drawer-head">
+      <div><span class="eyebrow" id="drawerEyebrow">AUTOMATION</span><h2 id="drawerTitle">Incomplete entry recovery</h2><p id="drawerDescription">Help entrants finish what they started.</p></div>
+      <button data-close-drawer aria-label="Close">×</button>
+    </div>
+    <div class="at-drawer-body">
+      <div class="at-drawer-summary" id="drawerSummary"></div>
+      <div class="at-flow-head"><div><h3>Workflow</h3><p>Messages stop immediately when the goal is met.</p></div><button class="btn secondary" id="testAutomationBtn">▶ Test run</button></div>
+      <div class="at-flow" id="drawerFlow"></div>
+      <div class="at-drawer-section">
+        <div class="section-title"><h3>Performance</h3><span>Last 30 days</span></div>
+        <div class="at-performance-grid" id="drawerPerformance"></div>
+      </div>
+      <div class="at-drawer-section">
+        <div class="section-title"><h3>Controls</h3><span>Demo settings</span></div>
+        <label class="at-switch-row"><span><b>Run this automation</b><small>New matching people can enter the flow</small></span><input type="checkbox" id="drawerActiveToggle"><i></i></label>
+        <label class="at-switch-row"><span><b>Respect Frequency Guard</b><small>Prevent overlapping automated messages</small></span><input type="checkbox" id="drawerGuardToggle" checked><i></i></label>
+        <label class="at-switch-row"><span><b>Respect WhatsApp quiet hours</b><small>Queue messages until the next safe window</small></span><input type="checkbox" id="drawerQuietToggle" checked><i></i></label>
+      </div>
+    </div>
+    <div class="at-drawer-foot"><button class="btn secondary" id="duplicateAutomationBtn">Duplicate</button><button class="btn primary" id="saveAutomationBtn">Save changes</button></div>
+  </aside>
+</div>
+
+<!-- Recipe library -->
+<div class="at-modal" id="libraryModal" aria-hidden="true">
+  <div class="at-modal-backdrop" data-close-modal="libraryModal"></div>
+  <div class="at-modal-card at-modal-wide">
+    <div class="at-modal-head"><div><span class="eyebrow">AUTOMATION RECIPES</span><h2>Start with a proven award workflow</h2><p>Choose a goal. AwardFlow pre-builds the trigger, timing, channels and stop condition.</p></div><button data-close-modal="libraryModal">×</button></div>
+    <div class="at-modal-body">
+      <div class="at-library-tabs" id="libraryTabs"><button class="active" data-library-filter="all">All</button><button data-library-filter="entrant">Entrants</button><button data-library-filter="payment">Payments</button><button data-library-filter="judge">Judges</button><button data-library-filter="winner">Winners</button></div>
+      <div class="at-library-grid" id="libraryGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Create automation -->
+<div class="at-modal" id="createModal" aria-hidden="true">
+  <div class="at-modal-backdrop" data-close-modal="createModal"></div>
+  <div class="at-modal-card at-create-card">
+    <div class="at-modal-head"><div><span class="eyebrow">NEW AUTOMATION</span><h2>Create a simple workflow</h2><p>Define when it starts, what AwardFlow does and when it should stop.</p></div><button data-close-modal="createModal">×</button></div>
+    <div class="at-modal-body">
+      <div class="at-ai-builder">
+        <span class="at-ai-spark">✦</span>
+        <div><b>Build with Award Copilot</b><p>Describe the outcome you want and we'll prepare the flow.</p></div>
+        <button class="btn ghost" id="showAiBuilderBtn">Use Copilot</button>
+      </div>
+      <div class="at-ai-prompt" id="aiPromptBox" hidden>
+        <textarea id="aiAutomationPrompt" placeholder="Example: Remind incomplete entrants after 2 days by email, then WhatsApp the next day. Stop when they submit."></textarea>
+        <div><button class="btn secondary" id="cancelAiBuilderBtn">Cancel</button><button class="btn primary" id="generateAutomationBtn">✦ Generate flow</button></div>
+      </div>
+
+      <div class="at-form-section"><span>1</span><div><h3>Name & goal</h3><p>Use a name your team will understand.</p></div></div>
+      <div class="field"><label for="newAutomationName">Automation name</label><input id="newAutomationName" placeholder="e.g. Incomplete entry recovery"></div>
+      <div class="form-grid">
+        <div class="field"><label for="newAutomationGoal">Goal</label><select id="newAutomationGoal"><option value="entry">Complete an entry</option><option value="payment">Complete payment</option><option value="registration">Start an entry</option><option value="judge">Complete judging</option><option value="winner">Celebrate a winner</option></select></div>
+        <div class="field"><label for="newAutomationAudience">Audience</label><select id="newAutomationAudience"><option>Entry started, incomplete</option><option>Submitted, payment pending</option><option>Registered, no entry</option><option>Judges with pending reviews</option><option>Confirmed winners</option></select></div>
+      </div>
+
+      <div class="at-form-section"><span>2</span><div><h3>Trigger & timing</h3><p>Choose the moment that starts the workflow.</p></div></div>
+      <div class="form-grid">
+        <div class="field"><label for="newTrigger">Trigger</label><select id="newTrigger"><option>Entry becomes incomplete</option><option>Payment becomes pending</option><option>Person registers</option><option>Judge receives assignments</option><option>Winner is confirmed</option></select></div>
+        <div class="field"><label for="newDelay">Wait before first action</label><select id="newDelay"><option value="0">Immediately</option><option value="6">6 hours</option><option value="24">1 day</option><option value="48">2 days</option><option value="72" selected>3 days</option><option value="120">5 days</option></select></div>
+      </div>
+
+      <div class="at-form-section"><span>3</span><div><h3>Follow-up sequence</h3><p>Keep it short. Two well-timed touches are usually enough.</p></div></div>
+      <div class="at-action-builder">
+        <div class="at-action-line"><span class="at-mini-icon email">✉</span><div><b>First message</b><small>Use campaign template</small></div><select id="firstChannel"><option>Email</option><option>WhatsApp</option></select><input id="firstTemplate" value="Finish your nomination"></div>
+        <div class="at-wait-line"><span>↓</span><select id="betweenDelay"><option>Wait 12 hours</option><option selected>Wait 24 hours</option><option>Wait 2 days</option></select><span>then</span></div>
+        <div class="at-action-line"><span class="at-mini-icon whatsapp">W</span><div><b>Second message</b><small>Only if goal not met</small></div><select id="secondChannel"><option>WhatsApp</option><option>Email</option></select><input id="secondTemplate" value="Quick reminder"></div>
+      </div>
+
+      <div class="at-form-section"><span>4</span><div><h3>Stop condition</h3><p>This is what keeps automations helpful instead of annoying.</p></div></div>
+      <div class="at-stop-box"><span>✓</span><div><b id="newStopCondition">Stop when entry is submitted</b><p>A person exits the automation immediately after completing the goal.</p></div></div>
+    </div>
+    <div class="at-modal-foot"><button class="btn secondary" data-close-modal="createModal">Cancel</button><button class="btn primary" id="saveNewAutomationBtn">Create & turn on</button></div>
+  </div>
+</div>
+
+<!-- Copilot panel -->
+<div class="at-copilot-panel" id="copilotPanel">
+  <div class="at-copilot-head"><div><span class="eyebrow">AWARD COPILOT</span><h2>Automation assistant</h2></div><button id="closeCopilotBtn">×</button></div>
+  <p>I can recommend what to automate based on your award funnel.</p>
+  <div class="at-copilot-prompts">
+    <button data-copilot-question="recovery">What should I automate first?</button>
+    <button data-copilot-question="frequency">Are we messaging people too often?</button>
+    <button data-copilot-question="judge">How should I automate judge reminders?</button>
+  </div>
+  <div class="at-copilot-answer" id="copilotAnswer">Your biggest immediate opportunity is payment recovery: 18 submitted entries are unpaid, representing roughly ₹36,000 in recoverable revenue.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script src="automations.js"></script>
+</body>
+</html>

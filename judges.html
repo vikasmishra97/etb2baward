@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Judges · AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="judges.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong>India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">◇</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">▣</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a class="active" href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb">India FinTech Awards 2027 / Judges</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="openCopilot">✦ Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main judges-page">
+      <div class="page-head judges-head">
+        <div>
+          <span class="eyebrow">DECIDE · JUDGING TEAM</span>
+          <h1>Judges</h1>
+          <p>Build a trusted jury, match expertise to categories, balance workloads, and keep every review on schedule.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn secondary" id="previewPortal">Preview judge portal</button>
+          <button class="btn primary" id="inviteJudge">+ Invite judge</button>
+        </div>
+      </div>
+
+      <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage active">DECIDE</div><div class="stage">CELEBRATE</div></div>
+
+      <section class="judge-kpis">
+        <article class="card judge-kpi"><div class="judge-kpi-icon">♟</div><div><small>Judges</small><strong id="judgeCount">18</strong><span>14 active · 4 invited</span></div></article>
+        <article class="card judge-kpi"><div class="judge-kpi-icon good">✓</div><div><small>Review progress</small><strong id="reviewProgress">62%</strong><span>485 of 782 reviews</span></div></article>
+        <article class="card judge-kpi"><div class="judge-kpi-icon warn">!</div><div><small>Need attention</small><strong>4</strong><span>3 inactive · 1 conflict</span></div></article>
+        <article class="card judge-kpi"><div class="judge-kpi-icon purple">◎</div><div><small>Coverage</small><strong>92%</strong><span>11 of 12 categories covered</span></div></article>
+      </section>
+
+      <section class="judge-copilot-card section">
+        <div class="judge-copilot-icon">✦</div>
+        <div class="judge-copilot-copy">
+          <span>Award Copilot</span>
+          <h2>Your judging panel is almost ready</h2>
+          <p><b>Best AI in Financial Services</b> has only one assigned judge, while 3 experienced judges have spare capacity. Vikram also has 18 more reviews than the panel median.</p>
+        </div>
+        <div class="judge-copilot-actions">
+          <button class="btn secondary" id="viewGaps">View coverage gaps</button>
+          <button class="btn primary" id="autoBalance">✦ Auto-balance panel</button>
+        </div>
+      </section>
+
+      <div class="judges-layout section">
+        <div class="judges-main-col">
+          <section class="card judge-panel">
+            <div class="judge-panel-head">
+              <div><h2>Judging team</h2><p>Manage invitations, expertise, assignments, conflicts and progress.</p></div>
+              <div class="judge-view-tabs" role="tablist">
+                <button class="active" data-view="people">People</button>
+                <button data-view="coverage">Coverage</button>
+                <button data-view="workload">Workload</button>
+              </div>
+            </div>
+
+            <div class="judge-toolbar">
+              <div class="judge-search"><span>⌕</span><input id="judgeSearch" placeholder="Search judge, company or expertise"></div>
+              <select id="judgeStatusFilter"><option value="all">All statuses</option><option value="active">Active</option><option value="invited">Invited</option><option value="inactive">Not started</option></select>
+              <select id="judgeCategoryFilter"><option value="all">All categories</option><option>Best FinTech Startup</option><option>Best Digital Lending</option><option>Best Payments Innovation</option><option>Best AI in Financial Services</option></select>
+              <button class="btn secondary compact" id="sendReminders">Send reminders</button>
+            </div>
+
+            <div id="peopleView" class="judge-view active">
+              <div class="judge-table-wrap">
+                <table class="judge-table">
+                  <thead><tr><th>Judge</th><th>Expertise</th><th>Assigned</th><th>Progress</th><th>Conflict</th><th></th></tr></thead>
+                  <tbody id="judgeRows"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div id="coverageView" class="judge-view">
+              <div class="coverage-grid" id="coverageGrid"></div>
+            </div>
+
+            <div id="workloadView" class="judge-view">
+              <div class="workload-list" id="workloadList"></div>
+            </div>
+          </section>
+
+          <section class="card judge-panel section">
+            <div class="judge-panel-head compact-head">
+              <div><h2>Category assignment matrix</h2><p>See jury coverage before judging begins.</p></div>
+              <button class="btn ghost compact" id="smartAssign">✦ Smart assign</button>
+            </div>
+            <div class="assignment-matrix-wrap">
+              <table class="assignment-matrix">
+                <thead><tr><th>Category</th><th>Entries</th><th>Judges</th><th>Coverage</th><th>Risk</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><b>Best FinTech Startup</b><span>Startup & scale-up</span></td><td>84</td><td><div class="mini-avatars"><i>AK</i><i>RN</i><i>PS</i><em>+2</em></div></td><td><div class="matrix-bar"><i style="width:100%"></i></div><small>5 judges</small></td><td><span class="judge-pill good">Healthy</span></td><td><button class="judge-link" data-assign="Best FinTech Startup">Manage</button></td></tr>
+                  <tr><td><b>Best Digital Lending</b><span>Lending & credit</span></td><td>63</td><td><div class="mini-avatars"><i>VS</i><i>MN</i><i>DK</i></div></td><td><div class="matrix-bar"><i style="width:76%"></i></div><small>3 judges</small></td><td><span class="judge-pill">Watch</span></td><td><button class="judge-link" data-assign="Best Digital Lending">Manage</button></td></tr>
+                  <tr class="risk-row"><td><b>Best AI in Financial Services</b><span>AI & data</span></td><td>58</td><td><div class="mini-avatars"><i>RN</i></div></td><td><div class="matrix-bar danger"><i style="width:28%"></i></div><small>1 judge</small></td><td><span class="judge-pill danger">Under-covered</span></td><td><button class="judge-link" data-assign="Best AI in Financial Services">Fix now</button></td></tr>
+                  <tr><td><b>Best Payments Innovation</b><span>Payments</span></td><td>72</td><td><div class="mini-avatars"><i>AK</i><i>PS</i><i>AB</i><i>SK</i></div></td><td><div class="matrix-bar"><i style="width:92%"></i></div><small>4 judges</small></td><td><span class="judge-pill good">Healthy</span></td><td><button class="judge-link" data-assign="Best Payments Innovation">Manage</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <aside class="judges-side-col">
+          <section class="card judge-side-card">
+            <div class="side-card-title"><div><span>⚖</span><h3>Workload balance</h3></div><b id="balanceScore">74%</b></div>
+            <div class="progress"><span id="balanceBar" style="width:74%"></span></div>
+            <p>Most judges are balanced, but Vikram is carrying <b>18 more reviews</b> than the panel median.</p>
+            <div class="balance-mini">
+              <div><span>Highest</span><b>48</b><small>Vikram Sethi</small></div>
+              <div><span>Median</span><b>30</b><small>Across panel</small></div>
+            </div>
+            <button class="btn ghost full" id="rebalanceSide">✦ Rebalance assignments</button>
+          </section>
+
+          <section class="card judge-side-card section">
+            <div class="side-card-title"><div><span>!</span><h3>Needs attention</h3></div><em>4</em></div>
+            <div class="judge-alert"><i class="danger"></i><div><b>Meera has not started</b><small>24 reviews · due in 6 days</small></div><button data-remind="Meera">Remind</button></div>
+            <div class="judge-alert"><i class="danger"></i><div><b>1 conflict needs review</b><small>Arjun ↔ NovaPay entry</small></div><button id="resolveConflict">Resolve</button></div>
+            <div class="judge-alert"><i></i><div><b>3 invitations pending</b><small>Sent 4 days ago</small></div><button id="resendInvites">Resend</button></div>
+          </section>
+
+          <section class="card judge-side-card section">
+            <div class="side-card-title"><div><span>▤</span><h3>Judging round</h3></div><span class="judge-pill good">Live</span></div>
+            <div class="round-date"><div><small>ROUND CLOSES</small><strong>25 Apr 2027</strong></div><b>6<br><small>days</small></b></div>
+            <div class="round-stat"><span>Reviews completed</span><b>485 / 782</b></div>
+            <div class="round-stat"><span>Judges completed</span><b>8 / 14</b></div>
+            <div class="round-stat"><span>Average score</span><b>8.1 / 10</b></div>
+            <a class="btn secondary full" href="scoring.html">Manage scoring criteria →</a>
+          </section>
+
+          <section class="card judge-side-card section judge-portal-card">
+            <div class="portal-preview-icon">★</div>
+            <h3>Secure Judge Portal</h3>
+            <p>Judges only see their assigned entries, scorecards and deadlines—never the admin workspace.</p>
+            <button class="btn secondary full" id="portalCardPreview">Preview experience</button>
+          </section>
+        </aside>
+      </div>
+
+      <div class="judge-next-step section">
+        <div><span>DECIDE · NEXT</span><h2>Your jury is configured. Now define how entries will be scored.</h2><p>Set criteria, weights, scoring scales and tie-break rules for every judging round.</p></div>
+        <a class="btn primary" href="scoring.html">Continue to Scoring →</a>
+      </div>
+
+      <div class="footer-note">Interactive manager-demo prototype · Sample data only · Invitations and reminders are simulated</div>
+    </main>
+  </div>
+</div>
+
+<!-- Invite judge drawer -->
+<div class="judge-drawer" id="inviteDrawer" aria-hidden="true">
+  <div class="judge-drawer-backdrop" data-close-drawer></div>
+  <aside class="judge-drawer-panel">
+    <div class="judge-drawer-head"><div><span class="eyebrow">ADD TO JURY</span><h2>Invite judge</h2><p>AwardFlow can recommend categories from their expertise.</p></div><button data-close-drawer>×</button></div>
+    <div class="judge-drawer-body">
+      <div class="form-grid">
+        <div class="field"><label>Full name</label><input id="newJudgeName" placeholder="e.g. Priya Shah"></div>
+        <div class="field"><label>Work email</label><input id="newJudgeEmail" type="email" placeholder="priya@company.com"></div>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label>Company</label><input id="newJudgeCompany" placeholder="Company"></div>
+        <div class="field"><label>Role</label><input id="newJudgeRole" placeholder="Partner / CEO / Expert"></div>
+      </div>
+      <div class="field"><label>Expertise</label><div class="expertise-picker" id="expertisePicker"><button data-exp="FinTech">FinTech</button><button data-exp="Payments">Payments</button><button data-exp="AI & Data">AI & Data</button><button data-exp="Lending">Lending</button><button data-exp="Startups">Startups</button><button data-exp="Cybersecurity">Cybersecurity</button></div></div>
+      <div class="judge-ai-match"><span>✦</span><div><b>Expertise matching</b><p id="matchText">Select expertise and AwardFlow will recommend categories.</p></div><button id="matchCategories">Match</button></div>
+      <div class="field"><label>Assign categories</label><div class="category-checks" id="inviteCategories">
+        <label><input type="checkbox" value="Best FinTech Startup"> Best FinTech Startup <small>84 entries</small></label>
+        <label><input type="checkbox" value="Best Digital Lending"> Best Digital Lending <small>63 entries</small></label>
+        <label><input type="checkbox" value="Best Payments Innovation"> Best Payments Innovation <small>72 entries</small></label>
+        <label><input type="checkbox" value="Best AI in Financial Services"> Best AI in Financial Services <small>58 entries</small></label>
+      </div></div>
+      <div class="form-grid">
+        <div class="field"><label>Target workload</label><select id="targetWorkload"><option>Up to 20 reviews</option><option selected>Up to 30 reviews</option><option>Up to 40 reviews</option><option>Up to 50 reviews</option></select></div>
+        <div class="field"><label>Invite expires</label><select><option>7 days</option><option selected>14 days</option><option>30 days</option></select></div>
+      </div>
+      <label class="judge-checkbox"><input type="checkbox" checked> Require conflict-of-interest declaration before reviews</label>
+      <label class="judge-checkbox"><input type="checkbox" checked> Send automatic reminder if invitation is not accepted in 3 days</label>
+    </div>
+    <div class="judge-drawer-foot"><button class="btn secondary" data-close-drawer>Cancel</button><button class="btn ghost" id="saveDraftInvite">Save draft</button><button class="btn primary" id="sendInvite">Send invitation</button></div>
+  </aside>
+</div>
+
+<!-- Judge detail drawer -->
+<div class="judge-drawer" id="detailDrawer" aria-hidden="true">
+  <div class="judge-drawer-backdrop" data-close-detail></div>
+  <aside class="judge-drawer-panel detail-panel">
+    <div class="judge-drawer-head"><div><span class="eyebrow">JUDGE PROFILE</span><h2 id="detailName">Ananya Kapoor</h2><p id="detailMeta">Partner · Vertex Ventures</p></div><button data-close-detail>×</button></div>
+    <div class="judge-drawer-body" id="judgeDetailBody"></div>
+    <div class="judge-drawer-foot"><button class="btn secondary" data-close-detail>Close</button><button class="btn ghost" id="detailReminder">Send reminder</button><button class="btn primary" id="editAssignments">Edit assignments</button></div>
+  </aside>
+</div>
+
+<!-- Portal preview modal -->
+<div class="judge-modal" id="portalModal" aria-hidden="true">
+  <div class="judge-modal-backdrop" data-close-modal></div>
+  <div class="judge-modal-card">
+    <div class="judge-modal-head"><div><span class="eyebrow">JUDGE EXPERIENCE</span><h2>Secure Judge Portal</h2><p>What a judge sees after signing in.</p></div><button data-close-modal>×</button></div>
+    <div class="portal-shell">
+      <aside><div class="portal-brand"><div>A</div><b>AwardFlow</b></div><nav><b>My Reviews</b><span>Scoring Guide</span><span>Conflicts</span><span>Help</span></nav><small>India FinTech Awards 2027</small></aside>
+      <main>
+        <div class="portal-top"><div><small>WELCOME BACK</small><h3>Ananya Kapoor</h3></div><span>Round closes in 6 days</span></div>
+        <div class="portal-progress"><div><b>38 of 42</b><span>reviews completed</span></div><div class="progress"><span style="width:90%"></span></div><strong>90%</strong></div>
+        <div class="portal-entry"><div><span>BEST FINTECH STARTUP</span><h4>NovaPay Technologies</h4><p>Entry #IFS-2048 · Assigned to you</p></div><button>Review entry →</button></div>
+        <div class="portal-entry"><div><span>BEST PAYMENTS INNOVATION</span><h4>FlowMoney Labs</h4><p>Entry #IPI-1822 · Saved draft</p></div><button>Continue →</button></div>
+        <div class="portal-note"><b>Conflict of interest?</b><span>Declare a conflict before opening an entry. AwardFlow will remove it from your queue automatically.</span></div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- Copilot -->
+<div class="judge-copilot-panel" id="copilotPanel">
+  <div class="judge-copilot-panel-head"><div><span>✦</span><div><b>Award Copilot</b><small>Judging assistant</small></div></div><button id="closeCopilot">×</button></div>
+  <p>Ask about coverage, workload, conflicts or judge engagement.</p>
+  <div class="judge-copilot-prompts">
+    <button data-copilot="coverage">Which categories need more judges?</button>
+    <button data-copilot="workload">Who is overloaded?</button>
+    <button data-copilot="inactive">Who should I remind today?</button>
+    <button data-copilot="conflict">How should I handle conflicts?</button>
+  </div>
+  <div class="judge-copilot-answer" id="copilotAnswer">I can review your panel and suggest the next best action.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script src="judges.js"></script>
+</body>
+</html>

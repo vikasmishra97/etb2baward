@@ -1,0 +1,8 @@
+(function(){
+  var KEY='awardflow.ceremony.v16',last='';
+  function safe(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){return null}}
+  function awardName(){try{var a=JSON.parse(localStorage.getItem('awardflow_new_award')||'null');return a&&a.name?a.name:'India FinTech Awards 2027'}catch(e){return'India FinTech Awards 2027'}}
+  function showToast(){var t=document.getElementById('stageToast');t.classList.add('show');clearTimeout(window.__stageToast);window.__stageToast=setTimeout(function(){t.classList.remove('show')},900)}
+  function render(force){var s=safe()||{},cue=s.currentStage||{kicker:'UP NEXT',title:'Welcome to the India FinTech Awards',subtitle:'Waiting for Ceremony Control',reveal:false},sig=JSON.stringify([s.showMode,cue]);if(!force&&sig===last)return;last=sig;document.getElementById('stageAwardName').textContent=awardName();document.getElementById('stageMode').textContent=(s.showMode||'rehearsal').toUpperCase();var shell=document.getElementById('stageShell');shell.classList.toggle('live',s.showMode==='live');shell.classList.toggle('reveal',!!cue.reveal);document.getElementById('stageKicker').textContent=cue.kicker||'UP NEXT';document.getElementById('stageTitle').textContent=cue.title||'Ceremony stage';document.getElementById('stageSubtitle').textContent=cue.subtitle||'';var level=document.getElementById('stageAwardLevel');if(cue.reveal&&cue.award){level.hidden=false;level.textContent=String(cue.award).toUpperCase()}else level.hidden=true;if(!force)showToast()}
+  render(true);setInterval(function(){render(false)},500);window.addEventListener('storage',function(e){if(e.key===KEY)render(false)});
+})();

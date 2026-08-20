@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Winner Gallery - AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="winner-gallery.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">&#8962;</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">&#9671;</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">&#9638;</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">&#9783;</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">Rs</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">&#9635;</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">&#8681;</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">&#9673;</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">&#9993;</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">&#9889;</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">J</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">&#9733;</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">&#10003;</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">W</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a class="active" href="winner-gallery.html"><span class="ico">&#10022;</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">&#9636;</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">&#9707;</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">&#8769;</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">&#9881;</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb"><span id="crumbAwardName">India FinTech Awards 2027</span> / Winner Gallery</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="openCopilot">&#10022; Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main wg-page">
+      <div class="page-head wg-head">
+        <div>
+          <span class="eyebrow">CELEBRATE / WINNER GALLERY</span>
+          <h1>Turn winners into stories people want to share</h1>
+          <p>Sync approved winners, create premium profiles, control what becomes public, and publish one searchable winner experience across your award website.</p>
+        </div>
+        <div class="top-actions">
+          <a class="btn secondary" href="winner-gallery-preview.html" target="_blank">Preview as visitor</a>
+          <button class="btn primary" id="publishGallery">Publish gallery</button>
+        </div>
+      </div>
+
+      <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage done">DECIDE</div><div class="stage active">CELEBRATE</div></div>
+
+      <section class="wg-kpis">
+        <article class="card wg-kpi"><div class="wg-kpi-icon purple">W</div><div><small>Public-ready winners</small><strong id="readyWinnerCount">3</strong><span id="readyWinnerSub">From 5 categories</span></div></article>
+        <article class="card wg-kpi"><div class="wg-kpi-icon good">P</div><div><small>Profiles complete</small><strong id="profileCount">2 / 3</strong><span>Story, links and SEO</span></div></article>
+        <article class="card wg-kpi"><div class="wg-kpi-icon blue">S</div><div><small>Share cards ready</small><strong id="shareCount">6</strong><span>LinkedIn and WhatsApp</span></div></article>
+        <article class="card wg-kpi"><div class="wg-kpi-icon warn">SEO</div><div><small>Gallery readiness</small><strong id="seoReadiness">82%</strong><span>Search and social preview</span></div></article>
+      </section>
+
+      <section class="wg-copilot-card section">
+        <div class="wg-copilot-icon">&#10022;</div>
+        <div class="wg-copilot-copy">
+          <span>Award Copilot / Publish readiness</span>
+          <h2 id="copilotHeadline">Three locked winners can be published now. Two categories are still protected.</h2>
+          <p id="copilotDetail">AwardFlow only exposes winners whose category is locked and whose public verification is complete. You can prepare draft stories for the remaining categories without revealing them.</p>
+        </div>
+        <div class="wg-copilot-actions">
+          <button class="btn secondary compact" id="generateProfiles">Generate missing profiles</button>
+          <button class="btn ghost compact" id="reviewProtected">Review protected winners</button>
+        </div>
+      </section>
+
+      <div class="wg-layout section">
+        <div class="wg-main-col">
+          <section class="card wg-builder-card">
+            <div class="wg-panel-head">
+              <div>
+                <span class="eyebrow">GALLERY BUILDER</span>
+                <h2>Winner experience</h2>
+                <p>Choose the presentation, filter the preview, and open any winner to edit the public story.</p>
+              </div>
+              <div class="wg-panel-actions">
+                <button class="btn ghost compact" id="syncWinners">Sync from Winners</button>
+                <button class="btn secondary compact" id="saveGallery">Save draft</button>
+              </div>
+            </div>
+
+            <div class="wg-style-row">
+              <div class="wg-control-group"><small>THEME</small><div class="wg-segment" id="themeSegment"><button data-theme="spotlight" class="active">Spotlight</button><button data-theme="editorial">Editorial</button><button data-theme="minimal">Minimal</button><button data-theme="night">Night</button></div></div>
+              <div class="wg-control-group"><small>LAYOUT</small><div class="wg-segment" id="layoutSegment"><button data-layout="grid" class="active">Grid</button><button data-layout="feature">Feature</button><button data-layout="list">List</button></div></div>
+              <label class="wg-switch"><span><b>Show category filters</b><small>Visitor can browse categories</small></span><input type="checkbox" id="showFilters" checked></label>
+            </div>
+
+            <div class="wg-preview-shell" id="galleryPreview">
+              <div class="wg-preview-top">
+                <div><small id="previewKicker">2027 WINNERS</small><h2 id="galleryHeadline" contenteditable="true">Meet the innovators shaping the future of fintech.</h2><p id="galleryIntro" contenteditable="true">Explore the winning companies and leaders recognized by the India FinTech Awards 2027.</p></div>
+                <div class="wg-preview-badge"><span id="previewReadyCount">3</span><small>Winners live</small></div>
+              </div>
+              <div class="wg-filter-row" id="galleryFilters"></div>
+              <div class="wg-public-grid" id="winnerCards"></div>
+              <div class="wg-empty" id="galleryEmpty" hidden><span>W</span><b>No publishable winner in this filter</b><p>Protected or incomplete winner records stay hidden from the public gallery.</p></div>
+            </div>
+          </section>
+
+          <section class="card pad wg-story-health section">
+            <div class="section-title"><div><h2>Winner story quality</h2><span>Help every profile feel publication-ready, not like a database record</span></div><b id="storyHealth">76%</b></div>
+            <div class="progress"><span id="storyHealthBar" style="width:76%"></span></div>
+            <div class="wg-health-grid" id="storyHealthChecks"></div>
+          </section>
+
+          <section class="card pad section">
+            <div class="section-title"><div><h2>Winner content queue</h2><span>What is ready, incomplete, or protected before publishing</span></div><button class="btn ghost compact" id="exportGalleryCsv">Export CSV</button></div>
+            <div class="table-wrap">
+              <table class="table wg-table">
+                <thead><tr><th>Category</th><th>Recipient</th><th>Decision</th><th>Profile</th><th>Public status</th><th></th></tr></thead>
+                <tbody id="contentQueue"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+
+        <aside class="wg-side-col">
+          <section class="card pad wg-publish-card">
+            <div class="section-title"><div><h2>Publishing gate</h2><span>Winner data and embargo controls</span></div><span class="badge orange" id="publishBadge">Preview only</span></div>
+            <div class="wg-gate-list" id="publishGateList"></div>
+            <div class="wg-release-box"><small>WINNER RELEASE</small><b id="releaseDateText">15 Jun 2027, 10:00</b><span id="releaseModeText">Scheduled from Winners</span></div>
+            <label class="wg-switch compact-switch"><span><b>Respect winner embargo</b><small>Do not expose protected recipients early</small></span><input type="checkbox" id="respectEmbargo" checked></label>
+            <button class="btn primary wg-full-btn" id="publishFromCard">Publish gallery</button>
+          </section>
+
+          <section class="card pad section wg-seo-card">
+            <div class="section-title"><div><h2>SEO and discovery</h2><span>One searchable page for every winner</span></div><b id="seoScore">82%</b></div>
+            <div class="field"><label>Gallery page title</label><input id="seoTitle" value="India FinTech Awards 2027 Winners"></div>
+            <div class="field"><label>Meta description</label><textarea id="seoDescription" rows="3">Meet the winners of the India FinTech Awards 2027 and discover the companies and leaders shaping financial technology.</textarea></div>
+            <label class="wg-switch compact-switch"><span><b>Index winner profiles</b><small>Create searchable profile URLs</small></span><input type="checkbox" id="indexProfiles" checked></label>
+            <label class="wg-switch compact-switch"><span><b>Structured award data</b><small>Prepare schema-ready winner metadata</small></span><input type="checkbox" id="structuredData" checked></label>
+          </section>
+
+          <section class="card pad section wg-share-card">
+            <div class="section-title"><div><h2>Social share kit</h2><span>Generated from the same winner profile</span></div><span class="badge green" id="shareStatus">Ready</span></div>
+            <div class="wg-share-list">
+              <button data-share-format="linkedin"><span>in</span><p><b>LinkedIn winner card</b><small>1200 x 627 preview</small></p><em>Preview</em></button>
+              <button data-share-format="square"><span>1:1</span><p><b>Square social tile</b><small>1080 x 1080 preview</small></p><em>Preview</em></button>
+              <button data-share-format="whatsapp"><span>W</span><p><b>WhatsApp share card</b><small>Compact mobile preview</small></p><em>Preview</em></button>
+            </div>
+          </section>
+
+          <section class="card pad section wg-insight-card">
+            <small>AWARD COPILOT</small>
+            <h2>Make every win useful after announcement.</h2>
+            <p>A strong winner profile can become a case study, social proof, sponsor asset, and search landing page without asking the winner to submit the same information twice.</p>
+            <button class="btn ghost wg-full-btn" id="openInsightCopilot">Improve gallery with Copilot</button>
+          </section>
+        </aside>
+      </div>
+
+      <section class="wg-next-step section">
+        <div><span>CELEBRATE / NEXT</span><h2>Turn approved winner data into certificates.</h2><p>Certificate names, categories, award levels and public brand assets can flow directly from the gallery profile.</p></div>
+        <a class="btn primary" href="certificates.html">Continue to Certificates &#8594;</a>
+      </section>
+
+      <div class="footer-note">Interactive manager-demo prototype - Sample data only</div>
+    </main>
+  </div>
+</div>
+
+<div class="wg-drawer" id="profileDrawer" aria-hidden="true">
+  <div class="wg-drawer-backdrop" data-close="profileDrawer"></div>
+  <div class="wg-drawer-panel">
+    <div class="wg-drawer-head"><div><span class="eyebrow">WINNER PROFILE</span><h2 id="drawerWinnerName">NovaPay Technologies</h2><p id="drawerWinnerMeta">Best FinTech Startup / Winner</p></div><button data-close="profileDrawer">x</button></div>
+    <div class="wg-drawer-body">
+      <div class="wg-profile-hero"><div class="wg-logo-placeholder" id="drawerLogo">NP</div><div><span id="drawerAwardLabel">WINNER</span><b id="drawerCategory">Best FinTech Startup</b><small id="drawerPublicStatus">Protected until approved</small></div></div>
+      <div class="field"><label>Public headline</label><input id="profileHeadline" placeholder="A short line explaining why this winner stands out"></div>
+      <div class="field"><label>Winner story</label><textarea id="profileStory" rows="6" placeholder="Write a concise public story using verified entry information..."></textarea></div>
+      <div class="wg-two-col">
+        <div class="field"><label>Website</label><input id="profileWebsite" placeholder="https://company.com"></div>
+        <div class="field"><label>Video / case study URL</label><input id="profileMedia" placeholder="https://..."></div>
+      </div>
+      <div class="field"><label>Winner quote</label><textarea id="profileQuote" rows="3" placeholder="Optional approved quote from the winner"></textarea></div>
+      <div class="wg-two-col">
+        <label class="wg-switch compact-switch"><span><b>Feature on gallery</b><small>Prioritize in public layout</small></span><input type="checkbox" id="profileFeatured"></label>
+        <label class="wg-switch compact-switch"><span><b>Enable sharing</b><small>Show social share actions</small></span><input type="checkbox" id="profileSharing" checked></label>
+      </div>
+      <div class="wg-drawer-section"><h3>SEO profile</h3><div class="field"><label>SEO title</label><input id="profileSeoTitle"></div><div class="field"><label>SEO description</label><textarea id="profileSeoDescription" rows="3"></textarea></div></div>
+      <div class="wg-drawer-section"><h3>Source and protection</h3><div class="wg-source-box" id="drawerSourceBox"></div></div>
+    </div>
+    <div class="wg-drawer-foot"><button class="btn secondary" data-close="profileDrawer">Cancel</button><button class="btn ghost" id="generateProfileStory">&#10022; Generate story</button><span></span><button class="btn primary" id="saveProfile">Save profile</button></div>
+  </div>
+</div>
+
+<div class="wg-modal" id="shareModal" aria-hidden="true">
+  <div class="wg-modal-backdrop" data-close="shareModal"></div>
+  <div class="wg-modal-card wg-share-modal-card">
+    <div class="wg-modal-head"><div><span class="eyebrow">SOCIAL SHARE KIT</span><h2 id="shareModalTitle">LinkedIn winner card</h2><p>Generated from the same approved winner profile.</p></div><button data-close="shareModal">x</button></div>
+    <div class="wg-modal-body"><div class="wg-social-preview" id="socialPreview"><small>INDIA FINTECH AWARDS 2027</small><span>WINNER</span><h2 id="shareWinnerName">ClearLend</h2><p id="shareCategoryName">Best Digital Lending</p><b>2027</b></div><div class="wg-share-copy"><label>Suggested post</label><textarea id="shareCopy" rows="5"></textarea><div class="wg-modal-actions"><button class="btn secondary" id="copyShareText">Copy text</button><button class="btn ghost" id="regenerateShareText">&#10022; Regenerate</button></div></div></div>
+    <div class="wg-modal-foot"><button class="btn secondary" data-close="shareModal">Close</button><button class="btn primary" id="downloadShareDemo">Download preview</button></div>
+  </div>
+</div>
+
+<div class="wg-modal" id="protectedModal" aria-hidden="true">
+  <div class="wg-modal-backdrop" data-close="protectedModal"></div>
+  <div class="wg-modal-card wg-small-modal">
+    <div class="wg-modal-head"><div><span class="eyebrow">PUBLIC PROTECTION</span><h2>Some winner records stay hidden</h2></div><button data-close="protectedModal">x</button></div>
+    <div class="wg-modal-body"><div class="wg-protected-list" id="protectedList"></div></div>
+    <div class="wg-modal-foot"><button class="btn secondary" data-close="protectedModal">Close</button><a class="btn primary" href="winners.html">Open Winners</a></div>
+  </div>
+</div>
+
+<div class="wg-copilot-panel" id="copilotPanel">
+  <div class="wg-copilot-head"><div><span class="eyebrow">AWARD COPILOT</span><h2>Winner gallery assistant</h2></div><button id="closeCopilot">x</button></div>
+  <p>Copilot can help create public winner stories, spot incomplete profiles, and improve discovery without changing winner decisions.</p>
+  <div class="wg-copilot-prompts"><button data-prompt="profiles">Which profiles need work?</button><button data-prompt="publish">What can be published safely?</button><button data-prompt="seo">How can we improve discovery?</button><button data-prompt="sharing">What should winners share?</button></div>
+  <div class="wg-copilot-answer" id="copilotAnswer">Choose a question to review the current gallery.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script src="winner-gallery.js"></script>
+</body>
+</html>

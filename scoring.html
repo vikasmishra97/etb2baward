@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Scoring - AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="scoring.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong>India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">&#8962;</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">&#9671;</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">&#9638;</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">&#9783;</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">Rs</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">&#9635;</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">&#8681;</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">&#9673;</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">&#9993;</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">&#9889;</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">J</span><span>Judges</span></a>
+      <a class="active" href="scoring.html"><span class="ico">&#9733;</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">&#10003;</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">W</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">&#10022;</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">&#9636;</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">&#9707;</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">&#8769;</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">&#9881;</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb">India FinTech Awards 2027 / Scoring</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="openCopilot">&#10022; Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main scoring-page">
+      <div class="page-head scoring-head">
+        <div>
+          <span class="eyebrow">DECIDE / SCORING</span>
+          <h1>Scoring</h1>
+          <p>Build a fair scorecard, control judging rules, and spot scoring inconsistencies before they affect the shortlist.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn secondary" id="previewScorecard">Preview judge scorecard</button>
+          <button class="btn primary" id="saveScoring">Save scoring</button>
+        </div>
+      </div>
+
+      <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage active">DECIDE</div><div class="stage">CELEBRATE</div></div>
+
+      <section class="sc-kpis">
+        <article class="card sc-kpi"><div class="sc-kpi-icon">#</div><div><small>Criteria</small><strong id="criteriaCount">4</strong><span>Master scorecard</span></div></article>
+        <article class="card sc-kpi"><div class="sc-kpi-icon good">%</div><div><small>Total weight</small><strong id="weightTotal">100%</strong><span id="weightStatus">Ready to judge</span></div></article>
+        <article class="card sc-kpi"><div class="sc-kpi-icon purple">3x</div><div><small>Reviews per entry</small><strong id="reviewMinimum">3</strong><span>Minimum before ranking</span></div></article>
+        <article class="card sc-kpi"><div class="sc-kpi-icon warn">0.7</div><div><small>Judge variance</small><strong>Healthy</strong><span>Across active judges</span></div></article>
+      </section>
+
+      <section class="sc-copilot-card section">
+        <div class="sc-copilot-icon">&#10022;</div>
+        <div class="sc-copilot-copy">
+          <span>Award Copilot / Fairness check</span>
+          <h2>Your scorecard is balanced. One rule could make tie decisions clearer.</h2>
+          <p>Innovation carries the highest weight at 30%. Set it as the first tie-break criterion so equal totals resolve consistently.</p>
+        </div>
+        <div class="sc-copilot-actions">
+          <button class="btn secondary compact" id="applyTieBreak">Use Innovation tie-break</button>
+          <button class="btn ghost compact" id="runBiasCheck">Run fairness check</button>
+        </div>
+      </section>
+
+      <div class="sc-round-bar section">
+        <div class="sc-round-left">
+          <span class="sc-round-dot"></span>
+          <div><small>ACTIVE JUDGING ROUND</small><b>Round 1 - Preliminary Review</b></div>
+        </div>
+        <div class="sc-round-stats"><span><b>485</b> reviews complete</span><span><b>297</b> remaining</span><span><b>25 Apr</b> closes</span></div>
+        <button class="btn ghost compact" id="manageRounds">Manage rounds</button>
+      </div>
+
+      <div class="sc-layout section">
+        <div class="sc-main-col">
+          <section class="card sc-panel">
+            <div class="sc-panel-head">
+              <div><h2>Master scorecard</h2><p>Every criterion contributes to a 100-point weighted total.</p></div>
+              <div class="sc-panel-actions"><span class="sc-weight-pill" id="weightPill">100 / 100</span><button class="btn secondary compact" id="addCriterion">+ Add criterion</button></div>
+            </div>
+            <div class="sc-weight-track"><i id="weightBar" style="width:100%"></i></div>
+            <div id="criteriaList" class="sc-criteria-list"></div>
+          </section>
+
+          <section class="card sc-panel section">
+            <div class="sc-panel-head">
+              <div><h2>Category scorecards</h2><p>Keep one master scorecard or override criteria for specific categories.</p></div>
+              <button class="btn ghost compact" id="copyMaster">Apply master to all</button>
+            </div>
+            <div class="sc-category-list">
+              <div class="sc-category-row"><div><b>Best FinTech Startup</b><span>84 entries</span></div><span class="sc-pill good">Master scorecard</span><button data-override="Best FinTech Startup">Customize</button></div>
+              <div class="sc-category-row"><div><b>Best Digital Lending</b><span>63 entries</span></div><span class="sc-pill good">Master scorecard</span><button data-override="Best Digital Lending">Customize</button></div>
+              <div class="sc-category-row"><div><b>Best Payments Innovation</b><span>72 entries</span></div><span class="sc-pill">1 override</span><button data-override="Best Payments Innovation">Edit override</button></div>
+              <div class="sc-category-row"><div><b>Best AI in Financial Services</b><span>58 entries</span></div><span class="sc-pill good">Master scorecard</span><button data-override="Best AI in Financial Services">Customize</button></div>
+            </div>
+          </section>
+
+          <section class="card sc-panel section">
+            <div class="sc-panel-head">
+              <div><h2>Rules & safeguards</h2><p>Control what judges see, when comments are required, and how scores are finalized.</p></div>
+              <span class="sc-pill good">Recommended setup</span>
+            </div>
+            <div class="sc-rule-grid">
+              <label class="sc-rule"><div><b>Blind judging</b><span>Hide entrant/company identity from judges.</span></div><input id="blindJudging" type="checkbox"><i></i></label>
+              <label class="sc-rule"><div><b>Mandatory comments</b><span>Require a comment for scores of 5 or below.</span></div><input id="mandatoryComments" type="checkbox" checked><i></i></label>
+              <label class="sc-rule"><div><b>Edit until round closes</b><span>Judges can revise submitted scores before deadline.</span></div><input id="editableScores" type="checkbox" checked><i></i></label>
+              <label class="sc-rule"><div><b>Hide running averages</b><span>Prevent judges from seeing panel averages.</span></div><input id="hideAverages" type="checkbox" checked><i></i></label>
+            </div>
+            <div class="sc-rule-fields">
+              <div class="field"><label>Minimum reviews per entry</label><select id="minimumReviews"><option value="2">2 reviews</option><option value="3" selected>3 reviews</option><option value="4">4 reviews</option><option value="5">5 reviews</option></select></div>
+              <div class="field"><label>First tie-break criterion</label><select id="tieBreak"><option value="Innovation">Innovation</option><option value="Market Impact">Market Impact</option><option value="Execution">Execution</option><option value="Scalability">Scalability</option></select></div>
+              <div class="field"><label>Score scale</label><select id="scoreScale"><option value="10" selected>1 to 10</option><option value="5">1 to 5</option><option value="100">0 to 100</option></select></div>
+              <div class="field"><label>Score rounding</label><select id="rounding"><option>1 decimal place</option><option>2 decimal places</option><option>Whole numbers</option></select></div>
+            </div>
+          </section>
+
+          <section class="card sc-panel section">
+            <div class="sc-panel-head">
+              <div><h2>Score normalization</h2><p>Reduce the impact of unusually strict or generous judges while preserving ranking signals.</p></div>
+              <label class="sc-mini-toggle"><input id="normalization" type="checkbox"><i></i><span>Off</span></label>
+            </div>
+            <div class="sc-normalization" id="normalizationPanel">
+              <div><span>Raw panel average</span><b>8.10</b><small>Current ranking basis</small></div>
+              <div class="sc-normal-arrow">-></div>
+              <div><span>Normalized average</span><b id="normalizedValue">8.10</b><small id="normalizedText">Enable to preview</small></div>
+              <div class="sc-normal-note"><b>When should I use this?</b><p>Useful when multiple judges have noticeably different scoring habits. Keep it off when the panel is already consistent.</p></div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="sc-side-col">
+          <section class="card sc-side-card">
+            <div class="sc-side-title"><div><span>~</span><h3>Live score distribution</h3></div><span class="sc-live">LIVE</span></div>
+            <p>485 submitted reviews across the current judging round.</p>
+            <div class="sc-histogram" id="scoreHistogram">
+              <div><i style="height:18%"></i><small>4</small></div><div><i style="height:28%"></i><small>5</small></div><div><i style="height:43%"></i><small>6</small></div><div><i style="height:67%"></i><small>7</small></div><div><i style="height:100%"></i><small>8</small></div><div><i style="height:74%"></i><small>9</small></div><div><i style="height:31%"></i><small>10</small></div>
+            </div>
+            <div class="sc-distribution-stats"><div><span>Average</span><b>8.1</b></div><div><span>Median</span><b>8.2</b></div><div><span>Std. dev.</span><b>0.7</b></div></div>
+          </section>
+
+          <section class="card sc-side-card section">
+            <div class="sc-side-title"><div><span>!</span><h3>Scoring consistency</h3></div><b class="sc-health">92%</b></div>
+            <div class="progress"><span style="width:92%"></span></div>
+            <div class="sc-consistency-list">
+              <div><i class="good"></i><p><b>12 judges within normal range</b><span>Variance below 1.0 point</span></p></div>
+              <div><i></i><p><b>Vikram scores 0.8 lower</b><span>Watch, but not an outlier yet</span></p><button data-review-judge="Vikram">Review</button></div>
+              <div><i class="good"></i><p><b>No suspicious clustering</b><span>Score patterns look natural</span></p></div>
+            </div>
+            <button class="btn ghost full" id="openVariance">View judge variance</button>
+          </section>
+
+          <section class="card sc-side-card section">
+            <div class="sc-side-title"><div><span>#</span><h3>Ranking readiness</h3></div><b class="sc-health">78%</b></div>
+            <div class="sc-ready-list"><div><span>&#10003;</span><p><b>100-point scorecard</b><small>Weights are balanced</small></p></div><div><span>&#10003;</span><p><b>3 reviews minimum</b><small>Configured for all entries</small></p></div><div class="pending"><span>!</span><p><b>297 reviews remaining</b><small>Round closes in 6 days</small></p></div></div>
+            <a class="btn secondary full" href="shortlist.html">Preview shortlist readiness -></a>
+          </section>
+
+          <section class="card sc-side-card section sc-portal-card">
+            <div class="sc-portal-icon">&#9733;</div>
+            <h3>Judge scorecard preview</h3>
+            <p>See exactly what a judge sees while reviewing an assigned entry.</p>
+            <button class="btn secondary full" id="previewScorecardSide">Preview scorecard</button>
+          </section>
+        </aside>
+      </div>
+
+      <div class="sc-next-step section">
+        <div><span>DECIDE / NEXT</span><h2>Your scoring framework is ready. Build the shortlist from completed reviews.</h2><p>Rank entries, flag ties, enforce review thresholds and move finalists forward.</p></div>
+        <a class="btn primary" href="shortlist.html">Continue to Shortlist -></a>
+      </div>
+
+      <div class="footer-note">Interactive manager-demo prototype / Sample data only / Scoring, normalization and AI analysis are simulated</div>
+    </main>
+  </div>
+</div>
+
+<div class="sc-drawer" id="criterionDrawer" aria-hidden="true">
+  <div class="sc-drawer-backdrop" data-close-criterion></div>
+  <aside class="sc-drawer-panel">
+    <div class="sc-drawer-head"><div><span class="eyebrow">SCORECARD BUILDER</span><h2 id="criterionDrawerTitle">Add criterion</h2><p>Define what judges should assess and how much it contributes.</p></div><button data-close-criterion>x</button></div>
+    <div class="sc-drawer-body">
+      <div class="field"><label>Criterion name</label><input id="criterionName" placeholder="e.g. Customer impact"></div>
+      <div class="field"><label>Judge guidance</label><textarea id="criterionDescription" rows="4" placeholder="Explain what strong evidence looks like..."></textarea></div>
+      <div class="sc-two-col">
+        <div class="field"><label>Weight</label><div class="sc-weight-input"><input id="criterionWeight" type="number" min="5" max="100" value="20"><span>%</span></div></div>
+        <div class="field"><label>Scoring scale</label><select id="criterionScale"><option value="10">1 to 10</option><option value="5">1 to 5</option><option value="100">0 to 100</option></select></div>
+      </div>
+      <label class="sc-check"><input id="criterionComment" type="checkbox"> Require a judge comment for this criterion</label>
+      <div class="sc-guide-box"><b>Judge guidance preview</b><p id="criterionPreview">Judges will see your guidance beside the scoring control.</p></div>
+    </div>
+    <div class="sc-drawer-foot"><button class="btn ghost" data-close-criterion>Cancel</button><span></span><button class="btn primary" id="saveCriterion">Add criterion</button></div>
+  </aside>
+</div>
+
+<div class="sc-drawer" id="overrideDrawer" aria-hidden="true">
+  <div class="sc-drawer-backdrop" data-close-override></div>
+  <aside class="sc-drawer-panel">
+    <div class="sc-drawer-head"><div><span class="eyebrow">CATEGORY OVERRIDE</span><h2 id="overrideTitle">Customize scorecard</h2><p>Change criteria only for this category while keeping the master scorecard intact.</p></div><button data-close-override>x</button></div>
+    <div class="sc-drawer-body">
+      <div class="sc-override-card"><span>Master scorecard</span><b>Innovation 30 / Market Impact 25 / Execution 25 / Scalability 20</b></div>
+      <div class="field"><label>Override type</label><select id="overrideType"><option>Add one category-specific criterion</option><option>Change criterion weights</option><option>Use a completely custom scorecard</option></select></div>
+      <div class="field"><label>Category-specific criterion</label><input id="overrideCriterion" value="Regulatory readiness"></div>
+      <div class="field"><label>Weight</label><div class="sc-weight-input"><input id="overrideWeight" type="number" value="10"><span>%</span></div></div>
+      <div class="sc-guide-box"><b>Important</b><p>For a real award, changing weights after judging starts should require an audit-confirmed administrator action.</p></div>
+    </div>
+    <div class="sc-drawer-foot"><button class="btn ghost" data-close-override>Cancel</button><span></span><button class="btn primary" id="saveOverride">Save override</button></div>
+  </aside>
+</div>
+
+<div class="sc-modal" id="scorecardModal" aria-hidden="true">
+  <div class="sc-modal-backdrop" data-close-scorecard></div>
+  <div class="sc-modal-card">
+    <div class="sc-modal-head"><div><span class="eyebrow">JUDGE PORTAL / ENTRY 12 OF 24</span><h2>NovaPay Technologies</h2><p>Best FinTech Startup</p></div><button data-close-scorecard>x</button></div>
+    <div class="sc-modal-body">
+      <div class="sc-entry-summary"><span>EXECUTIVE SUMMARY</span><p>NovaPay helps small businesses accept instant digital payments and automate reconciliation across channels.</p><button>View supporting deck</button></div>
+      <div id="judgeCriteriaPreview" class="sc-judge-criteria"></div>
+      <div class="field"><label>Overall judge comments</label><textarea rows="3" placeholder="Add your rationale for this score..."></textarea></div>
+      <div class="sc-score-total"><span>Weighted score</span><b id="judgePreviewTotal">8.2 / 10</b></div>
+    </div>
+    <div class="sc-modal-foot"><button class="btn ghost" data-close-scorecard>Save draft</button><button class="btn primary" id="submitPreviewReview">Submit review</button></div>
+  </div>
+</div>
+
+<div class="sc-modal" id="varianceModal" aria-hidden="true">
+  <div class="sc-modal-backdrop" data-close-variance></div>
+  <div class="sc-modal-card sc-small-modal">
+    <div class="sc-modal-head"><div><span class="eyebrow">FAIRNESS MONITOR</span><h2>Judge variance</h2><p>Compare scoring behavior across the active panel.</p></div><button data-close-variance>x</button></div>
+    <div class="sc-modal-body">
+      <div class="sc-variance-row"><div><b>Riya Nair</b><span>42 reviews</span></div><div class="sc-variance-bar"><i style="width:78%"></i></div><strong>8.4</strong><em>+0.3</em></div>
+      <div class="sc-variance-row"><div><b>Arjun Kapoor</b><span>38 reviews</span></div><div class="sc-variance-bar"><i style="width:72%"></i></div><strong>8.1</strong><em>0.0</em></div>
+      <div class="sc-variance-row watch"><div><b>Vikram Sethi</b><span>48 reviews</span></div><div class="sc-variance-bar"><i style="width:56%"></i></div><strong>7.3</strong><em>-0.8</em></div>
+      <div class="sc-variance-row"><div><b>Priya Shah</b><span>31 reviews</span></div><div class="sc-variance-bar"><i style="width:75%"></i></div><strong>8.2</strong><em>+0.1</em></div>
+      <div class="sc-guide-box"><b>Award Copilot insight</b><p>Vikram is stricter than the panel average, but his category rankings remain highly correlated with other judges. Monitor; no intervention is recommended yet.</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="sc-copilot-panel" id="copilotPanel">
+  <div class="sc-copilot-head"><div><span class="eyebrow">AWARD COPILOT</span><h2>Scoring assistant</h2></div><button id="closeCopilot">x</button></div>
+  <p>Ask about criteria, weights, judge variance, tie-breaks or scoring fairness.</p>
+  <div class="sc-copilot-prompts">
+    <button data-prompt="weights">Are my criteria weights balanced?</button>
+    <button data-prompt="variance">Do any judges score unusually?</button>
+    <button data-prompt="blind">Should I use blind judging?</button>
+    <button data-prompt="ties">How should I resolve ties?</button>
+  </div>
+  <div class="sc-copilot-answer" id="copilotAnswer">Choose a question and Award Copilot will analyze the current scoring setup.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script src="scoring.js"></script>
+</body>
+</html>

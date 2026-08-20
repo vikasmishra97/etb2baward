@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ceremony · AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="ceremony.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">◇</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">▣</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
+      <a class="active" href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb"><span id="crumbAwardName">India FinTech Awards 2027</span> / Ceremony</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="openCopilot">✦ Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main ce-main">
+      <div class="page-head ce-head">
+        <div>
+          <div class="eyebrow">CELEBRATE · PAGE 15</div>
+          <h1>Ceremony</h1>
+          <p>Plan the guest experience, award presentation order and live stage reveal from the same winner data.</p>
+        </div>
+        <div class="top-actions ce-head-actions">
+          <button class="btn secondary" id="syncWinners">↻ Sync winners</button>
+          <button class="btn secondary" id="openStagePreview">▣ Preview stage</button>
+          <button class="btn primary" id="saveCeremony">Save changes</button>
+        </div>
+      </div>
+
+      <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage done">DECIDE</div><div class="stage active">CELEBRATE</div></div>
+
+      <section class="ce-stats">
+        <article class="ce-stat"><span class="ce-stat-icon">◫</span><div><small>Ceremony readiness</small><strong id="readinessScore">0%</strong><em id="readinessLabel">Preparing</em></div></article>
+        <article class="ce-stat"><span class="ce-stat-icon">◎</span><div><small>Guests confirmed</small><strong id="confirmedCount">0</strong><em><span id="capacityLabel">0</span> capacity</em></div></article>
+        <article class="ce-stat"><span class="ce-stat-icon">✓</span><div><small>Checked in</small><strong id="checkedInCount">0</strong><em id="checkinRate">0% of confirmed</em></div></article>
+        <article class="ce-stat"><span class="ce-stat-icon">🏆</span><div><small>Awards stage-ready</small><strong id="stageReadyCount">0 / 0</strong><em id="protectedWinnerCount">0 protected</em></div></article>
+      </section>
+
+      <section class="ce-insight" id="ceremonyInsight">
+        <div class="ce-insight-icon">✦</div>
+        <div>
+          <small>AWARD COPILOT · NEXT BEST ACTION</small>
+          <h3 id="insightTitle">Prepare the live show safely</h3>
+          <p id="insightBody">AwardFlow checks winner locks, presenters, guest readiness and stage cues before you go live.</p>
+        </div>
+        <button class="btn secondary" id="insightAction">Review blockers</button>
+      </section>
+
+      <div class="ce-layout">
+        <div class="ce-main-col">
+          <section class="card pad ce-card" id="eventCard">
+            <div class="ce-card-head">
+              <div><small>EVENT ESSENTIALS</small><h2>Ceremony details</h2><p>The core information your operations, registration and stage teams work from.</p></div>
+              <span class="ce-status-pill" id="eventModeBadge">Rehearsal</span>
+            </div>
+            <div class="ce-event-grid">
+              <div class="field"><label>Event name</label><input id="eventName" value="India FinTech Awards 2027 · Gala Night"></div>
+              <div class="field"><label>Format</label><select id="eventFormat"><option value="in-person">In-person</option><option value="hybrid">Hybrid</option><option value="virtual">Virtual</option></select></div>
+              <div class="field ce-span-2"><label>Venue / event link</label><input id="venue" value="The Grand Ballroom, Mumbai"></div>
+              <div class="field"><label>Event date</label><input type="date" id="eventDate" value="2027-06-15"></div>
+              <div class="field"><label>Doors open</label><input type="time" id="doorsOpen" value="18:00"></div>
+              <div class="field"><label>Show begins</label><input type="time" id="showStart" value="19:00"></div>
+              <div class="field"><label>Guest capacity</label><input type="number" id="guestCapacity" min="1" value="500"></div>
+              <div class="field"><label>Check-in desk opens</label><input type="time" id="checkinOpen" value="17:30"></div>
+              <div class="field"><label>Dress code</label><input id="dressCode" value="Business formal"></div>
+            </div>
+            <div class="ce-inline-note"><span>i</span><p><b>One source of truth.</b> These details feed RSVP confirmations, check-in instructions, presenter briefs and the run of show.</p></div>
+          </section>
+
+          <section class="card ce-card" id="guestCard">
+            <div class="ce-section-toolbar">
+              <div><small>GUESTS & RSVP</small><h2>Guest list</h2><p>Track invitations, confirmations, seating and event-day check-in.</p></div>
+              <div class="top-actions">
+                <button class="btn secondary" id="importGuests">⇧ Import CSV</button>
+                <button class="btn primary" id="addGuest">+ Add guest</button>
+              </div>
+            </div>
+            <div class="ce-guest-tools">
+              <div class="ce-search"><span>⌕</span><input id="guestSearch" placeholder="Search guest, company or email"></div>
+              <div class="ce-filter-row" id="guestFilters">
+                <button data-guest-filter="all" class="active">All <span id="allGuestCount">0</span></button>
+                <button data-guest-filter="confirmed">Confirmed <span id="confirmedFilterCount">0</span></button>
+                <button data-guest-filter="pending">Pending <span id="pendingFilterCount">0</span></button>
+                <button data-guest-filter="checked">Checked in <span id="checkedFilterCount">0</span></button>
+                <button data-guest-filter="vip">VIP <span id="vipFilterCount">0</span></button>
+              </div>
+              <button class="btn ghost ce-checkin-mode" id="toggleCheckinMode">✓ Check-in mode</button>
+            </div>
+            <div class="table-wrap">
+              <table class="table ce-guest-table">
+                <thead><tr><th>Guest</th><th>Type</th><th>RSVP</th><th>Seat</th><th>Check-in</th><th></th></tr></thead>
+                <tbody id="guestTableBody"></tbody>
+              </table>
+            </div>
+            <div class="ce-table-footer"><span id="guestTableSummary">Showing 0 guests</span><div><button class="text-btn" id="autoSeat">Auto-assign unseated</button><button class="text-btn" id="exportGuests">Export CSV</button></div></div>
+          </section>
+
+          <section class="card ce-card" id="runCard">
+            <div class="ce-section-toolbar">
+              <div><small>RUN OF SHOW</small><h2>Production timeline</h2><p>Keep program, technical and hospitality cues in one shared sequence.</p></div>
+              <button class="btn primary" id="addCue">+ Add cue</button>
+            </div>
+            <div class="ce-rundown" id="runOfShowList"></div>
+          </section>
+
+          <section class="card ce-card" id="presentationCard">
+            <div class="ce-section-toolbar">
+              <div><small>AWARD PRESENTATION ORDER</small><h2>Stage sequence</h2><p>Every reveal stays connected to the locked winner record from Page 12.</p></div>
+              <div class="top-actions"><button class="btn secondary" id="assignPresenters">✦ Auto-assign presenters</button><button class="btn secondary" id="rehearseAll">▶ Rehearse awards</button></div>
+            </div>
+            <div class="ce-award-head"><span>#</span><span>Category & winner</span><span>Presenter</span><span>Stage status</span><span>Controls</span></div>
+            <div class="ce-award-list" id="awardPresentationList"></div>
+          </section>
+        </div>
+
+        <aside class="ce-side-col">
+          <section class="card pad ce-side-card ce-readiness-card">
+            <div class="ce-side-head"><div><small>CEREMONY HEALTH</small><h2>Ready to go live?</h2></div><strong id="sideReadiness">0%</strong></div>
+            <div class="progress"><span id="readinessBar" style="width:0%"></span></div>
+            <div class="ce-health-list" id="readinessChecks"></div>
+          </section>
+
+          <section class="card pad ce-side-card ce-live-card">
+            <div class="ce-side-head"><div><small>LIVE EVENT CONTROLS</small><h2>Stage screen</h2></div><span class="ce-live-dot" id="liveDot">REHEARSAL</span></div>
+            <div class="ce-stage-mini" id="stageMini">
+              <span id="miniKicker">UP NEXT</span>
+              <strong id="miniTitle">Welcome to the India FinTech Awards</strong>
+              <small id="miniSubtitle">Stage screen is in rehearsal mode</small>
+            </div>
+            <div class="ce-live-actions">
+              <button class="btn secondary" id="previousCue">← Previous</button>
+              <button class="btn primary" id="nextCue">Next cue →</button>
+            </div>
+            <button class="btn ghost ce-full-btn" id="openStageWindow">Open stage display ↗</button>
+            <div class="ce-live-guard"><span>🔒</span><p><b>Protected reveal</b><small>Unlocked or unverified winners cannot be revealed on the stage screen.</small></p></div>
+            <div class="ce-mode-row"><span>Show mode</span><div class="segmented compact" id="showModeControl"><button data-mode="rehearsal" class="active">Rehearsal</button><button data-mode="live">Live</button></div></div>
+          </section>
+
+          <section class="card pad ce-side-card">
+            <div class="ce-side-head"><div><small>SEATING</small><h2>Room snapshot</h2></div><button class="text-btn" id="editSeating">Manage</button></div>
+            <div class="ce-seating-stats"><div><strong id="seatedCount">0</strong><span>Seated</span></div><div><strong id="unseatedCount">0</strong><span>Unseated</span></div><div><strong id="tableCount">0</strong><span>Tables</span></div></div>
+            <div class="ce-seat-map" id="seatMap"></div>
+          </section>
+
+          <section class="card pad ce-side-card">
+            <div class="ce-side-head"><div><small>EVENT-DAY ACTIONS</small><h2>Quick tools</h2></div></div>
+            <div class="ce-quick-actions">
+              <button id="openCheckin"><span>✓</span><div><b>Open check-in desk</b><small>Fast guest lookup and arrival tracking</small></div></button>
+              <button id="printRunSheet"><span>▤</span><div><b>Print run sheet</b><small>Production-friendly ceremony timeline</small></div></button>
+              <button id="prepareFollowup"><span>✉</span><div><b>Prepare follow-up</b><small>Winner and guest thank-you campaigns</small></div></button>
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <div class="ce-bottom-actions">
+        <div><b>Celebrate stage</b><span>Winner Gallery → Certificates → Ceremony</span></div>
+        <div class="top-actions"><a class="btn secondary" href="certificates.html">← Certificates</a><a class="btn primary" href="reports.html">Continue to Reports →</a></div>
+      </div>
+      <div class="footer-note">Interactive manager-demo prototype · Sample event data only · Live stage actions are simulated in this browser</div>
+    </main>
+  </div>
+</div>
+
+<div class="ce-layer" id="guestDrawer" aria-hidden="true">
+  <div class="ce-backdrop" data-close="guestDrawer"></div>
+  <aside class="ce-drawer-panel">
+    <div class="ce-drawer-head"><div><small>GUEST</small><h2 id="guestDrawerTitle">Add guest</h2></div><button data-close="guestDrawer">×</button></div>
+    <div class="ce-drawer-body">
+      <div class="ce-two-col"><div class="field"><label>First name</label><input id="guestFirstName"></div><div class="field"><label>Last name</label><input id="guestLastName"></div></div>
+      <div class="field"><label>Email</label><input type="email" id="guestEmail"></div>
+      <div class="field"><label>Company</label><input id="guestCompany"></div>
+      <div class="ce-two-col"><div class="field"><label>Guest type</label><select id="guestType"><option>Guest</option><option>Winner</option><option>VIP</option><option>Judge</option><option>Sponsor</option><option>Presenter</option><option>Media</option></select></div><div class="field"><label>RSVP</label><select id="guestRsvp"><option value="confirmed">Confirmed</option><option value="pending">Pending</option><option value="declined">Declined</option></select></div></div>
+      <div class="ce-two-col"><div class="field"><label>Table</label><input id="guestTable" placeholder="e.g. T04"></div><div class="field"><label>Seat</label><input id="guestSeat" placeholder="e.g. 6"></div></div>
+      <label class="ce-checkline"><input type="checkbox" id="guestVip"> Mark as VIP / priority arrival</label>
+      <label class="ce-checkline"><input type="checkbox" id="guestChecked"> Already checked in</label>
+      <div class="field"><label>Internal note</label><textarea id="guestNote" rows="4" placeholder="Accessibility, dietary, host relationship, special handling..."></textarea></div>
+    </div>
+    <div class="ce-drawer-foot"><button class="btn secondary" data-close="guestDrawer">Cancel</button><span></span><button class="btn primary" id="saveGuest">Save guest</button></div>
+  </aside>
+</div>
+
+<div class="ce-layer" id="cueDrawer" aria-hidden="true">
+  <div class="ce-backdrop" data-close="cueDrawer"></div>
+  <aside class="ce-drawer-panel">
+    <div class="ce-drawer-head"><div><small>RUN OF SHOW</small><h2 id="cueDrawerTitle">Add cue</h2></div><button data-close="cueDrawer">×</button></div>
+    <div class="ce-drawer-body">
+      <div class="ce-two-col"><div class="field"><label>Start time</label><input type="time" id="cueTime"></div><div class="field"><label>Duration (min)</label><input type="number" id="cueDuration" min="1" value="10"></div></div>
+      <div class="field"><label>Cue title</label><input id="cueTitle"></div>
+      <div class="field"><label>Type</label><select id="cueType"><option value="guest">Guest experience</option><option value="stage">Stage</option><option value="award">Awards</option><option value="break">Break / hospitality</option><option value="media">Media</option></select></div>
+      <div class="field"><label>Owner / location</label><input id="cueOwner" placeholder="e.g. Stage Manager · Main Ballroom"></div>
+      <div class="field"><label>Production note</label><textarea id="cueNote" rows="5" placeholder="AV cue, presenter movement, lighting, holding slide..."></textarea></div>
+    </div>
+    <div class="ce-drawer-foot"><button class="btn secondary" data-close="cueDrawer">Cancel</button><button class="btn ghost" id="deleteCue">Delete</button><span></span><button class="btn primary" id="saveCue">Save cue</button></div>
+  </aside>
+</div>
+
+<div class="ce-layer" id="presenterDrawer" aria-hidden="true">
+  <div class="ce-backdrop" data-close="presenterDrawer"></div>
+  <aside class="ce-drawer-panel">
+    <div class="ce-drawer-head"><div><small>PRESENTATION</small><h2 id="presenterCategory">Award category</h2></div><button data-close="presenterDrawer">×</button></div>
+    <div class="ce-drawer-body">
+      <div class="ce-winner-lock" id="winnerLockSummary"></div>
+      <div class="field"><label>Presenter</label><select id="presenterSelect"></select></div>
+      <div class="field"><label>Stage intro</label><textarea id="stageIntro" rows="5"></textarea></div>
+      <div class="field"><label>Winner readout</label><textarea id="winnerReadout" rows="4"></textarea></div>
+      <label class="ce-checkline"><input type="checkbox" id="allowReveal"> Allow live winner reveal when record is stage-ready</label>
+      <div class="ce-inline-note"><span>i</span><p><b>Embargo guard.</b> The stage screen only receives the winner name after you actively click Reveal and the source winner record passes all locks.</p></div>
+    </div>
+    <div class="ce-drawer-foot"><button class="btn secondary" data-close="presenterDrawer">Cancel</button><span></span><button class="btn primary" id="savePresentation">Save presentation</button></div>
+  </aside>
+</div>
+
+<div class="ce-layer ce-modal-layer" id="checkinModal" aria-hidden="true">
+  <div class="ce-backdrop" data-close="checkinModal"></div>
+  <section class="ce-modal ce-checkin-modal">
+    <div class="ce-drawer-head"><div><small>EVENT DAY</small><h2>Guest check-in desk</h2><p>Search, confirm identity and mark arrival in a few seconds.</p></div><button data-close="checkinModal">×</button></div>
+    <div class="ce-checkin-search"><span>⌕</span><input id="checkinSearch" placeholder="Search name, company or email" autofocus></div>
+    <div class="ce-checkin-list" id="checkinList"></div>
+    <div class="ce-checkin-footer"><div><strong id="modalCheckedCount">0</strong><span>checked in</span></div><div><strong id="modalExpectedCount">0</strong><span>confirmed guests</span></div><button class="btn secondary" data-close="checkinModal">Close desk</button></div>
+  </section>
+</div>
+
+<div class="ce-layer ce-modal-layer" id="liveConfirmModal" aria-hidden="true">
+  <div class="ce-backdrop" data-close="liveConfirmModal"></div>
+  <section class="ce-modal ce-confirm-modal">
+    <div class="ce-confirm-icon">●</div>
+    <h2>Switch stage screen to Live?</h2>
+    <p id="liveConfirmText">Rehearsal cues will become the live event feed. Protected winner records will remain hidden.</p>
+    <label class="ce-checkline"><input type="checkbox" id="liveConfirmCheck"> I understand that stage cues can become visible on the ceremony display.</label>
+    <div class="top-actions"><button class="btn secondary" data-close="liveConfirmModal">Stay in rehearsal</button><button class="btn primary" id="confirmGoLive" disabled>Go Live</button></div>
+  </section>
+</div>
+
+<div class="ce-copilot" id="copilotPanel">
+  <div class="ce-copilot-head"><div><small>AWARD COPILOT</small><h2>Ceremony assistant</h2></div><button id="closeCopilot">×</button></div>
+  <p>Use current guest, winner and run-of-show data to find operational risks before doors open.</p>
+  <div class="ce-copilot-prompts">
+    <button data-prompt="blockers">What could block us going live?</button>
+    <button data-prompt="guests">Who should the guest team follow up?</button>
+    <button data-prompt="stage">Is the award sequence stage-ready?</button>
+    <button data-prompt="timing">Where can we tighten the run of show?</button>
+  </div>
+  <div class="ce-copilot-answer" id="copilotAnswer">AwardFlow will protect any winner that is not locked and verified, even if the ceremony is already live.</div>
+</div>
+
+<input type="file" id="guestCsvFile" accept=".csv,text/csv" hidden>
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script src="ceremony.js"></script>
+</body>
+</html>

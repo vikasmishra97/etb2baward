@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Audience & Leads · AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="audience.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">◇</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">▣</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a class="active" href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb"><span id="crumbAward">India FinTech Awards 2027</span> / Audience</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="openCopilot">✦ Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main au-main">
+      <div class="page-head au-page-head">
+        <div>
+          <div class="au-kicker">GROW · STEP 1 OF 3</div>
+          <h1>Audience & leads</h1>
+          <p>Find the people most likely to enter, recover drop-offs, and build targeted audiences for campaigns.</p>
+        </div>
+        <div class="top-actions au-head-actions">
+          <button class="btn secondary" id="importContacts">⇧ Import contacts</button>
+          <button class="btn primary" id="addLead">+ Add lead</button>
+        </div>
+      </div>
+
+      <div class="stagebar"><div class="stage done">BUILD</div><div class="stage active">GROW</div><div class="stage">DECIDE</div><div class="stage">CELEBRATE</div></div>
+
+      <div class="au-grow-path" aria-label="Grow setup progress">
+        <a class="active" href="audience.html"><span>1</span><b>Audience</b><small>Find who to target</small></a>
+        <i></i>
+        <a href="campaigns.html"><span>2</span><b>Campaigns</b><small>Reach each segment</small></a>
+        <i></i>
+        <a href="automations.html"><span>3</span><b>Automations</b><small>Keep follow-up running</small></a>
+      </div>
+
+      <section class="au-copilot-banner">
+        <div class="au-copilot-icon">✦</div>
+        <div class="au-copilot-copy">
+          <span>AWARD COPILOT</span>
+          <h2>296 entrants are close to submitting. Prioritize them before acquiring more cold leads.</h2>
+          <p>They already started an entry and have the highest modeled intent in your current audience.</p>
+        </div>
+        <div class="au-copilot-actions">
+          <button class="btn primary" data-use-segment="incomplete">Create recovery campaign</button>
+          <button class="btn secondary" data-segment-jump="incomplete">View 296 leads</button>
+        </div>
+      </section>
+
+      <section class="au-kpis">
+        <article class="card au-kpi-card">
+          <div class="au-kpi-icon">◎</div>
+          <div><small>Total audience</small><strong id="totalAudienceKpi">14,842</strong><span>Across all sources</span></div>
+        </article>
+        <article class="card au-kpi-card">
+          <div class="au-kpi-icon hot">↗</div>
+          <div><small>High intent</small><strong>1,942</strong><span class="au-positive">+14% this month</span></div>
+        </article>
+        <article class="card au-kpi-card">
+          <div class="au-kpi-icon warn">!</div>
+          <div><small>Unconverted</small><strong>1,590</strong><span>Registered, no entry</span></div>
+        </article>
+        <article class="card au-kpi-card">
+          <div class="au-kpi-icon good">✓</div>
+          <div><small>Data quality</small><strong id="dataQualityKpi">91%</strong><span>Email + company coverage</span></div>
+        </article>
+      </section>
+
+      <section class="card pad au-segment-section section">
+        <div class="section-title au-section-title">
+          <div>
+            <span class="au-section-eyebrow">SMART AUDIENCES</span>
+            <h2>Start with a segment, not a spreadsheet</h2>
+            <p>AwardFlow groups contacts by lifecycle, behavior and award interest automatically.</p>
+          </div>
+          <button class="btn secondary" id="createSegment">+ Custom segment</button>
+        </div>
+        <div class="au-segment-grid" id="segmentGrid"></div>
+      </section>
+
+      <div class="au-layout section">
+        <section class="card au-contacts-card">
+          <div class="au-table-head">
+            <div>
+              <span class="au-section-eyebrow">CONTACTS</span>
+              <h2 id="contactsTitle">All contacts</h2>
+              <p id="contactsSubtitle">A sample of your full award audience.</p>
+            </div>
+            <div class="au-table-head-actions">
+              <button class="btn secondary au-small-btn" id="exportVisible">↓ Export</button>
+              <button class="btn primary au-small-btn" id="campaignVisible">Create campaign</button>
+            </div>
+          </div>
+
+          <div class="au-toolbar">
+            <label class="au-search"><span>⌕</span><input id="contactSearch" type="search" placeholder="Search name, company or email"></label>
+            <select id="lifecycleFilter" aria-label="Lifecycle">
+              <option value="all">All lifecycle stages</option>
+              <option value="prospect">Prospect</option>
+              <option value="registered">Registered</option>
+              <option value="started">Entry started</option>
+              <option value="submitted_unpaid">Submitted · unpaid</option>
+              <option value="paid">Paid / complete</option>
+              <option value="past_entrant">Past entrant</option>
+              <option value="winner">Past winner</option>
+            </select>
+            <select id="intentFilter" aria-label="Intent">
+              <option value="all">All intent</option>
+              <option value="high">High intent · 75+</option>
+              <option value="medium">Medium · 45–74</option>
+              <option value="low">Low · under 45</option>
+            </select>
+            <select id="categoryFilter" aria-label="Category"><option value="all">All categories</option></select>
+            <button class="au-filter-reset" id="resetFilters">Reset</button>
+          </div>
+
+          <div class="au-bulk-bar" id="bulkBar" hidden>
+            <div><b id="bulkCount">0 selected</b><span>Use selected contacts without changing the segment.</span></div>
+            <div>
+              <button id="bulkExport">Export</button>
+              <button id="bulkCampaign">Add to campaign</button>
+            </div>
+          </div>
+
+          <div class="au-table-wrap">
+            <table class="au-table">
+              <thead>
+                <tr>
+                  <th class="au-check"><input type="checkbox" id="selectAll"></th>
+                  <th>Contact</th>
+                  <th>Company</th>
+                  <th>Lifecycle</th>
+                  <th>Interest</th>
+                  <th>Intent</th>
+                  <th>Source</th>
+                  <th>Last activity</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="contactRows"></tbody>
+            </table>
+          </div>
+          <div class="au-table-footer">
+            <span id="tableCount">Showing 0 sample contacts</span>
+            <div class="au-pagination"><button disabled>‹</button><b>1</b><button disabled>›</button></div>
+          </div>
+        </section>
+
+        <aside class="au-insights-col">
+          <section class="card pad au-opportunity-card">
+            <div class="au-side-title"><div><span class="au-section-eyebrow">NEXT BEST ACTION</span><h3>Focus on warm drop-offs</h3></div><span class="au-mini-score">92</span></div>
+            <p>Incomplete entrants are more likely to convert than imported prospects because they already invested time in the form.</p>
+            <div class="au-opportunity-stat"><b>296</b><span>entry starters waiting</span></div>
+            <div class="au-opportunity-stat"><b>₹5.3L</b><span>estimated recoverable revenue</span></div>
+            <button class="btn primary" data-use-segment="incomplete">Build recovery campaign</button>
+          </section>
+
+          <section class="card pad au-source-card section">
+            <div class="au-side-title"><div><span class="au-section-eyebrow">SOURCE MIX</span><h3>Where your audience comes from</h3></div></div>
+            <div id="sourceBars" class="au-source-bars"></div>
+            <button class="au-text-btn" id="showSources">View source performance →</button>
+          </section>
+
+          <section class="card pad au-demand-card section">
+            <div class="au-side-title"><div><span class="au-section-eyebrow">CATEGORY DEMAND</span><h3>Interest by category</h3></div></div>
+            <div id="categoryDemand" class="au-demand-list"></div>
+            <button class="au-text-btn" id="promoteLowDemand">Find an under-promoted category →</button>
+          </section>
+        </aside>
+      </div>
+
+      <div class="au-bottom-actions section">
+        <div><b>Audience foundation ready</b><span>Next, turn your segments into targeted email, WhatsApp and social campaigns.</span></div>
+        <div class="top-actions"><button class="btn secondary" id="saveAudience">Save audience</button><a class="btn primary" href="campaigns.html">Continue to Campaigns →</a></div>
+      </div>
+
+      <div class="footer-note">Interactive manager-demo prototype · Sample data only · Contact data is stored only in this browser</div>
+    </main>
+  </div>
+</div>
+
+<!-- Lead profile drawer -->
+<div class="au-drawer" id="leadDrawer" aria-hidden="true">
+  <div class="au-drawer-backdrop" data-close-drawer></div>
+  <aside class="au-drawer-panel">
+    <div class="au-drawer-head">
+      <div><span class="au-section-eyebrow">LEAD PROFILE</span><h2 id="drawerName">Contact</h2><p id="drawerCompany">Company</p></div>
+      <button data-close-drawer aria-label="Close">×</button>
+    </div>
+    <div class="au-drawer-body">
+      <div class="au-profile-score">
+        <div class="au-score-ring"><strong id="drawerScore">0</strong><small>intent</small></div>
+        <div><b id="drawerStage">Prospect</b><p id="drawerReason">Intent is based on recent award behavior.</p></div>
+      </div>
+
+      <div class="au-profile-actions">
+        <button class="btn primary" id="drawerCampaign">Add to campaign</button>
+        <button class="btn secondary" id="drawerReminder">Send reminder</button>
+      </div>
+
+      <div class="au-profile-grid">
+        <div><small>Email</small><b id="drawerEmail">—</b></div>
+        <div><small>Phone</small><b id="drawerPhone">—</b></div>
+        <div><small>Category interest</small><b id="drawerCategory">—</b></div>
+        <div><small>Source</small><b id="drawerSource">—</b></div>
+      </div>
+
+      <div class="au-drawer-section">
+        <div class="au-side-title"><h3>Tags</h3><button class="au-text-btn" id="addTag">+ Add tag</button></div>
+        <div class="au-tags" id="drawerTags"></div>
+      </div>
+
+      <div class="au-drawer-section">
+        <h3>Activity timeline</h3>
+        <div class="au-timeline" id="drawerTimeline"></div>
+      </div>
+
+      <div class="au-drawer-section">
+        <h3>Internal note</h3>
+        <textarea id="drawerNote" rows="4" placeholder="Add context for your team..."></textarea>
+      </div>
+    </div>
+    <div class="au-drawer-foot"><span id="drawerSaveState">Changes save to this browser</span><button class="btn primary" id="saveLeadNote">Save profile</button></div>
+  </aside>
+</div>
+
+<!-- Add lead modal -->
+<div class="au-modal" id="addLeadModal" aria-hidden="true">
+  <div class="au-modal-backdrop" data-close-modal="addLeadModal"></div>
+  <div class="au-modal-card au-modal-medium">
+    <div class="au-modal-head"><div><span class="au-section-eyebrow">ADD TO AUDIENCE</span><h2>Add a lead</h2><p>Create one contact manually. You can enrich it later.</p></div><button data-close-modal="addLeadModal">×</button></div>
+    <div class="au-modal-body">
+      <div class="form-grid">
+        <div class="field"><label>Full name *</label><input id="newLeadName" placeholder="e.g. Riya Mehta"></div>
+        <div class="field"><label>Company *</label><input id="newLeadCompany" placeholder="e.g. NovaPay"></div>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label>Email *</label><input id="newLeadEmail" type="email" placeholder="riya@company.com"></div>
+        <div class="field"><label>Phone</label><input id="newLeadPhone" placeholder="+91 98xxxxxx"></div>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label>Category interest</label><select id="newLeadCategory"></select></div>
+        <div class="field"><label>Source</label><select id="newLeadSource"><option>Manual</option><option>LinkedIn</option><option>Referral</option><option>Partner list</option><option>Event</option></select></div>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label>Lifecycle</label><select id="newLeadLifecycle"><option value="prospect">Prospect</option><option value="registered">Registered</option><option value="started">Entry started</option><option value="submitted_unpaid">Submitted · unpaid</option><option value="paid">Paid / complete</option></select></div>
+        <div class="field"><label>Intent score</label><input id="newLeadScore" type="number" min="0" max="100" value="55"></div>
+      </div>
+    </div>
+    <div class="au-modal-foot"><button class="btn secondary" data-close-modal="addLeadModal">Cancel</button><button class="btn primary" id="saveNewLead">Add lead</button></div>
+  </div>
+</div>
+
+<!-- Import modal -->
+<div class="au-modal" id="importModal" aria-hidden="true">
+  <div class="au-modal-backdrop" data-close-modal="importModal"></div>
+  <div class="au-modal-card au-modal-wide">
+    <div class="au-modal-head"><div><span class="au-section-eyebrow">IMPORT CONTACTS</span><h2>Bring your audience into AwardFlow</h2><p>Upload a CSV with name, email and company. Extra columns are optional.</p></div><button data-close-modal="importModal">×</button></div>
+    <div class="au-modal-body">
+      <label class="au-dropzone" for="csvFile">
+        <input id="csvFile" type="file" accept=".csv,text/csv" hidden>
+        <span>⇧</span><b>Drop a CSV here or choose a file</b><small>Expected columns: name, email, company, phone, category, source</small>
+      </label>
+      <div class="au-import-tools"><button class="btn secondary" id="sampleImport">Use sample data</button><button class="au-text-btn" id="downloadTemplate">Download CSV template</button></div>
+      <div id="importPreview" class="au-import-preview" hidden>
+        <div class="au-side-title"><div><span class="au-section-eyebrow">PREVIEW</span><h3 id="importPreviewTitle">3 contacts ready</h3></div><span class="badge green">Columns mapped</span></div>
+        <div class="au-import-table-wrap"><table class="au-import-table"><thead><tr><th>Name</th><th>Email</th><th>Company</th><th>Category</th><th>Source</th></tr></thead><tbody id="importRows"></tbody></table></div>
+      </div>
+    </div>
+    <div class="au-modal-foot"><button class="btn secondary" data-close-modal="importModal">Cancel</button><button class="btn primary" id="confirmImport" disabled>Import contacts</button></div>
+  </div>
+</div>
+
+<!-- Segment builder modal -->
+<div class="au-modal" id="segmentModal" aria-hidden="true">
+  <div class="au-modal-backdrop" data-close-modal="segmentModal"></div>
+  <div class="au-modal-card au-modal-medium">
+    <div class="au-modal-head"><div><span class="au-section-eyebrow">SMART SEGMENT</span><h2>Create a custom audience</h2><p>Combine a few simple rules. No CRM query language required.</p></div><button data-close-modal="segmentModal">×</button></div>
+    <div class="au-modal-body">
+      <div class="field"><label>Segment name *</label><input id="segmentName" placeholder="e.g. High-intent startup prospects"></div>
+      <div class="au-rule-box">
+        <div class="au-rule-line"><span>WHERE</span><select id="segmentLifecycle"><option value="all">Any lifecycle stage</option><option value="prospect">Prospect</option><option value="registered">Registered</option><option value="started">Entry started</option><option value="submitted_unpaid">Submitted · unpaid</option><option value="past_entrant">Past entrant</option><option value="winner">Past winner</option></select></div>
+        <div class="au-rule-line"><span>AND</span><select id="segmentIntent"><option value="0">Any intent score</option><option value="45">Intent at least 45</option><option value="75">Intent at least 75</option><option value="90">Intent at least 90</option></select></div>
+        <div class="au-rule-line"><span>AND</span><select id="segmentCategory"><option value="all">Any category interest</option></select></div>
+        <div class="au-rule-line"><span>AND</span><select id="segmentSource"><option value="all">Any source</option><option>Website</option><option>LinkedIn</option><option>Referral</option><option>CSV Import</option><option>Past award</option><option>Partner list</option><option>Manual</option></select></div>
+      </div>
+      <div class="au-estimate"><span>Estimated audience</span><b id="segmentEstimate">14,842</b><small>Estimate updates from your current rules.</small></div>
+    </div>
+    <div class="au-modal-foot"><button class="btn secondary" data-close-modal="segmentModal">Cancel</button><button class="btn primary" id="saveSegment">Create segment</button></div>
+  </div>
+</div>
+
+<!-- Copilot panel -->
+<div class="au-copilot-panel" id="copilotPanel">
+  <div class="au-copilot-head"><div><span class="au-section-eyebrow">AWARD COPILOT</span><h2>Audience assistant</h2></div><button id="closeCopilot">×</button></div>
+  <p>Ask who to target next. This manager demo uses preset insights from the sample audience.</p>
+  <div class="au-copilot-prompts">
+    <button data-copilot-prompt="convert">Who is most likely to convert?</button>
+    <button data-copilot-prompt="category">Which category needs promotion?</button>
+    <button data-copilot-prompt="quality">How can I improve data quality?</button>
+  </div>
+  <div class="au-copilot-answer" id="copilotAnswer">Choose a question to see a recommendation.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script src="audience.js"></script>
+</body>
+</html>

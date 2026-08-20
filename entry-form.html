@@ -1,0 +1,589 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Entry Form · AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">◇</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
+      <a class="active" href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">▣</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb"><span id="crumbAward">India FinTech Awards 2027</span> / Entry Form</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="copilotBtn">✦ Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="page-head ef-page-head">
+        <div>
+          <span class="eyebrow">BUILD · STEP 3 OF 5</span>
+          <h1>What should entrants tell you?</h1>
+          <p>Create one clear nomination form, then personalize questions by category only when needed.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn secondary" id="previewBtn">Preview as entrant</button>
+          <button class="btn primary" id="saveBtn">Save form</button>
+        </div>
+      </div>
+
+      <div class="ca-setup-track ef-track" aria-label="Award setup progress">
+        <a class="ca-track-item done-track" href="create-award.html"><span>✓</span><div><b>Award</b><small>Complete</small></div></a><i></i>
+        <a class="ca-track-item done-track" href="categories.html"><span>✓</span><div><b>Categories</b><small id="trackCategories">Complete</small></div></a><i></i>
+        <div class="ca-track-item active"><span>3</span><div><b>Entry Form</b><small>You're here</small></div></div><i></i>
+        <a class="ca-track-item" href="pricing.html"><span>4</span><div><b>Pricing</b><small>Next</small></div></a><i></i>
+        <a class="ca-track-item" href="website.html"><span>5</span><div><b>Website</b><small>Later</small></div></a>
+      </div>
+
+      <div class="ef-layout">
+        <section class="ef-main-col">
+          <div class="card pad ef-ai-card">
+            <div class="ef-ai-icon">✦</div>
+            <div class="ef-ai-copy">
+              <span class="cat-kicker">AWARD COPILOT</span>
+              <h2>Build a strong entry form in one click</h2>
+              <p id="copilotIntro">I can tailor questions to your award, categories and judging goals. You stay in control of every question.</p>
+            </div>
+            <div class="ef-ai-actions">
+              <button class="btn primary" id="generateFormBtn">✦ Generate recommended form</button>
+              <button class="btn secondary" id="shortenFormBtn">Make it shorter</button>
+            </div>
+          </div>
+
+          <div class="card pad section ef-form-settings">
+            <div class="section-title"><h2>Form introduction</h2><span>Shown before question 1</span></div>
+            <div class="form-grid">
+              <div class="field">
+                <label for="formTitle">Form title</label>
+                <input id="formTitle" maxlength="100" value="Nomination form">
+              </div>
+              <div class="field">
+                <label for="formCategoryMode">Category selection</label>
+                <select id="formCategoryMode">
+                  <option value="before">Ask category before the form</option>
+                  <option value="inside">Ask category inside the form</option>
+                  <option value="hidden">Category is pre-selected</option>
+                </select>
+              </div>
+            </div>
+            <div class="field ef-no-margin">
+              <label for="formIntro">Short instructions</label>
+              <textarea id="formIntro" maxlength="300">Tell us what makes your work exceptional. You can save a draft and return before the deadline.</textarea>
+            </div>
+          </div>
+
+          <div class="card pad section ef-builder-card">
+            <div class="ef-list-head">
+              <div>
+                <div class="section-title ef-title-inline"><h2>Questions</h2><span class="cat-count-pill" id="questionCount">0</span></div>
+                <p class="ef-subcopy">Drag questions to reorder. Section headers keep longer forms easy to scan.</p>
+              </div>
+              <button class="btn primary" id="addQuestionBtn">+ Add question</button>
+            </div>
+
+            <div class="ef-empty" id="formEmpty" hidden>
+              <div class="cat-empty-icon">☷</div>
+              <h3>Your form is empty</h3>
+              <p>Add a question manually or let Award Copilot build a recommended starting form.</p>
+              <button class="btn primary" id="emptyGenerateBtn">✦ Generate starter form</button>
+            </div>
+
+            <div class="ef-question-list" id="questionList"></div>
+
+            <div class="ef-add-tray" id="addTray" hidden>
+              <div class="ef-add-tray-head"><b>Add to form</b><button id="closeTray">×</button></div>
+              <div class="ef-type-grid">
+                <button data-add-type="short"><span>Aa</span><b>Short text</b><small>Name, title, URL</small></button>
+                <button data-add-type="long"><span>¶</span><b>Long answer</b><small>Summary, impact</small></button>
+                <button data-add-type="single"><span>◉</span><b>Single choice</b><small>Choose one</small></button>
+                <button data-add-type="multi"><span>☑</span><b>Multiple choice</b><small>Choose many</small></button>
+                <button data-add-type="number"><span>123</span><b>Number</b><small>Revenue, metrics</small></button>
+                <button data-add-type="file"><span>⇧</span><b>File upload</b><small>PDF, deck, image</small></button>
+                <button data-add-type="url"><span>↗</span><b>Link / video</b><small>Website or demo</small></button>
+                <button data-add-type="section"><span>—</span><b>Section header</b><small>Organize questions</small></button>
+              </div>
+            </div>
+          </div>
+
+          <div class="ef-bottom-actions">
+            <div><b>Next: decide what entrants pay</b><span>Your saved questions will be used across the public nomination experience.</span></div>
+            <a class="btn primary" href="pricing.html" id="continuePricing">Continue to Pricing →</a>
+          </div>
+        </section>
+
+        <aside class="ef-side-col">
+          <div class="card pad ef-progress-card">
+            <div class="section-title"><h2>Setup progress</h2><b id="setupPct">60%</b></div>
+            <div class="progress"><span id="setupBar" style="width:60%"></span></div>
+            <div class="cat-progress-list">
+              <div><span class="ok">✓</span><p><b>Award basics</b><small>Name, dates and brand</small></p></div>
+              <div><span class="ok">✓</span><p><b>Categories</b><small id="categoryProgressText">Ready</small></p></div>
+              <div><span id="formProgressIcon">○</span><p><b>Entry Form</b><small id="formProgressText">Add questions</small></p></div>
+              <div><span>○</span><p><b>Pricing</b><small>Not started</small></p></div>
+              <div><span>○</span><p><b>Website</b><small>Not started</small></p></div>
+            </div>
+          </div>
+
+          <div class="card pad section ef-health-card">
+            <div class="section-title"><h2>Form health</h2><span id="healthBadge" class="badge green">Good</span></div>
+            <div class="ef-health-score"><strong id="healthScore">86</strong><div><b id="healthTitle">Easy to complete</b><small id="healthText">Balanced length for an awards entry.</small></div></div>
+            <div class="ef-stat-row"><span>Estimated time</span><b id="estimatedTime">8 min</b></div>
+            <div class="ef-stat-row"><span>Required questions</span><b id="requiredCount">0</b></div>
+            <div class="ef-stat-row"><span>Category-specific</span><b id="specificCount">0</b></div>
+            <div class="ef-stat-row"><span>Conditional logic</span><b id="logicCount">0</b></div>
+          </div>
+
+          <div class="card pad section ef-mini-preview-card">
+            <div class="section-title"><h2>Entrant preview</h2><button class="ef-link-btn" id="miniPreviewBtn">Open full preview</button></div>
+            <div class="ef-mini-browser">
+              <div class="ef-browser-bar"><span></span><span></span><span></span><small id="previewDomain">awards.example.com</small></div>
+              <div class="ef-mini-screen">
+                <div class="ef-mini-award" id="miniAwardName">India FinTech Awards 2027</div>
+                <h3 id="miniFormTitle">Nomination form</h3>
+                <p id="miniIntro">Tell us what makes your work exceptional.</p>
+                <div id="miniFields"></div>
+                <button>Save & continue →</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="callout section ef-insight">
+            <h3>✦ Conversion tip</h3>
+            <p id="insightText">Ask only what you will use for eligibility, judging or storytelling. Extra questions reduce completion.</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="footer-note">Interactive manager-demo prototype · Form data is stored only in this browser</div>
+    </main>
+  </div>
+</div>
+
+<div class="cat-modal" id="fieldModal" aria-hidden="true">
+  <div class="cat-modal-backdrop" data-close-field></div>
+  <div class="cat-drawer ef-drawer" role="dialog" aria-modal="true" aria-labelledby="fieldDrawerTitle">
+    <div class="cat-drawer-head">
+      <div><span class="eyebrow" id="fieldDrawerEyebrow">QUESTION</span><h2 id="fieldDrawerTitle">Edit question</h2></div>
+      <button class="cat-close" type="button" data-close-field>×</button>
+    </div>
+    <div class="cat-drawer-body">
+      <div class="field">
+        <label for="fieldLabel">Question / heading *</label>
+        <input id="fieldLabel" maxlength="160" placeholder="e.g. Executive summary">
+        <small class="field-error" id="fieldLabelError"></small>
+      </div>
+      <div class="field">
+        <label for="fieldHelp">Help text</label>
+        <textarea id="fieldHelp" maxlength="260" placeholder="Optional guidance shown below the question."></textarea>
+      </div>
+
+      <div class="form-grid ef-field-core" id="fieldCoreSettings">
+        <div class="field">
+          <label for="fieldType">Answer type</label>
+          <select id="fieldType">
+            <option value="short">Short text</option>
+            <option value="long">Long answer</option>
+            <option value="single">Single choice</option>
+            <option value="multi">Multiple choice</option>
+            <option value="number">Number</option>
+            <option value="file">File upload</option>
+            <option value="url">Link / video</option>
+            <option value="section">Section header</option>
+          </select>
+        </div>
+        <div class="field" id="requiredFieldWrap">
+          <label>Requirement</label>
+          <button class="ef-toggle-row active" type="button" id="requiredToggle"><span class="ef-switch"><i></i></span><div><b>Required</b><small>Entrant must answer</small></div></button>
+        </div>
+      </div>
+
+      <div id="limitSettings">
+        <div class="ca-section-divider">Answer limit</div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="fieldLimit">Maximum</label>
+            <input id="fieldLimit" type="number" min="0" step="1" value="0">
+          </div>
+          <div class="field">
+            <label for="fieldLimitUnit">Measure</label>
+            <select id="fieldLimitUnit"><option value="chars">Characters</option><option value="words">Words</option></select>
+          </div>
+        </div>
+      </div>
+
+      <div id="choiceSettings" hidden>
+        <div class="ca-section-divider">Choices</div>
+        <div class="field">
+          <label>Options</label>
+          <div class="ef-option-editor" id="optionEditor"></div>
+          <button class="ef-inline-add" type="button" id="addOptionBtn">+ Add option</button>
+        </div>
+      </div>
+
+      <div id="fileSettings" hidden>
+        <div class="ca-section-divider">Upload rules</div>
+        <div class="form-grid">
+          <div class="field"><label for="fieldFileTypes">Allowed files</label><select id="fieldFileTypes"><option>PDF, PPT/PPTX</option><option>PDF only</option><option>Images</option><option>Any common file</option></select></div>
+          <div class="field"><label for="fieldFileSize">Max size</label><select id="fieldFileSize"><option>10 MB</option><option>25 MB</option><option>50 MB</option><option>100 MB</option></select></div>
+        </div>
+      </div>
+
+      <div id="categorySettings">
+        <div class="ca-section-divider">Category visibility</div>
+        <div class="ef-visibility-choice">
+          <button type="button" class="ef-visibility-option active" data-visibility="all"><span>●</span><div><b>All categories</b><small>Everyone sees this question</small></div></button>
+          <button type="button" class="ef-visibility-option" data-visibility="selected"><span>○</span><div><b>Specific categories</b><small>Show only for selected entries</small></div></button>
+        </div>
+        <div class="ef-category-picker" id="categoryPicker" hidden></div>
+      </div>
+
+      <div id="logicSettings">
+        <div class="ca-section-divider">Conditional logic</div>
+        <button class="ef-toggle-row" type="button" id="logicToggle"><span class="ef-switch"><i></i></span><div><b>Show only when...</b><small>Display this question based on an earlier answer</small></div></button>
+        <div class="ef-logic-grid" id="logicGrid" hidden>
+          <select id="logicField"></select>
+          <select id="logicOperator"><option value="equals">is</option><option value="not_equals">is not</option></select>
+          <input id="logicValue" placeholder="Value / choice">
+        </div>
+      </div>
+    </div>
+    <div class="cat-drawer-foot ef-drawer-foot">
+      <button class="btn secondary ef-delete-field" type="button" id="deleteFieldBtn">Delete</button>
+      <div class="ef-drawer-spacer"></div>
+      <button class="btn secondary" type="button" data-close-field>Cancel</button>
+      <button class="btn primary" type="button" id="saveFieldBtn">Save question</button>
+    </div>
+  </div>
+</div>
+
+<div class="ef-preview-modal" id="previewModal" aria-hidden="true">
+  <div class="ef-preview-backdrop" data-close-preview></div>
+  <div class="ef-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="previewTitle">
+    <div class="ef-preview-head">
+      <div><span class="eyebrow">ENTRANT EXPERIENCE</span><h2 id="previewTitle">Preview nomination form</h2></div>
+      <div class="ef-preview-head-actions"><select id="previewCategory"></select><button class="cat-close" data-close-preview>×</button></div>
+    </div>
+    <div class="ef-preview-body">
+      <div class="ef-public-shell">
+        <div class="ef-public-brand"><div class="brandmark">A</div><b id="publicAwardName">India FinTech Awards 2027</b><span>Draft saved</span></div>
+        <div class="ef-public-content">
+          <div class="ef-public-progress"><span style="width:34%"></span></div>
+          <small>ENTRY FORM</small>
+          <h1 id="publicFormTitle">Nomination form</h1>
+          <p id="publicFormIntro">Tell us what makes your work exceptional.</p>
+          <div id="publicFields"></div>
+          <div class="ef-public-actions"><button class="btn secondary">Save draft</button><button class="btn primary">Continue →</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="cat-copilot-panel ef-copilot-panel" id="copilotPanel" aria-hidden="true">
+  <div class="cat-copilot-head"><div><span class="eyebrow">AWARD COPILOT</span><h3>Form assistant</h3></div><button id="closeCopilot">×</button></div>
+  <p>Improve the form without rebuilding it manually. This manager demo uses preset recommendations.</p>
+  <div class="cat-copilot-options">
+    <button data-copilot-action="judge">Align questions to judging</button>
+    <button data-copilot-action="shorter">Reduce completion time</button>
+    <button data-copilot-action="evidence">Improve evidence questions</button>
+    <button data-copilot-action="category">Suggest category-specific logic</button>
+  </div>
+  <div class="cat-copilot-answer" id="copilotAnswer">Choose a prompt above to see a recommendation.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('awardflow_new_award')||'null')}catch(e){return null}})();
+  const award=savedAward||{name:'India FinTech Awards 2027',slug:'india-fintech-awards-2027',website:'indiafintechawards.awardflow.demo'};
+  const awardSlug=award.slug||'demo';
+  const categoryKey=savedAward&&savedAward.slug?'awardflow_categories_'+savedAward.slug:'awardflow_categories_demo';
+  const formKey='awardflow_entry_form_'+awardSlug;
+  let categories=(()=>{try{return JSON.parse(localStorage.getItem(categoryKey)||'[]')}catch(e){return []}})();
+  if(!Array.isArray(categories)||!categories.length){categories=[
+    {id:'cat1',name:'Best FinTech Startup'},
+    {id:'cat2',name:'Best Digital Banking Innovation'},
+    {id:'cat3',name:'Best Payments Solution'},
+    {id:'cat4',name:'FinTech Leader of the Year'}
+  ];}
+
+  const typeMeta={
+    short:{icon:'Aa',name:'Short text',hint:'One-line answer'},
+    long:{icon:'¶',name:'Long answer',hint:'Paragraph response'},
+    single:{icon:'◉',name:'Single choice',hint:'Choose one'},
+    multi:{icon:'☑',name:'Multiple choice',hint:'Choose many'},
+    number:{icon:'123',name:'Number',hint:'Numeric answer'},
+    file:{icon:'⇧',name:'File upload',hint:'Upload evidence'},
+    url:{icon:'↗',name:'Link / video',hint:'URL answer'},
+    section:{icon:'—',name:'Section header',hint:'Organize the form'}
+  };
+
+  const defaults=[
+    {type:'section',label:'About you',help:'Tell us who is submitting this entry.'},
+    {type:'short',label:'Contact name',help:'Primary contact for this nomination.',required:true,limit:100,limitUnit:'chars'},
+    {type:'short',label:'Work email',help:'We will send submission updates here.',required:true,limit:120,limitUnit:'chars'},
+    {type:'short',label:'Organisation name',help:'Company, team or individual being entered.',required:true,limit:140,limitUnit:'chars'},
+    {type:'section',label:'About this entry',help:'Help the judges understand the work and why it deserves recognition.'},
+    {type:'short',label:'Entry title',help:'Use a clear title that judges can recognise.',required:true,limit:120,limitUnit:'chars'},
+    {type:'long',label:'Executive summary',help:'Summarise the entry, the problem solved and the outcome.',required:true,limit:300,limitUnit:'words'},
+    {type:'long',label:'Innovation & differentiation',help:'What is new, distinctive or difficult to replicate?',required:true,limit:500,limitUnit:'words'},
+    {type:'long',label:'Impact & measurable results',help:'Share outcomes, metrics and evidence that demonstrate impact.',required:true,limit:500,limitUnit:'words'},
+    {type:'section',label:'Evidence',help:'Optional proof helps judges validate the story.'},
+    {type:'file',label:'Supporting deck',help:'Upload one concise PDF or presentation.',required:false,fileTypes:'PDF, PPT/PPTX',fileSize:'25 MB'},
+    {type:'url',label:'Demo, website or video link',help:'Optional link to supporting material.',required:false,limit:300,limitUnit:'chars'}
+  ];
+
+  function normalizeField(f){return Object.assign({
+    id:'q_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),type:'short',label:'Untitled question',help:'',required:false,
+    limit:0,limitUnit:'chars',options:['Option 1','Option 2'],visibility:'all',categories:[],logic:{enabled:false,fieldId:'',operator:'equals',value:''},fileTypes:'PDF, PPT/PPTX',fileSize:'25 MB'
+  },f,{logic:Object.assign({enabled:false,fieldId:'',operator:'equals',value:''},f.logic||{})});}
+
+  let saved=(()=>{try{return JSON.parse(localStorage.getItem(formKey)||'null')}catch(e){return null}})();
+  let form={title:'Nomination form',intro:'Tell us what makes your work exceptional. You can save a draft and return before the deadline.',categoryMode:'before',fields:defaults.map(normalizeField)};
+  if(saved&&Array.isArray(saved.fields)){form={title:saved.title||'Nomination form',intro:saved.intro||'',categoryMode:saved.categoryMode||'before',fields:saved.fields.map(normalizeField)};}
+
+  let editingId=null;
+  let draftField=null;
+  let dragId=null;
+  let visibilityMode='all';
+
+  function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1900)}
+  function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+  function save(silent){form.title=$('formTitle').value.trim()||'Nomination form';form.intro=$('formIntro').value.trim();form.categoryMode=$('formCategoryMode').value;localStorage.setItem(formKey,JSON.stringify(form));if(!silent)toast('Entry form saved');updateUI();}
+  function categoryName(id){const c=categories.find(x=>x.id===id);return c?c.name:''}
+  function questionFields(){return form.fields.filter(f=>f.type!=='section')}
+  function countWordsForField(f){if(f.type==='long')return Number(f.limit||300);return 0}
+  function estimateMinutes(){let sec=0;form.fields.forEach(f=>{if(f.type==='section')return;if(f.type==='long')sec+=Math.min(300,Math.max(45,Number(f.limit||300)*.45));else if(f.type==='file')sec+=75;else if(['single','multi'].includes(f.type))sec+=25;else sec+=20;});return Math.max(2,Math.round(sec/60))}
+  function health(){const qs=questionFields();const mins=estimateMinutes();let score=96;if(qs.length>12)score-=Math.min(25,(qs.length-12)*3);if(mins>12)score-=Math.min(25,(mins-12)*3);const longWords=qs.reduce((n,f)=>n+countWordsForField(f),0);if(longWords>1800)score-=8;score=Math.max(45,Math.round(score));return score}
+  function displayLimit(f){if(!f.limit)return'';return f.limit+' '+(f.limitUnit==='words'?'words':'characters')}
+
+  function renderQuestions(){
+    const list=$('questionList');
+    list.innerHTML='';
+    $('formEmpty').hidden=form.fields.length>0;
+    $('questionCount').textContent=questionFields().length;
+    form.fields.forEach((f,index)=>{
+      if(f.type==='section'){
+        const el=document.createElement('div');
+        el.className='ef-section-row';el.draggable=true;el.dataset.id=f.id;
+        el.innerHTML='<div class="ef-drag">⋮⋮</div><div class="ef-section-line"><span>SECTION</span><b>'+esc(f.label)+'</b><small>'+esc(f.help||'')+'</small></div><div class="ef-row-actions"><button data-action="edit" title="Edit">✎</button><button data-action="duplicate" title="Duplicate">⧉</button></div>';
+        list.appendChild(el);bindDrag(el);return;
+      }
+      const meta=[];
+      if(f.required)meta.push('Required');
+      if(f.limit)meta.push(displayLimit(f));
+      if(f.visibility==='selected'&&f.categories.length)meta.push(f.categories.length+' categor'+(f.categories.length===1?'y':'ies'));
+      if(f.logic&&f.logic.enabled)meta.push('Conditional');
+      const el=document.createElement('div');el.className='ef-question-row';el.draggable=true;el.dataset.id=f.id;
+      el.innerHTML='<div class="ef-drag">⋮⋮</div><div class="ef-type-icon">'+esc(typeMeta[f.type]?.icon||'Aa')+'</div><div class="ef-row-main"><div class="ef-row-title"><b>'+esc(f.label)+'</b>'+(f.required?'<span class="ef-required-pill">Required</span>':'')+'</div><p>'+esc(f.help||typeMeta[f.type]?.hint||'')+'</p><div class="ef-row-meta"><span>'+esc(typeMeta[f.type]?.name||f.type)+'</span>'+meta.map(m=>'<span>'+esc(m)+'</span>').join('')+'</div></div><div class="ef-row-actions"><button data-action="edit" title="Edit">✎</button><button data-action="duplicate" title="Duplicate">⧉</button><button data-action="delete" title="Delete">×</button></div>';
+      list.appendChild(el);bindDrag(el);
+    });
+  }
+
+  function bindDrag(el){
+    el.addEventListener('dragstart',()=>{dragId=el.dataset.id;el.classList.add('dragging')});
+    el.addEventListener('dragend',()=>{dragId=null;el.classList.remove('dragging');document.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'))});
+    el.addEventListener('dragover',e=>{e.preventDefault();if(dragId&&dragId!==el.dataset.id)el.classList.add('drag-over')});
+    el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));
+    el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');if(!dragId||dragId===el.dataset.id)return;const from=form.fields.findIndex(x=>x.id===dragId),to=form.fields.findIndex(x=>x.id===el.dataset.id);const [item]=form.fields.splice(from,1);form.fields.splice(to,0,item);save(true);});
+  }
+
+  function renderMiniPreview(){
+    $('miniAwardName').textContent=award.name||'Untitled Award';
+    $('miniFormTitle').textContent=$('formTitle').value||'Nomination form';
+    $('miniIntro').textContent=$('formIntro').value||'';
+    $('previewDomain').textContent=(award.website||((award.slug||'your-award')+'.awardflow.app')).replace(/^https?:\/\//,'').slice(0,28);
+    const box=$('miniFields');box.innerHTML='';
+    form.fields.filter(f=>f.type!=='section').slice(0,3).forEach(f=>{const d=document.createElement('div');d.className='ef-mini-field';d.innerHTML='<span>'+esc(f.label)+(f.required?' *':'')+'</span><i></i>';box.appendChild(d)});
+    if(questionFields().length>3){const more=document.createElement('small');more.className='ef-mini-more';more.textContent='+'+(questionFields().length-3)+' more questions';box.appendChild(more)}
+  }
+
+  function renderHealth(){
+    const qs=questionFields();const req=qs.filter(f=>f.required).length;const specific=qs.filter(f=>f.visibility==='selected'&&f.categories.length).length;const logic=qs.filter(f=>f.logic&&f.logic.enabled).length;const mins=estimateMinutes();const score=health();
+    $('estimatedTime').textContent=mins+' min';$('requiredCount').textContent=req;$('specificCount').textContent=specific;$('logicCount').textContent=logic;$('healthScore').textContent=score;
+    const badge=$('healthBadge');
+    if(score>=80){badge.textContent='Good';badge.className='badge green';$('healthTitle').textContent='Easy to complete';$('healthText').textContent='Balanced length for an awards entry.';}
+    else if(score>=65){badge.textContent='Review';badge.className='badge orange';$('healthTitle').textContent='A little demanding';$('healthText').textContent='Consider removing or shortening a few questions.';}
+    else{badge.textContent='Long';badge.className='badge red';$('healthTitle').textContent='Likely to lose entries';$('healthText').textContent='Reduce the number or length of required answers.';}
+    $('insightText').textContent=mins>12?'Your form is estimated at '+mins+' minutes. Shortening it may improve completion.':'Ask only what you will use for eligibility, judging or storytelling. Extra questions reduce completion.';
+  }
+
+  function updateProgress(){
+    const qs=questionFields();const complete=qs.length>=4;const pct=complete?60:45;$('setupPct').textContent=pct+'%';$('setupBar').style.width=pct+'%';
+    $('formProgressIcon').textContent=complete?'✓':'○';$('formProgressIcon').className=complete?'ok':'';$('formProgressText').textContent=complete?qs.length+' questions ready':'Add at least 4 questions';
+    $('categoryProgressText').textContent=categories.length+' categor'+(categories.length===1?'y':'ies')+' ready';$('trackCategories').textContent=categories.length?'Complete':'No categories';
+  }
+
+  function updateUI(){renderQuestions();renderMiniPreview();renderHealth();updateProgress()}
+
+  function makeTailoredForm(){
+    const isFintech=/fintech|financial|bank|payment/i.test(award.name||'');
+    const tailored=defaults.map(x=>normalizeField(x));
+    if(isFintech){
+      const idx=tailored.findIndex(f=>f.label==='Impact & measurable results');
+      tailored.splice(idx+1,0,normalizeField({type:'long',label:'Trust, security & compliance',help:'How did you address customer trust, risk, security or regulatory considerations?',required:true,limit:350,limitUnit:'words'}));
+    } else {
+      const idx=tailored.findIndex(f=>f.label==='Impact & measurable results');
+      tailored.splice(idx+1,0,normalizeField({type:'long',label:'Future potential',help:'How can this work scale, influence the industry or create lasting value?',required:false,limit:300,limitUnit:'words'}));
+    }
+    if(categories.length){
+      const leader=categories.find(c=>/leader|person|ceo|individual/i.test(c.name||''));
+      if(leader)tailored.push(normalizeField({type:'long',label:'Leadership contribution',help:'Describe the individual contribution and influence of the nominee.',required:true,limit:400,limitUnit:'words',visibility:'selected',categories:[leader.id]}));
+    }
+    return tailored;
+  }
+
+  function shorten(){
+    let removed=0;
+    const optionalLong=form.fields.filter(f=>f.type==='long'&&!f.required);
+    optionalLong.forEach(f=>{if(removed<2){form.fields=form.fields.filter(x=>x.id!==f.id);removed++}});
+    form.fields.forEach(f=>{if(f.type==='long'&&Number(f.limit)>500)f.limit=500});
+    form.fields.forEach(f=>{if(f.type==='long'&&Number(f.limit||0)>400)f.limit=400});
+    if(!removed&&form.fields.filter(f=>f.type==='long').length>3){const longs=form.fields.filter(f=>f.type==='long');const target=longs[longs.length-1];target.required=false;target.limit=Math.min(Number(target.limit||300),300)}
+    save(true);toast('Form shortened · estimated '+estimateMinutes()+' min');
+  }
+
+  function openAddTray(){$('addTray').hidden=false;$('addTray').scrollIntoView({behavior:'smooth',block:'nearest'})}
+  function closeAddTray(){$('addTray').hidden=true}
+
+  function openField(id,type){
+    editingId=id||null;
+    const existing=id?form.fields.find(x=>x.id===id):null;
+    draftField=normalizeField(existing?JSON.parse(JSON.stringify(existing)):{type:type||'short',label:type==='section'?'New section':'Untitled question',required:type==='section'?false:true,limit:type==='long'?500:(type==='short'?160:0),limitUnit:type==='long'?'words':'chars'});
+    visibilityMode=draftField.visibility||'all';
+    $('fieldDrawerEyebrow').textContent=editingId?'EDIT QUESTION':'NEW QUESTION';$('fieldDrawerTitle').textContent=editingId?'Edit question':'Add question';$('saveFieldBtn').textContent=editingId?'Save changes':'Add question';$('deleteFieldBtn').hidden=!editingId;
+    fillDrawer();$('fieldModal').classList.add('open');$('fieldModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$('fieldLabel').focus(),80);
+  }
+  function closeField(){$('fieldModal').classList.remove('open');$('fieldModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');draftField=null;editingId=null}
+
+  function fillDrawer(){
+    $('fieldLabel').value=draftField.label||'';$('fieldHelp').value=draftField.help||'';$('fieldType').value=draftField.type;$('fieldLimit').value=draftField.limit||0;$('fieldLimitUnit').value=draftField.limitUnit||'chars';$('fieldFileTypes').value=draftField.fileTypes||'PDF, PPT/PPTX';$('fieldFileSize').value=draftField.fileSize||'25 MB';
+    setToggle($('requiredToggle'),!!draftField.required);setToggle($('logicToggle'),!!draftField.logic.enabled);
+    document.querySelectorAll('.ef-visibility-option').forEach(b=>b.classList.toggle('active',b.dataset.visibility===visibilityMode));
+    renderDrawerSpecial();renderOptions();renderCategoryPicker();renderLogicFields();
+  }
+  function setToggle(el,on){el.classList.toggle('active',on)}
+  function renderDrawerSpecial(){
+    const t=$('fieldType').value;const isSection=t==='section';$('requiredFieldWrap').hidden=isSection;$('limitSettings').hidden=!['short','long','number','url'].includes(t);$('choiceSettings').hidden=!['single','multi'].includes(t);$('fileSettings').hidden=t!=='file';$('categorySettings').hidden=isSection;$('logicSettings').hidden=isSection;
+  }
+  function renderOptions(){const box=$('optionEditor');box.innerHTML='';(draftField.options||[]).forEach((o,i)=>{const row=document.createElement('div');row.className='ef-option-row';row.innerHTML='<span>≡</span><input value="'+esc(o)+'" data-option-index="'+i+'"><button data-remove-option="'+i+'">×</button>';box.appendChild(row)})}
+  function renderCategoryPicker(){const box=$('categoryPicker');box.hidden=visibilityMode!=='selected';box.innerHTML='';categories.forEach(c=>{const checked=(draftField.categories||[]).includes(c.id);const label=document.createElement('label');label.innerHTML='<input type="checkbox" value="'+esc(c.id)+'" '+(checked?'checked':'')+'><span>'+esc(c.name)+'</span>';box.appendChild(label)})}
+  function logicCandidates(){return form.fields.filter(f=>f.id!==editingId&&['single','multi','short','number'].includes(f.type))}
+  function renderLogicFields(){
+    $('logicGrid').hidden=!draftField.logic.enabled;const select=$('logicField');const candidates=logicCandidates();select.innerHTML='<option value="">Choose earlier question</option>'+candidates.map(f=>'<option value="'+esc(f.id)+'">'+esc(f.label)+'</option>').join('');select.value=draftField.logic.fieldId||'';$('logicOperator').value=draftField.logic.operator||'equals';$('logicValue').value=draftField.logic.value||'';
+    if(!candidates.length&&draftField.logic.enabled){select.innerHTML='<option value="">No eligible earlier questions yet</option>';select.disabled=true;$('logicOperator').disabled=true;$('logicValue').disabled=true;}else{select.disabled=false;$('logicOperator').disabled=false;$('logicValue').disabled=false;}
+  }
+
+  function collectDraft(){
+    draftField.label=$('fieldLabel').value.trim();draftField.help=$('fieldHelp').value.trim();draftField.type=$('fieldType').value;draftField.required=$('requiredToggle').classList.contains('active')&&draftField.type!=='section';draftField.limit=Number($('fieldLimit').value||0);draftField.limitUnit=$('fieldLimitUnit').value;draftField.fileTypes=$('fieldFileTypes').value;draftField.fileSize=$('fieldFileSize').value;draftField.visibility=visibilityMode;
+    draftField.categories=visibilityMode==='selected'?[...$('categoryPicker').querySelectorAll('input:checked')].map(x=>x.value):[];
+    draftField.logic.enabled=$('logicToggle').classList.contains('active')&&draftField.type!=='section';
+    if(draftField.logic.enabled&&$('logicField')){draftField.logic.fieldId=$('logicField').value;draftField.logic.operator=$('logicOperator').value;draftField.logic.value=$('logicValue').value.trim()}
+    if(['single','multi'].includes(draftField.type)){draftField.options=[...$('optionEditor').querySelectorAll('input')].map(x=>x.value.trim()).filter(Boolean);if(draftField.options.length<2)draftField.options=['Option 1','Option 2']}
+    if(draftField.type==='section'){draftField.required=false;draftField.visibility='all';draftField.categories=[];draftField.logic.enabled=false}
+  }
+
+  function saveField(){
+    collectDraft();$('fieldLabelError').textContent='';if(!draftField.label){$('fieldLabelError').textContent='Add a question or section title.';$('fieldLabel').focus();return}
+    const wasEditing=!!editingId;
+    if(editingId){const idx=form.fields.findIndex(x=>x.id===editingId);form.fields[idx]=normalizeField(draftField)}else form.fields.push(normalizeField(draftField));
+    closeField();save(true);toast(wasEditing?'Question updated':'Question added');
+  }
+
+  function duplicateField(id){const f=form.fields.find(x=>x.id===id);if(!f)return;const idx=form.fields.findIndex(x=>x.id===id);const copy=normalizeField(JSON.parse(JSON.stringify(f)));copy.id='q_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);copy.label=f.label+' copy';form.fields.splice(idx+1,0,copy);save(true);toast('Question duplicated')}
+  function deleteField(id){const f=form.fields.find(x=>x.id===id);if(!f)return;if(!confirm('Delete “'+f.label+'”?'))return;form.fields=form.fields.filter(x=>x.id!==id);save(true);toast('Question deleted')}
+
+  function fieldVisibleForCategory(f,catId){return f.visibility!=='selected'||!f.categories.length||f.categories.includes(catId)}
+  function publicInput(f){
+    const req=f.required?' <em>*</em>':'';const help=f.help?'<small>'+esc(f.help)+'</small>':'';
+    if(f.type==='section')return '<div class="ef-public-section"><span>SECTION</span><h3>'+esc(f.label)+'</h3>'+help+'</div>';
+    let control='';
+    if(f.type==='long')control='<textarea placeholder="Type your answer..."></textarea>';
+    else if(f.type==='single'||f.type==='multi')control='<div class="ef-public-options">'+(f.options||[]).map(o=>'<label><input type="'+(f.type==='single'?'radio':'checkbox')+'" disabled> '+esc(o)+'</label>').join('')+'</div>';
+    else if(f.type==='file')control='<div class="ef-public-upload">⇧ <b>Upload supporting file</b><span>'+esc(f.fileTypes||'PDF')+' · '+esc(f.fileSize||'25 MB')+'</span></div>';
+    else control='<input placeholder="'+(f.type==='url'?'https://':'Type your answer...')+'">';
+    const limit=f.limit?'<span class="ef-public-limit">Max '+esc(displayLimit(f))+'</span>':'';
+    return '<div class="ef-public-field"><label>'+esc(f.label)+req+'</label>'+help+control+limit+'</div>';
+  }
+  function openPreview(){
+    const select=$('previewCategory');select.innerHTML='<option value="">All / first category</option>'+categories.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('');renderPublicPreview();$('previewModal').classList.add('open');$('previewModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+  }
+  function closePreview(){$('previewModal').classList.remove('open');$('previewModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
+  function renderPublicPreview(){
+    const cat=$('previewCategory').value||categories[0]?.id||'';$('publicAwardName').textContent=award.name||'Untitled Award';$('publicFormTitle').textContent=$('formTitle').value||'Nomination form';$('publicFormIntro').textContent=$('formIntro').value||'';
+    const visible=form.fields.filter(f=>fieldVisibleForCategory(f,cat));$('publicFields').innerHTML=visible.map(publicInput).join('')||'<div class="empty">No questions for this category yet.</div>';
+  }
+
+  $('sideAwardName').textContent=award.name||'Untitled Award';$('crumbAward').textContent=award.name||'Untitled Award';$('publicAwardName').textContent=award.name||'Untitled Award';$('miniAwardName').textContent=award.name||'Untitled Award';
+  $('formTitle').value=form.title;$('formIntro').value=form.intro;$('formCategoryMode').value=form.categoryMode;
+
+  $('saveBtn').addEventListener('click',()=>save(false));$('formTitle').addEventListener('input',renderMiniPreview);$('formIntro').addEventListener('input',renderMiniPreview);$('formCategoryMode').addEventListener('change',()=>save(true));
+  $('addQuestionBtn').addEventListener('click',openAddTray);$('closeTray').addEventListener('click',closeAddTray);$('emptyGenerateBtn').addEventListener('click',()=>{$('generateFormBtn').click()});
+  document.querySelectorAll('[data-add-type]').forEach(b=>b.addEventListener('click',()=>{closeAddTray();openField(null,b.dataset.addType)}));
+  $('questionList').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const row=e.target.closest('[data-id]');if(!row)return;const id=row.dataset.id;if(b.dataset.action==='edit')openField(id);if(b.dataset.action==='duplicate')duplicateField(id);if(b.dataset.action==='delete')deleteField(id)});
+
+  document.querySelectorAll('[data-close-field]').forEach(x=>x.addEventListener('click',closeField));$('fieldType').addEventListener('change',()=>{draftField.type=$('fieldType').value;renderDrawerSpecial()});
+  $('requiredToggle').addEventListener('click',()=>setToggle($('requiredToggle'),!$('requiredToggle').classList.contains('active')));$('logicToggle').addEventListener('click',()=>{draftField.logic.enabled=!$('logicToggle').classList.contains('active');setToggle($('logicToggle'),draftField.logic.enabled);renderLogicFields()});
+  document.querySelectorAll('.ef-visibility-option').forEach(b=>b.addEventListener('click',()=>{visibilityMode=b.dataset.visibility;document.querySelectorAll('.ef-visibility-option').forEach(x=>x.classList.toggle('active',x===b));renderCategoryPicker()}));
+  $('addOptionBtn').addEventListener('click',()=>{draftField.options=[...$('optionEditor').querySelectorAll('input')].map(x=>x.value);draftField.options.push('New option');renderOptions()});
+  $('optionEditor').addEventListener('click',e=>{const b=e.target.closest('[data-remove-option]');if(!b)return;draftField.options=[...$('optionEditor').querySelectorAll('input')].map(x=>x.value);draftField.options.splice(Number(b.dataset.removeOption),1);renderOptions()});
+  $('saveFieldBtn').addEventListener('click',saveField);$('deleteFieldBtn').addEventListener('click',()=>{const id=editingId;closeField();if(id)deleteField(id)});
+
+  $('generateFormBtn').addEventListener('click',()=>{if(form.fields.length&& !confirm('Replace the current form with a tailored recommended form?'))return;form.fields=makeTailoredForm();save(true);toast('Recommended form generated · '+questionFields().length+' questions')});
+  $('shortenFormBtn').addEventListener('click',shorten);
+  $('previewBtn').addEventListener('click',openPreview);$('miniPreviewBtn').addEventListener('click',openPreview);document.querySelectorAll('[data-close-preview]').forEach(x=>x.addEventListener('click',closePreview));$('previewCategory').addEventListener('change',renderPublicPreview);
+
+  $('copilotBtn').addEventListener('click',()=>{$('copilotPanel').classList.toggle('open')});$('closeCopilot').addEventListener('click',()=>$('copilotPanel').classList.remove('open'));
+  document.querySelectorAll('[data-copilot-action]').forEach(b=>b.addEventListener('click',()=>{
+    const a=b.dataset.copilotAction;let msg='';
+    if(a==='judge')msg='Your strongest judging-ready questions are Executive summary, Innovation & differentiation, and Impact & measurable results. Keep those required and mirror them in the scoring criteria.';
+    if(a==='shorter')msg='The form is about '+estimateMinutes()+' minutes. Keep 3 core narrative questions, make supporting links optional, and avoid asking company information twice.';
+    if(a==='evidence')msg='Ask for measurable outcomes inside the Impact question, then provide one optional supporting upload. This keeps evidence useful without making every entrant build a large deck.';
+    if(a==='category')msg=categories.length?'You have '+categories.length+' categories. Keep the core form universal and add only 1–2 category-specific questions where judging genuinely differs.':'Add categories first, then I can suggest category-specific questions.';
+    $('copilotAnswer').textContent=msg;
+  }));
+
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('fieldModal').classList.contains('open'))closeField();else if($('previewModal').classList.contains('open'))closePreview();else $('copilotPanel').classList.remove('open')}});
+  updateUI();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Reports & Analytics · AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="reports.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">◇</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">▣</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a class="active" href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb"><span id="crumbAwardName">India FinTech Awards 2027</span> / Reports & Analytics</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="openCopilot">✦ Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main rp-main">
+      <div class="page-head rp-head">
+        <div>
+          <div class="eyebrow">INSIGHTS · PAGE 16</div>
+          <h1>Reports & Analytics</h1>
+          <p>Understand the full award lifecycle — acquisition, entries, revenue, judging, winners and ceremony impact — in one executive view.</p>
+        </div>
+        <div class="rp-head-actions">
+          <div class="rp-date-control">
+            <span>Period</span>
+            <select id="periodSelect">
+              <option value="full">Full award cycle</option>
+              <option value="30">Last 30 days</option>
+              <option value="14">Last 14 days</option>
+              <option value="7">Last 7 days</option>
+            </select>
+          </div>
+          <button class="btn secondary" id="shareSnapshot">↗ Share snapshot</button>
+          <button class="btn primary" id="openExport">⇩ Export report</button>
+        </div>
+      </div>
+
+      <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage done">DECIDE</div><div class="stage done">CELEBRATE</div></div>
+
+      <section class="rp-tabs" aria-label="Report views">
+        <button class="active" data-tab="executive">Executive</button>
+        <button data-tab="acquisition">Acquisition</button>
+        <button data-tab="revenue">Revenue</button>
+        <button data-tab="judging">Judging</button>
+        <button data-tab="celebration">Celebration</button>
+      </section>
+
+      <section class="rp-kpis">
+        <article class="rp-kpi">
+          <div class="rp-kpi-top"><span class="rp-kpi-icon">⇩</span><span class="rp-change up">↑ 12.4%</span></div>
+          <small>Completed entries</small><strong id="kpiEntries">1,284</strong><em>of 1,620 started</em>
+        </article>
+        <article class="rp-kpi">
+          <div class="rp-kpi-top"><span class="rp-kpi-icon">₹</span><span class="rp-change up">↑ 8.7%</span></div>
+          <small>Revenue collected</small><strong id="kpiRevenue">₹25.68L</strong><em id="revenueSub">₹2,000 avg. per paid entry</em>
+        </article>
+        <article class="rp-kpi">
+          <div class="rp-kpi-top"><span class="rp-kpi-icon">↗</span><span class="rp-change up">↑ 2.1 pts</span></div>
+          <small>Visitor → paid entry</small><strong id="kpiConversion">9.0%</strong><em>1,126 paid entries</em>
+        </article>
+        <article class="rp-kpi">
+          <div class="rp-kpi-top"><span class="rp-kpi-icon">◎</span><span class="rp-change up">↑ 0.6x</span></div>
+          <small>Campaign return</small><strong id="kpiRoi">4.8×</strong><em>attributed revenue / spend</em>
+        </article>
+      </section>
+
+      <section class="rp-insight" id="executiveInsight">
+        <div class="rp-insight-icon">✦</div>
+        <div>
+          <small>AWARD COPILOT · EXECUTIVE SUMMARY</small>
+          <h3 id="insightTitle">Your strongest opportunity is conversion, not more traffic</h3>
+          <p id="insightBody">1,590 people registered but never started an entry. Recovering just 5% of them at the current paid-entry rate could create roughly 70 additional paid entries.</p>
+        </div>
+        <button class="btn secondary" id="insightAction">Open recovery audience</button>
+      </section>
+
+      <section class="rp-view active" data-view="executive">
+        <div class="rp-grid rp-grid-main">
+          <article class="card rp-card rp-funnel-card">
+            <div class="rp-card-head">
+              <div><small>LIFECYCLE FUNNEL</small><h2>From visitor to winner</h2><p>See where people progress and where AwardFlow is losing momentum.</p></div>
+              <div class="rp-card-actions"><button class="text-btn" id="toggleFunnelMode">Show conversion</button></div>
+            </div>
+            <div class="rp-funnel" id="lifecycleFunnel"></div>
+            <div class="rp-funnel-foot" id="funnelFoot">
+              <span><i class="good"></i>Strongest step <b>Submitted → Paid 87.7%</b></span>
+              <span><i class="warn"></i>Biggest leak <b>Registered → Started 50.5%</b></span>
+            </div>
+          </article>
+
+          <aside class="card rp-card rp-health-card">
+            <div class="rp-card-head compact"><div><small>AWARD HEALTH</small><h2>Executive score</h2></div><span class="rp-health-score" id="healthScore">86%</span></div>
+            <div class="rp-health-ring-wrap">
+              <div class="rp-health-ring" id="healthRing"><div><strong>86</strong><span>/ 100</span></div></div>
+            </div>
+            <div class="rp-health-list" id="healthList"></div>
+            <button class="btn secondary rp-full" id="viewRecommendations">View recommendations</button>
+          </aside>
+        </div>
+
+        <div class="rp-grid rp-grid-2">
+          <article class="card rp-card">
+            <div class="rp-card-head">
+              <div><small>REVENUE TREND</small><h2>Revenue collected</h2><p>Entry fees, sponsorship and add-ons across the award cycle.</p></div>
+              <span class="rp-card-meta" id="revenueTotalMeta">₹25.68L total</span>
+            </div>
+            <div class="rp-chart-wrap">
+              <svg class="rp-line-chart" id="revenueChart" viewBox="0 0 720 250" preserveAspectRatio="none" aria-label="Revenue trend chart"></svg>
+              <div class="rp-chart-axis" id="revenueAxis"></div>
+            </div>
+            <div class="rp-legend"><span><i class="dot fees"></i>Entry fees</span><span><i class="dot sponsor"></i>Sponsorship</span><span><i class="dot addon"></i>Add-ons</span></div>
+          </article>
+
+          <article class="card rp-card">
+            <div class="rp-card-head">
+              <div><small>CHANNEL ATTRIBUTION</small><h2>Where paid entries come from</h2><p>Compare acquisition quality, not just volume.</p></div>
+              <button class="text-btn" id="sortSources">Sort by revenue</button>
+            </div>
+            <div class="rp-source-list" id="sourceList"></div>
+          </article>
+        </div>
+
+        <div class="rp-grid rp-grid-3">
+          <article class="card rp-card">
+            <div class="rp-card-head compact"><div><small>CATEGORY PERFORMANCE</small><h2>Entry demand</h2></div><button class="text-btn" id="categoryDetails">View all</button></div>
+            <div class="rp-category-list" id="categoryList"></div>
+          </article>
+          <article class="card rp-card">
+            <div class="rp-card-head compact"><div><small>JUDGING QUALITY</small><h2>Panel health</h2></div><span class="rp-card-meta">Round 1</span></div>
+            <div class="rp-mini-metrics">
+              <div><strong>92%</strong><span>reviews complete</span></div><div><strong>8m</strong><span>avg. review</span></div><div><strong>3</strong><span>variance flags</span></div><div><strong>96%</strong><span>coverage</span></div>
+            </div>
+            <div class="rp-progress-group"><div><span>Review completion</span><b>92%</b></div><div class="rp-progress"><i style="width:92%"></i></div></div>
+            <div class="rp-progress-group"><div><span>Judge workload balance</span><b>91%</b></div><div class="rp-progress"><i style="width:91%"></i></div></div>
+            <div class="rp-inline-note"><span>!</span><p><b>3 scoring patterns need review.</b> No result has been changed automatically.</p></div>
+          </article>
+          <article class="card rp-card">
+            <div class="rp-card-head compact"><div><small>CELEBRATION IMPACT</small><h2>After the decision</h2></div><span class="rp-card-meta">Live</span></div>
+            <div class="rp-celebrate-grid">
+              <div><span>◎</span><strong id="celebrateGuests">412</strong><small>confirmed guests</small></div>
+              <div><span>✓</span><strong id="celebrateCheckins">368</strong><small>check-ins</small></div>
+              <div><span>✦</span><strong>8.2K</strong><small>winner gallery views</small></div>
+              <div><span>↗</span><strong>1.4K</strong><small>social shares</small></div>
+            </div>
+            <button class="btn secondary rp-full" data-tab-jump="celebration">Open celebration report</button>
+          </article>
+        </div>
+
+        <article class="card rp-card rp-table-card">
+          <div class="rp-card-head">
+            <div><small>CAMPAIGN PERFORMANCE</small><h2>Marketing that produced entries</h2><p>Campaign metrics are connected to actual entry and payment outcomes.</p></div>
+            <a class="text-btn" href="campaigns.html">Open Campaigns →</a>
+          </div>
+          <div class="table-wrap">
+            <table class="table rp-table">
+              <thead><tr><th>Campaign</th><th>Audience</th><th>Sent</th><th>Open</th><th>Click</th><th>Converted</th><th>Revenue</th><th>Efficiency</th></tr></thead>
+              <tbody id="campaignTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="rp-view" data-view="acquisition">
+        <div class="rp-grid rp-grid-2">
+          <article class="card rp-card"><div class="rp-card-head"><div><small>ACQUISITION FUNNEL</small><h2>Traffic → entry conversion</h2><p>Identify the exact stage that needs growth attention.</p></div><span class="rp-card-meta">Full cycle</span></div><div class="rp-acq-funnel" id="acquisitionFunnel"></div></article>
+          <article class="card rp-card"><div class="rp-card-head"><div><small>LEAD QUALITY</small><h2>Intent distribution</h2><p>How much of your audience is genuinely close to entering.</p></div></div><div class="rp-donut-layout"><div class="rp-donut" id="intentDonut"><div><strong>38%</strong><span>high intent</span></div></div><div class="rp-donut-legend"><span><i class="intent-vhigh"></i>Very high <b>14%</b></span><span><i class="intent-high"></i>High <b>24%</b></span><span><i class="intent-mid"></i>Medium <b>37%</b></span><span><i class="intent-low"></i>Low <b>25%</b></span></div></div></article>
+        </div>
+        <div class="rp-grid rp-grid-2">
+          <article class="card rp-card"><div class="rp-card-head compact"><div><small>SOURCE QUALITY</small><h2>Acquisition channels</h2></div></div><div class="rp-source-list" id="sourceListAcq"></div></article>
+          <article class="card rp-card"><div class="rp-card-head compact"><div><small>RECOVERY OPPORTUNITY</small><h2>Warm audiences</h2></div></div><div class="rp-recovery-list"><button data-recovery="registered"><span><b>Registered, no entry</b><small>Already know the award</small></span><strong>1,590</strong><em>Highest volume</em></button><button data-recovery="incomplete"><span><b>Entry started, incomplete</b><small>Highest intent</small></span><strong>296</strong><em>Best conversion</em></button><button data-recovery="payment"><span><b>Submitted, payment pending</b><small>One step from paid</small></span><strong>18</strong><em>₹36K recoverable</em></button><button data-recovery="past"><span><b>Past-year entrants</b><small>Warm re-engagement</small></span><strong>2,184</strong><em>Repeat potential</em></button></div></article>
+        </div>
+      </section>
+
+      <section class="rp-view" data-view="revenue">
+        <div class="rp-grid rp-grid-main">
+          <article class="card rp-card"><div class="rp-card-head"><div><small>REVENUE MIX</small><h2>Where award revenue comes from</h2><p>Track core fees and additional commercial value separately.</p></div><span class="rp-card-meta">₹25.68L</span></div><div class="rp-revenue-mix"><div class="rp-revenue-bar"><i style="width:83.4%"></i><i style="width:15.6%"></i><i style="width:1%"></i></div><div class="rp-revenue-breakdown"><div><span><i class="dot fees"></i>Entry fees</span><b>₹21.42L</b><em>83.4%</em></div><div><span><i class="dot sponsor"></i>Sponsorship</span><b>₹4.00L</b><em>15.6%</em></div><div><span><i class="dot addon"></i>Add-ons</span><b>₹0.26L</b><em>1.0%</em></div></div></div></article>
+          <aside class="card rp-card"><div class="rp-card-head compact"><div><small>COMMERCIAL HEALTH</small><h2>Revenue quality</h2></div></div><div class="rp-health-list"><div class="good"><span>✓</span><p><b>Paid conversion</b><small>87.7% of submitted entries paid</small></p></div><div class="good"><span>✓</span><p><b>Discount control</b><small>Average discount remains below 10%</small></p></div><div class="warn"><span>!</span><p><b>18 payments pending</b><small>₹36K base revenue is still recoverable</small></p></div><div class="good"><span>✓</span><p><b>Revenue concentration</b><small>No single category contributes more than 35%</small></p></div></div><a class="btn secondary rp-full" href="pricing.html">Review pricing</a></aside>
+        </div>
+        <div class="rp-grid rp-grid-2"><article class="card rp-card"><div class="rp-card-head"><div><small>REVENUE TREND</small><h2>Collected over time</h2></div></div><div class="rp-chart-wrap"><svg class="rp-line-chart" id="revenueChartRevenue" viewBox="0 0 720 250" preserveAspectRatio="none"></svg><div class="rp-chart-axis" id="revenueAxisRevenue"></div></div></article><article class="card rp-card"><div class="rp-card-head compact"><div><small>PRICING IMPACT</small><h2>Entry timing</h2></div></div><div class="rp-timing-list"><div><span>Early bird</span><div class="rp-progress"><i style="width:64%"></i></div><b>482 entries</b></div><div><span>Regular</span><div class="rp-progress"><i style="width:89%"></i></div><b>671 entries</b></div><div><span>Late</span><div class="rp-progress"><i style="width:17%"></i></div><b>131 entries</b></div></div><div class="rp-inline-note"><span>✦</span><p><b>Pricing insight.</b> Regular pricing produced the highest revenue without materially lowering conversion.</p></div></article></div>
+      </section>
+
+      <section class="rp-view" data-view="judging">
+        <div class="rp-kpis rp-kpis-inline"><article class="rp-kpi"><small>Review completion</small><strong>92%</strong><em>1,492 of 1,620 assigned</em></article><article class="rp-kpi"><small>Average review time</small><strong>8m</strong><em>per entry</em></article><article class="rp-kpi"><small>Panel balance</small><strong>91%</strong><em>after rebalance</em></article><article class="rp-kpi"><small>Variance flags</small><strong>3</strong><em>human review required</em></article></div>
+        <div class="rp-grid rp-grid-2"><article class="card rp-card"><div class="rp-card-head compact"><div><small>CATEGORY COVERAGE</small><h2>Judging readiness</h2></div></div><div class="rp-coverage-list"><div><span>Best FinTech Startup</span><div class="rp-progress"><i style="width:100%"></i></div><b>100%</b></div><div><span>Best Digital Lending</span><div class="rp-progress"><i style="width:96%"></i></div><b>96%</b></div><div><span>Best Payments Innovation</span><div class="rp-progress"><i style="width:92%"></i></div><b>92%</b></div><div><span>Best AI in Financial Services</span><div class="rp-progress"><i style="width:88%"></i></div><b>88%</b></div><div><span>FinTech Leader of the Year</span><div class="rp-progress"><i style="width:100%"></i></div><b>100%</b></div></div></article><article class="card rp-card"><div class="rp-card-head compact"><div><small>FAIRNESS MONITOR</small><h2>Judge scoring patterns</h2></div></div><div class="rp-judge-list"><div><span class="avatar-sm">VN</span><p><b>Vikram Nair</b><small>Scores 0.8 below panel average</small></p><em class="warn">Review</em></div><div><span class="avatar-sm">MS</span><p><b>Meera Shah</b><small>Ranking alignment is 94%</small></p><em class="good">Healthy</em></div><div><span class="avatar-sm">AR</span><p><b>Arjun Rao</b><small>Score spread within expected range</small></p><em class="good">Healthy</em></div><div><span class="avatar-sm">PN</span><p><b>Priya Nair</b><small>One category has high variance</small></p><em class="warn">Review</em></div></div><a class="btn secondary rp-full" href="scoring.html">Open fairness monitor</a></article></div>
+      </section>
+
+      <section class="rp-view" data-view="celebration">
+        <div class="rp-kpis rp-kpis-inline"><article class="rp-kpi"><small>Winners published</small><strong>5</strong><em>across 5 categories</em></article><article class="rp-kpi"><small>Gallery views</small><strong>8.2K</strong><em>+31% vs shortlist</em></article><article class="rp-kpi"><small>Event attendance</small><strong id="celebrateAttendance">89%</strong><em>checked in / confirmed</em></article><article class="rp-kpi"><small>Winner assets used</small><strong>76%</strong><em>download or share rate</em></article></div>
+        <div class="rp-grid rp-grid-2"><article class="card rp-card"><div class="rp-card-head"><div><small>WINNER ENGAGEMENT</small><h2>Content after announcement</h2><p>Measure whether winner content continues creating value after the awards night.</p></div></div><div class="rp-engagement-bars"><div><span>Winner gallery views</span><b>8,240</b><div class="rp-progress"><i style="width:92%"></i></div></div><div><span>Profile opens</span><b>3,480</b><div class="rp-progress"><i style="width:63%"></i></div></div><div><span>Social shares</span><b>1,420</b><div class="rp-progress"><i style="width:41%"></i></div></div><div><span>Certificate downloads</span><b>24</b><div class="rp-progress"><i style="width:78%"></i></div></div></div></article><article class="card rp-card"><div class="rp-card-head"><div><small>CEREMONY OPERATIONS</small><h2>Event outcome</h2><p>Guest attendance and production readiness from Page 15.</p></div></div><div class="rp-event-metrics"><div><strong id="eventConfirmed">412</strong><span>confirmed</span></div><div><strong id="eventChecked">368</strong><span>checked in</span></div><div><strong id="eventReady">4 / 5</strong><span>stage-ready awards</span></div><div><strong id="eventCues">12</strong><span>run-of-show cues</span></div></div><div class="rp-inline-note"><span>✦</span><p id="eventInsight"><b>Event insight.</b> Check-in was strongest between 17:45 and 18:20. Keep VIP and general lanes separate next year.</p></div></article></div>
+      </section>
+
+      <section class="card rp-card rp-saved-report">
+        <div>
+          <small>EXECUTIVE REPORT</small>
+          <h2>One report for your manager</h2>
+          <p>Generate a clean summary containing lifecycle KPIs, revenue, campaign ROI, judging health and ceremony outcomes.</p>
+        </div>
+        <div class="rp-saved-actions"><button class="btn secondary" id="printReport">▤ Print / Save PDF</button><button class="btn primary" id="downloadCsv">⇩ Download CSV</button></div>
+      </section>
+
+      <div class="footer-note">Interactive manager-demo prototype · Sample data with browser-saved AwardFlow activity</div>
+    </main>
+  </div>
+</div>
+
+<div class="rp-layer" id="exportLayer" aria-hidden="true">
+  <div class="rp-backdrop" data-close-layer="exportLayer"></div>
+  <div class="rp-drawer">
+    <div class="rp-drawer-head"><div><small>EXPORT REPORT</small><h2>Build your manager report</h2><p>Choose the sections to include and export the current AwardFlow snapshot.</p></div><button data-close-layer="exportLayer">×</button></div>
+    <div class="rp-drawer-body">
+      <div class="field"><label>Report title</label><input id="reportTitle" value="India FinTech Awards 2027 · Executive Report"></div>
+      <div class="field"><label>Reporting period</label><select id="exportPeriod"><option>Full award cycle</option><option>Last 30 days</option><option>Last 14 days</option><option>Last 7 days</option></select></div>
+      <div class="rp-export-checks">
+        <label><input type="checkbox" checked> Executive KPIs</label>
+        <label><input type="checkbox" checked> Lifecycle funnel</label>
+        <label><input type="checkbox" checked> Revenue & pricing</label>
+        <label><input type="checkbox" checked> Marketing & acquisition</label>
+        <label><input type="checkbox" checked> Judging health</label>
+        <label><input type="checkbox" checked> Winner & ceremony impact</label>
+      </div>
+      <div class="rp-inline-note"><span>i</span><p><b>Prototype export.</b> CSV downloads work in-browser. For a styled PDF, use Print / Save PDF.</p></div>
+    </div>
+    <div class="rp-drawer-foot"><button class="btn ghost" data-close-layer="exportLayer">Cancel</button><button class="btn secondary" id="drawerPrint">▤ Print / Save PDF</button><button class="btn primary" id="drawerCsv">⇩ Download CSV</button></div>
+  </div>
+</div>
+
+<div class="rp-copilot" id="copilotPanel" aria-hidden="true">
+  <div class="rp-copilot-head"><div><small>AWARD COPILOT</small><h2>Ask about performance</h2></div><button id="closeCopilot">×</button></div>
+  <p>Copilot can explain what changed, where conversion is leaking and what to prioritize next.</p>
+  <div class="rp-copilot-prompts">
+    <button data-question="biggest">What is the biggest growth opportunity?</button>
+    <button data-question="revenue">What is driving revenue?</button>
+    <button data-question="judging">Is judging healthy?</button>
+    <button data-question="manager">What should I tell my manager?</button>
+  </div>
+  <div class="rp-copilot-answer" id="copilotAnswer">Choose a question to generate an executive insight.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script src="reports.js"></script>
+</body>
+</html>

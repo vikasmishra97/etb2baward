@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Shortlist - AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="shortlist.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong>India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">&#8962;</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">&#9671;</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">&#9638;</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">&#9783;</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">Rs</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">&#9635;</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">&#8681;</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">&#9673;</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">&#9993;</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">&#9889;</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">J</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">&#9733;</span><span>Scoring</span></a>
+      <a class="active" href="shortlist.html"><span class="ico">&#10003;</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">W</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">&#10022;</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">&#9636;</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">&#9707;</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">&#8769;</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">&#9881;</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb">India FinTech Awards 2027 / Shortlist</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="openCopilot">&#10022; Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main sl-page">
+      <div class="page-head sl-head">
+        <div>
+          <span class="eyebrow">DECIDE / SHORTLIST</span>
+          <h1>Shortlist</h1>
+          <p>Turn judging results into a defensible finalist list. AwardFlow checks review coverage, ties, score variance, and eligibility before you lock a decision.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn secondary" id="previewShortlist">Preview shortlist</button>
+          <button class="btn primary" id="saveShortlist">Save decisions</button>
+        </div>
+      </div>
+
+      <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage active">DECIDE</div><div class="stage">CELEBRATE</div></div>
+
+      <section class="sl-kpis">
+        <article class="card sl-kpi"><div class="sl-kpi-icon good">&#10003;</div><div><small>Ready to shortlist</small><strong id="readyCount">8</strong><span>Meets all decision rules</span></div></article>
+        <article class="card sl-kpi"><div class="sl-kpi-icon warn">!</div><div><small>Needs review</small><strong id="reviewCount">3</strong><span>Missing review or high variance</span></div></article>
+        <article class="card sl-kpi"><div class="sl-kpi-icon purple">=</div><div><small>Ties to resolve</small><strong id="tieCount">2</strong><span>Within active cut-off</span></div></article>
+        <article class="card sl-kpi"><div class="sl-kpi-icon">#</div><div><small>Categories locked</small><strong id="lockedCount">0 / 5</strong><span>Audit trail starts on lock</span></div></article>
+      </section>
+
+      <section class="sl-copilot-card section">
+        <div class="sl-copilot-icon">&#10022;</div>
+        <div class="sl-copilot-copy">
+          <span>Award Copilot / Decision readiness</span>
+          <h2>Eight entries are ready. Resolve one missing review and two cut-off ties before you lock Best FinTech Startup.</h2>
+          <p>The current top-5 cut-off is 86.8. Rank 5 and 6 are separated by only 0.1 points, so the Innovation tie-break should be reviewed before a final decision.</p>
+        </div>
+        <div class="sl-copilot-actions">
+          <button class="btn secondary compact" id="resolveIssues">Review 3 issues</button>
+          <button class="btn ghost compact" id="applyRecommendations">Apply safe recommendations</button>
+        </div>
+      </section>
+
+      <section class="card sl-category-strip section">
+        <div class="sl-category-head">
+          <div>
+            <small>ACTIVE CATEGORY</small>
+            <h2 id="activeCategoryTitle">Best FinTech Startup</h2>
+          </div>
+          <div class="sl-category-actions">
+            <label class="sl-compact-field">Shortlist size
+              <select id="cutoffSize"><option value="3">Top 3</option><option value="5" selected>Top 5</option><option value="8">Top 8</option><option value="10">Top 10</option></select>
+            </label>
+            <button class="btn ghost compact" id="lockCategory">Lock category</button>
+          </div>
+        </div>
+        <div class="sl-category-tabs" id="categoryTabs">
+          <button class="active" data-category="Best FinTech Startup"><b>Best FinTech Startup</b><span>84 entries</span><em>1 issue</em></button>
+          <button data-category="Best Digital Lending"><b>Best Digital Lending</b><span>63 entries</span><em>Ready</em></button>
+          <button data-category="Best Payments Innovation"><b>Best Payments Innovation</b><span>72 entries</span><em>1 tie</em></button>
+          <button data-category="Best AI in Financial Services"><b>Best AI in Financial Services</b><span>58 entries</span><em>2 issues</em></button>
+          <button data-category="FinTech Leader of the Year"><b>FinTech Leader of the Year</b><span>41 entries</span><em>Ready</em></button>
+        </div>
+      </section>
+
+      <div class="sl-layout section">
+        <div class="sl-main-col">
+          <section class="card sl-panel">
+            <div class="sl-panel-head">
+              <div>
+                <h2>Live ranking</h2>
+                <p>Ranked using the active scorecard. Use the decision column to include, hold, or exclude an entry.</p>
+              </div>
+              <div class="sl-panel-actions">
+                <label class="sl-score-mode">Score view
+                  <select id="scoreMode"><option value="normalized" selected>Normalized</option><option value="raw">Raw average</option></select>
+                </label>
+                <button class="btn secondary compact" id="compareSelected" disabled>Compare selected</button>
+              </div>
+            </div>
+
+            <div class="sl-rule-ribbon">
+              <span><b>Minimum:</b> 3 reviews</span>
+              <span><b>Tie-break:</b> Innovation</span>
+              <span><b>Eligibility:</b> Required</span>
+              <span><b>Cut-off:</b> <strong id="cutoffScore">86.8</strong></span>
+            </div>
+
+            <div class="sl-table-wrap">
+              <table class="sl-table">
+                <thead>
+                  <tr><th></th><th>Rank</th><th>Entry</th><th>Score</th><th>Reviews</th><th>Variance</th><th>Eligibility</th><th>Decision</th><th></th></tr>
+                </thead>
+                <tbody id="rankingBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="card sl-panel section">
+            <div class="sl-panel-head">
+              <div><h2>Decision checks</h2><p>Entries requiring human review before the shortlist can be locked.</p></div>
+              <span class="sl-pill warn" id="issuePill">3 open</span>
+            </div>
+            <div class="sl-check-list" id="decisionChecks">
+              <article data-check="missing-review">
+                <span class="sl-check-icon danger">!</span>
+                <div><b>Orbit Finance needs one more judge review</b><p>2 of 3 minimum reviews complete. Its current rank is provisional.</p></div>
+                <button data-action="request-review">Request review</button>
+              </article>
+              <article data-check="tie">
+                <span class="sl-check-icon warn">=</span>
+                <div><b>Cut-off tie: FinBridge Labs vs Lumen Money</b><p>Only 0.1 points separates rank 5 and 6. Compare Innovation scores before deciding.</p></div>
+                <button data-action="compare-tie">Compare tie</button>
+              </article>
+              <article data-check="variance">
+                <span class="sl-check-icon warn">~</span>
+                <div><b>PulseCredit has high judge variance</b><p>Judge scores range from 6.2 to 9.4. Review comments before moving it forward.</p></div>
+                <button data-action="inspect-variance">Inspect scores</button>
+              </article>
+            </div>
+          </section>
+
+          <section class="card sl-panel section">
+            <div class="sl-panel-head">
+              <div><h2>Decision audit</h2><p>Every manual change is captured with a reason so the shortlist remains explainable.</p></div>
+              <button class="btn ghost compact" id="exportAudit">Export audit</button>
+            </div>
+            <div class="sl-audit-list" id="auditList">
+              <div><span>12:48</span><i></i><p><b>Score rules loaded</b><small>Minimum 3 reviews, Innovation tie-break, normalized score view.</small></p></div>
+              <div><span>12:52</span><i class="good"></i><p><b>Eligibility checks passed</b><small>Top-ranked entries have valid declarations and required documents.</small></p></div>
+              <div><span>12:55</span><i class="warn"></i><p><b>Cut-off review recommended</b><small>Rank 5 and 6 are within 0.1 points.</small></p></div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="sl-side-col">
+          <section class="card pad sl-summary-card">
+            <div class="section-title"><h2>Shortlist summary</h2><span id="summaryStatus">Draft</span></div>
+            <div class="sl-donut" id="shortlistDonut"><div><b id="shortlistedCount">5</b><span>selected</span></div></div>
+            <div class="sl-summary-stats">
+              <div><span>Selected</span><b id="selectedStat">5</b></div>
+              <div><span>Held</span><b id="heldStat">1</b></div>
+              <div><span>Excluded</span><b id="excludedStat">2</b></div>
+            </div>
+            <div class="sl-summary-note" id="summaryNote">Top 5 currently selected. One entry is held for a missing review.</div>
+          </section>
+
+          <section class="card pad section sl-readiness-card">
+            <div class="section-title"><h2>Lock readiness</h2><b id="readinessScore">72%</b></div>
+            <div class="progress"><span id="readinessBar" style="width:72%"></span></div>
+            <div class="sl-ready-list">
+              <div><span>&#10003;</span><p><b>Score weights valid</b><small>100 / 100</small></p></div>
+              <div><span>&#10003;</span><p><b>Eligibility checked</b><small>Top entries verified</small></p></div>
+              <div class="pending" id="reviewReadyItem"><span>!</span><p><b>Review coverage</b><small>1 entry below minimum</small></p></div>
+              <div class="pending" id="tieReadyItem"><span>!</span><p><b>Cut-off ties</b><small>2 ties need a decision</small></p></div>
+            </div>
+            <button class="btn primary sl-full-btn" id="lockFromCard">Resolve issues to lock</button>
+          </section>
+
+          <section class="card pad section sl-cutoff-card">
+            <div class="section-title"><h2>Cut-off simulator</h2><span>What if?</span></div>
+            <p>Test shortlist sizes without changing saved decisions.</p>
+            <input id="cutoffRange" type="range" min="3" max="8" value="5">
+            <div class="sl-range-labels"><span>3</span><b id="simulatedSize">5 finalists</b><span>8</span></div>
+            <div class="sl-sim-result"><span>Estimated cut-off</span><b id="simulatedScore">86.8</b><small id="simulatedNote">1 near-tie at the boundary</small></div>
+          </section>
+
+          <section class="card pad section sl-category-health">
+            <div class="section-title"><h2>Category progress</h2><span>5 categories</span></div>
+            <div class="sl-health-row"><div><b>FinTech Startup</b><span>72% ready</span></div><div class="bar"><span style="width:72%"></span></div></div>
+            <div class="sl-health-row"><div><b>Digital Lending</b><span>100% ready</span></div><div class="bar"><span style="width:100%"></span></div></div>
+            <div class="sl-health-row"><div><b>Payments Innovation</b><span>86% ready</span></div><div class="bar"><span style="width:86%"></span></div></div>
+            <div class="sl-health-row"><div><b>AI in Financial Services</b><span>61% ready</span></div><div class="bar"><span style="width:61%"></span></div></div>
+            <div class="sl-health-row"><div><b>FinTech Leader</b><span>100% ready</span></div><div class="bar"><span style="width:100%"></span></div></div>
+          </section>
+        </aside>
+      </div>
+
+      <section class="sl-next-step section">
+        <div><span>NEXT IN DECIDE</span><h2>Shortlist locked? Move finalists to Winners.</h2><p>Winner selection will use the locked shortlist as its source of truth.</p></div>
+        <a class="btn primary" href="winners.html">Continue to Winners &rarr;</a>
+      </section>
+
+      <div class="footer-note">Interactive manager-demo prototype - Sample data only</div>
+    </main>
+  </div>
+</div>
+
+<div class="sl-drawer" id="entryDrawer" aria-hidden="true">
+  <div class="sl-drawer-backdrop" data-close="entryDrawer"></div>
+  <section class="sl-drawer-panel">
+    <div class="sl-drawer-head">
+      <div><span class="eyebrow">ENTRY REVIEW</span><h2 id="drawerEntryName">Entry</h2><p id="drawerEntryMeta">Category</p></div>
+      <button data-close="entryDrawer">&times;</button>
+    </div>
+    <div class="sl-drawer-body">
+      <div class="sl-entry-score-grid">
+        <div><span>Normalized score</span><b id="drawerScore">0.0</b></div>
+        <div><span>Raw average</span><b id="drawerRaw">0.0</b></div>
+        <div><span>Reviews</span><b id="drawerReviews">0/0</b></div>
+      </div>
+      <div class="sl-drawer-section"><h3>Criteria breakdown</h3><div id="drawerCriteria" class="sl-criteria-breakdown"></div></div>
+      <div class="sl-drawer-section"><h3>Judge scores</h3><div id="drawerJudges" class="sl-judge-scores"></div></div>
+      <div class="sl-drawer-section"><h3>Eligibility</h3><div id="drawerEligibility" class="sl-eligibility-box"></div></div>
+      <div class="sl-drawer-section"><h3>Decision note</h3><textarea id="decisionNote" rows="4" placeholder="Add a reason for a manual shortlist decision..."></textarea></div>
+    </div>
+    <div class="sl-drawer-foot"><button class="btn secondary" data-close="entryDrawer">Close</button><span></span><button class="btn ghost" id="drawerHold">Hold</button><button class="btn primary" id="drawerShortlist">Shortlist entry</button></div>
+  </section>
+</div>
+
+<div class="sl-modal" id="compareModal" aria-hidden="true">
+  <div class="sl-modal-backdrop" data-close="compareModal"></div>
+  <section class="sl-modal-card">
+    <div class="sl-modal-head"><div><span class="eyebrow">SIDE-BY-SIDE REVIEW</span><h2>Compare entries</h2><p>Use criteria and judge detail to make a documented cut-off decision.</p></div><button data-close="compareModal">&times;</button></div>
+    <div class="sl-modal-body" id="compareBody"></div>
+    <div class="sl-modal-foot"><button class="btn secondary" data-close="compareModal">Close</button><button class="btn primary" id="confirmComparison">Save comparison note</button></div>
+  </section>
+</div>
+
+<div class="sl-modal" id="previewModal" aria-hidden="true">
+  <div class="sl-modal-backdrop" data-close="previewModal"></div>
+  <section class="sl-modal-card sl-preview-modal">
+    <div class="sl-modal-head"><div><span class="eyebrow">PUBLIC PREVIEW</span><h2>Shortlist announcement</h2><p>Preview how finalists could appear on the award website.</p></div><button data-close="previewModal">&times;</button></div>
+    <div class="sl-modal-body">
+      <div class="sl-public-preview">
+        <small>INDIA FINTECH AWARDS 2027</small>
+        <h2>Meet the 2027 Shortlist</h2>
+        <p>Celebrating the companies shaping the next era of financial innovation.</p>
+        <div id="previewCards" class="sl-preview-grid"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="sl-modal" id="lockModal" aria-hidden="true">
+  <div class="sl-modal-backdrop" data-close="lockModal"></div>
+  <section class="sl-modal-card sl-small-modal">
+    <div class="sl-modal-head"><div><span class="eyebrow">LOCK SHORTLIST</span><h2>Lock Best FinTech Startup?</h2><p>Locked decisions become read-only until an admin reopens the category.</p></div><button data-close="lockModal">&times;</button></div>
+    <div class="sl-modal-body">
+      <div class="sl-lock-summary"><span>&#128274;</span><div><b>5 finalists will move forward</b><p>The shortlist, score snapshot, cut-off rule, and audit log will be frozen for this category.</p></div></div>
+      <label class="sl-confirm-check"><input type="checkbox" id="lockConfirm"> I confirm the category has completed its review and tie decisions.</label>
+    </div>
+    <div class="sl-modal-foot"><button class="btn secondary" data-close="lockModal">Cancel</button><button class="btn primary" id="confirmLock" disabled>Lock category</button></div>
+  </section>
+</div>
+
+<div class="sl-copilot-panel" id="copilotPanel">
+  <div class="sl-copilot-head"><div><span class="eyebrow">AWARD COPILOT</span><h2>Shortlist assistant</h2></div><button id="closeCopilot">&times;</button></div>
+  <p>Ask about decision readiness, ties, review gaps, or shortlist size.</p>
+  <div class="sl-copilot-prompts">
+    <button data-prompt="ready">What is blocking the shortlist?</button>
+    <button data-prompt="cutoff">Is the top-5 cut-off defensible?</button>
+    <button data-prompt="ties">How should I handle the tie?</button>
+    <button data-prompt="size">Should we shortlist 5 or 8?</button>
+  </div>
+  <div class="sl-copilot-answer" id="copilotAnswer">Best FinTech Startup is 72% ready. Resolve the missing review and inspect the rank 5/6 tie before locking.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script src="shortlist.js"></script>
+</body>
+</html>

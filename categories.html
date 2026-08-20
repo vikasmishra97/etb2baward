@@ -1,0 +1,417 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Categories · AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">◇</span><span>Award</span></a>
+      <a class="active" href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">▣</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb"><span id="crumbAward">India FinTech Awards 2027</span> / Categories</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="copilotBtn">✦ Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="page-head cat-page-head">
+        <div>
+          <span class="eyebrow">BUILD · STEP 2 OF 5</span>
+          <h1>What can people enter?</h1>
+          <p>Build a clear category structure. Start with smart suggestions, then customize fees and eligibility only where needed.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn secondary" id="saveBtn">Save draft</button>
+          <a class="btn primary" href="entry-form.html" id="continueBtn">Continue to Entry Form →</a>
+        </div>
+      </div>
+
+      <div class="ca-setup-track cat-track" aria-label="Award setup progress">
+        <a class="ca-track-item done-track" href="create-award.html"><span>✓</span><div><b>Award</b><small>Complete</small></div></a><i></i>
+        <div class="ca-track-item active"><span>2</span><div><b>Categories</b><small>You're here</small></div></div><i></i>
+        <a class="ca-track-item" href="entry-form.html"><span>3</span><div><b>Entry Form</b><small>Next</small></div></a><i></i>
+        <a class="ca-track-item" href="pricing.html"><span>4</span><div><b>Pricing</b><small>Later</small></div></a><i></i>
+        <a class="ca-track-item" href="website.html"><span>5</span><div><b>Website</b><small>Later</small></div></a>
+      </div>
+
+      <div class="cat-layout">
+        <section class="cat-main-col">
+          <div class="card pad cat-ai-card" id="suggestionCard">
+            <div class="cat-ai-head">
+              <div class="cat-ai-icon">✦</div>
+              <div>
+                <span class="cat-kicker">AWARD COPILOT</span>
+                <h2>Suggested categories for your award</h2>
+                <p id="suggestionIntro">Based on your award setup, here is a balanced starting structure. Add all or choose only what fits.</p>
+              </div>
+              <button class="btn secondary cat-add-all" id="addAllBtn">+ Add all</button>
+            </div>
+            <div class="cat-suggestion-grid" id="suggestionGrid"></div>
+            <div class="cat-ai-foot">
+              <button class="cat-link-btn" id="generateMoreBtn">✦ Suggest 5 more</button>
+              <span>Suggestions are editable after you add them.</span>
+            </div>
+          </div>
+
+          <div class="card pad section">
+            <div class="cat-list-head">
+              <div>
+                <div class="section-title cat-title-inline"><h2>Your categories</h2><span class="cat-count-pill" id="categoryCount">0</span></div>
+                <p class="cat-subcopy">Drag to reorder. The public entry form will use this order.</p>
+              </div>
+              <div class="cat-list-actions">
+                <label class="cat-search"><span>⌕</span><input id="categorySearch" placeholder="Search categories"></label>
+                <button class="btn primary" id="addCategoryBtn">+ Add category</button>
+              </div>
+            </div>
+
+            <div class="cat-empty" id="categoryEmpty" hidden>
+              <div class="cat-empty-icon">▦</div>
+              <h3>Add your first category</h3>
+              <p>Use a Copilot suggestion above or create a category manually.</p>
+              <button class="btn primary" id="emptyAddBtn">+ Add category</button>
+            </div>
+
+            <div class="cat-category-list" id="categoryList"></div>
+          </div>
+
+          <div class="cat-bottom-actions">
+            <div><b>Next: build one entry form</b><span>You can later show different questions for specific categories.</span></div>
+            <a class="btn primary" href="entry-form.html">Continue to Entry Form →</a>
+          </div>
+        </section>
+
+        <aside class="cat-side-col">
+          <div class="card pad cat-progress-card">
+            <div class="section-title"><h2>Setup progress</h2><b id="setupPct">40%</b></div>
+            <div class="progress"><span id="setupBar" style="width:40%"></span></div>
+            <div class="cat-progress-list">
+              <div><span class="ok">✓</span><p><b>Award basics</b><small>Name, dates and brand</small></p></div>
+              <div><span id="catProgressIcon">○</span><p><b>Categories</b><small id="catProgressText">Add at least one</small></p></div>
+              <div><span>○</span><p><b>Entry Form</b><small>Not started</small></p></div>
+              <div><span>○</span><p><b>Pricing</b><small>Not started</small></p></div>
+              <div><span>○</span><p><b>Website</b><small>Not started</small></p></div>
+            </div>
+          </div>
+
+          <div class="callout section cat-insight" id="insightCard">
+            <h3>✦ Category strategy</h3>
+            <p id="insightText">Aim for 5–12 categories for a first edition. Keep names distinct and easy for entrants to understand.</p>
+          </div>
+
+          <div class="card pad section cat-summary-card">
+            <div class="section-title"><h2>At a glance</h2><span>Live</span></div>
+            <div class="cat-summary-row"><span>Categories</span><b id="summaryCategories">0</b></div>
+            <div class="cat-summary-row"><span>Using base fee</span><b id="summaryBaseFee">0</b></div>
+            <div class="cat-summary-row"><span>Custom fee</span><b id="summaryCustomFee">0</b></div>
+            <div class="cat-summary-row"><span>With eligibility rules</span><b id="summaryEligibility">0</b></div>
+            <div class="cat-summary-note"><span>Base entry fee</span><strong id="baseFeeLabel">₹2,000</strong></div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="footer-note">Interactive manager-demo prototype · Category data is stored only in this browser</div>
+    </main>
+  </div>
+</div>
+
+<div class="cat-modal" id="categoryModal" aria-hidden="true">
+  <div class="cat-modal-backdrop" data-close-modal></div>
+  <div class="cat-drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="cat-drawer-head">
+      <div><span class="eyebrow" id="drawerEyebrow">NEW CATEGORY</span><h2 id="drawerTitle">Add category</h2></div>
+      <button class="cat-close" type="button" data-close-modal>×</button>
+    </div>
+    <div class="cat-drawer-body">
+      <div class="field">
+        <label for="catName">Category name *</label>
+        <input id="catName" maxlength="80" placeholder="e.g. Best FinTech Startup">
+        <small class="field-error" id="catNameError"></small>
+      </div>
+      <div class="field">
+        <div class="ca-field-meta"><label for="catDescription">Description</label><small><span id="catDescCount">0</span>/240</small></div>
+        <textarea id="catDescription" maxlength="240" placeholder="Help entrants quickly understand what belongs in this category."></textarea>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="catGroup">Group / parent</label>
+          <input id="catGroup" placeholder="Optional, e.g. Company Awards">
+          <small>Useful when you have many categories.</small>
+        </div>
+        <div class="field">
+          <label for="catStatus">Status</label>
+          <select id="catStatus"><option value="open">Open</option><option value="draft">Draft</option><option value="closed">Closed</option></select>
+        </div>
+      </div>
+
+      <div class="ca-section-divider">Entry fee</div>
+      <div class="cat-fee-choice">
+        <button type="button" class="cat-fee-option active" data-fee-mode="base"><span>●</span><div><b>Use award base fee</b><small id="drawerBaseFee">₹2,000 per entry</small></div></button>
+        <button type="button" class="cat-fee-option" data-fee-mode="custom"><span>○</span><div><b>Custom fee</b><small>Override only for this category</small></div></button>
+      </div>
+      <div class="field cat-custom-fee" id="customFeeRow" hidden>
+        <label for="catFee">Category fee</label>
+        <div class="ca-money"><span id="feeSymbol">₹</span><input id="catFee" type="number" min="0" step="1" value="2000"></div>
+      </div>
+
+      <div class="ca-section-divider">Eligibility</div>
+      <div class="field">
+        <label for="catEligibility">Who can enter?</label>
+        <textarea id="catEligibility" maxlength="300" placeholder="Optional. e.g. Companies incorporated in India with a product launched after Jan 2026."></textarea>
+        <small>Keep this short. Detailed terms can live in your Rules page.</small>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label for="catMaxEntries">Max entries per entrant</label>
+          <select id="catMaxEntries"><option value="0">No limit</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="5">5</option><option value="10">10</option></select>
+        </div>
+        <div class="field">
+          <label for="catCode">Internal code</label>
+          <input id="catCode" maxlength="20" placeholder="Auto generated">
+          <small>Optional, useful for reports.</small>
+        </div>
+      </div>
+    </div>
+    <div class="cat-drawer-foot">
+      <button class="btn secondary" type="button" data-close-modal>Cancel</button>
+      <button class="btn primary" type="button" id="saveCategoryBtn">Add category</button>
+    </div>
+  </div>
+</div>
+
+<div class="cat-copilot-panel" id="copilotPanel" aria-hidden="true">
+  <div class="cat-copilot-head"><div><span class="eyebrow">AWARD COPILOT</span><h3>Category assistant</h3></div><button id="closeCopilot">×</button></div>
+  <p>Ask for help with category structure. This manager demo uses preset recommendations.</p>
+  <div class="cat-copilot-options">
+    <button data-copilot-action="simplify">Make my categories simpler</button>
+    <button data-copilot-action="overlap">Check for overlapping categories</button>
+    <button data-copilot-action="growth">Which category should I promote?</button>
+  </div>
+  <div class="cat-copilot-answer" id="copilotAnswer">Choose a prompt above to see a recommendation.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const savedAward = (()=>{try{return JSON.parse(localStorage.getItem('awardflow_new_award')||'null')}catch(e){return null}})();
+  const award = savedAward || {name:'India FinTech Awards 2027',currency:'INR',baseFee:2000,entryType:'paid',suggestedCategories:['Best FinTech Startup','Best Digital Banking Innovation','Best Payments Solution','FinTech Leader of the Year','Best AI in Financial Services']};
+  const symbolMap={INR:'₹',USD:'$',AED:'د.إ',GBP:'£',SGD:'S$'};
+  const curSymbol=symbolMap[award.currency]||'₹';
+  const baseFee=award.entryType==='free'?0:Number(award.baseFee||0);
+  let categories=[];
+  let suggestions=[];
+  let editingId=null;
+  let feeMode='base';
+
+  const fallbackSuggestions=['Best FinTech Startup','Best Digital Banking Innovation','Best Payments Solution','FinTech Leader of the Year','Best AI in Financial Services'];
+  const extraSuggestions=['Customer Experience Excellence','Best Emerging Technology','Innovation Team of the Year','Sustainability Impact Award','Best Partnership or Collaboration','Rising Star of the Year','Best Use of Data & Analytics','Financial Inclusion Award','Best B2B Solution','Best Consumer FinTech'];
+
+  function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+  function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+  function money(v){return baseFee===0&&Number(v||0)===0?'Free':curSymbol+Number(v||0).toLocaleString('en-IN')}
+  function codeFrom(name){return (name||'CAT').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim().split(/\s+/).slice(0,4).map(x=>x.slice(0,3)).join('-').slice(0,20)}
+  function categoryStoreKey(){return savedAward&&savedAward.slug?'awardflow_categories_'+savedAward.slug:'awardflow_categories_demo'}
+  function persist(){localStorage.setItem(categoryStoreKey(),JSON.stringify(categories));updateUI()}
+
+  $('sideAwardName').textContent=award.name||'Untitled Award';
+  $('crumbAward').textContent=award.name||'Untitled Award';
+  $('baseFeeLabel').textContent=award.entryType==='free'?'Free':money(baseFee);
+  $('drawerBaseFee').textContent=(award.entryType==='free'?'Free':money(baseFee))+' per entry';
+  $('feeSymbol').textContent=curSymbol;
+  $('catFee').value=baseFee;
+
+  const savedCats=localStorage.getItem(categoryStoreKey());
+  if(savedCats){try{categories=JSON.parse(savedCats)||[]}catch(e){categories=[]}}
+  else if(!savedAward){
+    categories=[
+      {id:1,name:'Best Startup',description:'Recognising a high-growth startup demonstrating innovation and market impact.',group:'Company Awards',status:'open',feeMode:'base',fee:2000,eligibility:'Startups founded within the last 7 years.',maxEntries:'1',code:'BES-STA'},
+      {id:2,name:'Best CEO',description:'Celebrating exceptional leadership and business impact.',group:'People Awards',status:'open',feeMode:'base',fee:2000,eligibility:'Open to CEOs and founders leading an eligible organisation.',maxEntries:'1',code:'BES-CEO'},
+      {id:3,name:'Best Product',description:'For products creating measurable customer or industry value.',group:'Innovation Awards',status:'open',feeMode:'custom',fee:2500,eligibility:'Product must be commercially available during the eligibility period.',maxEntries:'3',code:'BES-PRO'},
+      {id:4,name:'Best Campaign',description:'Recognising a standout campaign with strong strategy, creativity and results.',group:'Marketing Awards',status:'draft',feeMode:'custom',fee:1500,eligibility:'Campaign must have run within the eligibility period.',maxEntries:'3',code:'BES-CAM'}
+    ];
+  }
+  suggestions=(award.suggestedCategories&&award.suggestedCategories.length?award.suggestedCategories:fallbackSuggestions).map((name,i)=>({id:'s'+i,name,reason:i===0?'Strong flagship category':i===3?'Adds a people/leadership dimension':'Common fit for this award'}));
+
+  function renderSuggestions(){
+    const existing=new Set(categories.map(c=>c.name.toLowerCase()));
+    const items=suggestions.filter(s=>!existing.has(s.name.toLowerCase()));
+    $('suggestionGrid').innerHTML=items.map(s=>`<button class="cat-suggestion" data-suggestion="${esc(s.name)}"><span class="cat-suggestion-plus">+</span><div><b>${esc(s.name)}</b><small>${esc(s.reason)}</small></div></button>`).join('');
+    $('addAllBtn').disabled=items.length===0;
+    $('addAllBtn').textContent=items.length?'+ Add all':'✓ Added';
+    if(items.length===0)$('suggestionIntro').textContent='You have added all current suggestions. Generate more ideas or create your own categories.';
+    document.querySelectorAll('.cat-suggestion').forEach(btn=>btn.addEventListener('click',()=>addSuggestion(btn.dataset.suggestion)));
+  }
+
+  function addSuggestion(name){
+    if(categories.some(c=>c.name.toLowerCase()===name.toLowerCase())){toast('Category already added');return;}
+    categories.push({id:Date.now()+Math.random(),name,description:'',group:'',status:'open',feeMode:'base',fee:baseFee,eligibility:'',maxEntries:'0',code:codeFrom(name)});
+    persist();toast(name+' added');
+  }
+
+  function statusBadge(status){
+    if(status==='open')return '<span class="badge green">Open</span>';
+    if(status==='closed')return '<span class="badge red">Closed</span>';
+    return '<span class="badge orange">Draft</span>';
+  }
+
+  function renderCategories(){
+    const q=$('categorySearch').value.trim().toLowerCase();
+    const filtered=categories.filter(c=>(c.name+' '+(c.group||'')).toLowerCase().includes(q));
+    $('categoryList').innerHTML=filtered.map((c,idx)=>{
+      const actualIndex=categories.findIndex(x=>x.id===c.id);
+      const fee=c.feeMode==='base'?baseFee:Number(c.fee||0);
+      return `<article class="cat-row" draggable="true" data-id="${c.id}">
+        <div class="cat-drag" title="Drag to reorder">⋮⋮</div>
+        <div class="cat-row-main"><div class="cat-row-title"><b>${esc(c.name)}</b>${c.group?`<span>${esc(c.group)}</span>`:''}</div><p>${esc(c.description||'No description yet')}</p><div class="cat-row-meta"><span>${c.feeMode==='base'?'Base fee':'Custom fee'} · ${money(fee)}</span><span>${c.eligibility?'Eligibility set':'Open eligibility'}</span><span>${c.maxEntries==='0'?'No entry limit':'Max '+esc(c.maxEntries)+' / entrant'}</span></div></div>
+        <div class="cat-row-state">${statusBadge(c.status)}</div>
+        <div class="cat-row-actions">
+          <button class="cat-icon-btn" data-move="up" data-id="${c.id}" title="Move up" ${actualIndex===0?'disabled':''}>↑</button>
+          <button class="cat-icon-btn" data-move="down" data-id="${c.id}" title="Move down" ${actualIndex===categories.length-1?'disabled':''}>↓</button>
+          <button class="cat-more" data-id="${c.id}" aria-label="Edit category">•••</button>
+        </div>
+      </article>`;
+    }).join('');
+    $('categoryEmpty').hidden=categories.length!==0 || !!q;
+    if(categories.length===0 && !q)$('categoryList').innerHTML='';
+    if(filtered.length===0 && categories.length>0 && q)$('categoryList').innerHTML='<div class="cat-no-results">No categories match your search.</div>';
+
+    document.querySelectorAll('.cat-more').forEach(btn=>btn.addEventListener('click',()=>openEditor(btn.dataset.id)));
+    document.querySelectorAll('[data-move]').forEach(btn=>btn.addEventListener('click',()=>moveCategory(btn.dataset.id,btn.dataset.move)));
+    wireDragDrop();
+  }
+
+  function moveCategory(id,direction){
+    const i=categories.findIndex(c=>String(c.id)===String(id));if(i<0)return;
+    const j=direction==='up'?i-1:i+1;if(j<0||j>=categories.length)return;
+    [categories[i],categories[j]]=[categories[j],categories[i]];persist();
+  }
+
+  function wireDragDrop(){
+    let dragId=null;
+    document.querySelectorAll('.cat-row').forEach(row=>{
+      row.addEventListener('dragstart',()=>{dragId=row.dataset.id;row.classList.add('dragging')});
+      row.addEventListener('dragend',()=>{row.classList.remove('dragging');document.querySelectorAll('.cat-row').forEach(r=>r.classList.remove('drag-over'))});
+      row.addEventListener('dragover',e=>{e.preventDefault();if(row.dataset.id!==dragId)row.classList.add('drag-over')});
+      row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));
+      row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('drag-over');if(!dragId||row.dataset.id===dragId)return;const from=categories.findIndex(c=>String(c.id)===String(dragId));const to=categories.findIndex(c=>String(c.id)===String(row.dataset.id));const [item]=categories.splice(from,1);categories.splice(to,0,item);persist()});
+    });
+  }
+
+  function updateUI(){
+    renderSuggestions();renderCategories();
+    const count=categories.length;
+    $('categoryCount').textContent=count;
+    $('summaryCategories').textContent=count;
+    $('summaryBaseFee').textContent=categories.filter(c=>c.feeMode==='base').length;
+    $('summaryCustomFee').textContent=categories.filter(c=>c.feeMode==='custom').length;
+    $('summaryEligibility').textContent=categories.filter(c=>c.eligibility&&c.eligibility.trim()).length;
+    const ready=count>0;
+    $('catProgressIcon').textContent=ready?'✓':'○';$('catProgressIcon').className=ready?'ok':'';
+    $('catProgressText').textContent=ready?count+' categor'+(count===1?'y':'ies')+' added':'Add at least one';
+    const pct=ready?40:20;$('setupPct').textContent=pct+'%';$('setupBar').style.width=pct+'%';
+    if(count===0)$('insightText').textContent='Start with 5–12 distinct categories. Avoid creating many similar categories before you have enough entry volume.';
+    else if(count<5)$('insightText').textContent='You have '+count+' categories. Consider adding a few more only if entrants need clearer choices.';
+    else if(count>15)$('insightText').textContent='You have '+count+' categories. Consider grouping or combining similar ones so entrants are not overwhelmed.';
+    else $('insightText').textContent='Good range: '+count+' categories is manageable for entrants and gives you enough variety for a strong first edition.';
+  }
+
+  function resetEditor(){
+    editingId=null;feeMode='base';
+    $('drawerEyebrow').textContent='NEW CATEGORY';$('drawerTitle').textContent='Add category';$('saveCategoryBtn').textContent='Add category';
+    $('catName').value='';$('catDescription').value='';$('catGroup').value='';$('catStatus').value='open';$('catEligibility').value='';$('catMaxEntries').value='0';$('catCode').value='';$('catFee').value=baseFee;$('catDescCount').textContent='0';$('catNameError').textContent='';
+    setFeeMode('base');
+  }
+
+  function openModal(){
+    $('categoryModal').classList.add('open');$('categoryModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$('catName').focus(),80);
+  }
+  function closeModal(){$('categoryModal').classList.remove('open');$('categoryModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
+  function openEditor(id){
+    const c=categories.find(x=>String(x.id)===String(id));if(!c)return;
+    editingId=c.id;$('drawerEyebrow').textContent='EDIT CATEGORY';$('drawerTitle').textContent=c.name;$('saveCategoryBtn').textContent='Save changes';
+    $('catName').value=c.name;$('catDescription').value=c.description||'';$('catGroup').value=c.group||'';$('catStatus').value=c.status||'open';$('catEligibility').value=c.eligibility||'';$('catMaxEntries').value=String(c.maxEntries||'0');$('catCode').value=c.code||'';$('catFee').value=Number(c.fee||baseFee);$('catDescCount').textContent=$('catDescription').value.length;$('catNameError').textContent='';setFeeMode(c.feeMode||'base');openModal();
+  }
+  function setFeeMode(mode){feeMode=mode;document.querySelectorAll('.cat-fee-option').forEach(btn=>{const on=btn.dataset.feeMode===mode;btn.classList.toggle('active',on);btn.querySelector('span').textContent=on?'●':'○'});$('customFeeRow').hidden=mode!=='custom'}
+
+  function saveCategory(){
+    const name=$('catName').value.trim();if(!name){$('catNameError').textContent='Enter a category name';$('catName').focus();return;}
+    const duplicate=categories.some(c=>c.name.toLowerCase()===name.toLowerCase()&&String(c.id)!==String(editingId));if(duplicate){$('catNameError').textContent='A category with this name already exists';$('catName').focus();return;}
+    const data={name,description:$('catDescription').value.trim(),group:$('catGroup').value.trim(),status:$('catStatus').value,feeMode,fee:feeMode==='base'?baseFee:Number($('catFee').value||0),eligibility:$('catEligibility').value.trim(),maxEntries:$('catMaxEntries').value,code:$('catCode').value.trim()||codeFrom(name)};
+    if(editingId!==null){const i=categories.findIndex(c=>String(c.id)===String(editingId));categories[i]={...categories[i],...data};toast('Category updated')}
+    else{categories.push({id:Date.now(),...data});toast('Category added')}
+    persist();closeModal();
+  }
+
+  $('addAllBtn').addEventListener('click',()=>{
+    const existing=new Set(categories.map(c=>c.name.toLowerCase()));let added=0;
+    suggestions.forEach(s=>{if(!existing.has(s.name.toLowerCase())){categories.push({id:Date.now()+Math.random(),name:s.name,description:'',group:'',status:'open',feeMode:'base',fee:baseFee,eligibility:'',maxEntries:'0',code:codeFrom(s.name)});added++}});
+    if(added){persist();toast(added+' categories added')}else toast('All suggestions are already added');
+  });
+  $('generateMoreBtn').addEventListener('click',()=>{
+    const names=new Set(suggestions.map(s=>s.name));const candidates=extraSuggestions.filter(x=>!names.has(x));const next=candidates.slice(0,5).map((name,i)=>({id:'x'+Date.now()+i,name,reason:i===0?'Helps broaden participation':'Additional category idea'}));suggestions=[...suggestions,...next];renderSuggestions();toast(next.length?'5 new suggestions ready':'No more preset suggestions');
+  });
+  $('addCategoryBtn').addEventListener('click',()=>{resetEditor();openModal()});$('emptyAddBtn').addEventListener('click',()=>{resetEditor();openModal()});
+  $('categorySearch').addEventListener('input',renderCategories);
+  $('catDescription').addEventListener('input',()=>{$('catDescCount').textContent=$('catDescription').value.length});
+  $('catName').addEventListener('input',()=>{if(!$('catCode').dataset.touched)$('catCode').value=codeFrom($('catName').value);$('catNameError').textContent=''});
+  $('catCode').addEventListener('input',()=>{$('catCode').dataset.touched='1'});
+  document.querySelectorAll('.cat-fee-option').forEach(btn=>btn.addEventListener('click',()=>setFeeMode(btn.dataset.feeMode)));
+  document.querySelectorAll('[data-close-modal]').forEach(x=>x.addEventListener('click',closeModal));
+  $('saveCategoryBtn').addEventListener('click',saveCategory);
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+  $('saveBtn').addEventListener('click',()=>{localStorage.setItem(categoryStoreKey(),JSON.stringify(categories));toast('Category draft saved')});
+
+  $('copilotBtn').addEventListener('click',()=>{$('copilotPanel').classList.add('open');$('copilotPanel').setAttribute('aria-hidden','false')});
+  $('closeCopilot').addEventListener('click',()=>{$('copilotPanel').classList.remove('open');$('copilotPanel').setAttribute('aria-hidden','true')});
+  document.querySelectorAll('[data-copilot-action]').forEach(btn=>btn.addEventListener('click',()=>{
+    const a=btn.dataset.copilotAction;let text='';
+    if(a==='simplify') text=categories.length>10?'You have '+categories.length+' categories. Start by grouping similar categories under 3–5 parent groups, then combine names that differ only slightly.':'Your category count is already fairly simple. Keep names short and make each one answer a different entrant need.';
+    if(a==='overlap'){const names=categories.map(c=>c.name.toLowerCase());const overlap=names.some((n,i)=>names.some((m,j)=>i!==j&&(n.includes(m)||m.includes(n))));text=overlap?'I found names that may feel similar. Review categories sharing the same core words and clarify the eligibility or combine them.':'No obvious naming overlap detected in this demo. Next, review eligibility rules to make sure categories do not compete for the same entries.'}
+    if(a==='growth') text=categories.length?'Promote a category that is strategically important but has lower awareness. In a live version, I would use entry volume and conversion data to recommend the exact one.':'Add categories first. Once entries arrive, Award Copilot can identify which category needs promotion.';
+    $('copilotAnswer').textContent=text;
+  }));
+
+  updateUI();
+})();
+</script>
+</body>
+</html>

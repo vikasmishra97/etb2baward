@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Winners - AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="winners.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong>India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">&#8962;</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">&#9671;</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">&#9638;</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">&#9783;</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">Rs</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">&#9635;</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">&#8681;</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">&#9673;</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">&#9993;</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">&#9889;</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">J</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">&#9733;</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">&#10003;</span><span>Shortlist</span></a>
+      <a class="active" href="winners.html"><span class="ico">W</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">&#10022;</span><span>Winner Gallery</span></a>
+      <a href="certificates.html"><span class="ico">&#9636;</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">&#9707;</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">&#8769;</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">&#9881;</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb">India FinTech Awards 2027 / Winners</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="openCopilot">&#10022; Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main wn-page">
+      <div class="page-head wn-head">
+        <div>
+          <span class="eyebrow">DECIDE / WINNERS</span>
+          <h1>Winners and final decisions</h1>
+          <p>Turn a locked shortlist into approved winners, verify every public detail, control the embargo, and prepare the celebration pack without losing the decision trail.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn secondary" id="previewAnnouncement">Preview announcement</button>
+          <button class="btn primary" id="saveWinners">Save decisions</button>
+        </div>
+      </div>
+
+      <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage active">DECIDE</div><div class="stage">CELEBRATE</div></div>
+
+      <section class="wn-kpis">
+        <article class="card wn-kpi"><div class="wn-kpi-icon purple">W</div><div><small>Winner slots filled</small><strong id="winnerSlots">4 / 5</strong><span>Across active categories</span></div></article>
+        <article class="card wn-kpi"><div class="wn-kpi-icon warn">!</div><div><small>Needs verification</small><strong id="verificationCount">2</strong><span>Public details or consent</span></div></article>
+        <article class="card wn-kpi"><div class="wn-kpi-icon good">&#10003;</div><div><small>Jury approved</small><strong id="approvalCount">3 / 5</strong><span>Category sign-off complete</span></div></article>
+        <article class="card wn-kpi"><div class="wn-kpi-icon">&#9201;</div><div><small>Announcement</small><strong class="wn-kpi-date" id="announcementKpi">15 Jun</strong><span>10:00 IST, under embargo</span></div></article>
+      </section>
+
+      <section class="wn-copilot-card section">
+        <div class="wn-copilot-icon">&#10022;</div>
+        <div class="wn-copilot-copy">
+          <span>Award Copilot / Winner readiness</span>
+          <h2 id="copilotHeadline">Four categories have a winner. Two recipient checks still block a clean announcement.</h2>
+          <p id="copilotDetail">Best FinTech Startup is selected, but winner consent is still pending. Best AI in Financial Services has no final recipient assigned yet.</p>
+        </div>
+        <div class="wn-copilot-actions">
+          <button class="btn secondary compact" id="reviewWinnerIssues">Review blockers</button>
+          <button class="btn ghost compact" id="prepareSafePack">Prepare safe assets</button>
+        </div>
+      </section>
+
+      <section class="card wn-category-strip section">
+        <div class="wn-category-head">
+          <div>
+            <small>ACTIVE CATEGORY</small>
+            <h2 id="activeCategoryTitle">Best FinTech Startup</h2>
+          </div>
+          <div class="wn-category-actions">
+            <label class="wn-compact-field">Award format
+              <select id="awardFormat">
+                <option value="single" selected>Single winner</option>
+                <option value="medals">Gold / Silver / Bronze</option>
+                <option value="winner-runner">Winner + runner-up</option>
+              </select>
+            </label>
+            <button class="btn ghost compact" id="lockCategory">Lock winner</button>
+          </div>
+        </div>
+        <div class="wn-category-tabs" id="categoryTabs"></div>
+      </section>
+
+      <div class="wn-layout section">
+        <div class="wn-main-col">
+          <section class="card wn-finalists-card">
+            <div class="wn-panel-head">
+              <div>
+                <span class="eyebrow">FINAL ROUND</span>
+                <h2>Finalists and award assignments</h2>
+                <p>Scores guide the decision. Award assignments stay editable until the category is locked.</p>
+              </div>
+              <div class="wn-panel-actions">
+                <button class="btn ghost compact" id="seedFromRanking">Seed from ranking</button>
+                <button class="btn secondary compact" id="clearAssignments">Clear assignments</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="table wn-table">
+                <thead><tr><th>Rank</th><th>Finalist</th><th>Score</th><th>Jury</th><th>Verification</th><th>Award</th><th></th></tr></thead>
+                <tbody id="winnerTableBody"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="card pad wn-approval-card section" id="approvalSection">
+            <div class="section-title"><div><h2>Category approval checklist</h2><span>Complete before locking the winner</span></div><b id="categoryReadiness">75%</b></div>
+            <div class="progress"><span id="categoryReadinessBar" style="width:75%"></span></div>
+            <div class="wn-check-grid" id="approvalChecks"></div>
+          </section>
+
+          <section class="card pad wn-board-card section">
+            <div class="section-title"><div><h2>Winner board</h2><span>One view across every category</span></div><button class="btn ghost compact" id="exportWinnerList">Export list</button></div>
+            <div class="wn-winner-board" id="winnerBoard"></div>
+          </section>
+
+          <section class="card pad wn-audit-card section">
+            <div class="section-title"><div><h2>Decision audit trail</h2><span>Winner changes, approvals, verification, and locks</span></div><button class="btn secondary compact" id="exportAudit">Export audit</button></div>
+            <div class="wn-audit-list" id="auditList">
+              <div><span>13:20</span><i class="good"></i><p><b>Shortlist snapshot loaded</b><small>Finalists imported from the locked decision stage.</small></p></div>
+              <div><span>13:24</span><i class="good"></i><p><b>Jury sign-off recorded</b><small>Best Digital Lending approved by panel chair.</small></p></div>
+              <div><span>13:29</span><i class="warn"></i><p><b>Winner consent pending</b><small>NovaPay Technologies contact has not confirmed publication consent.</small></p></div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="wn-side-col">
+          <section class="card pad wn-readiness-card">
+            <div class="section-title"><div><h2>Announcement readiness</h2><span>Across all categories</span></div><b id="overallReadiness">68%</b></div>
+            <div class="progress"><span id="overallReadinessBar" style="width:68%"></span></div>
+            <div class="wn-ready-list" id="readyList"></div>
+            <button class="btn primary wn-full-btn" id="finalizeAll">Finalize ready categories</button>
+          </section>
+
+          <section class="card pad section wn-embargo-card">
+            <div class="section-title"><div><h2>Embargo and release</h2><span>Control when winners become public</span></div><span class="badge orange" id="embargoBadge">Embargoed</span></div>
+            <div class="field"><label>Release mode</label><select id="releaseMode"><option value="scheduled" selected>Scheduled release</option><option value="manual">Manual publish</option></select></div>
+            <div class="wn-two-col">
+              <div class="field"><label>Date</label><input type="date" id="releaseDate" value="2027-06-15"></div>
+              <div class="field"><label>Time</label><input type="time" id="releaseTime" value="10:00"></div>
+            </div>
+            <label class="wn-switch-row"><span><b>Winner emails</b><small>Send after embargo lifts</small></span><input type="checkbox" id="sendEmails" checked></label>
+            <label class="wn-switch-row"><span><b>Publish website</b><small>Update winner gallery automatically</small></span><input type="checkbox" id="publishWebsite" checked></label>
+            <label class="wn-switch-row"><span><b>Social assets</b><small>Prepare shareable winner creatives</small></span><input type="checkbox" id="socialAssets" checked></label>
+          </section>
+
+          <section class="card pad section wn-pack-card">
+            <div class="section-title"><div><h2>Celebration pack</h2><span>Generated from approved winner data</span></div><span class="badge" id="packStatus">Draft</span></div>
+            <div class="wn-pack-list">
+              <div><span>C</span><p><b>Certificates</b><small id="certStatus">4 of 5 ready</small></p><button data-pack="cert">Open</button></div>
+              <div><span>E</span><p><b>Winner emails</b><small id="emailStatus">4 personalized drafts</small></p><button data-pack="email">Open</button></div>
+              <div><span>W</span><p><b>Website gallery</b><small id="webStatus">Ready to sync</small></p><button data-pack="web">Preview</button></div>
+              <div><span>S</span><p><b>Social creatives</b><small id="socialStatus">12 assets prepared</small></p><button data-pack="social">Preview</button></div>
+            </div>
+            <button class="btn ghost wn-full-btn" id="generatePack">Generate / refresh pack</button>
+          </section>
+
+          <section class="card pad section wn-public-card">
+            <small>PUBLIC ANNOUNCEMENT</small>
+            <h2>Winner reveal is controlled</h2>
+            <p>No winner becomes public from this screen until the release controls are satisfied.</p>
+            <button class="btn secondary wn-full-btn" id="previewFromCard">Preview visitor view</button>
+          </section>
+        </aside>
+      </div>
+
+      <section class="wn-next-step section">
+        <div><span>DECIDE COMPLETE</span><h2>Approved winners flow directly into Celebrate.</h2><p>Once all categories are locked, continue to Winner Gallery, Certificates, and Ceremony without re-entering winner details.</p></div>
+        <a class="btn primary" href="winner-gallery.html">Continue to Celebrate &#8594;</a>
+      </section>
+
+      <div class="footer-note">Interactive manager-demo prototype - Sample data only</div>
+    </main>
+  </div>
+</div>
+
+<div class="wn-drawer" id="winnerDrawer" aria-hidden="true">
+  <div class="wn-drawer-backdrop" data-close="winnerDrawer"></div>
+  <div class="wn-drawer-panel">
+    <div class="wn-drawer-head"><div><span class="eyebrow">FINALIST REVIEW</span><h2 id="drawerName">NovaPay Technologies</h2><p id="drawerMeta">Best FinTech Startup</p></div><button data-close="winnerDrawer">x</button></div>
+    <div class="wn-drawer-body">
+      <div class="wn-score-grid"><div><span>Normalized score</span><b id="drawerScore">91.4</b></div><div><span>Jury votes</span><b id="drawerVotes">4 / 5</b></div><div><span>Rank</span><b id="drawerRank">#1</b></div></div>
+      <div class="wn-drawer-section"><h3>Award assignment</h3><div class="field"><select id="drawerAward"></select></div></div>
+      <div class="wn-drawer-section"><h3>Public verification</h3>
+        <label class="wn-verify-row"><input type="checkbox" id="verifyName"><span><b>Company / person name verified</b><small>Exact spelling approved for public use</small></span></label>
+        <label class="wn-verify-row"><input type="checkbox" id="verifyBrand"><span><b>Logo and brand assets cleared</b><small>Permission to publish supplied assets</small></span></label>
+        <label class="wn-verify-row"><input type="checkbox" id="verifyConsent"><span><b>Winner consent confirmed</b><small>Recipient accepts public announcement</small></span></label>
+        <label class="wn-verify-row"><input type="checkbox" id="verifyJury"><span><b>Jury approval recorded</b><small>Panel chair / authorized approver signed off</small></span></label>
+      </div>
+      <div class="wn-drawer-section"><h3>Decision note</h3><textarea id="winnerNote" rows="4" placeholder="Record the reason for a manual decision or any verification note..."></textarea></div>
+      <div class="wn-drawer-section"><h3>Decision context</h3><div class="wn-context-box" id="decisionContext"></div></div>
+    </div>
+    <div class="wn-drawer-foot"><button class="btn secondary" data-close="winnerDrawer">Cancel</button><span></span><button class="btn primary" id="saveDrawer">Save finalist</button></div>
+  </div>
+</div>
+
+<div class="wn-modal" id="previewModal" aria-hidden="true">
+  <div class="wn-modal-backdrop" data-close="previewModal"></div>
+  <div class="wn-modal-card wn-preview-modal">
+    <div class="wn-modal-head"><div><span class="eyebrow">PUBLIC PREVIEW</span><h2>Winner announcement</h2><p>Preview only. Embargo controls remain active.</p></div><button data-close="previewModal">x</button></div>
+    <div class="wn-modal-body"><div class="wn-public-preview"><small>INDIA FINTECH AWARDS 2027</small><h2>Meet the winners</h2><p>Celebrating the teams and leaders shaping the future of financial technology.</p><div class="wn-preview-grid" id="previewCards"></div></div></div>
+    <div class="wn-modal-foot"><button class="btn secondary" data-close="previewModal">Close</button><a class="btn primary" href="winner-gallery.html">Open Winner Gallery</a></div>
+  </div>
+</div>
+
+<div class="wn-modal" id="lockModal" aria-hidden="true">
+  <div class="wn-modal-backdrop" data-close="lockModal"></div>
+  <div class="wn-modal-card wn-small-modal">
+    <div class="wn-modal-head"><div><span class="eyebrow">LOCK CATEGORY</span><h2>Freeze this winner decision?</h2></div><button data-close="lockModal">x</button></div>
+    <div class="wn-modal-body">
+      <div class="wn-lock-summary"><span>L</span><div><b id="lockCategoryName">Best FinTech Startup</b><p>The winner assignment, verification snapshot, jury sign-off, and decision audit will be frozen for this category.</p></div></div>
+      <label class="wn-confirm-check"><input type="checkbox" id="lockConfirm"><span>I confirm that the recipient details and jury approval have been reviewed.</span></label>
+    </div>
+    <div class="wn-modal-foot"><button class="btn secondary" data-close="lockModal">Cancel</button><button class="btn primary" id="confirmLock" disabled>Lock winner</button></div>
+  </div>
+</div>
+
+<div class="wn-copilot-panel" id="copilotPanel">
+  <div class="wn-copilot-head"><div><span class="eyebrow">AWARD COPILOT</span><h2>Winner decision assistant</h2></div><button id="closeCopilot">x</button></div>
+  <p>Copilot can highlight missing approvals, announcement risks, and asset readiness. It does not silently choose a winner.</p>
+  <div class="wn-copilot-prompts">
+    <button data-prompt="blockers">What is blocking announcement?</button>
+    <button data-prompt="category">Is this category ready to lock?</button>
+    <button data-prompt="embargo">What should happen before embargo lifts?</button>
+    <button data-prompt="assets">Which celebration assets are ready?</button>
+  </div>
+  <div class="wn-copilot-answer" id="copilotAnswer">Choose a question to review the current winner state.</div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script src="winners.js"></script>
+</body>
+</html>

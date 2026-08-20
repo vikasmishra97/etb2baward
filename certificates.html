@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Certificates · AwardFlow</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="certificates.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
+    <nav class="nav">
+      <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
+      <div class="nav-label">Build</div>
+      <a href="award.html"><span class="ico">◇</span><span>Award</span></a>
+      <a href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
+      <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
+      <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
+      <a href="website.html"><span class="ico">▣</span><span>Website</span></a>
+      <div class="nav-label">Operate</div>
+      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Grow</div>
+      <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
+      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div>
+      <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
+      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
+      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
+      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div>
+      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
+      <a class="active" href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
+      <a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div>
+      <a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div>
+      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="crumb"><span id="crumbAwardName">India FinTech Awards 2027</span> / Certificates</div>
+      <div class="top-actions">
+        <button class="btn ghost" id="openCopilot">✦ Ask Award Copilot</button>
+        <div class="avatar">AK</div>
+      </div>
+    </header>
+
+    <main class="main cert-main">
+      <div class="page-head cert-head">
+        <div>
+          <div class="eyebrow">CELEBRATE · PAGE 14</div>
+          <h1>Certificates</h1>
+          <p>Turn approved winner decisions into branded, verifiable certificates — without re-entering winner data.</p>
+        </div>
+        <div class="top-actions">
+          <button class="btn secondary" id="syncRecipients">↻ Sync winners</button>
+          <button class="btn secondary" id="previewVerify">Verify a certificate</button>
+          <button class="btn primary" id="saveCertificates">Save changes</button>
+        </div>
+      </div>
+
+      <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage done">DECIDE</div><div class="stage active">CELEBRATE</div></div>
+
+      <section class="cert-stats">
+        <div class="cert-stat"><span class="stat-icon">🏆</span><div><small>Eligible recipients</small><strong id="eligibleCount">0</strong><em>locked + verified</em></div></div>
+        <div class="cert-stat"><span class="stat-icon">▤</span><div><small>Generated</small><strong id="generatedCount">0</strong><em>certificate records</em></div></div>
+        <div class="cert-stat"><span class="stat-icon">✓</span><div><small>Ready to send</small><strong id="readySendCount">0</strong><em>generated + email ready</em></div></div>
+        <div class="cert-stat"><span class="stat-icon">⌁</span><div><small>Verification</small><strong id="verifyStatus">ON</strong><em>unique certificate IDs</em></div></div>
+      </section>
+
+      <section class="cert-insight" id="certificateInsight">
+        <div class="cert-insight-icon">✦</div>
+        <div>
+          <small>AWARD COPILOT · NEXT BEST ACTION</small>
+          <h3 id="insightTitle">Generate your approved winner certificates</h3>
+          <p id="insightBody">Recipients are synced from Winners. AwardFlow will only generate certificates for locked, publicly verified award decisions.</p>
+        </div>
+        <button class="btn secondary" id="insightAction">Generate selected</button>
+      </section>
+
+      <div class="cert-workspace">
+        <section class="card cert-preview-card">
+          <div class="cert-card-head">
+            <div><small>LIVE CERTIFICATE</small><h2 id="previewRecipientLabel">Select a recipient</h2></div>
+            <div class="segmented compact" id="zoomSegment"><button data-zoom="fit" class="active">Fit</button><button data-zoom="100">100%</button></div>
+          </div>
+          <div class="certificate-stage" id="certificateStage">
+            <article class="certificate-preview template-classic" id="certificatePreview">
+              <div class="cert-ornament cert-ornament-a"></div><div class="cert-ornament cert-ornament-b"></div>
+              <div class="cert-inner-border"></div>
+              <div class="cert-logo" id="certLogo">AF</div>
+              <div class="cert-kicker" id="certKicker">INDIA FINTECH AWARDS 2027</div>
+              <h2 id="certTitle">Certificate of Excellence</h2>
+              <p class="cert-awarded">This certificate is proudly presented to</p>
+              <h3 id="certRecipient">ClearLend</h3>
+              <div class="cert-level" id="certLevel">WINNER</div>
+              <p class="cert-category" id="certCategory">Best Digital Lending</p>
+              <p class="cert-copy" id="certCopy">In recognition of outstanding achievement, innovation and contribution to the future of financial technology.</p>
+              <div class="cert-signatures">
+                <div class="cert-signature"><div class="signature-image" id="sigOneImage"></div><b id="sigOneName">Aarav Kapoor</b><small id="sigOneTitle">Program Director</small></div>
+                <div class="cert-verification" id="verificationBlock"><canvas id="verifyMatrix" width="78" height="78"></canvas><div><b id="certCode">IFA27-CL-001</b><small>Verify certificate</small></div></div>
+                <div class="cert-signature"><div class="signature-image" id="sigTwoImage"></div><b id="sigTwoName">Maya Shah</b><small id="sigTwoTitle">Jury Chair</small></div>
+              </div>
+              <div class="cert-issued" id="certIssued">Issued 15 June 2027</div>
+            </article>
+          </div>
+          <div class="cert-preview-actions">
+            <button class="btn secondary" id="downloadCurrent">↓ Download PNG</button>
+            <button class="btn secondary" id="openCurrentVerify">Open verification</button>
+            <button class="btn ghost" id="printCurrent">Print / PDF</button>
+          </div>
+        </section>
+
+        <aside class="cert-settings-column">
+          <section class="card pad cert-panel">
+            <div class="panel-title"><div><small>DESIGN</small><h2>Certificate style</h2></div><button class="text-btn" id="syncBrand">Use Brand Kit</button></div>
+            <div class="cert-template-grid" id="templateGrid">
+              <button class="cert-template active" data-template="classic"><span class="mini classic-mini"><i></i></span><b>Classic Gold</b><small>Premium & formal</small></button>
+              <button class="cert-template" data-template="modern"><span class="mini modern-mini"><i></i></span><b>Modern</b><small>Bold & digital</small></button>
+              <button class="cert-template" data-template="minimal"><span class="mini minimal-mini"><i></i></span><b>Minimal</b><small>Clean & spacious</small></button>
+              <button class="cert-template" data-template="editorial"><span class="mini editorial-mini"><i></i></span><b>Editorial</b><small>Distinctive & premium</small></button>
+            </div>
+            <div class="two-col-fields">
+              <div class="field"><label>Primary</label><div class="color-row"><input type="color" id="primaryColor" value="#241a44"><span id="primaryHex">#241A44</span></div></div>
+              <div class="field"><label>Accent</label><div class="color-row"><input type="color" id="accentColor" value="#c9a85b"><span id="accentHex">#C9A85B</span></div></div>
+            </div>
+            <div class="field"><label>Certificate title</label><input id="certificateTitle" value="Certificate of Excellence"></div>
+            <div class="field"><label>Recognition copy</label><textarea id="certificateCopy" rows="3">In recognition of outstanding achievement, innovation and contribution to the future of financial technology.</textarea></div>
+          </section>
+
+          <section class="card pad cert-panel">
+            <div class="panel-title"><div><small>SIGNATURES</small><h2>Approval signatures</h2></div><span class="status-pill soft">2 signers</span></div>
+            <div class="signature-settings">
+              <div class="signature-setting">
+                <div class="signature-number">1</div>
+                <div class="signature-fields"><input id="signatureOneName" value="Aarav Kapoor" aria-label="Signer one name"><input id="signatureOneTitle" value="Program Director" aria-label="Signer one title"><label class="upload-link">Upload signature image<input type="file" id="signatureOneFile" accept="image/png,image/jpeg,image/webp"></label></div>
+              </div>
+              <div class="signature-setting">
+                <div class="signature-number">2</div>
+                <div class="signature-fields"><input id="signatureTwoName" value="Maya Shah" aria-label="Signer two name"><input id="signatureTwoTitle" value="Jury Chair" aria-label="Signer two title"><label class="upload-link">Upload signature image<input type="file" id="signatureTwoFile" accept="image/png,image/jpeg,image/webp"></label></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card pad cert-panel">
+            <div class="panel-title"><div><small>TRUST</small><h2>Verification & delivery</h2></div><span class="status-pill green">Recommended</span></div>
+            <label class="switch-row"><span><b>Certificate verification</b><small>Issue a unique ID and verification link.</small></span><input type="checkbox" id="enableVerification" checked></label>
+            <label class="switch-row"><span><b>Winner email delivery</b><small>Prepare personalized delivery after generation.</small></span><input type="checkbox" id="emailDelivery" checked></label>
+            <div class="field"><label>Issue date</label><input type="date" id="issueDate" value="2027-06-15"></div>
+            <div class="verify-note">Verification in this static manager demo uses the current browser's certificate registry. Production will use a server-side public verification database.</div>
+          </section>
+        </aside>
+      </div>
+
+      <section class="card cert-batch-card">
+        <div class="batch-head">
+          <div><small>BATCH GENERATION</small><h2>Certificate recipients</h2><p>Synced from locked winner decisions. Select recipients, generate certificates, then prepare delivery.</p></div>
+          <div class="top-actions"><button class="btn secondary" id="exportCertificates">Export CSV</button><button class="btn primary" id="generateSelected">Generate selected</button></div>
+        </div>
+        <div class="batch-toolbar">
+          <label class="check-all"><input type="checkbox" id="selectAll" checked> Select all eligible</label>
+          <div class="batch-filters"><button class="chip active" data-filter="all">All</button><button class="chip" data-filter="generated">Generated</button><button class="chip" data-filter="pending">Not generated</button></div>
+          <div class="batch-search"><span>⌕</span><input id="recipientSearch" placeholder="Search recipient or category"></div>
+        </div>
+        <div class="table-wrap">
+          <table class="cert-table">
+            <thead><tr><th></th><th>Recipient</th><th>Award</th><th>Category</th><th>Decision</th><th>Certificate</th><th>Delivery</th><th></th></tr></thead>
+            <tbody id="certificateRows"></tbody>
+          </table>
+        </div>
+        <div class="protected-row" id="protectedRow"><div><b id="protectedCount">0 protected winner records</b><span>Not eligible until winner decisions are locked and verification is complete.</span></div><button class="btn ghost" id="reviewProtected">Review protected</button></div>
+      </section>
+
+      <section class="cert-bottom-grid">
+        <div class="card pad">
+          <div class="panel-title"><div><small>DELIVERY</small><h2>Send certificates</h2></div><span class="status-pill" id="deliveryReadiness">0 ready</span></div>
+          <p class="muted-copy">AwardFlow prepares one personalized delivery per generated certificate. No email is actually sent in this front-end prototype.</p>
+          <div class="delivery-steps">
+            <div><span class="step-dot done">1</span><div><b>Generate</b><small>Create certificate ID + image</small></div></div>
+            <div><span class="step-dot">2</span><div><b>Review</b><small>Check public name and category</small></div></div>
+            <div><span class="step-dot">3</span><div><b>Deliver</b><small>Email certificate + verification link</small></div></div>
+          </div>
+          <button class="btn primary full" id="prepareDelivery">Prepare winner emails</button>
+        </div>
+        <div class="card pad">
+          <div class="panel-title"><div><small>CERTIFICATE HEALTH</small><h2>Issuance readiness</h2></div><strong class="health-score" id="healthScore">78%</strong></div>
+          <div class="health-bar"><i id="healthBar"></i></div>
+          <div class="health-list" id="healthList"></div>
+        </div>
+        <div class="card pad copilot-mini">
+          <div class="panel-title"><div><small>AWARD COPILOT</small><h2>Before you send</h2></div><span class="copilot-star">✦</span></div>
+          <p id="copilotMiniText">Generate certificates only after public names and category labels are final. Use the same approved winner source for website, certificates and email.</p>
+          <button class="btn secondary full" id="openInsightCopilot">Check my certificate setup</button>
+        </div>
+      </section>
+
+      <div class="continue-bar"><div><b>Certificates ready?</b><span>Next, plan the ceremony experience and winner communications.</span></div><a class="btn primary" href="ceremony.html">Continue to Ceremony →</a></div>
+      <div class="footer-note">Interactive manager-demo prototype · Sample data only · Email and verification backend are simulated</div>
+    </main>
+  </div>
+</div>
+
+<div class="drawer-overlay" id="copilotPanel" aria-hidden="true">
+  <aside class="drawer cert-drawer">
+    <div class="drawer-head"><div><small>AWARD COPILOT</small><h2>Certificate assistant</h2></div><button class="icon-close" data-close="copilotPanel">×</button></div>
+    <div class="copilot-hero"><span>✦</span><p>Use the winner decision as the single source of truth. AwardFlow can help spot blocked recipients, improve certificate copy and check issuance readiness.</p></div>
+    <div class="prompt-list">
+      <button data-prompt="blocked">Which recipients are blocked?</button>
+      <button data-prompt="copy">Improve my certificate copy</button>
+      <button data-prompt="design">Which template fits my brand?</button>
+      <button data-prompt="send">Are we ready to send?</button>
+    </div>
+    <div class="copilot-answer" id="copilotAnswer">Choose a question above to review your setup.</div>
+  </aside>
+</div>
+
+<div class="modal-layer" id="protectedModal" aria-hidden="true">
+  <div class="modal-card protected-modal-card">
+    <div class="modal-head"><div><small>PROTECTED RECORDS</small><h2>Not eligible for certificates yet</h2></div><button class="icon-close" data-close="protectedModal">×</button></div>
+    <p>These records are deliberately blocked until the winner decision is locked and the required public verification checks are complete.</p>
+    <div id="protectedList" class="protected-list"></div>
+    <div class="modal-actions"><a class="btn secondary" href="winners.html">Open Winners</a><button class="btn primary" data-close="protectedModal">Done</button></div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+<script src="certificates.js"></script>
+</body>
+</html>
