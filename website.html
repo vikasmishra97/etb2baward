@@ -47,7 +47,7 @@
 
             <div class="header-subtabs" role="tablist">
               <button type="button" class="active" data-header-tab="basics"><span>01</span> Basics</button>
-              <button type="button" data-header-tab="media"><span>02</span> Hero Media</button>
+              <button type="button" data-header-tab="media"><span>02</span> Top Banner</button>
               <button type="button" data-header-tab="brand"><span>03</span> Brand & SEO</button>
               <button type="button" data-header-tab="style"><span>04</span> Style</button>
             </div>
@@ -67,7 +67,7 @@
             </section>
 
             <section class="header-subpanel" data-header-panel="media">
-              <div class="header-section-heading"><div><small>HERO MEDIA</small><h3>Hero backgrounds & branding</h3></div><span class="asset-count" id="heroAssetCount">0 / 3</span></div>
+              <div class="header-section-heading"><div><small>TOP BANNER</small><h3>Banner backgrounds & branding</h3></div><span class="asset-count" id="heroAssetCount">0 / 3</span></div>
               <p class="wb19-help big-help">Upload once, crop in the built-in studio and ETB2B automatically compresses the image for the public site.</p>
               <div class="asset-grid hero-assets">
                 <article class="asset-card wide" data-asset-card="desktopImage"><div class="asset-preview ratio-hero" data-asset-preview="desktopImage"><span>Desktop background</span></div><div class="asset-copy"><div><b>Desktop background</b><small>Recommended 1600 × 720 · JPG/PNG/WebP</small></div><div class="asset-actions"><button type="button" data-upload-asset="desktopImage" data-aspect="hero" data-title="Desktop hero background">Upload / replace</button><button type="button" class="danger-link" data-remove-asset="desktopImage">Remove</button></div></div></article>
@@ -113,6 +113,30 @@
               </div>
               <div class="wb19-color-row premium-color-row"><label><span>Primary</span><input type="color" id="primaryColor"></label><label><span>Accent</span><input type="color" id="accentColor"></label><label><span>Surface</span><input type="color" id="surfaceColor"></label></div>
               <label class="wb19-field"><span>Heading style</span><select id="fontStyle"><option value="editorial">Editorial Serif</option><option value="modern">Modern Sans</option><option value="condensed">Condensed Display</option></select></label>
+
+              <div class="body-appearance-studio">
+                <div class="body-appearance-head"><div><small>BODY DESIGN SYSTEM</small><h4>Website typography & body appearance</h4><p>These settings apply from <b>Overview</b> onward across the public website body.</p></div><span>GLOBAL</span></div>
+                <div class="body-style-section">
+                  <div class="body-style-title"><b>Website Typography</b><small>Keep body sections consistent and readable.</small></div>
+                  <div class="wb19-two">
+                    <label class="wb19-field"><span>Font family</span><select id="bodyFontFamily"><option value="inter">Inter / Sans</option><option value="system">System Sans</option><option value="georgia">Georgia / Serif</option><option value="arial">Arial</option></select></label>
+                    <label class="wb19-field"><span>Heading font size</span><select id="bodyHeadingSize"><option value="38">38 px</option><option value="44">44 px</option><option value="50">50 px</option><option value="56">56 px</option><option value="64">64 px</option></select></label>
+                    <label class="wb19-field"><span>Subheading font size</span><select id="bodySubheadingSize"><option value="12">12 px</option><option value="14">14 px</option><option value="16">16 px</option><option value="18">18 px</option><option value="20">20 px</option></select></label>
+                    <label class="wb19-field"><span>Paragraph font size</span><select id="bodyParagraphSize"><option value="14">14 px</option><option value="16">16 px</option><option value="18">18 px</option><option value="20">20 px</option></select></label>
+                  </div>
+                  <label class="wb19-field"><span>Text alignment</span><select id="bodyTextAlign"><option value="left">Left align</option><option value="center">Center align</option><option value="right">Right align</option></select></label>
+                </div>
+                <div class="body-style-section">
+                  <div class="body-style-title"><b>Body Appearance</b><small>Control the website background, text colour and spacing from Overview onward.</small></div>
+                  <div class="body-color-grid">
+                    <label><span>Body background color</span><input type="color" id="bodyBgColor"></label>
+                    <label><span>Body text color</span><input type="color" id="bodyTextColor"></label>
+                    <label><span>Default theme color</span><input type="color" id="bodyThemeColor"></label>
+                  </div>
+                  <label class="wb19-field"><span>Spacing between sections</span><select id="bodySectionSpacing"><option value="48">48 px · Compact</option><option value="56">56 px</option><option value="70">70 px · Recommended</option><option value="84">84 px</option><option value="96">96 px · Spacious</option></select></label>
+                  <article class="asset-card body-background-asset" data-asset-card="bodyBackgroundImage"><div class="asset-preview ratio-body-bg" data-asset-preview="bodyBackgroundImage"><span>Body background image</span></div><div class="asset-copy"><div><b>Body Background Image</b><small>Optional · applied behind sections from Overview onward</small></div><div class="asset-actions"><button type="button" data-upload-asset="bodyBackgroundImage" data-asset-scope="theme" data-aspect="landscape" data-title="Body background image">Upload / replace</button><button type="button" class="danger-link" data-remove-asset="bodyBackgroundImage" data-asset-scope="theme">Remove</button></div></div></article>
+                </div>
+              </div>
             </section>
           </div>
 
