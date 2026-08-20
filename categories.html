@@ -1,15 +1,16 @@
 <!doctype html>
 <html>
 <head>
+  <link rel="icon" type="image/jpeg" href="et-logo.jpg">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Categories · AwardFlow</title>
+  <title>Categories · ETB2B Awards</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="brand"><div class="brandmark et-brandmark"><img src="et-logo.jpg" alt="ET Business Verticals logo"></div><b>ETB2B Awards</b></div>
     <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
     <nav class="nav">
       <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
@@ -46,7 +47,7 @@
       <div class="crumb"><span id="crumbAward">India FinTech Awards 2027</span> / Categories</div>
       <div class="top-actions">
         <button class="btn ghost" id="copilotBtn">✦ Ask Award Copilot</button>
-        <div class="avatar">AK</div>
+        <div class="avatar">VM</div>
       </div>
     </header>
 
@@ -147,7 +148,7 @@
         </aside>
       </div>
 
-      <div class="footer-note">Interactive manager-demo prototype · Category data is stored only in this browser</div>
+      <div class="footer-note">Vikas Mishra</div>
     </main>
   </div>
 </div>
@@ -232,7 +233,7 @@
 <script>
 (function(){
   const $ = id => document.getElementById(id);
-  const savedAward = (()=>{try{return JSON.parse(localStorage.getItem('awardflow_new_award')||'null')}catch(e){return null}})();
+  const savedAward = (()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})();
   const award = savedAward || {name:'India FinTech Awards 2027',currency:'INR',baseFee:2000,entryType:'paid',suggestedCategories:['Best FinTech Startup','Best Digital Banking Innovation','Best Payments Solution','FinTech Leader of the Year','Best AI in Financial Services']};
   const symbolMap={INR:'₹',USD:'$',AED:'د.إ',GBP:'£',SGD:'S$'};
   const curSymbol=symbolMap[award.currency]||'₹';
@@ -249,7 +250,7 @@
   function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
   function money(v){return baseFee===0&&Number(v||0)===0?'Free':curSymbol+Number(v||0).toLocaleString('en-IN')}
   function codeFrom(name){return (name||'CAT').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim().split(/\s+/).slice(0,4).map(x=>x.slice(0,3)).join('-').slice(0,20)}
-  function categoryStoreKey(){return savedAward&&savedAward.slug?'awardflow_categories_'+savedAward.slug:'awardflow_categories_demo'}
+  function categoryStoreKey(){return savedAward&&savedAward.slug?'etb2b_awards_categories_'+savedAward.slug:'etb2b_awards_categories_demo'}
   function persist(){localStorage.setItem(categoryStoreKey(),JSON.stringify(categories));updateUI()}
 
   $('sideAwardName').textContent=award.name||'Untitled Award';

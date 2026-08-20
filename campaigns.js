@@ -4,20 +4,20 @@
   const fmt=n=>Number(n||0).toLocaleString('en-IN');
   const slugify=v=>String(v||'demo').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'demo';
   const toast=msg=>{const t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1900)};
-  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('awardflow_new_award')||'null')}catch(e){return null}})();
+  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})();
   const award=savedAward||{name:'India FinTech Awards 2027',slug:'india-fintech-awards-2027',currency:'INR',deadline:'2027-03-31'};
   const awardSlug=award.slug||slugify(award.name);
-  const categoryKey='awardflow_categories_'+awardSlug;
+  const categoryKey='etb2b_awards_categories_'+awardSlug;
   let categories=(()=>{try{return JSON.parse(localStorage.getItem(categoryKey)||'[]')}catch(e){return []}})();
   if(!categories.length)categories=[{name:'Best FinTech Startup'},{name:'Best Digital Banking Innovation'},{name:'Best Payments Solution'},{name:'FinTech Leader of the Year'},{name:'Best AI in Financial Services'}];
   const categoryNames=categories.map(c=>c.name).filter(Boolean);
-  const campaignKey='awardflow_campaigns_'+awardSlug;
+  const campaignKey='etb2b_awards_campaigns_'+awardSlug;
 
   $('sideAwardName').textContent=award.name||'Untitled Award';
   $('crumbAward').textContent=award.name||'Untitled Award';
-  $('previewAwardFrom').textContent=award.name||'AwardFlow Award';
-  $('previewAwardFoot').textContent=award.name||'AwardFlow Award';
-  $('previewWaAward').textContent=(award.name||'AwardFlow Award').replace(/\s+20\d\d$/,'');
+  $('previewAwardFrom').textContent=award.name||'ETB2B Awards Award';
+  $('previewAwardFoot').textContent=award.name||'ETB2B Awards Award';
+  $('previewWaAward').textContent=(award.name||'ETB2B Awards Award').replace(/\s+20\d\d$/,'');
 
   const defaultCampaigns=[
     {id:'c1',name:'Early bird ends tonight',goal:'deadline',audience:'Registered, no entry',audienceCount:1584,channels:['email','whatsapp'],status:'sent',sent:1584,open:52.4,click:18.7,conversions:47,revenue:131600,when:'12 Mar · 5:30 PM'},
@@ -65,7 +65,7 @@
   ];
 
   function persist(){localStorage.setItem(campaignKey,JSON.stringify(campaigns));}
-  function replaceTokens(text){return String(text||'').replace(/{{first_name}}/g,'Riya').replace(/{{company}}/g,'NovaPay Labs').replace(/{{category}}/g,categoryNames[0]||'Best FinTech Startup').replace(/{{deadline}}/g,formatDeadline()).replace(/{{entry_link}}/g,'award.link/continue').replace(/{{award_name}}/g,award.name||'AwardFlow Award')}
+  function replaceTokens(text){return String(text||'').replace(/{{first_name}}/g,'Riya').replace(/{{company}}/g,'NovaPay Labs').replace(/{{category}}/g,categoryNames[0]||'Best FinTech Startup').replace(/{{deadline}}/g,formatDeadline()).replace(/{{entry_link}}/g,'award.link/continue').replace(/{{award_name}}/g,award.name||'ETB2B Awards Award')}
   function formatDeadline(){const raw=award.deadline||award.closeDate||'2027-03-31';const d=new Date(raw+'T00:00:00');return isNaN(d)?'31 March':d.toLocaleDateString('en-IN',{day:'numeric',month:'long'})}
   function statusBadge(s){return s==='sent'?'<span class="badge green">Sent</span>':s==='scheduled'?'<span class="badge orange">Scheduled</span>':'<span class="badge">Draft</span>'}
   function channelHtml(channels){return `<div class="cp-channels">${channels.includes('email')?'<span class="cp-channel-pill">✉</span>':''}${channels.includes('whatsapp')?'<span class="cp-channel-pill">W</span>':''}</div>`}
@@ -82,13 +82,13 @@
   function bindPresetButtons(){document.querySelectorAll('[data-preset]').forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.addEventListener('click',()=>openComposer(b.dataset.preset))})}
 
   function readPreparedAudience(){
-    const selected=(()=>{try{return JSON.parse(localStorage.getItem('awardflow_selected_audience')||'null')}catch(e){return null}})();
-    const ids=(()=>{try{return JSON.parse(localStorage.getItem('awardflow_selected_leads')||'[]')}catch(e){return []}})();
+    const selected=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_selected_audience')||'null')}catch(e){return null}})();
+    const ids=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_selected_leads')||'[]')}catch(e){return []}})();
     if(ids&&ids.length)return {key:'selected',name:`Selected contacts (${ids.length})`,count:ids.length,prepared:true,meta:'Prepared in Audience & Leads'};
     if(selected&&selected.award===awardSlug)return {key:selected.segmentKey||'selected',name:selected.segmentName||'Prepared audience',count:selected.count||0,prepared:true,meta:'Prepared in Audience & Leads'};
     return null;
   }
-  function clearPreparedAudience(){localStorage.removeItem('awardflow_selected_audience');localStorage.removeItem('awardflow_selected_leads')}
+  function clearPreparedAudience(){localStorage.removeItem('etb2b_awards_selected_audience');localStorage.removeItem('etb2b_awards_selected_leads')}
   function renderAudienceOptions(){
     const prepared=readPreparedAudience();
     if(prepared){selectedAudience=prepared;$('readyAudience').hidden=false;$('readyAudienceName').textContent=prepared.name;$('readyAudienceMeta').textContent=`${fmt(prepared.count)} contacts · ${prepared.meta}`}

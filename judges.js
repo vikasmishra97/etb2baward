@@ -152,7 +152,7 @@
     coverage:'Best AI in Financial Services is the priority: 58 entries are assigned to only 1 judge. I recommend adding Rohit Nanda plus 2 AI/data experts with workloads below 30.',
     workload:'Vikram Sethi is highest at 48 assigned reviews versus a panel median of 30. Moving 14 reviews to Dev and Priyanka would improve balance from 74% to about 91%.',
     inactive:'Meera Nair should be reminded first: 24 assigned reviews, 0 completed, and only 6 days remain. Three pending invitees should receive a separate acceptance reminder.',
-    conflict:'Keep conflict handling automatic: judges declare conflicts before opening an entry, that entry is removed from their queue, and AwardFlow reassigns it to an eligible judge.'
+    conflict:'Keep conflict handling automatic: judges declare conflicts before opening an entry, that entry is removed from their queue, and ETB2B Awards reassigns it to an eligible judge.'
   };
   $$('[data-copilot]').forEach(b=>b.addEventListener('click',()=>$('#copilotAnswer').textContent=answers[b.dataset.copilot]));
 

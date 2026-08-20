@@ -1,11 +1,11 @@
 (()=>{
   const $=id=>document.getElementById(id);
-  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('awardflow_new_award')||'null')}catch(e){return null}})();
+  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})();
   const awardName=savedAward?.name||'India FinTech Awards 2027';
   const awardSlug=savedAward?.slug||'india-fintech-awards-2027';
-  const storeKey='awardflow_automations_'+awardSlug;
-  const runsKey='awardflow_automation_runs_'+awardSlug;
-  const settingsKey='awardflow_automation_settings_'+awardSlug;
+  const storeKey='etb2b_awards_automations_'+awardSlug;
+  const runsKey='etb2b_awards_automation_runs_'+awardSlug;
+  const settingsKey='etb2b_awards_automation_settings_'+awardSlug;
 
   $('sideAwardName').textContent=awardName;
   $('crumbAwardName').textContent=awardName;

@@ -1,15 +1,16 @@
 <!doctype html>
 <html>
 <head>
+  <link rel="icon" type="image/jpeg" href="et-logo.jpg">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Create Award · AwardFlow</title>
+  <title>Create Award · ETB2B Awards</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="brand"><div class="brandmark et-brandmark"><img src="et-logo.jpg" alt="ET Business Verticals logo"></div><b>ETB2B Awards</b></div>
     <div class="award-switch">
       <small>Current award</small>
       <strong>India FinTech Awards 2027</strong>
@@ -49,7 +50,7 @@
       <div class="crumb"><a href="index.html">Awards</a> / Create new award</div>
       <div class="top-actions">
         <button class="btn secondary" id="saveDraftBtn">Save draft</button>
-        <div class="avatar">AK</div>
+        <div class="avatar">VM</div>
       </div>
     </header>
 
@@ -164,7 +165,7 @@
               </div>
               <div class="form-grid ca-fee-row" id="feeRow">
                 <div class="field"><label for="baseFee">Starting entry fee</label><div class="ca-money"><span id="currencySymbol">₹</span><input id="baseFee" type="number" min="0" value="2000"></div><small>Category-specific pricing can be added later.</small></div>
-                <div class="field"><label for="awardSlug">Public website URL</label><div class="ca-url"><span>awardflow.com/</span><input id="awardSlug" placeholder="india-fintech-awards-2027"></div><small>You can connect a custom domain later.</small></div>
+                <div class="field"><label for="awardSlug">Public website URL</label><div class="ca-url"><span>etb2baward.vercel.app/</span><input id="awardSlug" placeholder="india-fintech-awards-2027"></div><small>You can connect a custom domain later.</small></div>
               </div>
 
               <div class="ca-form-footer">
@@ -237,7 +238,7 @@
             <div class="ca-success-side">
               <div class="card pad">
                 <small class="ca-muted-label">PUBLIC URL</small>
-                <div class="ca-success-url" id="successUrl">awardflow.com/your-award</div>
+                <div class="ca-success-url" id="successUrl">etb2baward.vercel.app/your-award</div>
                 <div class="ca-success-actions">
                   <a class="btn secondary" href="website-preview.html">Preview website</a>
                   <a class="btn primary" href="categories.html">Continue setup →</a>
@@ -253,7 +254,7 @@
           <div class="ca-success-bottom"><a href="index.html">Go to Command Center</a><button type="button" class="btn secondary" id="createAnotherBtn">Create another award</button></div>
         </div>
       </section>
-      <div class="footer-note">Interactive manager-demo prototype · Data is stored only in this browser</div>
+      <div class="footer-note">Vikas Mishra</div>
     </main>
   </div>
 </div>
@@ -356,16 +357,16 @@
 
   $('createBtn').addEventListener('click',()=>{
     if(!validate()){toast('Complete the required fields');document.querySelector('.invalid')?.scrollIntoView({behavior:'smooth',block:'center'});return;}
-    const data=awardData(); localStorage.setItem('awardflow_new_award',JSON.stringify(data));
-    $('successName').textContent=data.name+' is ready'; $('successUrl').textContent='awardflow.com/'+data.slug;
+    const data=awardData(); localStorage.setItem('etb2b_awards_new_award',JSON.stringify(data));
+    $('successName').textContent=data.name+' is ready'; $('successUrl').textContent='etb2baward.vercel.app/'+data.slug;
     $('categorySuggestion').textContent=data.suggestedCategories.length?'Suggested: '+data.suggestedCategories.slice(0,3).join(' · '):'Continue to Categories to add the first entry categories.';
     $('builderView').hidden=true;$('successView').hidden=false;window.scrollTo({top:0,behavior:'smooth'});toast('Award created');
   });
 
-  $('saveDraftBtn').addEventListener('click',()=>{localStorage.setItem('awardflow_create_draft',JSON.stringify(awardData()));toast('Draft saved in this browser')});
-  $('createAnotherBtn').addEventListener('click',()=>{localStorage.removeItem('awardflow_new_award');location.reload()});
+  $('saveDraftBtn').addEventListener('click',()=>{localStorage.setItem('etb2b_awards_create_draft',JSON.stringify(awardData()));toast('Draft saved in this browser')});
+  $('createAnotherBtn').addEventListener('click',()=>{localStorage.removeItem('etb2b_awards_new_award');location.reload()});
 
-  const draft=localStorage.getItem('awardflow_create_draft');
+  const draft=localStorage.getItem('etb2b_awards_create_draft');
   if(draft){try{const d=JSON.parse(draft);fields.forEach(id=>{if(d[id]!==undefined&&$(id))$(id).value=d[id]});entryType=d.entryType||'paid';generatedCategories=d.suggestedCategories||[];document.querySelectorAll('.ca-choice').forEach(b=>b.classList.toggle('active',b.dataset.entry===entryType));$('feeRow').classList.toggle('ca-fee-hidden',entryType==='free');$('descCount').textContent=$('description').value.length;updatePreview()}catch(e){}}
   updatePreview();
 })();

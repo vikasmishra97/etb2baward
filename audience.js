@@ -5,17 +5,17 @@
   const slugify=v=>String(v||'demo').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'demo';
   const fmt=n=>Number(n||0).toLocaleString('en-IN');
 
-  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('awardflow_new_award')||'null')}catch(e){return null}})();
+  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})();
   const award=savedAward||{name:'India FinTech Awards 2027',slug:'india-fintech-awards-2027',currency:'INR'};
   const awardSlug=award.slug||slugify(award.name);
-  const categoryKey='awardflow_categories_'+awardSlug;
+  const categoryKey='etb2b_awards_categories_'+awardSlug;
   let categories=(()=>{try{return JSON.parse(localStorage.getItem(categoryKey)||'[]')}catch(e){return []}})();
   if(!categories.length)categories=[
     {name:'Best FinTech Startup'},{name:'Best Digital Banking Innovation'},{name:'Best Payments Solution'},{name:'FinTech Leader of the Year'},{name:'Best AI in Financial Services'}
   ];
   const categoryNames=categories.map(c=>c.name).filter(Boolean);
-  const storeKey='awardflow_audience_'+awardSlug;
-  const segmentKey='awardflow_segments_'+awardSlug;
+  const storeKey='etb2b_awards_audience_'+awardSlug;
+  const segmentKey='etb2b_awards_segments_'+awardSlug;
 
   $('sideAwardName').textContent=award.name||'Untitled Award';
   $('crumbAward').textContent=award.name||'Untitled Award';
@@ -195,7 +195,7 @@
 
   function useSegmentForCampaign(key){
     const s=segmentDefs.find(x=>x.key===key)||customSegments.find(x=>x.key===key)||activeDef();
-    localStorage.setItem('awardflow_selected_audience',JSON.stringify({award:awardSlug,segmentKey:s.key,segmentName:s.name,count:s.count,createdAt:new Date().toISOString()}));
+    localStorage.setItem('etb2b_awards_selected_audience',JSON.stringify({award:awardSlug,segmentKey:s.key,segmentName:s.name,count:s.count,createdAt:new Date().toISOString()}));
     toast(`${s.name} prepared for Campaigns`);
     setTimeout(()=>{location.href='campaigns.html'},500);
   }
@@ -235,9 +235,9 @@
   ['contactSearch','lifecycleFilter','intentFilter','categoryFilter'].forEach(id=>$(id).addEventListener(id==='contactSearch'?'input':'change',()=>{selectedIds.clear();renderTable()}));
   $('resetFilters').addEventListener('click',()=>{$('contactSearch').value='';$('lifecycleFilter').value='all';$('intentFilter').value='all';$('categoryFilter').value='all';selectedIds.clear();renderTable()});
   $('selectAll').addEventListener('change',()=>{filteredLeads().forEach(l=>$('selectAll').checked?selectedIds.add(l.id):selectedIds.delete(l.id));renderTable()});
-  $('bulkExport').addEventListener('click',()=>exportRows(leads.filter(l=>selectedIds.has(l.id)),'awardflow-selected-leads.csv'));
-  $('bulkCampaign').addEventListener('click',()=>{localStorage.setItem('awardflow_selected_leads',JSON.stringify([...selectedIds]));toast(`${selectedIds.size} contacts prepared for Campaigns`);setTimeout(()=>location.href='campaigns.html',500)});
-  $('exportVisible').addEventListener('click',()=>exportRows(filteredLeads(),'awardflow-audience.csv'));
+  $('bulkExport').addEventListener('click',()=>exportRows(leads.filter(l=>selectedIds.has(l.id)),'etb2b-awards-selected-leads.csv'));
+  $('bulkCampaign').addEventListener('click',()=>{localStorage.setItem('etb2b_awards_selected_leads',JSON.stringify([...selectedIds]));toast(`${selectedIds.size} contacts prepared for Campaigns`);setTimeout(()=>location.href='campaigns.html',500)});
+  $('exportVisible').addEventListener('click',()=>exportRows(filteredLeads(),'etb2b-awards-audience.csv'));
   $('campaignVisible').addEventListener('click',()=>useSegmentForCampaign(activeSegment));
   $('saveAudience').addEventListener('click',()=>{persist();toast('Audience saved in this browser')});
 
@@ -248,7 +248,7 @@
   // Lead drawer
   document.querySelectorAll('[data-close-drawer]').forEach(b=>b.addEventListener('click',closeDrawer));
   $('saveLeadNote').addEventListener('click',()=>{const l=leads.find(x=>x.id===activeLeadId);if(!l)return;l.note=$('drawerNote').value.trim();persist();$('drawerSaveState').textContent='Saved just now';toast('Lead profile saved')});
-  $('drawerCampaign').addEventListener('click',()=>{if(!activeLeadId)return;localStorage.setItem('awardflow_selected_leads',JSON.stringify([activeLeadId]));toast('Lead prepared for Campaigns')});
+  $('drawerCampaign').addEventListener('click',()=>{if(!activeLeadId)return;localStorage.setItem('etb2b_awards_selected_leads',JSON.stringify([activeLeadId]));toast('Lead prepared for Campaigns')});
   $('drawerReminder').addEventListener('click',()=>toast('Reminder draft created for this lead'));
   $('addTag').addEventListener('click',()=>{const tag=prompt('Tag name');if(!tag)return;const l=leads.find(x=>x.id===activeLeadId);if(!l)return;l.tags=l.tags||[];if(!l.tags.includes(tag))l.tags.push(tag);persist();openLead(activeLeadId);toast('Tag added')});
 
@@ -273,7 +273,7 @@
     {id:'imp_'+Date.now()+'_3',name:'Leena Das',email:'leena@seedfinance.demo',phone:'+91 98765 30003',company:'Seed Finance',companySize:'Startup',category:categoryNames[0],lifecycle:'prospect',score:61,source:'CSV Import',lastActivity:'Just imported',channels:['E'],tags:['Imported'],note:''}
   ];renderImportPreview();toast('Sample import prepared')});
   $('confirmImport').addEventListener('click',()=>{if(!importBuffer.length)return;const emails=new Set(leads.map(l=>l.email.toLowerCase()));const fresh=importBuffer.filter(l=>!emails.has((l.email||'').toLowerCase()));leads=[...fresh,...leads];persist();closeModal('importModal');activeSegment='all';renderSegments();renderTable();toast(`${fresh.length} new contact${fresh.length===1?'':'s'} imported`);importBuffer=[]});
-  $('downloadTemplate').addEventListener('click',()=>{const csv='name,email,company,phone,category,source\nRiya Mehta,riya@example.com,NovaPay,+91 9000000000,Best FinTech Startup,Partner list';const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='awardflow-audience-template.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),500)});
+  $('downloadTemplate').addEventListener('click',()=>{const csv='name,email,company,phone,category,source\nRiya Mehta,riya@example.com,NovaPay,+91 9000000000,Best FinTech Startup,Partner list';const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='etb2b-awards-audience-template.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),500)});
 
   // Segment builder
   ['segmentLifecycle','segmentIntent','segmentCategory','segmentSource'].forEach(id=>$(id).addEventListener('change',estimateSegment));
@@ -292,5 +292,5 @@
   }));
 
   $('showSources').addEventListener('click',()=>toast('Source performance report is planned for Reports'));
-  $('promoteLowDemand').addEventListener('click',()=>{const low=categoryNames[categoryNames.length-1]||'lowest-demand category';localStorage.setItem('awardflow_selected_audience',JSON.stringify({award:awardSlug,segmentKey:'category_growth',segmentName:low+' prospects',count:421,createdAt:new Date().toISOString()}));toast(`${low} audience prepared for Campaigns`)});
+  $('promoteLowDemand').addEventListener('click',()=>{const low=categoryNames[categoryNames.length-1]||'lowest-demand category';localStorage.setItem('etb2b_awards_selected_audience',JSON.stringify({award:awardSlug,segmentKey:'category_growth',segmentName:low+' prospects',count:421,createdAt:new Date().toISOString()}));toast(`${low} audience prepared for Campaigns`)});
 })();

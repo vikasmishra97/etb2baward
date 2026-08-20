@@ -1,8 +1,8 @@
 (function(){
   var $=function(s){return document.querySelector(s)};
   var state={theme:'spotlight',layout:'grid',showFilters:true,headline:'Meet the innovators shaping the future of fintech.',intro:'Explore the winning companies and leaders recognized by the India FinTech Awards 2027.',publishStatus:'draft',profiles:{}};
-  var award={name:'India FinTech Awards 2027'};try{var a=JSON.parse(localStorage.getItem('awardflow_new_award')||'null');if(a&&a.name)award=a}catch(e){}
-  try{var g=JSON.parse(localStorage.getItem('awardflow.gallery.v14')||'null');if(g)Object.keys(g).forEach(function(k){state[k]=g[k]})}catch(e){}
+  var award={name:'India FinTech Awards 2027'};try{var a=JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null');if(a&&a.name)award=a}catch(e){}
+  try{var g=JSON.parse(localStorage.getItem('etb2b_awards.gallery.v14')||'null');if(g)Object.keys(g).forEach(function(k){state[k]=g[k]})}catch(e){}
   var categories=[
     {id:'startup',name:'Best FinTech Startup',locked:false,finalists:[{id:'nova',name:'NovaPay Technologies',tag:'Digital-first payment infrastructure',award:'winner',nameVerified:true,brandVerified:true,consent:false,juryApproved:true},{id:'cred',name:'CredStack',tag:'Embedded credit infrastructure',award:'finalist',nameVerified:true,brandVerified:true,consent:true,juryApproved:true}]},
     {id:'lending',name:'Best Digital Lending',locked:true,finalists:[{id:'clearlend',name:'ClearLend',tag:'Embedded SME credit platform',award:'winner',nameVerified:true,brandVerified:true,consent:true,juryApproved:true}]},
@@ -10,7 +10,7 @@
     {id:'ai',name:'Best AI in Financial Services',locked:false,finalists:[{id:'riskmind',name:'RiskMind AI',tag:'Explainable underwriting intelligence',award:'finalist',nameVerified:true,brandVerified:true,consent:true,juryApproved:false}]},
     {id:'leader',name:'FinTech Leader of the Year',locked:true,finalists:[{id:'neha',name:'Neha Rao - Orbit Finance',tag:'Founder and CEO',award:'winner',nameVerified:true,brandVerified:true,consent:true,juryApproved:true}]}
   ];
-  try{var w=JSON.parse(localStorage.getItem('awardflow.winners.v13')||'null');if(w&&w.categories)w.categories.forEach(function(sc){var c=categories.filter(function(x){return x.id===sc.id})[0];if(!c)return;if(typeof sc.locked==='boolean')c.locked=sc.locked;if(sc.finalists)sc.finalists.forEach(function(sf){var f=c.finalists.filter(function(x){return x.id===sf.id})[0];if(!f&&['winner','runner-up','gold','silver','bronze'].indexOf(sf.award)>-1){f={id:sf.id,name:sf.id,tag:'',award:'finalist',nameVerified:true,brandVerified:true,consent:true,juryApproved:true};c.finalists.push(f)}if(f)Object.keys(sf).forEach(function(k){if(k!=='id')f[k]=sf[k]})})})}catch(e){}
+  try{var w=JSON.parse(localStorage.getItem('etb2b_awards.winners.v13')||'null');if(w&&w.categories)w.categories.forEach(function(sc){var c=categories.filter(function(x){return x.id===sc.id})[0];if(!c)return;if(typeof sc.locked==='boolean')c.locked=sc.locked;if(sc.finalists)sc.finalists.forEach(function(sf){var f=c.finalists.filter(function(x){return x.id===sf.id})[0];if(!f&&['winner','runner-up','gold','silver','bronze'].indexOf(sf.award)>-1){f={id:sf.id,name:sf.id,tag:'',award:'finalist',nameVerified:true,brandVerified:true,consent:true,juryApproved:true};c.finalists.push(f)}if(f)Object.keys(sf).forEach(function(k){if(k!=='id')f[k]=sf[k]})})})}catch(e){}
   function initials(name){return name.split(/\s+/).map(function(x){return x.charAt(0)}).join('').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'W'}
   function awardLabel(v){var m={winner:'Winner','runner-up':'Runner-up',gold:'Gold',silver:'Silver',bronze:'Bronze'};return m[v]||'Winner'}
   function esc(s){return String(s||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}

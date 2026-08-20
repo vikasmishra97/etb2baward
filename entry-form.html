@@ -1,15 +1,16 @@
 <!doctype html>
 <html>
 <head>
+  <link rel="icon" type="image/jpeg" href="et-logo.jpg">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Entry Form · AwardFlow</title>
+  <title>Entry Form · ETB2B Awards</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="brand"><div class="brandmark et-brandmark"><img src="et-logo.jpg" alt="ET Business Verticals logo"></div><b>ETB2B Awards</b></div>
     <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
     <nav class="nav">
       <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
@@ -46,7 +47,7 @@
       <div class="crumb"><span id="crumbAward">India FinTech Awards 2027</span> / Entry Form</div>
       <div class="top-actions">
         <button class="btn ghost" id="copilotBtn">✦ Ask Award Copilot</button>
-        <div class="avatar">AK</div>
+        <div class="avatar">VM</div>
       </div>
     </header>
 
@@ -190,7 +191,7 @@
         </aside>
       </div>
 
-      <div class="footer-note">Interactive manager-demo prototype · Form data is stored only in this browser</div>
+      <div class="footer-note">Vikas Mishra</div>
     </main>
   </div>
 </div>
@@ -332,11 +333,11 @@
 <script>
 (function(){
   const $=id=>document.getElementById(id);
-  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('awardflow_new_award')||'null')}catch(e){return null}})();
-  const award=savedAward||{name:'India FinTech Awards 2027',slug:'india-fintech-awards-2027',website:'indiafintechawards.awardflow.demo'};
+  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})();
+  const award=savedAward||{name:'India FinTech Awards 2027',slug:'india-fintech-awards-2027',website:'indiafintechawards.etb2b_awards.demo'};
   const awardSlug=award.slug||'demo';
-  const categoryKey=savedAward&&savedAward.slug?'awardflow_categories_'+savedAward.slug:'awardflow_categories_demo';
-  const formKey='awardflow_entry_form_'+awardSlug;
+  const categoryKey=savedAward&&savedAward.slug?'etb2b_awards_categories_'+savedAward.slug:'etb2b_awards_categories_demo';
+  const formKey='etb2b_awards_entry_form_'+awardSlug;
   let categories=(()=>{try{return JSON.parse(localStorage.getItem(categoryKey)||'[]')}catch(e){return []}})();
   if(!Array.isArray(categories)||!categories.length){categories=[
     {id:'cat1',name:'Best FinTech Startup'},
@@ -430,7 +431,7 @@
     $('miniAwardName').textContent=award.name||'Untitled Award';
     $('miniFormTitle').textContent=$('formTitle').value||'Nomination form';
     $('miniIntro').textContent=$('formIntro').value||'';
-    $('previewDomain').textContent=(award.website||((award.slug||'your-award')+'.awardflow.app')).replace(/^https?:\/\//,'').slice(0,28);
+    $('previewDomain').textContent=(award.website||((award.slug||'your-award')+'.etb2b_awards.app')).replace(/^https?:\/\//,'').slice(0,28);
     const box=$('miniFields');box.innerHTML='';
     form.fields.filter(f=>f.type!=='section').slice(0,3).forEach(f=>{const d=document.createElement('div');d.className='ef-mini-field';d.innerHTML='<span>'+esc(f.label)+(f.required?' *':'')+'</span><i></i>';box.appendChild(d)});
     if(questionFields().length>3){const more=document.createElement('small');more.className='ef-mini-more';more.textContent='+'+(questionFields().length-3)+' more questions';box.appendChild(more)}

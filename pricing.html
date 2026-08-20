@@ -1,15 +1,16 @@
 <!doctype html>
 <html>
 <head>
+  <link rel="icon" type="image/jpeg" href="et-logo.jpg">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Pricing · AwardFlow</title>
+  <title>Pricing · ETB2B Awards</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="brand"><div class="brandmark">A</div><b>AwardFlow</b></div>
+    <div class="brand"><div class="brandmark et-brandmark"><img src="et-logo.jpg" alt="ET Business Verticals logo"></div><b>ETB2B Awards</b></div>
     <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
     <nav class="nav">
       <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
@@ -46,7 +47,7 @@
       <div class="crumb"><span id="crumbAward">India FinTech Awards 2027</span> / Pricing</div>
       <div class="top-actions">
         <button class="btn ghost" id="openCopilot">✦ Ask Award Copilot</button>
-        <div class="avatar">AK</div>
+        <div class="avatar">VM</div>
       </div>
     </header>
 
@@ -313,7 +314,7 @@
         </aside>
       </div>
 
-      <div class="footer-note">Interactive manager-demo prototype · Pricing calculations are simulated · No real payment gateway connected</div>
+      <div class="footer-note">Vikas Mishra</div>
     </main>
   </div>
 </div>
@@ -356,9 +357,9 @@
 <script>
 (function(){
   const $=id=>document.getElementById(id);
-  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('awardflow_new_award')||'null')}catch(e){return null}})();
+  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})();
   const award=savedAward||{name:'India FinTech Awards 2027',currency:'INR',baseFee:2000,entryType:'paid',slug:'india-fintech-awards-2027',openDate:'2027-06-01',closeDate:'2027-09-30'};
-  const categoryKey=savedAward&&savedAward.slug?'awardflow_categories_'+savedAward.slug:'awardflow_categories_demo';
+  const categoryKey=savedAward&&savedAward.slug?'etb2b_awards_categories_'+savedAward.slug:'etb2b_awards_categories_demo';
   let categories=(()=>{try{return JSON.parse(localStorage.getItem(categoryKey)||'[]')}catch(e){return []}})();
   if(!categories.length&&!savedAward){categories=[
     {id:1,name:'Best Startup',feeMode:'base',fee:2000,status:'open'},
@@ -366,7 +367,7 @@
     {id:3,name:'Best Product',feeMode:'custom',fee:2500,status:'open'},
     {id:4,name:'Best Campaign',feeMode:'custom',fee:1500,status:'draft'}
   ]}
-  const storeKey='awardflow_pricing_'+(award.slug||'demo');
+  const storeKey='etb2b_awards_pricing_'+(award.slug||'demo');
   const symbols={INR:'₹',USD:'$',GBP:'£',AED:'د.إ',SGD:'S$'};
   const localeMap={INR:'en-IN',USD:'en-US',GBP:'en-GB',AED:'en-US',SGD:'en-SG'};
   const state={

@@ -1,8 +1,8 @@
 (function(){
   const $=id=>document.getElementById(id);
-  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('awardflow_new_award')||'null')}catch(e){return null}})();
+  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})();
   const award=savedAward||{name:'India FinTech Awards 2027',description:'Recognising breakthrough founders, products and teams transforming financial technology across India.',industry:'FinTech',country:'India',currency:'INR',slug:'india-fintech-awards-2027',openDate:'2027-06-01',closeDate:'2027-09-30',judgingDate:'2027-10-10',winnerDate:'2027-11-01'};
-  const categoryKey=savedAward&&savedAward.slug?'awardflow_categories_'+savedAward.slug:'awardflow_categories_demo';
+  const categoryKey=savedAward&&savedAward.slug?'etb2b_awards_categories_'+savedAward.slug:'etb2b_awards_categories_demo';
   let categories=(()=>{try{return JSON.parse(localStorage.getItem(categoryKey)||'[]')}catch(e){return []}})();
   if(!categories.length)categories=[
     {id:1,name:'Best FinTech Startup',description:'Recognising an ambitious company creating meaningful market impact.'},
@@ -13,7 +13,7 @@
     {id:6,name:'Financial Inclusion Award',description:'Recognising solutions expanding access to financial services.'}
   ];
   const slug=award.slug||String(award.name||'award').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  const storeKey='awardflow_website_'+slug;
+  const storeKey='etb2b_awards_website_'+slug;
   const defaults={
     template:'modern',primary:'#6258f5',accent:'#17a673',headingFont:'modern',cornerStyle:'soft',stageAuto:true,published:false,publishedAt:'',customDomain:'',
     pages:{categories:true,judges:true,winners:true,sponsors:true,contact:true},
@@ -130,7 +130,7 @@
     navLinks.push(`<a class="site-cta" href="#categories">${esc(stage.cta)}</a>`);
     let html=`<nav class="wb-site-nav"><div class="wb-site-brand"><span class="wb-site-logo">${esc(initials(award.name))}</span><b>${esc(award.name)}</b></div><div class="wb-site-links">${navLinks.join('')}</div></nav>`;
     state.sections.filter(s=>s.enabled).forEach((s,idx)=>{html+=renderSection(s.id,idx,stage)});
-    html+=`<footer class="wb-site-footer"><span>&copy; ${new Date().getFullYear()} ${esc(award.name)}. All rights reserved.</span><span>Powered by AwardFlow</span></footer>`;
+    html+=`<footer class="wb-site-footer"><span>&copy; ${new Date().getFullYear()} ${esc(award.name)}. All rights reserved.</span><span>Vikas Mishra</span></footer>`;
     site.innerHTML=html;
     site.querySelectorAll('[data-section]').forEach(el=>{
       el.classList.toggle('wb-selected-section',el.dataset.section===selectedSection);
@@ -184,7 +184,7 @@
     const seoScore=Math.min(100,40+Math.min(25,(state.seo.title||'').length/2)+Math.min(35,(state.seo.description||'').length/4));$('seoScore').textContent=Math.round(seoScore)+'%';
   }
   function renderPublish(){const url=getPublicUrl();$('publicUrl').textContent=url;$('modalPublicUrl').textContent=url;$('publishStatus').textContent=state.published?'Live website':'Draft site';$('liveDot').classList.toggle('live',!!state.published);$('publishedTime').textContent=state.publishedAt?'Published '+new Date(state.publishedAt).toLocaleString():'Not published yet'}
-  function renderSeoPreview(){$('seoPreviewUrl').textContent=state.customDomain.trim()||('awardflow.com/'+slug);$('seoPreviewTitle').textContent=state.seo.title||award.name;$('seoPreviewDescription').textContent=state.seo.description||award.description||''}
+  function renderSeoPreview(){$('seoPreviewUrl').textContent=state.customDomain.trim()||('etb2baward.vercel.app/'+slug);$('seoPreviewTitle').textContent=state.seo.title||award.name;$('seoPreviewDescription').textContent=state.seo.description||award.description||''}
 
   document.querySelectorAll('.wb-tabbar button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.wb-tabbar button').forEach(x=>x.classList.toggle('active',x===btn));document.querySelectorAll('.wb-tab-panel').forEach(p=>p.classList.toggle('active',p.dataset.panel===btn.dataset.tab))}));
   document.querySelectorAll('[data-template]').forEach(btn=>btn.addEventListener('click',()=>{pushHistory();state.template=btn.dataset.template;markDirty();syncControls();renderPreview();pushHistory()}));

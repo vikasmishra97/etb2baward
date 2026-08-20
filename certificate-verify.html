@@ -1,24 +1,26 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/jpeg" href="et-logo.jpg">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Verify Certificate · AwardFlow</title>
+  <title>Verify Certificate · ETB2B Awards</title>
   <link rel="stylesheet" href="certificate-verify.css">
 </head>
 <body>
   <main class="verify-shell">
-    <header class="verify-brand"><div class="verify-logo">A</div><b>AwardFlow Verification</b><a href="certificates.html">Admin certificates</a></header>
+    <header class="verify-brand"><div class="verify-logo"><img src="et-logo.jpg" alt="ET Business Verticals logo"></div><b>ETB2B Awards Verification</b><a href="certificates.html">Admin certificates</a></header>
     <section class="verify-hero">
       <span class="verify-kicker">PUBLIC CERTIFICATE CHECK</span>
       <h1>Verify an award certificate</h1>
-      <p>Enter the certificate ID shown on an AwardFlow certificate to check its recipient, award level and issuing award.</p>
+      <p>Enter the certificate ID shown on an ETB2B Awards certificate to check its recipient, award level and issuing award.</p>
       <form id="verifyForm"><input id="verifyCode" autocomplete="off" placeholder="e.g. IFA27-CLEARL-123"><button>Verify certificate</button></form>
     </section>
     <section class="verify-result" id="verifyResult">
       <div class="verify-empty"><span>⌁</span><b>Enter a certificate ID above</b><p>Generated certificates from this manager demo are stored in your current browser.</p></div>
     </section>
     <section class="verify-info"><div><b>What gets verified?</b><p>Certificate ID, recipient name, award level, category, issue date and award name.</p></div><div><b>Manager-demo note</b><p>This static prototype uses browser storage. Production verification should be backed by a secure server-side certificate registry.</p></div></section>
+    <footer class="verify-footer">Vikas Mishra</footer>
   </main>
   <script src="certificate-verify.js"></script>
 </body>

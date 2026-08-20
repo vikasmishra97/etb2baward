@@ -1,5 +1,5 @@
 (function(){
-  const STORAGE_KEY='awardflow_scoring_v11';
+  const STORAGE_KEY='etb2b_awards_scoring_v11';
   const defaultCriteria=[
     {id:1,name:'Innovation',description:'Originality, differentiation and strength of the underlying idea.',weight:30,scale:10,comment:false},
     {id:2,name:'Market Impact',description:'Evidence of customer, commercial or wider industry impact.',weight:25,scale:10,comment:false},

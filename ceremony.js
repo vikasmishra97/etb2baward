@@ -1,6 +1,6 @@
 (function(){
-  var STORAGE='awardflow.ceremony.v16';
-  var WINNER_STORAGE='awardflow.winners.v13';
+  var STORAGE='etb2b_awards.ceremony.v16';
+  var WINNER_STORAGE='etb2b_awards.winners.v13';
   var $=function(s){return document.querySelector(s)};
   var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
   function safeJson(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}}
@@ -10,7 +10,7 @@
   function cap(v){v=String(v||'');return v.charAt(0).toUpperCase()+v.slice(1)}
   function download(name,text,type){var blob=new Blob([text],{type:type||'text/plain'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(url)},500)}
 
-  var created=safeJson('awardflow_new_award')||{};
+  var created=safeJson('etb2b_awards_new_award')||{};
   var awardName=created.name||'India FinTech Awards 2027';
   var awardShort=awardName.replace(/\s+20\d\d\s*$/,'');
 
@@ -41,7 +41,7 @@
     {id:'g2',first:'Anika',last:'Deshmukh',email:'anika@clearlend.demo',company:'ClearLend',type:'Winner',rsvp:'confirmed',table:'T02',seat:'3',vip:true,checked:true,note:'Best Digital Lending recipient representative.'},
     {id:'g3',first:'Rahul',last:'Sen',email:'rahul@paymesh.demo',company:'PayMesh',type:'Winner',rsvp:'confirmed',table:'T02',seat:'5',vip:true,checked:false,note:'Winner representative.'},
     {id:'g4',first:'Maya',last:'Shah',email:'maya@jury.demo',company:'Independent Jury',type:'Judge',rsvp:'confirmed',table:'T01',seat:'4',vip:true,checked:true,note:'Jury Chair and presenter.'},
-    {id:'g5',first:'Aarav',last:'Kapoor',email:'aarav@awardflow.demo',company:'Award Program',type:'Presenter',rsvp:'confirmed',table:'T01',seat:'1',vip:true,checked:true,note:'Opening remarks and stage presenter.'},
+    {id:'g5',first:'Aarav',last:'Kapoor',email:'aarav@etb2b_awards.demo',company:'Award Program',type:'Presenter',rsvp:'confirmed',table:'T01',seat:'1',vip:true,checked:true,note:'Opening remarks and stage presenter.'},
     {id:'g6',first:'Priya',last:'Nair',email:'priya@novabank.demo',company:'NovaBank',type:'Sponsor',rsvp:'confirmed',table:'T03',seat:'1',vip:true,checked:false,note:'Presenting sponsor.'},
     {id:'g7',first:'Vikram',last:'Iyer',email:'vikram@jury.demo',company:'FinTech Council',type:'Judge',rsvp:'confirmed',table:'T04',seat:'2',vip:false,checked:false,note:''},
     {id:'g8',first:'Kavya',last:'Desai',email:'kavya@venture.demo',company:'Frontier Ventures',type:'Guest',rsvp:'confirmed',table:'T04',seat:'6',vip:false,checked:false,note:''},
@@ -213,7 +213,7 @@
 
   function renderAll(){renderEventInputs();renderMetrics();renderGuests();renderCues();renderPresentations();renderReadiness();renderStage();}
 
-  function exportGuests(){var rows=[['Name','Email','Company','Type','RSVP','VIP','Table','Seat','Checked in','Note']];state.guests.forEach(function(g){rows.push([guestName(g),g.email,g.company,g.type,g.rsvp,g.vip?'Yes':'No',g.table,g.seat,g.checked?'Yes':'No',g.note])});var csv=rows.map(function(row){return row.map(function(v){return '"'+String(v||'').replace(/"/g,'""')+'"'}).join(',')}).join('\n');download('awardflow-ceremony-guests.csv',csv,'text/csv');toast('Priority guest CSV exported')}
+  function exportGuests(){var rows=[['Name','Email','Company','Type','RSVP','VIP','Table','Seat','Checked in','Note']];state.guests.forEach(function(g){rows.push([guestName(g),g.email,g.company,g.type,g.rsvp,g.vip?'Yes':'No',g.table,g.seat,g.checked?'Yes':'No',g.note])});var csv=rows.map(function(row){return row.map(function(v){return '"'+String(v||'').replace(/"/g,'""')+'"'}).join(',')}).join('\n');download('etb2b_awards-ceremony-guests.csv',csv,'text/csv');toast('Priority guest CSV exported')}
   function parseCsvLine(line){var out=[],cur='',q=false;for(var i=0;i<line.length;i++){var ch=line[i];if(ch==='"'){if(q&&line[i+1]==='"'){cur+='"';i++}else q=!q}else if(ch===','&&!q){out.push(cur);cur=''}else cur+=ch}out.push(cur);return out}
   function importCsv(file){if(!file)return;var reader=new FileReader();reader.onload=function(){try{var lines=String(reader.result||'').split(/\r?\n/).filter(Boolean);if(lines.length<2){toast('CSV has no guest rows');return}var headers=parseCsvLine(lines[0]).map(function(h){return h.trim().toLowerCase()});var added=0;lines.slice(1).forEach(function(line){var vals=parseCsvLine(line),obj={};headers.forEach(function(h,i){obj[h]=vals[i]||''});var full=(obj.name||'').trim().split(/\s+/),first=obj.first_name||obj.first||full.shift()||'',last=obj.last_name||obj.last||full.join(' ');if(!first||!obj.email)return;state.guests.push({id:uid('g'),first:first,last:last,email:obj.email,company:obj.company||'',type:obj.type||'Guest',rsvp:(obj.rsvp||'pending').toLowerCase(),table:(obj.table||'').toUpperCase(),seat:obj.seat||'',vip:/yes|true|1|vip/i.test(obj.vip||''),checked:false,note:obj.note||''});added++});save(false);renderAll();toast(added+' guest'+(added===1?'':'s')+' imported')}catch(e){toast('Could not read that CSV')}};reader.readAsText(file)}
   function printRunSheet(){window.print()}
