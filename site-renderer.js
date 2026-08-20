@@ -13,7 +13,7 @@
     const name=a?.name||'ETB2B Excellence Awards 2027';
     return{
       theme:{preset:'awards-night',primary:'#a90e17',accent:'#d8ad59',surface:'#fffaf2',font:'editorial',radius:'soft'},
-      header:{desktopImage:'',mobileImage:'',illustrationImage:'',brandingBanner:'',sponsorLogo:'',bottomSponsor:'',seoImage:'',thumbnailImage:'',seoTitle:'',seoDescription:'',design:'immersive',overlay:64,heroPosition:'center',illustrationSize:48},
+      header:{desktopImage:'',mobileImage:'',illustrationImage:'',brandingBanner:'',sponsorLogo:'',bottomSponsor:'',seoImage:'',thumbnailImage:'',seoTitle:'',seoDescription:'',design:'stage',overlay:58,heroPosition:'center',illustrationSize:48,brandingWidth:84,heroHeight:690},
       form:{showOnBanner:true,title:'Register your interest',fields:{name:true,email:true,mobile:true,company:true,designation:false}},
       nav:{sticky:true,showRewards:true,showContact:true,style:'transparent',background:'#4b0d13',opacity:88,textColor:'#ffffff',twoRow:true,visible:{overview:true,keypoints:true,who:false,why:false,eventDescription:false,speakers:true,agenda:true,resources:false,glimpse:false,contact:true}},
       pages:{landing:{title:name,enabled:true},thankyou:{enabled:true,title:'Thank you for your interest',body:'We have received your details. Our awards team will keep you updated with nomination news and important dates.'},rewards:{enabled:true,title:'Recognition that travels beyond the trophy',body:'Winners receive a digital certificate, winner badge, editorial visibility and a place in the official ETB2B Awards winner gallery.'}},
@@ -57,7 +57,7 @@
   }
   function normalizeState(raw,a){
     const d=defaultState(a);if(!raw||typeof raw!=='object')return d;
-    d.theme=Object.assign(d.theme,raw.theme||{});d.header=Object.assign(d.header,raw.header||{});d.form=Object.assign(d.form,raw.form||{});d.form.fields=Object.assign(d.form.fields,raw.form?.fields||{});d.nav=Object.assign(d.nav,raw.nav||{});d.nav.visible=Object.assign(d.nav.visible,raw.nav?.visible||{});
+    d.theme=Object.assign(d.theme,raw.theme||{});d.header=Object.assign(d.header,raw.header||{});if(raw.header&&raw.header.brandingWidth==null)d.header.brandingWidth=84;if(raw.header&&raw.header.heroHeight==null)d.header.heroHeight=690;if(raw.header&&raw.header.illustrationImage&&raw.header.brandingWidth==null&&raw.header.design==='immersive')d.header.design='stage';d.form=Object.assign(d.form,raw.form||{});d.form.fields=Object.assign(d.form.fields,raw.form?.fields||{});d.nav=Object.assign(d.nav,raw.nav||{});d.nav.visible=Object.assign(d.nav.visible,raw.nav?.visible||{});
     d.pages={landing:Object.assign(d.pages.landing,raw.pages?.landing||{}),thankyou:Object.assign(d.pages.thankyou,raw.pages?.thankyou||{}),rewards:Object.assign(d.pages.rewards,raw.pages?.rewards||{})};
     if(Array.isArray(raw.sections)){
       const defMap=Object.fromEntries(d.sections.map(s=>[s.id,s]));const rawMap=Object.fromEntries(raw.sections.map(s=>[s.id,s]));
@@ -136,7 +136,7 @@
     const navLinks=visibleSections.filter(s=>s.id!=='custom'&&(state.nav.visible?.[s.id]!==false)).map(s=>`<a href="#section-${s.id}">${esc(s.label)}</a>`).join('');
     const rewardLink=state.pages.rewards?.enabled&&state.nav.showRewards!==false?'<a href="rewards.html">Rewards</a>':'';
     const navStyle=state.nav.style||'transparent', navColor=state.nav.background||'#4b0d13', navOpacity=Math.max(12,Math.min(100,Number(state.nav.opacity||88))), navText=state.nav.textColor||'#ffffff', twoRow=state.nav.twoRow!==false;
-    const vars=[`--p:${esc(state.theme.primary)}`,`--a:${esc(state.theme.accent)}`,`--surface:${esc(state.theme.surface)}`,`--overlay:${Number(state.header.overlay||64)/100}`,`--illustration-size:${Number(state.header.illustrationSize||48)}%`,`--nav-color:${esc(navColor)}`,`--nav-opacity:${navOpacity/100}`,`--nav-text:${esc(navText)}`];
+    const vars=[`--p:${esc(state.theme.primary)}`,`--a:${esc(state.theme.accent)}`,`--surface:${esc(state.theme.surface)}`,`--overlay:${Number(state.header.overlay||58)/100}`,`--illustration-size:${Number(state.header.illustrationSize||48)}%`,`--branding-width:${Math.max(30,Math.min(100,Number(state.header.brandingWidth||84)))}%`,`--hero-min-height:${Math.max(540,Math.min(920,Number(state.header.heroHeight||690)))}px`,`--nav-color:${esc(navColor)}`,`--nav-opacity:${navOpacity/100}`,`--nav-text:${esc(navText)}`];
     if(heroImage)vars.push(`--hero-image:url('${heroImage.replace(/'/g,"%27")}')`);if(mobileImage)vars.push(`--hero-image-mobile:url('${mobileImage.replace(/'/g,"%27")}')`);
     const sponsor=state.header.sponsorLogo?`<div class="public-presented-by"><small>Presented by</small><img src="${esc(state.header.sponsorLogo)}" alt="Sponsor logo"></div>`:'';
     const bottomSponsor=state.header.bottomSponsor?`<div class="public-powered-by"><small>Powered by</small><img src="${esc(state.header.bottomSponsor)}" alt="Sponsor logo"></div>`:'';
