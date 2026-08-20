@@ -28,7 +28,14 @@
 
   function setMeta(attr,key,value){let m=document.head.querySelector(`meta[${attr}="${key}"]`);if(!m){m=document.createElement('meta');m.setAttribute(attr,key);document.head.appendChild(m)}m.setAttribute('content',value||'')}
   function toast(msg){const t=document.getElementById('publicToast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),2000)}
-  function saveInterest(form){const fd=new FormData(form);const lead=Object.fromEntries(fd.entries());lead.createdAt=new Date().toISOString();lead.award=award.name;const key='etb2b_awards_interest_'+slug;let rows=[];try{rows=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}rows.push(lead);localStorage.setItem(key,JSON.stringify(rows))}
+  function saveInterest(form){
+    const fd=new FormData(form);const lead=Object.fromEntries(fd.entries());
+    lead.id='REG-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+    lead.createdAt=new Date().toISOString();lead.award=award.name;lead.awardSlug=slug;lead.source='Public award website';lead.page=location.pathname||'/';lead.status='registered';
+    const key='etb2b_awards_interest_'+slug;let rows=[];try{rows=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}if(!Array.isArray(rows))rows=[];rows.push(lead);localStorage.setItem(key,JSON.stringify(rows));
+    let all=[];try{all=JSON.parse(localStorage.getItem('etb2b_awards_registrations')||'[]')}catch(e){}if(!Array.isArray(all))all=[];all.push(lead);localStorage.setItem('etb2b_awards_registrations',JSON.stringify(all));
+    localStorage.setItem('etb2b_awards_last_registration',JSON.stringify(lead));
+  }
 
   document.querySelectorAll('[data-hero-cta]').forEach(el=>el.addEventListener('click',e=>{
     const cta=ETB2BSite.ctaFor(award);if(cta.mode==='nominate'){e.preventDefault();location.href='nominate.html'}else if(cta.mode==='closed'){e.preventDefault();toast('Nominations are currently closed')}else if(el.getAttribute('href')==='#interest'){e.preventDefault();document.getElementById('interest')?.scrollIntoView({behavior:'smooth',block:'center'})}

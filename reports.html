@@ -194,6 +194,25 @@
       </section>
 
       <section class="rp-view" data-view="acquisition">
+        <div class="rp-kpis rp-kpis-inline rp-registration-kpis">
+          <article class="rp-kpi"><small>Website registrations</small><strong id="liveRegTotal">0</strong><em>captured from the public form</em></article>
+          <article class="rp-kpi"><small>Registered today</small><strong id="liveRegToday">0</strong><em>local browser prototype data</em></article>
+          <article class="rp-kpi"><small>Last 7 days</small><strong id="liveRegWeek">0</strong><em>recent interest captured</em></article>
+          <article class="rp-kpi"><small>Profiles with email</small><strong id="liveRegEmail">0%</strong><em>contactability of captured leads</em></article>
+        </div>
+        <article class="card rp-card rp-registration-card">
+          <div class="rp-card-head">
+            <div><small>LIVE WEBSITE REGISTRATIONS</small><h2>People captured from your registration form</h2><p>Every successful Express Interest submission on the public award website appears here automatically.</p></div>
+            <button class="text-btn" id="exportRegistrations">Export registrations CSV</button>
+          </div>
+          <div class="rp-registration-meta"><span><i class="good"></i><b id="regCaptureStatus">Capture is active</b></span><small id="regLastCaptured">No registrations captured yet</small></div>
+          <div class="table-wrap">
+            <table class="table rp-table rp-registration-table">
+              <thead><tr><th>Registered</th><th>Name</th><th>Work email</th><th>Mobile</th><th>Company</th><th>Designation</th><th>Source</th></tr></thead>
+              <tbody id="registrationTableBody"></tbody>
+            </table>
+          </div>
+        </article>
         <div class="rp-grid rp-grid-2">
           <article class="card rp-card"><div class="rp-card-head"><div><small>ACQUISITION FUNNEL</small><h2>Traffic → entry conversion</h2><p>Identify the exact stage that needs growth attention.</p></div><span class="rp-card-meta">Full cycle</span></div><div class="rp-acq-funnel" id="acquisitionFunnel"></div></article>
           <article class="card rp-card"><div class="rp-card-head"><div><small>LEAD QUALITY</small><h2>Intent distribution</h2><p>How much of your audience is genuinely close to entering.</p></div></div><div class="rp-donut-layout"><div class="rp-donut" id="intentDonut"><div><strong>38%</strong><span>high intent</span></div></div><div class="rp-donut-legend"><span><i class="intent-vhigh"></i>Very high <b>14%</b></span><span><i class="intent-high"></i>High <b>24%</b></span><span><i class="intent-mid"></i>Medium <b>37%</b></span><span><i class="intent-low"></i>Low <b>25%</b></span></div></div></article>
