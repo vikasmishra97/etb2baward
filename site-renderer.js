@@ -14,7 +14,7 @@
     return{
       theme:{preset:'awards-night',primary:'#a90e17',accent:'#d8ad59',surface:'#fffaf2',font:'editorial',radius:'soft'},
       header:{desktopImage:'',mobileImage:'',illustrationImage:'',brandingBanner:'',sponsorLogo:'',bottomSponsor:'',seoImage:'',thumbnailImage:'',seoTitle:'',seoDescription:'',design:'stage',overlay:58,heroPosition:'center',illustrationSize:48,brandingWidth:84,heroHeight:690},
-      form:{showOnBanner:true,title:'Register your interest',fields:{name:true,email:true,mobile:true,company:true,designation:false}},
+      form:{showOnBanner:true,displayMode:'banner',layout:'card',title:'Register your interest',subtitle:'Stay informed about nominations',fields:{name:true,email:true,mobile:true,company:true,designation:false},customFields:[]},
       nav:{sticky:true,style:'transparent',background:'#4b0d13',opacity:88,textColor:'#ffffff',twoRow:true,order:['home','page:categories','page:jury','page:guidelines','page:criteria','page:terms','section:overview','section:why','section:speakers','section:agenda','section:contact','page:faq','page:contact','page:previous','page:rewards'],pages:{home:true,categories:true,jury:true,guidelines:true,criteria:true,terms:true,faq:true,contact:true,previous:true},visible:{overview:true,keypoints:false,who:false,why:true,eventDescription:false,speakers:true,agenda:true,resources:false,glimpse:false,contact:true}},
       pages:{landing:{title:name,enabled:true},thankyou:{enabled:true,title:'Thank you for your interest',body:'We have received your details. Our awards team will keep you updated with nomination news and important dates.'},rewards:{enabled:true,title:'Recognition that travels beyond the trophy',body:'Winners receive a digital certificate, winner badge, editorial visibility and a place in the official ETB2B Awards winner gallery.'}},
       publicPages:[
@@ -68,7 +68,7 @@
   }
   function normalizeState(raw,a){
     const d=defaultState(a);if(!raw||typeof raw!=='object')return d;
-    d.theme=Object.assign(d.theme,raw.theme||{});d.header=Object.assign(d.header,raw.header||{});if(raw.header&&raw.header.brandingWidth==null)d.header.brandingWidth=84;if(raw.header&&raw.header.heroHeight==null)d.header.heroHeight=690;if(raw.header&&raw.header.illustrationImage&&raw.header.brandingWidth==null&&raw.header.design==='immersive')d.header.design='stage';d.form=Object.assign(d.form,raw.form||{});d.form.fields=Object.assign(d.form.fields,raw.form?.fields||{});d.nav=Object.assign(d.nav,raw.nav||{});d.nav.visible=Object.assign(d.nav.visible,raw.nav?.visible||{});d.nav.pages=Object.assign(defaultState(a).nav.pages,raw.nav?.pages||{});
+    d.theme=Object.assign(d.theme,raw.theme||{});d.header=Object.assign(d.header,raw.header||{});if(raw.header&&raw.header.brandingWidth==null)d.header.brandingWidth=84;if(raw.header&&raw.header.heroHeight==null)d.header.heroHeight=690;if(raw.header&&raw.header.illustrationImage&&raw.header.brandingWidth==null&&raw.header.design==='immersive')d.header.design='stage';d.form=Object.assign(d.form,raw.form||{});d.form.fields=Object.assign(d.form.fields,raw.form?.fields||{});if(!d.form.displayMode)d.form.displayMode=d.form.showOnBanner===false?'cta':'banner';d.form.showOnBanner=d.form.displayMode==='banner';d.form.layout=['card','stacked','compact','glass'].includes(d.form.layout)?d.form.layout:'card';d.form.customFields=(Array.isArray(raw.form?.customFields)?raw.form.customFields:[]).map((x,i)=>Object.assign({id:x.id||`rf${i+1}`,label:`Custom field ${i+1}`,name:`custom_${i+1}`,type:'text',placeholder:'',required:false,active:true,options:''},x,{id:x.id||`rf${i+1}`}));d.nav=Object.assign(d.nav,raw.nav||{});d.nav.visible=Object.assign(d.nav.visible,raw.nav?.visible||{});d.nav.pages=Object.assign(defaultState(a).nav.pages,raw.nav?.pages||{});
     d.pages={landing:Object.assign(d.pages.landing,raw.pages?.landing||{}),thankyou:Object.assign(d.pages.thankyou,raw.pages?.thankyou||{}),rewards:Object.assign(d.pages.rewards,raw.pages?.rewards||{})};
     const defPublic=defaultState(a).publicPages||[];const rawPublic=Array.isArray(raw.publicPages)?raw.publicPages:[];const rawPublicMap=Object.fromEntries(rawPublic.map(x=>[x.id,x]));
     d.publicPages=defPublic.map(pg=>Object.assign({},pg,rawPublicMap[pg.id]||{}));
@@ -139,10 +139,37 @@
     if(s.id==='custom')return `<section id="${id}" class="${sectionClass(s)} custom-code-section">${sectionHead(s)}<div class="custom-code-output">${s.html||''}</div></section>`;
     return'';
   }
-  function heroForm(state,cta){if(!state.form.showOnBanner)return `<div class="hero-cta-only"><a class="public-primary-cta ${cta.mode==='closed'?'disabled':''}" href="${cta.mode==='nominate'?'nominate.html':cta.mode==='closed'?'#':'#interest'}" data-hero-cta>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
-    const f=state.form.fields||{};const fields=[];
-    if(f.name)fields.push('<label><span>Name</span><input name="name" placeholder="Your name" required></label>');if(f.email)fields.push('<label><span>Work email</span><input name="email" type="email" placeholder="name@company.com" required></label>');if(f.mobile)fields.push('<label><span>Mobile</span><input name="mobile" placeholder="+91" required></label>');if(f.company)fields.push('<label><span>Company</span><input name="company" placeholder="Company name"></label>');if(f.designation)fields.push('<label><span>Designation</span><input name="designation" placeholder="Your role"></label>');
-    return `<form class="hero-register" data-public-interest-form data-cta-mode="${cta.mode}"><div class="hero-register-title"><small>${cta.mode==='nominate'?'NOMINATIONS ARE OPEN':'STAY IN THE LOOP'}</small><b>${esc(cta.mode==='nominate'?'Start your nomination':state.form.title)}</b><span>${esc(cta.sub)}</span></div><div class="hero-register-fields">${fields.join('')}</div><button type="submit" ${cta.mode==='closed'?'disabled':''}>${esc(cta.label)} <span>→</span></button><small class="hero-consent">By continuing, you agree to receive award-related updates.</small></form>`;
+  function registrationFieldMarkup(field){
+    const req=field.required?' required':'';const ph=field.placeholder?` placeholder="${esc(field.placeholder)}"`:'';
+    if(field.type==='textarea')return `<label class="reg-field reg-field-long"><span>${esc(field.label)}</span><textarea name="${esc(field.name)}"${ph}${req}></textarea></label>`;
+    if(field.type==='select'){const opts=lines(field.options).map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');return `<label class="reg-field"><span>${esc(field.label)}</span><select name="${esc(field.name)}"${req}><option value="">Select</option>${opts}</select></label>`}
+    if(field.type==='checkbox')return `<label class="reg-field reg-field-consent"><input type="checkbox" name="${esc(field.name)}" value="yes"${req}><span>${esc(field.label)}</span></label>`;
+    const type=field.type==='phone'?'tel':field.type;return `<label class="reg-field"><span>${esc(field.label)}</span><input name="${esc(field.name)}" type="${esc(type||'text')}"${ph}${req}></label>`;
+  }
+  function registrationFields(state){
+    const f=state.form.fields||{},out=[];
+    if(f.name)out.push({name:'name',label:'Name',type:'text',placeholder:'Your name',required:true});
+    if(f.email)out.push({name:'email',label:'Work email',type:'email',placeholder:'name@company.com',required:true});
+    if(f.mobile)out.push({name:'mobile',label:'Mobile',type:'phone',placeholder:'+91',required:true});
+    if(f.company)out.push({name:'company',label:'Company',type:'text',placeholder:'Company name'});
+    if(f.designation)out.push({name:'designation',label:'Designation',type:'text',placeholder:'Your role'});
+    (state.form.customFields||[]).filter(x=>x.active!==false).forEach((x,i)=>out.push(Object.assign({name:x.name||`custom_${i+1}`,label:x.label||`Field ${i+1}`,type:'text'},x)));
+    return out;
+  }
+  function registrationFormMarkup(state,cta,extraClass=''){
+    const fields=registrationFields(state).map(registrationFieldMarkup).join('');
+    return `<form class="hero-register form-layout-${esc(state.form.layout||'card')} ${extraClass}" data-public-interest-form data-cta-mode="${cta.mode}"><div class="hero-register-title"><small>${cta.mode==='nominate'?'NOMINATIONS ARE OPEN':'STAY IN THE LOOP'}</small><b>${esc(cta.mode==='nominate'?'Start your nomination':state.form.title)}</b><span>${esc(state.form.subtitle||cta.sub)}</span></div><div class="hero-register-fields">${fields}</div><button type="submit" ${cta.mode==='closed'?'disabled':''}>${esc(cta.label)} <span>→</span></button><small class="hero-consent">By continuing, you agree to receive award-related updates.</small></form>`;
+  }
+  function heroForm(state,cta){
+    const mode=state.form.displayMode||((state.form.showOnBanner===false)?'cta':'banner');
+    if(cta.mode!=='interest')return `<div class="hero-cta-only"><a class="public-primary-cta ${cta.mode==='closed'?'disabled':''}" href="${cta.mode==='nominate'?'nominate.html':'#'}" data-hero-cta>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
+    if(mode==='popup')return `<div class="hero-popup-trigger"><small>READY WHEN YOU ARE</small><b>${esc(state.form.title||'Register your interest')}</b><p>${esc(state.form.subtitle||cta.sub)}</p><button type="button" data-open-interest-popup>${esc(cta.label)} <span>→</span></button></div>`;
+    if(mode==='cta')return `<div class="hero-cta-only"><a class="public-primary-cta" href="#interest-popup" data-open-interest-popup>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
+    return registrationFormMarkup(state,cta);
+  }
+  function registrationPopup(state,cta){
+    const mode=state.form.displayMode||'banner';if(cta.mode!=='interest'||!['popup','cta'].includes(mode))return'';
+    return `<div class="public-form-modal" data-interest-popup aria-hidden="true"><div class="public-form-backdrop" data-close-interest-popup></div><section class="public-form-dialog"><button type="button" class="public-form-close" data-close-interest-popup aria-label="Close registration form">×</button>${registrationFormMarkup(state,cta,'popup-registration-form')}</section></div>`;
   }
   function iconSvg(type){
     if(type==='location')return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s6-5.1 6-11a6 6 0 1 0-12 0c0 5.9 6 11 6 11Z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.2" fill="currentColor"/></svg>`;
@@ -194,6 +221,14 @@
     update();
     nav.querySelectorAll('details.public-more').forEach(d=>{d.addEventListener('toggle',()=>{if(d.open)document.querySelectorAll('details.public-more[open]').forEach(x=>{if(x!==d)x.open=false})})});
   }
+  function bindRegistration(root,opts={}){
+    const popup=root?.querySelector?.('[data-interest-popup]');
+    const open=()=>{if(!popup)return;popup.classList.add('open');popup.setAttribute('aria-hidden','false');if(!opts.builder)document.body.classList.add('public-modal-open')};
+    const close=()=>{if(!popup)return;popup.classList.remove('open');popup.setAttribute('aria-hidden','true');document.body.classList.remove('public-modal-open')};
+    root?.querySelectorAll?.('[data-open-interest-popup]').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();open()}));
+    popup?.querySelectorAll('[data-close-interest-popup]').forEach(btn=>btn.addEventListener('click',close));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&popup?.classList.contains('open'))close()});
+  }
   function renderNav(host,a,state,opts={}){if(!host)return;const cta=ctaFor(a||{});host.innerHTML=navigationMarkup(a,state,cta,opts);bindNavigation(host,opts)}
   function render(container,a,state,opts={}){
     if(!container)return;
@@ -204,7 +239,8 @@
     const heroIdentity=state.header.illustrationImage?`<div class="hero-branding-mark"><img src="${esc(state.header.illustrationImage)}" alt="${esc(a?.name||'Award')} branding"></div>`:`<h1>${esc(a?.name||'Your Award')}</h1>`;
     const heroPos=esc(state.header.heroPosition||'center');
     const nav=navigationMarkup(a,state,cta,{builder:opts.builder,currentPage:'home'});
-    container.innerHTML=`<div class="public-site preset-${esc(state.theme.preset)} font-${esc(state.theme.font)} radius-${esc(state.theme.radius)} ${opts.builder?'builder-site-preview':''}" style="${themeVars(state)}">${brandStrip}${nav}<section class="public-hero hero-${esc(state.header.design)} hero-pos-${heroPos}" id="home"><div class="hero-overlay"></div><div class="hero-content"><div class="hero-copy"><small class="hero-kicker">${esc((a?.eventCategory||'ETB2B AWARDS').toUpperCase())}</small>${heroIdentity}<p>${esc(a?.description||'Recognising excellence, innovation and measurable impact.')}</p><div class="hero-meta"><span><i class="meta-icon">${iconSvg('location')}</i><b>${esc([a?.venue,a?.city].filter(Boolean).join(', ')||'Venue to be announced')}</b></span><span><i class="meta-icon">${iconSvg('calendar')}</i><b>${esc(a?.hasEventDates?niceDate(a.eventStart):'Event date to be announced')}</b></span>${a?.hasNominationDates?`<span><i class="meta-icon">${iconSvg('nomination')}</i><b>Nominations: ${esc(niceDate(a.nominationStart))} – ${esc(niceDate(a.nominationEnd))}</b></span>`:''}</div></div><div id="interest" class="hero-form-wrap">${heroForm(state,cta)}</div></div></section><main class="public-main">${visibleSections.map(s=>renderSection(s,state)).join('')}</main><section class="public-final-cta"><small>ETB2B AWARDS</small><h2>${esc(cta.mode==='nominate'?'Ready to make your work count?':'Be part of the next edition')}</h2><p>${esc(cta.sub)}</p><a href="${cta.mode==='nominate'?'nominate.html':cta.mode==='closed'?'#':'#interest'}" data-hero-cta>${esc(cta.label)} →</a></section><footer class="public-footer"><span>© ${new Date().getFullYear()} ${esc(a?.name||'ETB2B Awards')}</span>${bottomSponsor}<span>Powered by ETB2B Awards · Vikas Mishra</span></footer></div>`;
+    container.innerHTML=`<div class="public-site preset-${esc(state.theme.preset)} font-${esc(state.theme.font)} radius-${esc(state.theme.radius)} ${opts.builder?'builder-site-preview':''}" style="${themeVars(state)}">${brandStrip}${nav}<section class="public-hero hero-${esc(state.header.design)} hero-pos-${heroPos}" id="home"><div class="hero-overlay"></div><div class="hero-content"><div class="hero-copy"><small class="hero-kicker">${esc((a?.eventCategory||'ETB2B AWARDS').toUpperCase())}</small>${heroIdentity}<p>${esc(a?.description||'Recognising excellence, innovation and measurable impact.')}</p><div class="hero-meta"><span><i class="meta-icon">${iconSvg('location')}</i><b>${esc([a?.venue,a?.city].filter(Boolean).join(', ')||'Venue to be announced')}</b></span><span><i class="meta-icon">${iconSvg('calendar')}</i><b>${esc(a?.hasEventDates?niceDate(a.eventStart):'Event date to be announced')}</b></span>${a?.hasNominationDates?`<span><i class="meta-icon">${iconSvg('nomination')}</i><b>Nominations: ${esc(niceDate(a.nominationStart))} – ${esc(niceDate(a.nominationEnd))}</b></span>`:''}</div></div><div id="interest" class="hero-form-wrap">${heroForm(state,cta)}</div></div></section>${registrationPopup(state,cta)}<main class="public-main">${visibleSections.map(s=>renderSection(s,state)).join('')}</main><section class="public-final-cta"><small>ETB2B AWARDS</small><h2>${esc(cta.mode==='nominate'?'Ready to make your work count?':'Be part of the next edition')}</h2><p>${esc(cta.sub)}</p><a href="${cta.mode==='nominate'?'nominate.html':cta.mode==='closed'?'#':'#interest'}" data-hero-cta>${esc(cta.label)} →</a></section><footer class="public-footer"><span>© ${new Date().getFullYear()} ${esc(a?.name||'ETB2B Awards')}</span>${bottomSponsor}<span>Powered by ETB2B Awards · Vikas Mishra</span></footer></div>`;
+    bindRegistration(container,opts);
     if(opts.builder){container.querySelectorAll('a').forEach(x=>x.addEventListener('click',e=>e.preventDefault()));container.querySelectorAll('form').forEach(f=>f.addEventListener('submit',e=>e.preventDefault()));}
     else bindNavigation(container,opts);
   }

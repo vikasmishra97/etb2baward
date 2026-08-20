@@ -123,15 +123,50 @@
             <div id="sectionManager" class="wb19-section-manager premium-section-manager"></div>
           </div>
 
-          <div class="wb19-panel" data-panel="form">
-            <div class="wb19-panel-title"><div><small>CONVERSION</small><h2>Registration form</h2></div></div>
-            <label class="wb19-toggle-row"><div><b>Show form on banner</b><small>Capture interest directly in the hero.</small></div><input type="checkbox" id="showForm"></label>
-            <label class="wb19-field"><span>Form title</span><input id="formTitle" placeholder="Register your interest"></label>
-            <div class="wb19-divider"></div><b class="wb19-subhead">Choose fields visible on the banner</b>
-            <div class="wb19-field-toggles">
-              <label><input type="checkbox" data-form-field="name"><span>Name</span></label><label><input type="checkbox" data-form-field="email"><span>Work email</span></label><label><input type="checkbox" data-form-field="mobile"><span>Mobile</span></label><label><input type="checkbox" data-form-field="company"><span>Company</span></label><label><input type="checkbox" data-form-field="designation"><span>Designation</span></label>
+          <div class="wb19-panel premium-registration-panel" data-panel="form">
+            <div class="wb19-panel-title"><div><small>CONVERSION STUDIO</small><h2>Registration form</h2></div><span class="wb19-status">Live preview</span></div>
+            <p class="wb19-help big-help">Choose how the form appears, pick a premium layout and add as many custom fields as your award needs.</p>
+
+            <div class="registration-block">
+              <div class="registration-block-head"><div><small>01</small><b>Form experience</b></div><span>Choose where visitors complete the form</span></div>
+              <div class="reg-display-grid">
+                <button type="button" data-form-display="banner"><i>▣</i><b>On hero</b><small>Form stays visible beside the award artwork.</small></button>
+                <button type="button" data-form-display="popup"><i>↗</i><b>Popup modal</b><small>Hero stays clean; CTA opens the form.</small></button>
+                <button type="button" data-form-display="cta"><i>→</i><b>CTA popup</b><small>Minimal hero button that opens the form.</small></button>
+              </div>
             </div>
+
+            <div class="registration-block">
+              <div class="registration-block-head"><div><small>02</small><b>Form content</b></div><span>Used on hero and popup layouts</span></div>
+              <label class="wb19-field"><span>Form title</span><input id="formTitle" placeholder="Register your interest"></label>
+              <label class="wb19-field"><span>Short helper text</span><input id="formSubtitle" placeholder="Stay informed about nominations"></label>
+            </div>
+
+            <div class="registration-block">
+              <div class="registration-block-head"><div><small>03</small><b>Layout design</b></div><span>Each option changes the live preview</span></div>
+              <div class="reg-layout-grid">
+                <button type="button" data-form-layout="card"><span class="reg-layout-thumb card"><i></i><i></i><i></i><i></i></span><b>Premium Card</b><small>Balanced 2-column form</small></button>
+                <button type="button" data-form-layout="stacked"><span class="reg-layout-thumb stacked"><i></i><i></i><i></i></span><b>Stacked</b><small>Single-column, easy to scan</small></button>
+                <button type="button" data-form-layout="compact"><span class="reg-layout-thumb compact"><i></i><i></i><i></i></span><b>Compact</b><small>Dense horizontal layout</small></button>
+                <button type="button" data-form-layout="glass"><span class="reg-layout-thumb glass"><i></i><i></i><i></i></span><b>Glass</b><small>Premium translucent treatment</small></button>
+              </div>
+            </div>
+
+            <div class="registration-block">
+              <div class="registration-block-head"><div><small>04</small><b>Default fields</b></div><span>Turn standard fields on/off</span></div>
+              <div class="wb19-field-toggles">
+                <label><input type="checkbox" data-form-field="name"><span>Name</span></label><label><input type="checkbox" data-form-field="email"><span>Work email</span></label><label><input type="checkbox" data-form-field="mobile"><span>Mobile</span></label><label><input type="checkbox" data-form-field="company"><span>Company</span></label><label><input type="checkbox" data-form-field="designation"><span>Designation</span></label>
+              </div>
+            </div>
+
+            <div class="registration-block">
+              <div class="registration-block-head custom-field-head"><div><small>05</small><b>Custom fields</b></div><button type="button" id="addRegistrationField">＋ Add field</button></div>
+              <p class="registration-small-help">Add text, number, dropdown, long-answer or consent fields. Use arrows to control field order.</p>
+              <div id="customFieldsManager" class="custom-fields-manager"></div>
+            </div>
+
             <div class="wb19-smart-cta"><span>↗</span><div><b>CTA is date-aware</b><p id="ctaExplanation">ETB2B Awards automatically changes Express Interest to Nominate Now when nominations open.</p></div></div>
+            <input type="checkbox" id="showForm" hidden>
           </div>
 
           <div class="wb19-panel" data-panel="navigation">
