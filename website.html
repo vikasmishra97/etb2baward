@@ -69,7 +69,7 @@
 
           <div class="wb19-panel" data-panel="sections">
             <div class="wb19-panel-title"><div><small>HOME PAGE</small><h2>Sections & design</h2></div><span class="wb19-status">On / Off</span></div>
-            <p class="wb19-help">Turn sections on or off, pick a design for each one, then click Edit to change the content.</p>
+            <p class="wb19-help">Turn sections on or off, choose a quick layout, or click Edit to open the full section designer with visual layout options.</p>
             <div id="sectionManager" class="wb19-section-manager"></div>
           </div>
 
@@ -115,6 +115,33 @@
       <div class="footer-note">Vikas Mishra</div>
     </main>
   </div>
+</div>
+
+<div class="wb19-designer-modal" id="sectionDesignerModal" aria-hidden="true">
+  <section class="wb19-designer-drawer" role="dialog" aria-modal="true" aria-labelledby="designerSectionName">
+    <header class="wb19-designer-head">
+      <div><small>SECTION DESIGNER</small><h2 id="designerSectionName">Overview</h2><span id="designerLayoutName">Editorial</span></div>
+      <button type="button" id="closeSectionDesigner" aria-label="Close section designer">×</button>
+    </header>
+    <div class="wb19-designer-tabs">
+      <button type="button" class="active" data-designer-tab="content">Content</button>
+      <button type="button" data-designer-tab="layout">Layout Design</button>
+    </div>
+    <div class="wb19-designer-scroll">
+      <div class="wb19-designer-panel active" data-designer-panel="content">
+        <div class="wb19-designer-note"><b>Edit content live</b><span>Changes appear instantly in the website preview.</span></div>
+        <div id="sectionDesignerContent"></div>
+      </div>
+      <div class="wb19-designer-panel" data-designer-panel="layout">
+        <div class="wb19-designer-note"><b>Layout Design</b><span>Choose a visual style made for this section. You can change it anytime.</span></div>
+        <div id="layoutGallery" class="wb19-layout-gallery"></div>
+      </div>
+    </div>
+    <footer class="wb19-designer-actions">
+      <button type="button" class="btn secondary" id="previewSelectedSection">Preview section</button>
+      <button type="button" class="btn primary" id="doneSectionDesigner">Done</button>
+    </footer>
+  </section>
 </div>
 <div id="toast" class="toast"></div>
 <script src="app.js"></script><script src="site-renderer.js"></script><script src="website-v19.js"></script>

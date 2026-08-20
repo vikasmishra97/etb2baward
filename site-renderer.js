@@ -39,7 +39,7 @@
     if(raw.content){const ov=d.sections.find(s=>s.id==='overview');ov.title=raw.content.aboutTitle||ov.title;ov.body=raw.content.aboutBody||raw.content.heroBody||ov.body;const key=d.sections.find(s=>s.id==='keypoints');if(raw.content.categoriesBody)key.items=raw.content.categoriesBody+'\n'+key.items;}
     d.published=!!raw.published;return d;
   }
-  function sectionClass(s){return `public-section design-${esc(s.theme||'classic')}`}
+  function sectionClass(s){return `public-section section-${esc(s.id||'generic')} design-${esc(s.theme||'classic')}`}
   function sectionHead(s,kicker){return `<div class="public-section-head"><small>${esc(kicker||s.label)}</small><h2>${esc(s.title||s.label)}</h2></div>`}
   function listCards(items){return `<div class="public-card-grid">${lines(items).map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><b>${esc(x)}</b></article>`).join('')}</div>`}
   function renderSection(s){if(!s.enabled)return'';const id=`section-${s.id}`;
