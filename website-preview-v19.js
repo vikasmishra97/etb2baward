@@ -9,6 +9,7 @@
   const state=ETB2BSite.normalizeState(raw,award);
   const site=document.getElementById('publicSite');
   ETB2BSite.render(site,award,state,{builder:false});
+  if(location.hash){setTimeout(()=>document.querySelector(location.hash)?.scrollIntoView({block:'start'}),80)}
 
   const title=(state.header.seoTitle||award.name||'ETB2B Awards').trim();
   const desc=(state.header.seoDescription||award.description||'Recognising excellence, innovation and measurable impact.').trim();

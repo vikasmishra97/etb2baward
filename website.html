@@ -117,8 +117,8 @@
           </div>
 
           <div class="wb19-panel" data-panel="sections">
-            <div class="wb19-panel-title"><div><small>HOME PAGE</small><h2>Sections & design</h2></div><span class="wb19-status" id="sectionCountBadge">0 active</span></div>
-            <p class="wb19-help big-help">Drag sections to change website order. Turn a section off and it automatically moves to the inactive area. Click <b>Customize</b> for content, layout and advanced management.</p>
+            <div class="wb19-panel-title"><div><small>SITE STRUCTURE</small><h2>Sections & award pages</h2></div><span class="wb19-status" id="sectionCountBadge">0 active</span></div>
+            <p class="wb19-help big-help">Manage the homepage and every award page from one place. Turn an item on, choose whether it appears in navigation, edit its content, then reorder the final menu inside Navigation.</p>
             <div class="section-manager-tip"><span>↕</span><div><b>Drag & drop is enabled</b><small>Reorder active sections exactly as you want them to appear on the public site.</small></div></div>
             <div id="sectionManager" class="wb19-section-manager premium-section-manager"></div>
           </div>
@@ -146,15 +146,16 @@
               <div class="nav-mini-preview" id="navMiniPreview"><div class="nav-mini-top"><span class="nav-mini-logo">ET</span><b id="navMiniEvent">Your Award</b><em>Awards</em></div><div class="nav-mini-bottom"><span>Home</span><span>Categories</span><span>Jury</span><span>Entry Guidelines</span></div></div>
             </div>
             <label class="wb19-toggle-row"><div><b>Sticky navigation</b><small>Keep navigation visible while scrolling.</small></div><input type="checkbox" id="stickyNav"></label>
-            <div class="nav-links-heading"><b>Navigation links</b><small>Choose which award pages appear in the public navigation.</small></div>
-            <div id="navManager" class="wb19-nav-manager"></div>
-            <label class="wb19-toggle-row"><div><b>Rewards page</b><small>Show Rewards in site navigation.</small></div><input type="checkbox" id="navRewards"></label>
+            <div class="nav-links-heading"><b>Navigation order</b><small>Visibility is controlled from Sections. Drag the active links below to define the exact public menu order.</small></div>
+            <div class="nav-sync-note"><span>✓</span><div><b>Synced with Sections</b><small>When you switch a homepage section or award page on/off, this list updates automatically.</small></div></div>
+            <div id="navManager" class="wb19-nav-manager premium-nav-sort"></div>
+            <input type="checkbox" id="navRewards" hidden>
           </div>
 
           <div class="wb19-panel" data-panel="pages">
-            <div class="wb19-panel-title"><div><small>PUBLIC PAGES</small><h2>Landing, Thank you & Rewards</h2></div></div>
+            <div class="wb19-panel-title"><div><small>PUBLIC PAGES</small><h2>System pages & previews</h2></div></div>
             <div class="wb19-page-card"><span>01</span><div><b>Landing Page</b><small>Built from the live homepage sections.</small></div><a href="website-preview.html" target="_blank">Preview ↗</a></div>
-            <div class="wb19-public-page-grid"><a href="nominate.html" target="_blank"><b>Categories</b><small>Nomination categories</small><span>Preview ↗</span></a><a href="jury.html" target="_blank"><b>Jury</b><small>Jury & speakers</small><span>Preview ↗</span></a><a href="entry-guidelines.html" target="_blank"><b>Entry Guidelines</b><small>How to enter</small><span>Preview ↗</span></a><a href="judging-criteria.html" target="_blank"><b>Judging Criteria</b><small>Scoring framework</small><span>Preview ↗</span></a><a href="terms.html" target="_blank"><b>T&amp;C</b><small>Terms & eligibility</small><span>Preview ↗</span></a><a href="faq.html" target="_blank"><b>FAQs</b><small>Common questions</small><span>Preview ↗</span></a><a href="contact.html" target="_blank"><b>Contact Us</b><small>Awards team</small><span>Preview ↗</span></a><a href="previous-edition.html" target="_blank"><b>Previous Edition</b><small>Past highlights</small><span>Preview ↗</span></a></div><div class="wb19-page-editor"><label class="wb19-toggle-row"><div><b>Thank You Page</b><small>Shown after Express Interest.</small></div><input type="checkbox" id="thankEnabled"></label><label class="wb19-field"><span>Heading</span><input id="thankTitle"></label><label class="wb19-field"><span>Message</span><textarea id="thankBody"></textarea></label><a class="wb19-inline-link" href="thank-you.html" target="_blank">Preview Thank You Page ↗</a></div>
+            <div class="page-managed-callout"><span>↗</span><div><b>Award pages are now managed in Sections</b><small>Categories, Jury, Entry Guidelines, Judging Criteria, T&amp;C, FAQs, Contact, Previous Edition and Rewards all have editable content and navigation controls there.</small></div></div><div class="wb19-page-editor"><label class="wb19-toggle-row"><div><b>Thank You Page</b><small>Shown after Express Interest.</small></div><input type="checkbox" id="thankEnabled"></label><label class="wb19-field"><span>Heading</span><input id="thankTitle"></label><label class="wb19-field"><span>Message</span><textarea id="thankBody"></textarea></label><a class="wb19-inline-link" href="thank-you.html" target="_blank">Preview Thank You Page ↗</a></div>
             <div class="wb19-page-editor"><label class="wb19-toggle-row"><div><b>Rewards Page</b><small>Explain winner benefits and recognition.</small></div><input type="checkbox" id="rewardsEnabled"></label><label class="wb19-field"><span>Heading</span><input id="rewardsTitle"></label><label class="wb19-field"><span>Message</span><textarea id="rewardsBody"></textarea></label><a class="wb19-inline-link" href="rewards.html" target="_blank">Preview Rewards Page ↗</a></div>
           </div>
         </aside>
@@ -183,6 +184,15 @@
       <div class="wb19-designer-panel" data-designer-panel="layout"><div class="wb19-designer-note"><b>Layout Design</b><span>Choose a premium visual style made for this section. You can switch anytime.</span></div><div id="layoutGallery" class="wb19-layout-gallery"></div></div>
     </div>
     <footer class="wb19-designer-actions"><button type="button" class="btn secondary" id="previewSelectedSection">Preview section</button><button type="button" class="btn primary" id="doneSectionDesigner">Done</button></footer>
+  </section>
+</div>
+
+<!-- Public page designer -->
+<div class="page-designer-modal" id="publicPageModal" aria-hidden="true">
+  <section class="page-designer-drawer" role="dialog" aria-modal="true">
+    <header><div><small>AWARD PAGE DESIGNER</small><h2 id="publicPageTitle">Categories</h2><p id="publicPageSubtitle">Edit page content and navigation label.</p></div><button type="button" id="closePublicPageModal" aria-label="Close">×</button></header>
+    <div class="page-designer-body" id="publicPageEditor"></div>
+    <footer><a class="btn secondary" id="publicPagePreview" href="#" target="_blank">Open public page ↗</a><button type="button" class="btn primary" id="savePublicPage">Done</button></footer>
   </section>
 </div>
 

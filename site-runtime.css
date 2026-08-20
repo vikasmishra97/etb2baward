@@ -131,3 +131,19 @@
 .public-hero .hero-content{min-height:var(--hero-min-height,690px);align-items:start!important;padding-top:clamp(26px,3.2vw,46px)!important;padding-bottom:clamp(38px,5vw,70px)!important}
 .hero-stage .hero-content{align-content:start!important;min-height:var(--hero-min-height,690px);padding-top:clamp(28px,3.5vw,50px)!important}
 @media(max-width:620px){.public-hero .hero-content{padding-top:24px!important;padding-bottom:42px!important}.hero-stage .hero-content{padding-top:26px!important}}
+
+/* V19.7 premium smart-scroll navigation */
+.public-nav.is-condensed .nav-cta{display:none!important}
+.public-nav.is-condensed .public-presented-by,.public-nav.is-condensed .public-nav-awards-pill{display:none!important}
+.public-nav.one-row.is-condensed .public-nav-primary{min-height:50px!important;max-height:50px!important;padding:0 clamp(18px,3vw,46px)!important;opacity:1!important;pointer-events:auto!important;transform:none!important;background:rgba(54,8,12,.98)}
+.public-nav.one-row.is-condensed .public-brand{display:none!important}
+.public-nav.one-row.is-condensed .public-nav-inline{display:flex!important;margin:0 auto!important;max-width:1180px;width:100%;overflow-x:auto;scrollbar-width:none;gap:24px}
+.public-nav.one-row.is-condensed .public-nav-inline::-webkit-scrollbar{display:none}
+.public-nav.two-row.is-condensed .public-nav-secondary{min-height:50px!important;background:rgba(54,8,12,.98)!important;box-shadow:0 10px 28px rgba(0,0,0,.16)!important}
+.public-nav.two-row.is-condensed .public-nav-secondary nav{max-width:1240px;margin:0 auto!important;width:100%;justify-content:flex-start!important;overflow-x:auto;scrollbar-width:none}
+.public-nav.two-row.is-condensed .public-nav-secondary nav::-webkit-scrollbar{display:none}
+.public-nav.is-away{transform:translateY(-110%)!important}
+.public-nav:not(.is-away){transform:translateY(0)!important}
+.public-nav-secondary nav>a,.public-nav-inline>a{position:relative}
+.public-nav-secondary nav>a:hover:before,.public-nav-inline>a:hover:before{content:"";position:absolute;left:0;right:0;bottom:-9px;height:2px;background:var(--a,#d8ad59);border-radius:10px;opacity:.7}
+@media(max-width:620px){.public-nav.one-row.is-condensed .public-nav-primary{min-height:46px!important;max-height:46px!important;padding:0 12px!important}.public-nav.two-row.is-condensed .public-nav-secondary{min-height:46px!important}.public-nav.is-condensed .public-more>div{top:50px!important}}
