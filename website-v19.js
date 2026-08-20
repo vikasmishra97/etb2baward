@@ -1,224 +1,259 @@
 (function(){
   const $=id=>document.getElementById(id);
   const AWARD_KEY='etb2b_awards_new_award';
-  const award=(()=>{try{return JSON.parse(localStorage.getItem(AWARD_KEY)||'null')}catch(e){return null}})()||{
-    name:'ET Future Forward Awards 2026',eventCategory:'HR & Talent Management',description:'Celebrating organisations and leaders building the future of work through human-first innovation, technology and transformative talent practices.',venue:'Crowne Plaza Kuala Lumpur',city:'Kuala Lumpur',hasEventDates:true,eventStart:'2026-10-22T18:00',eventEnd:'2026-10-22T23:00',hasNominationDates:true,nominationStart:'2026-08-20T08:00',nominationEnd:'2026-09-30T23:59',slug:'et-future-forward-awards-2026'
-  };
+  const award=(()=>{try{return JSON.parse(localStorage.getItem(AWARD_KEY)||'null')}catch(e){return null}})()||{name:'ET Future Forward Awards 2026',eventCategory:'HR & Talent Management',description:'Celebrating organisations and leaders building the future of work through human-first innovation, technology and transformative talent practices.',venue:'Crowne Plaza Kuala Lumpur',city:'Kuala Lumpur',hasEventDates:true,eventStart:'2026-10-22T18:00',eventEnd:'2026-10-22T23:00',hasNominationDates:true,nominationStart:'2026-08-20T08:00',nominationEnd:'2026-09-30T23:59',slug:'et-future-forward-awards-2026'};
   const storeKey='etb2b_awards_website_'+(award.slug||'demo');
   let rawState=(()=>{try{return JSON.parse(localStorage.getItem(storeKey)||'null')}catch(e){return null}})();
   let state=ETB2BSite.normalizeState(rawState,award);
-  let selectedId='overview';
-  let dirty=false;
-
+  let selectedId='overview',dirty=false,draggedSectionId=null,entityContext=null,photoState=null;
+  const subtab={speakers:'speakers',agenda:'agenda',glimpse:'images',contact:'contacts'};
+  const gallerySelected=new Set();
+  const uid=p=>ETB2BSite.uid?ETB2BSite.uid(p):p+'_'+Math.random().toString(36).slice(2,8);
+  const esc=s=>String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]));
+  const attr=esc;
   const presets={
     'awards-night':{primary:'#a90e17',accent:'#d8ad59',surface:'#fffaf2',font:'editorial',radius:'soft'},
     executive:{primary:'#0f2d43',accent:'#caa14d',surface:'#f7f8fa',font:'modern',radius:'soft'},
     editorial:{primary:'#74131a',accent:'#b68b48',surface:'#f5efe3',font:'editorial',radius:'sharp'},
     modern:{primary:'#d71920',accent:'#1e77d3',surface:'#f7f8fb',font:'modern',radius:'round'}
   };
-
   const layoutCatalog={
     prose:[
-      {id:'classic',name:'Classic',desc:'Clean heading and readable story',preview:'classic'},
-      {id:'editorial',name:'Editorial',desc:'Premium magazine-style presentation',preview:'editorial'},
-      {id:'split',name:'Split Story',desc:'Two-column story with visual contrast',preview:'split'},
-      {id:'spotlight',name:'Award Spotlight',desc:'Bold statement with premium accent',preview:'spotlight'},
-      {id:'magazine',name:'Magazine',desc:'Large title with columned content',preview:'magazine'},
-      {id:'centered',name:'Centered',desc:'Elegant centered narrative',preview:'centered'},
-      {id:'framed',name:'Framed',desc:'Story inside an award-style frame',preview:'framed'},
-      {id:'dark',name:'Dark Premium',desc:'Stage-night dark treatment',preview:'dark'}
+      {id:'classic',name:'Classic',desc:'Clean heading and readable story',preview:'classic'},{id:'editorial',name:'Editorial',desc:'Premium magazine-style presentation',preview:'editorial'},{id:'split',name:'Split Story',desc:'Two-column story with visual contrast',preview:'split'},{id:'spotlight',name:'Award Spotlight',desc:'Bold statement with premium accent',preview:'spotlight'},{id:'magazine',name:'Magazine',desc:'Large title with columned content',preview:'magazine'},{id:'centered',name:'Centered',desc:'Elegant centered narrative',preview:'centered'},{id:'framed',name:'Framed',desc:'Story inside an award-style frame',preview:'framed'},{id:'dark',name:'Dark Premium',desc:'Stage-night dark treatment',preview:'dark'},{id:'luxe-panel',name:'Luxe Panel',desc:'Ivory panel with gold edge',preview:'framed'},{id:'side-accent',name:'Side Accent',desc:'Strong left accent and compact copy',preview:'split'},{id:'quote-led',name:'Quote Led',desc:'Large statement followed by story',preview:'spotlight'}
     ],
     list:[
-      {id:'cards',name:'Award Cards',desc:'Four premium content cards',preview:'cards'},
-      {id:'icon-grid',name:'Icon Grid',desc:'Visual grid with accent markers',preview:'icon-grid'},
-      {id:'numbered',name:'Numbered',desc:'Large numbered editorial list',preview:'numbered'},
-      {id:'split',name:'Split List',desc:'Balanced two-column layout',preview:'split-list'},
-      {id:'checklist',name:'Checklist',desc:'Clear benefit / eligibility checklist',preview:'checklist'},
-      {id:'ribbon',name:'Award Ribbon',desc:'Horizontal premium ribbon cards',preview:'ribbon'},
-      {id:'minimal',name:'Minimal',desc:'Simple, whitespace-first list',preview:'minimal'},
-      {id:'dark',name:'Dark Cards',desc:'Dark award-night grid',preview:'dark'}
+      {id:'cards',name:'Award Cards',desc:'Four premium content cards',preview:'cards'},{id:'icon-grid',name:'Icon Grid',desc:'Visual grid with accent markers',preview:'icon-grid'},{id:'numbered',name:'Numbered',desc:'Large numbered editorial list',preview:'numbered'},{id:'split',name:'Split List',desc:'Balanced two-column layout',preview:'split-list'},{id:'checklist',name:'Checklist',desc:'Clear benefit / eligibility checklist',preview:'checklist'},{id:'ribbon',name:'Award Ribbon',desc:'Horizontal premium ribbon cards',preview:'ribbon'},{id:'minimal',name:'Minimal',desc:'Simple, whitespace-first list',preview:'minimal'},{id:'dark',name:'Dark Cards',desc:'Dark award-night grid',preview:'dark'},{id:'feature-stack',name:'Feature Stack',desc:'Large stacked statement cards',preview:'spotlight'},{id:'pill-grid',name:'Pill Grid',desc:'Compact modern benefit pills',preview:'icon-grid'}
     ],
     speakers:[
-      {id:'cards',name:'Profile Cards',desc:'Balanced speaker profile cards',preview:'cards'},
-      {id:'portraits',name:'Portrait Grid',desc:'Large portrait-style avatars',preview:'portraits'},
-      {id:'speaker-spotlight',name:'Speaker Spotlight',desc:'Feature the first speaker prominently',preview:'spotlight'},
-      {id:'editorial',name:'Editorial',desc:'Clean speaker directory',preview:'editorial'},
-      {id:'compact',name:'Compact',desc:'Dense layout for larger panels',preview:'compact'},
-      {id:'speaker-marquee',name:'Stage Marquee',desc:'Premium stage-card treatment',preview:'marquee'},
-      {id:'dark',name:'Dark Stage',desc:'High-contrast awards-night style',preview:'dark'}
+      {id:'cards',name:'Profile Cards',desc:'Balanced speaker profile cards',preview:'cards'},{id:'portraits',name:'Portrait Grid',desc:'Large portrait-style profiles',preview:'portraits'},{id:'speaker-spotlight',name:'Speaker Spotlight',desc:'Feature the first speaker prominently',preview:'spotlight'},{id:'editorial',name:'Editorial',desc:'Clean speaker directory',preview:'editorial'},{id:'compact',name:'Compact',desc:'Dense layout for larger panels',preview:'compact'},{id:'speaker-marquee',name:'Stage Marquee',desc:'Premium stage-card treatment',preview:'marquee'},{id:'dark',name:'Dark Stage',desc:'High-contrast awards-night style',preview:'dark'},{id:'portrait-strips',name:'Portrait Strips',desc:'Tall portrait-led speaker cards',preview:'portraits'},{id:'speaker-row',name:'Speaker Row',desc:'Wide horizontal speaker profiles',preview:'split'}
     ],
     agenda:[
-      {id:'timeline',name:'Timeline',desc:'Classic time-led agenda',preview:'timeline'},
-      {id:'agenda-cards',name:'Session Cards',desc:'Individual agenda cards',preview:'cards'},
-      {id:'agenda-columns',name:'Two Columns',desc:'Compact two-column schedule',preview:'columns'},
-      {id:'compact',name:'Compact',desc:'Tight schedule for long agendas',preview:'compact'},
-      {id:'agenda-stage',name:'Stage Run',desc:'Bold stage-production timeline',preview:'stage'},
-      {id:'editorial',name:'Editorial',desc:'Premium editorial schedule',preview:'editorial'},
-      {id:'dark',name:'Dark Timeline',desc:'Night-mode agenda',preview:'dark'}
+      {id:'timeline',name:'Timeline',desc:'Classic time-led agenda',preview:'timeline'},{id:'agenda-cards',name:'Session Cards',desc:'Individual agenda cards',preview:'cards'},{id:'agenda-columns',name:'Two Columns',desc:'Compact two-column schedule',preview:'columns'},{id:'compact',name:'Compact',desc:'Tight schedule for long agendas',preview:'compact'},{id:'agenda-stage',name:'Stage Run',desc:'Bold stage-production timeline',preview:'stage'},{id:'editorial',name:'Editorial',desc:'Premium editorial schedule',preview:'editorial'},{id:'dark',name:'Dark Timeline',desc:'Night-mode agenda',preview:'dark'},{id:'day-planner',name:'Day Planner',desc:'Time rail with grouped sessions',preview:'timeline'},{id:'agenda-grid',name:'Schedule Grid',desc:'Visual schedule blocks',preview:'cards'}
     ],
     resources:[
-      {id:'cards',name:'Resource Cards',desc:'Cards with clear download actions',preview:'cards'},
-      {id:'resource-list',name:'Download List',desc:'Simple document list',preview:'list'},
-      {id:'resource-tiles',name:'Visual Tiles',desc:'Strong tile-based resources',preview:'tiles'},
-      {id:'resource-feature',name:'Featured Resource',desc:'Highlight the first resource',preview:'spotlight'},
-      {id:'editorial',name:'Editorial',desc:'Premium publication layout',preview:'editorial'},
-      {id:'minimal',name:'Minimal',desc:'Simple text links',preview:'minimal'},
-      {id:'dark',name:'Dark Library',desc:'Dark premium resource cards',preview:'dark'}
+      {id:'cards',name:'Resource Cards',desc:'Cards with clear download actions',preview:'cards'},{id:'resource-list',name:'Download List',desc:'Simple document list',preview:'list'},{id:'resource-tiles',name:'Visual Tiles',desc:'Strong tile-based resources',preview:'tiles'},{id:'resource-feature',name:'Featured Resource',desc:'Highlight the first resource',preview:'spotlight'},{id:'editorial',name:'Editorial',desc:'Premium publication layout',preview:'editorial'},{id:'minimal',name:'Minimal',desc:'Simple text links',preview:'minimal'},{id:'dark',name:'Dark Library',desc:'Dark premium resource cards',preview:'dark'}
     ],
     glimpse:[
-      {id:'split',name:'Story + Gallery',desc:'Narrative beside a visual gallery',preview:'split'},
-      {id:'mosaic',name:'Mosaic',desc:'Magazine-style image mosaic',preview:'mosaic'},
-      {id:'filmstrip',name:'Filmstrip',desc:'Wide previous-edition highlights',preview:'filmstrip'},
-      {id:'gallery',name:'Gallery Grid',desc:'Balanced visual gallery',preview:'gallery'},
-      {id:'spotlight',name:'Hero Glimpse',desc:'Large visual-first showcase',preview:'spotlight'},
-      {id:'minimal',name:'Minimal',desc:'Light story and image treatment',preview:'minimal'},
-      {id:'dark',name:'Dark Gallery',desc:'Award-night gallery treatment',preview:'dark'}
+      {id:'split',name:'Story + Gallery',desc:'Narrative beside a visual gallery',preview:'split'},{id:'mosaic',name:'Mosaic',desc:'Magazine-style image mosaic',preview:'mosaic'},{id:'filmstrip',name:'Filmstrip',desc:'Wide previous-edition highlights',preview:'filmstrip'},{id:'gallery',name:'Gallery Grid',desc:'Balanced visual gallery',preview:'gallery'},{id:'spotlight',name:'Hero Glimpse',desc:'Large visual-first showcase',preview:'spotlight'},{id:'minimal',name:'Minimal',desc:'Light story and image treatment',preview:'minimal'},{id:'dark',name:'Dark Gallery',desc:'Award-night gallery treatment',preview:'dark'},{id:'carousel',name:'Showcase Carousel',desc:'Large lead image with supporting frames',preview:'spotlight'},{id:'polaroid',name:'Editorial Polaroid',desc:'Playful premium image collage',preview:'mosaic'}
     ],
     contact:[
-      {id:'cards',name:'Contact Cards',desc:'Email, phone and venue cards',preview:'cards'},
-      {id:'contact-split',name:'Split Contact',desc:'Contact information with callout',preview:'split'},
-      {id:'contact-banner',name:'Contact Banner',desc:'Wide call-to-action strip',preview:'banner'},
-      {id:'centered',name:'Centered',desc:'Simple centered contact block',preview:'centered'},
-      {id:'minimal',name:'Minimal',desc:'Clean text-first contact details',preview:'minimal'},
-      {id:'dark',name:'Dark Contact',desc:'Premium dark footer-style block',preview:'dark'}
+      {id:'cards',name:'Contact Cards',desc:'Contact team directory cards',preview:'cards'},{id:'contact-split',name:'Split Contact',desc:'Contact information with callout',preview:'split'},{id:'contact-banner',name:'Contact Banner',desc:'Wide call-to-action strip',preview:'banner'},{id:'centered',name:'Centered',desc:'Simple centered contact block',preview:'centered'},{id:'minimal',name:'Minimal',desc:'Clean text-first contact details',preview:'minimal'},{id:'dark',name:'Dark Contact',desc:'Premium dark footer-style block',preview:'dark'},{id:'directory',name:'Team Directory',desc:'Multiple contacts with group labels',preview:'cards'},{id:'contact-team',name:'Contact Team',desc:'People-first contact cards',preview:'portraits'}
     ],
-    custom:[
-      {id:'classic',name:'Classic',desc:'Standard custom content block',preview:'classic'},
-      {id:'framed',name:'Framed',desc:'Contained custom module',preview:'framed'},
-      {id:'fullbleed',name:'Full Width',desc:'Edge-to-edge custom section',preview:'fullbleed'},
-      {id:'minimal',name:'Minimal',desc:'No-frills custom content',preview:'minimal'},
-      {id:'dark',name:'Dark',desc:'Dark custom section',preview:'dark'}
-    ]
+    custom:[{id:'classic',name:'Classic',desc:'Standard custom content block',preview:'classic'},{id:'framed',name:'Framed',desc:'Contained custom module',preview:'framed'},{id:'fullbleed',name:'Full Width',desc:'Edge-to-edge custom section',preview:'fullbleed'},{id:'minimal',name:'Minimal',desc:'No-frills custom content',preview:'minimal'},{id:'dark',name:'Dark',desc:'Dark custom section',preview:'dark'}]
   };
 
-  function sectionKind(s){
-    if(['overview','eventDescription'].includes(s.id))return'prose';
-    if(['keypoints','who','why'].includes(s.id))return'list';
-    if(s.id==='speakers')return'speakers';
-    if(s.id==='agenda')return'agenda';
-    if(s.id==='resources')return'resources';
-    if(s.id==='glimpse')return'glimpse';
-    if(s.id==='contact')return'contact';
-    return'custom';
-  }
+  function sectionKind(s){if(['overview','eventDescription'].includes(s.id))return'prose';if(['keypoints','who','why'].includes(s.id))return'list';if(s.id==='speakers')return'speakers';if(s.id==='agenda')return'agenda';if(s.id==='resources')return'resources';if(s.id==='glimpse')return'glimpse';if(s.id==='contact')return'contact';return'custom'}
   function layoutsFor(s){return layoutCatalog[sectionKind(s)]||layoutCatalog.prose}
-  function layoutName(s){const found=layoutsFor(s).find(x=>x.id===s.theme);return found?found.name:(s.theme||'Classic').replace(/-/g,' ').replace(/\b\w/g,m=>m.toUpperCase())}
-  function toast(msg){const t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1600)}
-  function saveAward(){award.industry=award.eventCategory||award.industry;award.type=award.eventCategory||award.type;award.openDate=(award.nominationStart||'').slice(0,10);award.closeDate=(award.nominationEnd||'').slice(0,10);award.deadline=award.closeDate;award.winnerDate=(award.eventStart||'').slice(0,10);localStorage.setItem(AWARD_KEY,JSON.stringify(award));localStorage.setItem('etb2b_current_award',award.name||'Untitled Award');$('sideAwardName').textContent=award.name||'Untitled Award';$('crumbAward').textContent=award.name||'Untitled Award'}
-  function save(showToast=true){state.updatedAt=new Date().toISOString();localStorage.setItem(storeKey,JSON.stringify(state));saveAward();dirty=false;updateSaveState();if(showToast)toast('Website draft saved')}
-  function markDirty(){dirty=true;updateSaveState();render()}
-  function updateSaveState(){const dot=document.querySelector('.wb19-save-dot');$('saveStatus').textContent=dirty?'Unsaved changes':'Draft saved';dot?.classList.toggle('unsaved',dirty)}
-  function escAttr(s){return String(s??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+  function layoutName(s){const f=layoutsFor(s).find(x=>x.id===s.theme);return f?f.name:(s.theme||'Classic').replace(/-/g,' ').replace(/\b\w/g,m=>m.toUpperCase())}
   function currentSection(){return state.sections.find(s=>s.id===selectedId)||state.sections[0]}
-  function updateSelectedLabels(){const s=currentSection();if(!s)return;$('inspectorHeading').textContent=s.label;$('inspectorTheme').textContent=layoutName(s);if($('designerSectionName'))$('designerSectionName').textContent=s.label;if($('designerLayoutName'))$('designerLayoutName').textContent=layoutName(s)}
-  function selectSection(id){selectedId=id;renderSectionManager();renderInspector();renderLayoutGallery();updateSelectedLabels()}
+  function sectionBy(id){return state.sections.find(s=>s.id===id)}
+  function speakerSection(){return sectionBy('speakers')}
+  function toast(msg){const t=$('toast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),1900)}
+  function saveAward(){award.industry=award.eventCategory||award.industry;award.type=award.eventCategory||award.type;award.openDate=(award.nominationStart||'').slice(0,10);award.closeDate=(award.nominationEnd||'').slice(0,10);award.deadline=award.closeDate;award.winnerDate=(award.eventStart||'').slice(0,10);localStorage.setItem(AWARD_KEY,JSON.stringify(award));localStorage.setItem('etb2b_current_award',award.name||'Untitled Award');$('sideAwardName').textContent=award.name||'Untitled Award';$('crumbAward').textContent=award.name||'Untitled Award'}
+  function save(showToast=true){state.updatedAt=new Date().toISOString();try{localStorage.setItem(storeKey,JSON.stringify(state));saveAward();dirty=false;updateSaveState();if(showToast)toast('Website draft saved')}catch(e){toast('Browser storage is full. Remove a few large images or use stronger compression.')}}
+  function markDirty(renderPreview=true){dirty=true;updateSaveState();if(renderPreview)render()}
+  function updateSaveState(){const dot=document.querySelector('.wb19-save-dot');$('saveStatus').textContent=dirty?'Unsaved changes':'Draft saved';dot?.classList.toggle('unsaved',dirty)}
+  function ensureActiveFirst(){state.sections=[...state.sections.filter(s=>s.enabled!==false),...state.sections.filter(s=>s.enabled===false)]}
   function render(){ETB2BSite.render($('liveSite'),award,state,{builder:true});const c=ETB2BSite.ctaFor(award);$('ctaExplanation').textContent=`Current website CTA: ${c.label}. ${c.sub}.`;updateReadiness()}
-  function updateReadiness(){let score=48;if(award.name&&award.venue)score+=10;if(state.header.desktopImage)score+=10;if(state.sections.filter(s=>s.enabled).length>=7)score+=12;if(state.form.showOnBanner&&Object.values(state.form.fields).some(Boolean))score+=8;if(state.pages.thankyou.enabled)score+=5;if(state.nav.sticky)score+=3;score=Math.min(score,100);$('readinessScore').textContent=score+'%';$('readinessBar').style.width=score+'%';$('readinessCopy').textContent=score>=90?'Website is ready for category setup. You can keep refining it later.':state.header.desktopImage?'Your structure is strong. Review section content and registration fields before continuing.':'Upload a desktop banner and review your key sections before moving to Categories.'}
+  function updateReadiness(){let score=45;if(award.name&&award.venue)score+=10;if(state.header.desktopImage)score+=10;if(state.sections.filter(s=>s.enabled).length>=7)score+=12;if(state.form.showOnBanner&&Object.values(state.form.fields).some(Boolean))score+=8;if(state.pages.thankyou.enabled)score+=5;if(state.nav.sticky)score+=3;const sp=speakerSection();if(sp?.speakers?.some(x=>x.photo))score+=4;if(sectionBy('glimpse')?.images?.length)score+=3;score=Math.min(score,100);$('readinessScore').textContent=score+'%'}
+  function updateSelectedLabels(){const s=currentSection();if(!s)return;$('designerSectionName').textContent=s.label;$('designerLayoutName').textContent=layoutName(s)}
+  function lines(v){return String(v||'').split('\n').map(x=>x.trim()).filter(Boolean)}
+  function initials(name){return (name||'?').split(' ').map(x=>x[0]).slice(0,2).join('').toUpperCase()}
+  function fmtDateTime(v,fallback=''){if(!v)return fallback;const d=new Date(v);if(Number.isNaN(d.getTime()))return v;return d.toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}
+  function groupName(groups,id){return (groups||[]).find(g=>g.id===id)?.name||'Unassigned'}
 
   function renderSectionManager(){
-    $('sectionManager').innerHTML=state.sections.map(s=>{
-      const options=layoutsFor(s).map(d=>`<option value="${d.id}" ${s.theme===d.id?'selected':''}>${d.name}</option>`).join('');
-      return `<div class="wb19-section-row ${s.enabled?'':'disabled'} ${selectedId===s.id?'selected':''}" data-id="${s.id}"><label title="Show / hide"><input type="checkbox" data-section-toggle="${s.id}" ${s.enabled?'checked':''}><i></i></label><button type="button" class="wb19-section-name" data-open-section="${s.id}" title="Edit ${escAttr(s.label)}"><b>${s.label}</b><small>${s.id==='custom'?'HTML / embed area':'Homepage section'}</small></button><select data-section-theme="${s.id}" title="Quick layout">${options}</select><button type="button" class="wb19-edit-section" data-edit-section="${s.id}" title="Edit content & layouts" aria-label="Edit ${escAttr(s.label)}">✎</button></div>`;
-    }).join('');
-    document.querySelectorAll('[data-section-toggle]').forEach(el=>el.addEventListener('change',()=>{const s=state.sections.find(x=>x.id===el.dataset.sectionToggle);s.enabled=el.checked;if(s.id!=='custom')state.nav.visible[s.id]=el.checked;markDirty();renderSectionManager();renderNavManager()}));
-    document.querySelectorAll('[data-section-theme]').forEach(el=>el.addEventListener('change',()=>{const s=state.sections.find(x=>x.id===el.dataset.sectionTheme);s.theme=el.value;selectedId=s.id;markDirty();renderSectionManager();renderInspector();renderLayoutGallery();updateSelectedLabels()}));
-    document.querySelectorAll('[data-edit-section],[data-open-section]').forEach(b=>b.addEventListener('click',()=>openSectionDesigner(b.dataset.editSection||b.dataset.openSection,'content')));
+    ensureActiveFirst();const box=$('sectionManager');const active=state.sections.filter(s=>s.enabled!==false),inactive=state.sections.filter(s=>s.enabled===false);$('sectionCountBadge').textContent=`${active.length} active`;
+    const row=(s,i)=>`<div class="wb19-section-card ${s.enabled===false?'disabled':''}" draggable="true" data-section-id="${s.id}"><div class="section-drag" title="Drag to reorder">⠿</div><div class="section-card-main"><div class="section-card-title"><span class="section-order">${String(i+1).padStart(2,'0')}</span><b>${esc(s.label)}</b></div><small>${s.id==='custom'?'Custom HTML / embed area':'Homepage section'}</small><div class="section-card-meta"><button class="section-layout-chip" type="button" data-edit-layout="${s.id}">✦ ${esc(layoutName(s))}</button><span class="section-status-chip">${s.enabled===false?'Inactive':'Visible'}</span><span class="section-move-buttons"><button type="button" data-move-section="${s.id}" data-dir="-1" title="Move up">↑</button><button type="button" data-move-section="${s.id}" data-dir="1" title="Move down">↓</button></span></div></div><div class="section-card-actions"><label class="section-toggle" title="Show / hide"><input type="checkbox" data-section-toggle="${s.id}" ${s.enabled!==false?'checked':''}><i></i></label><button type="button" class="section-customize-btn" data-edit-section="${s.id}">Customize</button></div></div>`;
+    box.innerHTML=`<div class="section-group-label">Active sections</div>${active.map((s,i)=>row(s,i)).join('')}${inactive.length?`<div class="section-group-label inactive">Inactive sections · automatically kept below</div>${inactive.map((s,i)=>row(s,active.length+i)).join('')}`:''}`;
+    box.querySelectorAll('[data-section-toggle]').forEach(el=>el.addEventListener('change',()=>{const s=sectionBy(el.dataset.sectionToggle);s.enabled=el.checked;if(s.id!=='custom')state.nav.visible[s.id]=el.checked;ensureActiveFirst();markDirty();renderSectionManager();renderNavManager();toast(el.checked?`${s.label} activated`:`${s.label} moved to inactive sections`)}));
+    box.querySelectorAll('[data-edit-section]').forEach(b=>b.addEventListener('click',()=>openSectionDesigner(b.dataset.editSection,'content')));
+    box.querySelectorAll('[data-edit-layout]').forEach(b=>b.addEventListener('click',()=>openSectionDesigner(b.dataset.editLayout,'layout')));
+    box.querySelectorAll('[data-move-section]').forEach(b=>b.addEventListener('click',()=>moveSection(b.dataset.moveSection,Number(b.dataset.dir))));
+    box.querySelectorAll('[data-section-id]').forEach(rowEl=>{
+      rowEl.addEventListener('dragstart',()=>{draggedSectionId=rowEl.dataset.sectionId;rowEl.classList.add('dragging')});
+      rowEl.addEventListener('dragend',()=>{draggedSectionId=null;rowEl.classList.remove('dragging');box.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'))});
+      rowEl.addEventListener('dragover',e=>{e.preventDefault();if(draggedSectionId&&draggedSectionId!==rowEl.dataset.sectionId)rowEl.classList.add('drag-over')});
+      rowEl.addEventListener('dragleave',()=>rowEl.classList.remove('drag-over'));
+      rowEl.addEventListener('drop',e=>{e.preventDefault();rowEl.classList.remove('drag-over');reorderSection(draggedSectionId,rowEl.dataset.sectionId)});
+    });
   }
+  function moveSection(id,dir){const idx=state.sections.findIndex(s=>s.id===id);if(idx<0)return;const s=state.sections[idx];let j=idx+dir;while(j>=0&&j<state.sections.length&&state.sections[j].enabled!==s.enabled)j+=dir;if(j<0||j>=state.sections.length)return;[state.sections[idx],state.sections[j]]=[state.sections[j],state.sections[idx]];markDirty();renderSectionManager();renderNavManager()}
+  function reorderSection(fromId,toId){if(!fromId||fromId===toId)return;const from=state.sections.findIndex(s=>s.id===fromId),to=state.sections.findIndex(s=>s.id===toId);if(from<0||to<0)return;if(state.sections[from].enabled!==state.sections[to].enabled){toast('Active and inactive sections stay in separate groups');return}const [item]=state.sections.splice(from,1);const newTo=state.sections.findIndex(s=>s.id===toId);state.sections.splice(newTo,0,item);markDirty();renderSectionManager();renderNavManager();toast('Section order updated')}
 
-  function field(label,key,value,type='input'){
-    if(type==='textarea')return `<label class="wb19-field"><span>${label}</span><textarea data-inspector-key="${key}">${escAttr(value??'')}</textarea></label>`;
-    return `<label class="wb19-field"><span>${label}</span><input data-inspector-key="${key}" value="${escAttr(value??'')}"></label>`;
+  function commonTitle(s){return `<label class="wb19-field"><span>Section title</span><input data-section-prop="title" value="${attr(s.title||'')}"></label>`}
+  function miniTabs(kind,tabs){return `<div class="mini-tabs">${tabs.map(t=>`<button type="button" class="${subtab[kind]===t.id?'active':''}" data-subtab-kind="${kind}" data-subtab="${t.id}">${t.label}</button>`).join('')}</div>`}
+  function speakerManagerHtml(s){
+    let h=commonTitle(s)+miniTabs('speakers',[{id:'speakers',label:`Speakers (${s.speakers.length})`},{id:'groups',label:`Speaker Groups (${s.speakerGroups.length})`},{id:'display',label:'Display'}]);
+    if(subtab.speakers==='speakers'){
+      h+=`<div class="manager-header"><div><b>Speaker directory</b><small>Upload portraits, assign groups and drag to reorder.</small></div><button type="button" data-action="add-speaker">+ Add speaker</button></div><div class="entity-list" data-sort-list="speakers">${s.speakers.map((p,i)=>`<div class="entity-row" draggable="true" data-entity-index="${i}" data-entity-kind="speakers"><div class="entity-drag">⠿</div><div class="entity-thumb">${p.photo?`<img src="${p.photo}" alt="">`:initials(p.name)}</div><div class="entity-meta"><b>${esc(p.name)}</b><span>${esc(p.role||'Role')} · ${esc(p.company||'Company')}</span><div class="entity-badges"><i>${esc(groupName(s.speakerGroups,p.groupId))}</i><i>${p.status!==false?'Active':'Inactive'}</i></div></div><div class="entity-row-actions"><button type="button" data-upload-speaker="${i}">Photo</button><button type="button" data-edit-speaker="${i}">Edit</button><button type="button" data-remove-speaker="${i}">Delete</button><input class="entity-active" type="checkbox" data-speaker-status="${i}" ${p.status!==false?'checked':''}></div></div>`).join('')}</div>`;
+    } else if(subtab.speakers==='groups'){
+      h+=`<div class="manager-header"><div><b>Speaker groups</b><small>Groups control headings and speaker placement on the public site.</small></div><button type="button" data-add-group="speakers">+ Add group</button></div><p class="group-help">Drag groups to change their order. Speakers inherit the group order in the public website.</p><div data-group-list="speakers">${s.speakerGroups.map((g,i)=>groupRow('speakers',g,i)).join('')}</div>`;
+    } else {
+      h+=`<div class="display-card"><label><span>Show speaker group headings</span><input type="checkbox" data-section-prop-bool="showGroupHeadings" ${s.showGroupHeadings!==false?'checked':''}></label><small>Useful when you have Jury, Speakers, Hosts or multiple panels.</small></div><div class="display-card"><b>Portrait images</b><small>Speaker uploads are automatically compressed. Use Photo Studio to crop portraits, remove a plain light/dark background, or replace it with your brand color.</small></div>`;
+    }
+    return h;
   }
-  function repeatEditor(type,items){
-    const rows=(items||[]).map((it,i)=>{
-      if(type==='speakers')return `<div class="wb19-repeat-row" data-repeat-index="${i}"><input data-repeat-field="name" value="${escAttr(it.name)}" placeholder="Name"><input data-repeat-field="role" value="${escAttr(it.role)}" placeholder="Role"><input data-repeat-field="company" value="${escAttr(it.company)}" placeholder="Company"><div class="wb19-repeat-actions"><button type="button" data-remove-repeat="${i}">Remove</button></div></div>`;
-      if(type==='agenda')return `<div class="wb19-repeat-row" data-repeat-index="${i}"><input data-repeat-field="time" value="${escAttr(it.time)}" placeholder="18:00"><input data-repeat-field="title" value="${escAttr(it.title)}" placeholder="Agenda item"><div class="wb19-repeat-actions"><button type="button" data-remove-repeat="${i}">Remove</button></div></div>`;
-      return `<div class="wb19-repeat-row" data-repeat-index="${i}"><input data-repeat-field="title" value="${escAttr(it.title)}" placeholder="Resource title"><input data-repeat-field="url" value="${escAttr(it.url)}" placeholder="https://"><div class="wb19-repeat-actions"><button type="button" data-remove-repeat="${i}">Remove</button></div></div>`;
-    }).join('');
-    return `<div class="wb19-inspector-list" data-repeat-type="${type}">${rows}</div><button type="button" class="wb19-add-row" data-add-repeat="${type}">+ Add ${type==='speakers'?'speaker':type==='agenda'?'agenda item':'resource'}</button>`;
+  function groupRow(kind,g,i){return `<div class="group-row" draggable="true" data-group-kind="${kind}" data-group-index="${i}"><span class="entity-drag">⠿</span><input type="text" data-group-name="${kind}" data-index="${i}" value="${attr(g.name)}"><input type="number" min="1" max="999" title="Weight" data-group-weight="${kind}" data-index="${i}" value="${Number(g.weight||100)}"><label class="group-active-toggle" title="Active group"><input type="checkbox" data-group-active="${kind}" data-index="${i}" ${g.active!==false?'checked':''}><span>On</span></label><button type="button" data-remove-group="${kind}" data-index="${i}">Remove</button></div>`}
+  function agendaManagerHtml(s){
+    let h=commonTitle(s)+miniTabs('agenda',[{id:'agenda',label:`Agenda (${s.agenda.length})`},{id:'groups',label:`Agenda Group (${s.agendaGroups.length})`},{id:'speakers',label:'Speakers Weightage'},{id:'groupWeight',label:'Group Weightage'}]);
+    if(subtab.agenda==='agenda'){
+      h+=`<div class="manager-header"><div><b>Agenda sessions</b><small>Add session dates, groups, speakers, summaries and description points.</small></div><button type="button" data-action="add-agenda">+ Add Agenda</button></div><div class="entity-list" data-sort-list="agenda">${s.agenda.map((x,i)=>`<div class="entity-row agenda-row" draggable="true" data-entity-index="${i}" data-entity-kind="agenda"><div class="entity-drag">⠿</div><div class="agenda-time">${esc(x.start?fmtDateTime(x.start):x.time||'Time')}</div><div class="entity-meta"><b>${esc(x.title)}</b><span>${esc(groupName(s.agendaGroups,x.groupId))}</span><small class="agenda-summary">${esc(x.summary||'No session summary')}</small></div><div class="entity-row-actions"><button type="button" data-edit-agenda="${i}">Edit</button><button type="button" data-remove-agenda="${i}">Delete</button><input class="entity-active" type="checkbox" data-agenda-status="${i}" ${x.status!==false?'checked':''}></div></div>`).join('')}</div>`;
+    } else if(subtab.agenda==='groups'){
+      h+=`<div class="manager-header"><div><b>Agenda groups</b><small>Create groups such as Registration, Keynote, Awards or Networking.</small></div><button type="button" data-add-group="agenda">+ Add group</button></div><div data-group-list="agenda">${s.agendaGroups.map((g,i)=>groupRow('agenda',g,i)).join('')}</div>`;
+    } else if(subtab.agenda==='speakers'){
+      const sp=speakerSection();h+=`<div class="manager-header"><div><b>Speaker weightage</b><small>Set display priority for agenda-linked speakers.</small></div></div>${(sp.speakers||[]).map((p,i)=>`<div class="weight-row"><div><b>${esc(p.name)}</b><small>${esc(p.role)} · ${esc(p.company)}</small></div><input type="number" min="1" max="999" value="${Number(p.agendaWeight||p.weight||100)}" data-speaker-weight="${i}"></div>`).join('')}`;
+    } else {
+      h+=`<div class="manager-header"><div><b>Agenda group weightage</b><small>Higher values can be used to prioritize groups in future filtered views.</small></div></div>${s.agendaGroups.map((g,i)=>`<div class="weight-row"><div><b>${esc(g.name)}</b><small>${g.active!==false?'Active':'Inactive'} group</small></div><input type="number" min="1" max="999" value="${Number(g.weight||100)}" data-agenda-group-weight="${i}"></div>`).join('')}`;
+    }
+    return h;
   }
-  function editorHtml(s){
-    let html=field('Section title','title',s.title);
-    if(['overview','eventDescription','glimpse'].includes(s.id))html+=field('Content','body',s.body,'textarea');
-    if(['keypoints','who','why'].includes(s.id))html+=field('List items · one per line','items',s.items,'textarea');
-    if(s.id==='speakers')html+=repeatEditor('speakers',s.speakers);
-    if(s.id==='agenda')html+=repeatEditor('agenda',s.agenda);
-    if(s.id==='resources')html+=repeatEditor('resources',s.resources);
-    if(s.id==='contact')html+=field('Email','email',s.email)+field('Phone','phone',s.phone)+field('Address','address',s.address,'textarea');
-    if(s.id==='custom')html+=field('Custom HTML / embed code','html',s.html,'textarea')+'<p class="wb19-help">HTML and CSS markup is rendered in this prototype. Keep scripts out of the demo for predictable behaviour.</p>';
-    html+=`<button type="button" class="wb19-layout-launch" data-open-layout-gallery>Choose visual layout <span>${layoutName(s)} →</span></button>`;
-    return html;
+  function glimpseManagerHtml(s){
+    let h=commonTitle(s)+`<label class="wb19-field"><span>Intro text</span><textarea data-section-prop="body">${esc(s.body||'')}</textarea></label>`+miniTabs('glimpse',[{id:'images',label:`Image (${s.images.length})`},{id:'groups',label:`Image Group (${s.galleryGroups.length})`},{id:'weight',label:'Image Weightage'}]);
+    if(subtab.glimpse==='images'){
+      h+=`<div class="manager-header"><div><b>Image gallery</b><small>Images are auto-compressed. Drag to reorder or bulk update their group.</small></div><button type="button" data-action="add-gallery-image">+ Add New Image</button></div><div class="bulk-box"><span>${gallerySelected.size} selected</span><select id="bulkGalleryGroup">${s.galleryGroups.map(g=>`<option value="${g.id}">${esc(g.name)}</option>`).join('')}</select><button type="button" data-action="bulk-gallery-group">Bulk update group</button></div><div class="gallery-list" data-sort-list="images">${s.images.length?s.images.map((im,i)=>`<div class="gallery-row" draggable="true" data-entity-index="${i}" data-entity-kind="images"><span class="entity-drag">⠿</span><input type="checkbox" data-gallery-select="${i}" ${gallerySelected.has(im.id)?'checked':''}><img src="${im.image||''}" alt=""><div class="gallery-meta"><b>${esc(im.title||'Untitled image')}</b><span>${esc(groupName(s.galleryGroups,im.groupId))}${im.socialHandle?' · '+esc(im.socialHandle):''}</span></div><div class="entity-row-actions"><button type="button" data-gallery-photo="${i}">Image</button><button type="button" data-edit-gallery="${i}">Edit</button><button type="button" data-remove-gallery="${i}">Delete</button><input class="entity-active" type="checkbox" data-gallery-status="${i}" ${im.status!==false?'checked':''}></div></div>`).join(''):`<div class="empty-manager">No gallery images yet. Click <b>+ Add New Image</b> to create your first compressed event image.</div>`}</div>`;
+    } else if(subtab.glimpse==='groups'){
+      h+=`<div class="manager-header"><div><b>Image groups</b><small>Organize highlights by Winners, Stage, Networking or any custom group.</small></div><button type="button" data-add-group="glimpse">+ Add group</button></div><div data-group-list="glimpse">${s.galleryGroups.map((g,i)=>groupRow('glimpse',g,i)).join('')}</div>`;
+    } else {
+      h+=`<div class="manager-header"><div><b>Image weightage</b><small>Set priority and use Apply weight order to reorder the gallery.</small></div><button type="button" data-action="apply-image-weight">Apply weight order</button></div>${s.images.map((im,i)=>`<div class="weight-row"><div><b>${esc(im.title||'Image')}</b><small>${esc(groupName(s.galleryGroups,im.groupId))}</small></div><input type="number" min="1" max="999" value="${Number(im.weight||100)}" data-image-weight="${i}"></div>`).join('')}`;
+    }
+    return h;
   }
+  function contactManagerHtml(s){
+    let h=commonTitle(s)+miniTabs('contact',[{id:'contacts',label:`Contact Us (${s.contacts.length})`},{id:'groups',label:`Contact Us Group (${s.contactGroups.length})`},{id:'display',label:'Display'}]);
+    if(subtab.contact==='contacts'){
+      h+=`<div class="manager-header"><div><b>Contact directory</b><small>Add multiple contacts, assign groups and drag to reorder.</small></div><button type="button" data-action="add-contact">+ Add New Contact</button></div><div class="entity-list" data-sort-list="contacts">${s.contacts.map((c,i)=>`<div class="entity-row contact-row" draggable="true" data-entity-index="${i}" data-entity-kind="contacts"><div class="entity-drag">⠿</div><div class="contact-avatar">${initials(c.name)}</div><div class="entity-meta"><b>${esc(c.name)}</b><span>${esc(c.email||'No email')} · ${esc(c.phone||'No phone')}</span><div class="entity-badges"><i>${esc(groupName(s.contactGroups,c.groupId))}</i><i>${c.status!==false?'Active':'Inactive'}</i></div></div><div class="entity-row-actions"><button type="button" data-edit-contact="${i}">Edit</button><button type="button" data-remove-contact="${i}">Delete</button><input class="entity-active" type="checkbox" data-contact-status="${i}" ${c.status!==false?'checked':''}></div></div>`).join('')}</div>`;
+    } else if(subtab.contact==='groups'){
+      h+=`<div class="manager-header"><div><b>Contact groups</b><small>Create separate helpdesks for Delegates, Sponsors, Media or Jury.</small></div><button type="button" data-add-group="contact">+ Add group</button></div><div data-group-list="contact">${s.contactGroups.map((g,i)=>groupRow('contact',g,i)).join('')}</div>`;
+    } else {
+      h+=`<div class="display-card"><label><span>Show contact group headings</span><input type="checkbox" data-section-prop-bool="showGroupHeadings" ${s.showGroupHeadings!==false?'checked':''}></label><small>Group headings help visitors find the right team faster.</small></div><div class="display-card"><b>Multiple contact details supported</b><small>Each contact can have name, email, phone, company, designation and a contact group.</small></div>`;
+    }
+    return h;
+  }
+  function basicEditorHtml(s){let h=commonTitle(s);if(['overview','eventDescription'].includes(s.id))h+=`<label class="wb19-field"><span>Content</span><textarea data-section-prop="body">${esc(s.body||'')}</textarea></label>`;if(['keypoints','who','why'].includes(s.id))h+=`<label class="wb19-field"><span>List items · one per line</span><textarea data-section-prop="items">${esc(s.items||'')}</textarea></label>`;if(s.id==='resources')h+=`<div class="manager-header"><div><b>Resources</b><small>Add links visitors can open or download.</small></div><button type="button" data-action="add-resource">+ Add resource</button></div><div class="entity-list">${(s.resources||[]).map((r,i)=>`<div class="group-row"><span>${String(i+1).padStart(2,'0')}</span><input type="text" data-resource-title="${i}" value="${attr(r.title)}"><input type="text" data-resource-url="${i}" value="${attr(r.url)}"><button type="button" data-remove-resource="${i}">Remove</button></div>`).join('')}</div>`;if(s.id==='custom')h+=`<label class="wb19-field"><span>Custom HTML / embed code</span><textarea data-section-prop="html" style="min-height:220px">${esc(s.html||'')}</textarea></label><p class="group-help">HTML markup is rendered in this prototype. Keep scripts out of the demo for predictable behaviour.</p>`;return h}
+  function editorHtml(s){let h='';if(s.id==='speakers')h=speakerManagerHtml(s);else if(s.id==='agenda')h=agendaManagerHtml(s);else if(s.id==='glimpse')h=glimpseManagerHtml(s);else if(s.id==='contact')h=contactManagerHtml(s);else h=basicEditorHtml(s);h+=`<button type="button" class="wb19-layout-launch" data-open-layout-gallery>Choose visual layout <span>${esc(layoutName(s))} →</span></button>`;return h}
+
+  function renderEditor(){const s=currentSection();if(!s)return;$('sectionDesignerContent').innerHTML=editorHtml(s);updateSelectedLabels();wireEditor($('sectionDesignerContent'),s);renderLayoutGallery()}
   function wireEditor(container,s){
-    if(!container)return;
-    container.querySelectorAll('[data-inspector-key]').forEach(el=>el.addEventListener('input',()=>{s[el.dataset.inspectorKey]=el.value;markDirty();renderSectionManager()}));
-    container.querySelectorAll('[data-repeat-field]').forEach(el=>el.addEventListener('input',()=>{const type=el.closest('[data-repeat-type]').dataset.repeatType;const idx=Number(el.closest('[data-repeat-index]').dataset.repeatIndex);s[type][idx][el.dataset.repeatField]=el.value;markDirty()}));
-    container.querySelectorAll('[data-remove-repeat]').forEach(b=>b.addEventListener('click',()=>{const type=b.closest('[data-repeat-type]').dataset.repeatType;s[type].splice(Number(b.dataset.removeRepeat),1);markDirty();renderInspector()}));
-    container.querySelectorAll('[data-add-repeat]').forEach(b=>b.addEventListener('click',()=>{const type=b.dataset.addRepeat;if(type==='speakers')s.speakers.push({name:'New Speaker',role:'Role',company:'Company'});if(type==='agenda')s.agenda.push({time:'18:00',title:'New agenda item'});if(type==='resources')s.resources.push({title:'New resource',url:'#'});markDirty();renderInspector()}));
+    container.querySelectorAll('[data-section-prop]').forEach(el=>el.addEventListener('input',()=>{s[el.dataset.sectionProp]=el.value;markDirty();renderSectionManager()}));
+    container.querySelectorAll('[data-section-prop-bool]').forEach(el=>el.addEventListener('change',()=>{s[el.dataset.sectionPropBool]=el.checked;markDirty()}));
+    container.querySelectorAll('[data-subtab-kind]').forEach(b=>b.addEventListener('click',()=>{subtab[b.dataset.subtabKind]=b.dataset.subtab;renderEditor()}));
     container.querySelectorAll('[data-open-layout-gallery]').forEach(b=>b.addEventListener('click',()=>setDesignerTab('layout')));
+    container.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>handleAction(b.dataset.action,s)));
+    container.querySelectorAll('[data-edit-speaker]').forEach(b=>b.addEventListener('click',()=>openEntityEditor('speaker',Number(b.dataset.editSpeaker))));
+    container.querySelectorAll('[data-upload-speaker]').forEach(b=>b.addEventListener('click',()=>chooseImage({title:'Speaker photo studio',aspect:'portrait'},data=>{s.speakers[Number(b.dataset.uploadSpeaker)].photo=data;markDirty();renderEditor();save(false)})));
+    container.querySelectorAll('[data-speaker-status]').forEach(el=>el.addEventListener('change',()=>{s.speakers[Number(el.dataset.speakerStatus)].status=el.checked;markDirty()}));
+    container.querySelectorAll('[data-remove-speaker]').forEach(b=>b.addEventListener('click',()=>{const i=Number(b.dataset.removeSpeaker);if(confirm('Delete this speaker?')){s.speakers.splice(i,1);markDirty();renderEditor()}}));
+    container.querySelectorAll('[data-edit-agenda]').forEach(b=>b.addEventListener('click',()=>openEntityEditor('agenda',Number(b.dataset.editAgenda))));
+    container.querySelectorAll('[data-agenda-status]').forEach(el=>el.addEventListener('change',()=>{s.agenda[Number(el.dataset.agendaStatus)].status=el.checked;markDirty()}));
+    container.querySelectorAll('[data-remove-agenda]').forEach(b=>b.addEventListener('click',()=>{const i=Number(b.dataset.removeAgenda);if(confirm('Delete this agenda item?')){s.agenda.splice(i,1);markDirty();renderEditor()}}));
+    container.querySelectorAll('[data-edit-gallery]').forEach(b=>b.addEventListener('click',()=>openEntityEditor('gallery',Number(b.dataset.editGallery))));
+    container.querySelectorAll('[data-gallery-photo]').forEach(b=>b.addEventListener('click',()=>chooseImage({title:'Gallery image studio',aspect:'landscape'},data=>{s.images[Number(b.dataset.galleryPhoto)].image=data;markDirty();renderEditor();save(false)})));
+    container.querySelectorAll('[data-gallery-status]').forEach(el=>el.addEventListener('change',()=>{s.images[Number(el.dataset.galleryStatus)].status=el.checked;markDirty()}));
+    container.querySelectorAll('[data-remove-gallery]').forEach(b=>b.addEventListener('click',()=>{const i=Number(b.dataset.removeGallery);if(confirm('Delete this gallery image?')){gallerySelected.delete(s.images[i].id);s.images.splice(i,1);markDirty();renderEditor()}}));
+    container.querySelectorAll('[data-gallery-select]').forEach(el=>el.addEventListener('change',()=>{const im=s.images[Number(el.dataset.gallerySelect)];el.checked?gallerySelected.add(im.id):gallerySelected.delete(im.id);renderEditor()}));
+    container.querySelectorAll('[data-edit-contact]').forEach(b=>b.addEventListener('click',()=>openEntityEditor('contact',Number(b.dataset.editContact))));
+    container.querySelectorAll('[data-contact-status]').forEach(el=>el.addEventListener('change',()=>{s.contacts[Number(el.dataset.contactStatus)].status=el.checked;markDirty()}));
+    container.querySelectorAll('[data-remove-contact]').forEach(b=>b.addEventListener('click',()=>{const i=Number(b.dataset.removeContact);if(confirm('Delete this contact?')){s.contacts.splice(i,1);markDirty();renderEditor()}}));
+    container.querySelectorAll('[data-add-group]').forEach(b=>b.addEventListener('click',()=>openEntityEditor('group',null,b.dataset.addGroup)));
+    container.querySelectorAll('[data-remove-group]').forEach(b=>b.addEventListener('click',()=>removeGroup(b.dataset.removeGroup,Number(b.dataset.index))));
+    container.querySelectorAll('[data-group-name]').forEach(el=>el.addEventListener('input',()=>{getGroups(el.dataset.groupName)[Number(el.dataset.index)].name=el.value;markDirty()}));
+    container.querySelectorAll('[data-group-weight]').forEach(el=>el.addEventListener('input',()=>{getGroups(el.dataset.groupWeight)[Number(el.dataset.index)].weight=Number(el.value)||1;markDirty(false)}));
+    container.querySelectorAll('[data-group-active]').forEach(el=>el.addEventListener('change',()=>{const g=getGroups(el.dataset.groupActive)[Number(el.dataset.index)];g.active=el.checked;el.nextElementSibling.textContent=el.checked?'On':'Off';markDirty()}));
+    container.querySelectorAll('[data-speaker-weight]').forEach(el=>el.addEventListener('input',()=>{speakerSection().speakers[Number(el.dataset.speakerWeight)].agendaWeight=Number(el.value)||1;markDirty(false)}));
+    container.querySelectorAll('[data-agenda-group-weight]').forEach(el=>el.addEventListener('input',()=>{s.agendaGroups[Number(el.dataset.agendaGroupWeight)].weight=Number(el.value)||1;markDirty(false)}));
+    container.querySelectorAll('[data-image-weight]').forEach(el=>el.addEventListener('input',()=>{s.images[Number(el.dataset.imageWeight)].weight=Number(el.value)||1;markDirty(false)}));
+    container.querySelectorAll('[data-resource-title]').forEach(el=>el.addEventListener('input',()=>{s.resources[Number(el.dataset.resourceTitle)].title=el.value;markDirty()}));
+    container.querySelectorAll('[data-resource-url]').forEach(el=>el.addEventListener('input',()=>{s.resources[Number(el.dataset.resourceUrl)].url=el.value;markDirty(false)}));
+    container.querySelectorAll('[data-remove-resource]').forEach(b=>b.addEventListener('click',()=>{s.resources.splice(Number(b.dataset.removeResource),1);markDirty();renderEditor()}));
+    wireEntitySortables(container,s);wireGroupSortables(container);
   }
-  function renderInspector(){
-    const s=currentSection();if(!s)return;
-    const html=editorHtml(s);
-    $('sectionInspector').innerHTML=html;
-    if($('sectionDesignerContent'))$('sectionDesignerContent').innerHTML=html;
-    wireEditor($('sectionInspector'),s);
-    wireEditor($('sectionDesignerContent'),s);
-    updateSelectedLabels();
+  function handleAction(action,s){
+    if(action==='add-speaker')openEntityEditor('speaker',null);if(action==='add-agenda')openEntityEditor('agenda',null);if(action==='add-contact')openEntityEditor('contact',null);if(action==='add-resource'){s.resources.push({title:'New resource',url:'#'});markDirty();renderEditor()}
+    if(action==='add-gallery-image')chooseImage({title:'Gallery image studio',aspect:'landscape'},data=>{s.images.push({id:uid('img'),title:'New event image',image:data,socialHandle:'',groupId:s.galleryGroups[0]?.id||'',status:true,weight:100});markDirty();renderEditor();save(false);openEntityEditor('gallery',s.images.length-1)});
+    if(action==='bulk-gallery-group'){const group=$('bulkGalleryGroup')?.value;if(!group)return;s.images.forEach(im=>{if(gallerySelected.has(im.id))im.groupId=group});gallerySelected.clear();markDirty();renderEditor();toast('Selected images moved to group')}
+    if(action==='apply-image-weight'){s.images.sort((a,b)=>(Number(b.weight)||0)-(Number(a.weight)||0));markDirty();renderEditor();toast('Gallery reordered by weight')}
+  }
+  function wireEntitySortables(container,s){container.querySelectorAll('[data-sort-list]').forEach(list=>{let dragIndex=null;list.querySelectorAll('[data-entity-index]').forEach(row=>{row.addEventListener('dragstart',()=>{dragIndex=Number(row.dataset.entityIndex);row.classList.add('dragging')});row.addEventListener('dragend',()=>{dragIndex=null;row.classList.remove('dragging');list.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'))});row.addEventListener('dragover',e=>{e.preventDefault();row.classList.add('drag-over')});row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('drag-over');const to=Number(row.dataset.entityIndex),kind=row.dataset.entityKind;if(dragIndex===null||dragIndex===to)return;const arr=s[kind];const [it]=arr.splice(dragIndex,1);arr.splice(to,0,it);markDirty();renderEditor()})})})}
+  function wireGroupSortables(container){container.querySelectorAll('[data-group-list]').forEach(list=>{let dragIndex=null;list.querySelectorAll('[data-group-index]').forEach(row=>{row.addEventListener('dragstart',()=>{dragIndex=Number(row.dataset.groupIndex);row.classList.add('dragging')});row.addEventListener('dragend',()=>{dragIndex=null;row.classList.remove('dragging')});row.addEventListener('dragover',e=>{e.preventDefault();row.classList.add('drag-over')});row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('drag-over');const to=Number(row.dataset.groupIndex),kind=row.dataset.groupKind;if(dragIndex===null||dragIndex===to)return;const arr=getGroups(kind);const [it]=arr.splice(dragIndex,1);arr.splice(to,0,it);markDirty();renderEditor()})})})}
+  function getGroups(kind){if(kind==='speakers')return speakerSection().speakerGroups;if(kind==='agenda')return sectionBy('agenda').agendaGroups;if(kind==='glimpse')return sectionBy('glimpse').galleryGroups;if(kind==='contact')return sectionBy('contact').contactGroups;return[]}
+  function removeGroup(kind,index){const arr=getGroups(kind);if(arr.length<=1){toast('Keep at least one group');return}const removed=arr[index];if(!confirm(`Remove group "${removed.name}"? Items will move to the first remaining group.`))return;arr.splice(index,1);const fallback=arr[0].id;if(kind==='speakers')speakerSection().speakers.forEach(x=>{if(x.groupId===removed.id)x.groupId=fallback});if(kind==='agenda')sectionBy('agenda').agenda.forEach(x=>{if(x.groupId===removed.id)x.groupId=fallback});if(kind==='glimpse')sectionBy('glimpse').images.forEach(x=>{if(x.groupId===removed.id)x.groupId=fallback});if(kind==='contact')sectionBy('contact').contacts.forEach(x=>{if(x.groupId===removed.id)x.groupId=fallback});markDirty();renderEditor()}
+
+  function layoutThumb(layout,kind){return `<div class="wb19-layout-thumb thumb-${layout.preview} kind-${kind}"><span class="thumb-kicker"></span><span class="thumb-title"></span><div class="thumb-body"><i></i><i></i><i></i><i></i></div><span class="thumb-footer"></span></div>`}
+  function renderLayoutGallery(){const box=$('layoutGallery');if(!box)return;const s=currentSection(),kind=sectionKind(s);box.innerHTML=layoutsFor(s).map(layout=>`<button type="button" class="wb19-layout-card ${s.theme===layout.id?'active':''}" data-layout-card="${layout.id}">${layoutThumb(layout,kind)}<span class="wb19-layout-meta"><b>${layout.name}</b><small>${layout.desc}</small></span><i class="wb19-layout-check">✓</i></button>`).join('');box.querySelectorAll('[data-layout-card]').forEach(btn=>btn.addEventListener('click',()=>{s.theme=btn.dataset.layoutCard;markDirty();renderSectionManager();renderLayoutGallery();updateSelectedLabels();toast(layoutName(s)+' layout applied')}))}
+  function setDesignerTab(tab){document.querySelectorAll('[data-designer-tab]').forEach(b=>b.classList.toggle('active',b.dataset.designerTab===tab));document.querySelectorAll('[data-designer-panel]').forEach(p=>p.classList.toggle('active',p.dataset.designerPanel===tab))}
+  function openSectionDesigner(id,tab='content'){selectedId=id;renderSectionManager();renderEditor();setDesignerTab(tab);const modal=$('sectionDesignerModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('wb19-modal-open')}
+  function closeSectionDesigner(){const modal=$('sectionDesignerModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('wb19-modal-open')}
+  function previewSelectedSection(){const s=currentSection(),el=$('liveSite')?.querySelector('#section-'+s.id);if(el){closeSectionDesigner();setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),80);toast('Previewing '+s.label)}}
+
+  /* Generic entity editors */
+  function openEntityEditor(kind,index,groupKind=''){
+    entityContext={kind,index,groupKind};const modal=$('entityModal'),body=$('entityBody');$('entityEyebrow').textContent=index==null?'ADD':'EDIT';
+    let html='';
+    if(kind==='speaker'){
+      const s=speakerSection(),p=index==null?{name:'',role:'',company:'',groupId:s.speakerGroups[0]?.id||'',status:true}:s.speakers[index];$('entityTitle').textContent=index==null?'Add speaker':'Edit speaker';$('entitySubtitle').textContent='Manage profile details. Use the Photo button in the list for smart image editing.';
+      html=`${formField('Name','name',p.name,true)}${formField('Role / designation','role',p.role)}${formField('Company','company',p.company)}${selectField('Speaker group','groupId',p.groupId,s.speakerGroups.map(g=>[g.id,g.name]))}${toggleField('Active speaker','Show this speaker on the public site.','status',p.status!==false)}`;
+    } else if(kind==='agenda'){
+      const s=sectionBy('agenda'),x=index==null?{title:'',start:'',end:'',groupId:s.agendaGroups[0]?.id||'',speakerIds:[],summary:'',points:'',status:true}:s.agenda[index];$('entityTitle').textContent=index==null?'Add Agenda':'Edit Agenda';$('entitySubtitle').textContent='Create a complete session with timing, group, speakers and description.';const speakers=speakerSection().speakers;
+      html=`${formField('Title','title',x.title,true)}<div class="wb19-two">${formField('Session Start Date & Time','start',x.start,true,'datetime-local')}${formField('Session End Date & Time','end',x.end,true,'datetime-local')}</div>${selectField('Agenda Group','groupId',x.groupId,s.agendaGroups.map(g=>[g.id,g.name]))}<label class="wb19-field"><span>Speakers</span><div class="entity-checkbox-grid">${speakers.map(p=>`<label><input type="checkbox" name="speakerIds" value="${p.id}" ${(x.speakerIds||[]).includes(p.id)?'checked':''}><span>${esc(p.name)}</span></label>`).join('')}</div></label>${textareaField('Description Summary','summary',x.summary)}${textareaField('Description Points · one per line','points',x.points)}${toggleField('Active agenda item','Show this session on the public site.','status',x.status!==false)}`;
+    } else if(kind==='gallery'){
+      const s=sectionBy('glimpse'),x=s.images[index];$('entityTitle').textContent='Edit gallery image';$('entitySubtitle').textContent='Add a title, social handle and image group.';html=`${formField('Title','title',x.title,true)}${formField('Social Handle / caption','socialHandle',x.socialHandle)}${selectField('Image Group','groupId',x.groupId,s.galleryGroups.map(g=>[g.id,g.name]))}${formField('Weightage','weight',x.weight,false,'number')}${toggleField('Active image','Show this image in the public gallery.','status',x.status!==false)}`;
+    } else if(kind==='contact'){
+      const s=sectionBy('contact'),c=index==null?{name:'',email:'',phone:'',company:'',designation:'',groupId:s.contactGroups[0]?.id||'',status:true}:s.contacts[index];$('entityTitle').textContent=index==null?'Add New Contact':'Edit Contact';$('entitySubtitle').textContent='Add complete visitor-facing contact information.';html=`${formField('Name','name',c.name,true)}${formField('Email','email',c.email,true,'email')}${formField('Phone','phone',c.phone)}${formField('Company','company',c.company)}${formField('Designation / role','designation',c.designation)}${selectField('Contact Group','groupId',c.groupId,s.contactGroups.map(g=>[g.id,g.name]))}${toggleField('Active contact','Show this contact on the public site.','status',c.status!==false)}`;
+    } else if(kind==='group'){
+      const arr=getGroups(groupKind),g=index==null?{name:'',active:true,weight:100}:arr[index];$('entityTitle').textContent=index==null?'Add Group':'Edit Group';$('entitySubtitle').textContent='Groups help organize content and control ordering.';html=`${formField('Group name','name',g.name,true)}${formField('Weightage','weight',g.weight,false,'number')}${toggleField('Active group','Keep this group available for assignments.','active',g.active!==false)}`;
+    }
+    body.innerHTML=html;modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('wb19-modal-open');setTimeout(()=>body.querySelector('input,textarea,select')?.focus(),50)
+  }
+  function formField(label,name,value,required=false,type='text'){return `<label class="wb19-field"><span>${label}${required?' *':''}</span><input name="${name}" type="${type}" value="${attr(value??'')}" ${required?'required':''}></label>`}
+  function textareaField(label,name,value){return `<label class="wb19-field"><span>${label}</span><textarea name="${name}">${esc(value||'')}</textarea></label>`}
+  function selectField(label,name,value,options){return `<label class="wb19-field"><span>${label}</span><select name="${name}">${options.map(([v,l])=>`<option value="${attr(v)}" ${String(value)===String(v)?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`}
+  function toggleField(title,sub,name,checked){return `<label class="entity-toggle-line"><div><b>${title}</b><small>${sub}</small></div><input type="checkbox" name="${name}" ${checked?'checked':''}></label>`}
+  function closeEntityModal(){const m=$('entityModal');m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.classList.remove('wb19-modal-open');entityContext=null}
+  function saveEntity(){const ctx=entityContext;if(!ctx)return;const fd=new FormData($('entityForm'));
+    if(ctx.kind==='speaker'){const s=speakerSection();const obj=ctx.index==null?{id:uid('sp'),photo:'',weight:100}:s.speakers[ctx.index];Object.assign(obj,{name:fd.get('name'),role:fd.get('role'),company:fd.get('company'),groupId:fd.get('groupId'),status:fd.has('status')});if(ctx.index==null)s.speakers.push(obj)}
+    if(ctx.kind==='agenda'){const s=sectionBy('agenda');const obj=ctx.index==null?{id:uid('ag'),time:''}:s.agenda[ctx.index];Object.assign(obj,{title:fd.get('title'),start:fd.get('start'),end:fd.get('end'),groupId:fd.get('groupId'),speakerIds:fd.getAll('speakerIds'),summary:fd.get('summary'),points:fd.get('points'),status:fd.has('status')});if(obj.start)obj.time=new Date(obj.start).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});if(ctx.index==null)s.agenda.push(obj)}
+    if(ctx.kind==='gallery'){const s=sectionBy('glimpse'),obj=s.images[ctx.index];Object.assign(obj,{title:fd.get('title'),socialHandle:fd.get('socialHandle'),groupId:fd.get('groupId'),weight:Number(fd.get('weight'))||100,status:fd.has('status')})}
+    if(ctx.kind==='contact'){const s=sectionBy('contact');const obj=ctx.index==null?{id:uid('ct')}:s.contacts[ctx.index];Object.assign(obj,{name:fd.get('name'),email:fd.get('email'),phone:fd.get('phone'),company:fd.get('company'),designation:fd.get('designation'),groupId:fd.get('groupId'),status:fd.has('status')});if(ctx.index==null)s.contacts.push(obj)}
+    if(ctx.kind==='group'){const arr=getGroups(ctx.groupKind),obj=ctx.index==null?{id:uid(ctx.groupKind.slice(0,2)+'g')}:arr[ctx.index];Object.assign(obj,{name:fd.get('name'),weight:Number(fd.get('weight'))||100,active:fd.has('active')});if(ctx.index==null)arr.push(obj)}
+    markDirty();closeEntityModal();renderEditor();toast('Saved')
   }
 
-  function layoutThumb(layout,kind){
-    return `<div class="wb19-layout-thumb thumb-${layout.preview} kind-${kind}"><span class="thumb-kicker"></span><span class="thumb-title"></span><div class="thumb-body"><i></i><i></i><i></i><i></i></div><span class="thumb-footer"></span></div>`;
-  }
-  function renderLayoutGallery(){
-    const box=$('layoutGallery');if(!box)return;const s=currentSection();if(!s)return;const kind=sectionKind(s);
-    box.innerHTML=layoutsFor(s).map((layout,i)=>`<button type="button" class="wb19-layout-card ${s.theme===layout.id?'active':''}" data-layout-card="${layout.id}">${layoutThumb(layout,kind)}<span class="wb19-layout-meta"><b>${layout.name}</b><small>${layout.desc}</small></span><i class="wb19-layout-check">✓</i></button>`).join('');
-    box.querySelectorAll('[data-layout-card]').forEach(btn=>btn.addEventListener('click',()=>{s.theme=btn.dataset.layoutCard;markDirty();renderSectionManager();renderLayoutGallery();updateSelectedLabels();toast(layoutName(s)+' layout applied')}));
-  }
-  function setDesignerTab(tab){
-    document.querySelectorAll('[data-designer-tab]').forEach(b=>b.classList.toggle('active',b.dataset.designerTab===tab));
-    document.querySelectorAll('[data-designer-panel]').forEach(p=>p.classList.toggle('active',p.dataset.designerPanel===tab));
-  }
-  function openSectionDesigner(id,tab='content'){
-    selectedId=id;renderSectionManager();renderInspector();renderLayoutGallery();updateSelectedLabels();setDesignerTab(tab);
-    const modal=$('sectionDesignerModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('wb19-modal-open');
-  }
-  function closeSectionDesigner(){const modal=$('sectionDesignerModal');if(!modal)return;modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('wb19-modal-open')}
-  function previewSelectedSection(){const s=currentSection();const el=$('liveSite')?.querySelector('#section-'+s.id);if(el){closeSectionDesigner();setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),80);toast('Previewing '+s.label)}}
+  /* Smart image studio */
+  function chooseImage(options,onApply){const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=()=>{const file=input.files?.[0];if(file)openPhotoStudio(file,options,onApply)};input.click()}
+  function openPhotoStudio(file,options,onApply){const reader=new FileReader();reader.onload=()=>{const img=new Image();img.onload=()=>{photoState={file,img,onApply,title:options.title||'Image Studio',aspect:options.aspect||'portrait',zoom:1,panX:0,panY:0,bgMode:'original',bgColor:'#f7f1e5',quality:.76};$('photoStudioTitle').textContent=photoState.title;$('photoAspect').value=photoState.aspect;$('photoZoom').value=100;$('photoPanX').value=0;$('photoPanY').value=0;$('photoBgMode').value='original';$('photoBgColor').value='#f7f1e5';$('photoQuality').value=76;$('photoOriginalSize').textContent=formatBytes(file.size);$('photoOutputSize').textContent='Live preview';updatePhotoLabels();renderPhotoCanvas();$('photoStudioModal').classList.add('open');$('photoStudioModal').setAttribute('aria-hidden','false');document.body.classList.add('wb19-modal-open')};img.src=reader.result};reader.readAsDataURL(file)}
+  function closePhotoStudio(){const m=$('photoStudioModal');m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.classList.remove('wb19-modal-open');photoState=null}
+  function aspectSize(aspect,preview=false){if(aspect==='square')return preview?[520,520]:[720,720];if(aspect==='landscape')return preview?[640,400]:[1200,750];return preview?[480,600]:[600,750]}
+  function renderPhotoCanvas(final=false){if(!photoState)return;const canvas=$('photoCanvas'),[w,h]=aspectSize(photoState.aspect,!final);canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.clearRect(0,0,w,h);ctx.fillStyle=photoState.bgColor;ctx.fillRect(0,0,w,h);const img=photoState.img,base=Math.max(w/img.width,h/img.height),scale=base*photoState.zoom,dw=img.width*scale,dh=img.height*scale,dx=(w-dw)/2+(photoState.panX/100)*(w*.32),dy=(h-dh)/2+(photoState.panY/100)*(h*.32);ctx.drawImage(img,dx,dy,dw,dh);if(photoState.bgMode!=='original')replaceBackground(ctx,w,h,photoState.bgMode,photoState.bgColor);if(final){const data=canvas.toDataURL('image/jpeg',photoState.quality);$('photoOutputSize').textContent=formatBytes(dataUrlBytes(data));return data}requestAnimationFrame(()=>{$('photoOutputSize').textContent='≈ '+formatBytes(Math.round(dataUrlBytes(canvas.toDataURL('image/jpeg',photoState.quality))))})}
+  function replaceBackground(ctx,w,h,mode,bg){const im=ctx.getImageData(0,0,w,h),d=im.data,rgb=hexRgb(bg);for(let i=0;i<d.length;i+=4){const r=d[i],g=d[i+1],b=d[i+2],max=Math.max(r,g,b),min=Math.min(r,g,b),sat=max-min,bright=(r+g+b)/3;const remove=mode==='light'?(bright>218&&sat<42):(bright<42&&sat<34);if(remove){d[i]=rgb.r;d[i+1]=rgb.g;d[i+2]=rgb.b;d[i+3]=255}}ctx.putImageData(im,0,0)}
+  function hexRgb(hex){const v=hex.replace('#','');return{r:parseInt(v.slice(0,2),16)||255,g:parseInt(v.slice(2,4),16)||255,b:parseInt(v.slice(4,6),16)||255}}
+  function dataUrlBytes(s){return Math.max(0,Math.round((s.length-(s.indexOf(',')+1))*3/4))}
+  function formatBytes(n){if(n<1024)return n+' B';if(n<1024*1024)return Math.round(n/1024)+' KB';return (n/1024/1024).toFixed(1)+' MB'}
+  function updatePhotoLabels(){$('photoZoomValue').textContent=Math.round(photoState.zoom*100)+'%';$('photoPanXValue').textContent=photoState.panX;$('photoPanYValue').textContent=photoState.panY;$('photoQualityValue').textContent=Math.round(photoState.quality*100)+'%'}
+  function applyPhoto(){if(!photoState)return;const cb=photoState.onApply,data=renderPhotoCanvas(true);cb(data);closePhotoStudio();toast('Image cropped & compressed')}
+  function compressBanner(file,callback){const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const maxW=1600,maxH=1000,scale=Math.min(1,maxW/img.width,maxH/img.height),c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);callback(c.toDataURL('image/jpeg',.78))};img.src=r.result};r.readAsDataURL(file)}
 
-  function renderNavManager(){
-    $('navManager').innerHTML=state.sections.filter(s=>s.id!=='custom').map(s=>`<label class="wb19-nav-row"><span>${s.label}</span><input type="checkbox" data-nav-id="${s.id}" ${state.nav.visible[s.id]!==false&&s.enabled?'checked':''} ${s.enabled?'':'disabled'}></label>`).join('');
-    document.querySelectorAll('[data-nav-id]').forEach(el=>el.addEventListener('change',()=>{state.nav.visible[el.dataset.navId]=el.checked;markDirty()}));
-  }
-  function syncControls(){
-    $('basicEventName').value=award.name||'';$('basicEventCategory').value=award.eventCategory||award.industry||'';$('basicDescription').value=award.description||'';$('basicVenue').value=award.venue||'';$('basicCity').value=award.city||'';$('basicEventStart').value=award.eventStart||'';$('basicEventEnd').value=award.eventEnd||'';$('basicNominationStart').value=award.nominationStart||'';$('basicNominationEnd').value=award.nominationEnd||'';
-    $('heroDesign').value=state.header.design;$('overlay').value=state.header.overlay;$('overlayValue').textContent=state.header.overlay+'%';$('primaryColor').value=state.theme.primary;$('accentColor').value=state.theme.accent;$('surfaceColor').value=state.theme.surface;$('fontStyle').value=state.theme.font;
-    $('showForm').checked=state.form.showOnBanner;$('formTitle').value=state.form.title;$('stickyNav').checked=state.nav.sticky;$('navRewards').checked=state.nav.showRewards!==false;
-    document.querySelectorAll('[data-form-field]').forEach(el=>el.checked=!!state.form.fields[el.dataset.formField]);
-    $('thankEnabled').checked=state.pages.thankyou.enabled;$('thankTitle').value=state.pages.thankyou.title;$('thankBody').value=state.pages.thankyou.body;$('rewardsEnabled').checked=state.pages.rewards.enabled;$('rewardsTitle').value=state.pages.rewards.title;$('rewardsBody').value=state.pages.rewards.body;
-    document.querySelectorAll('[data-preset]').forEach(b=>b.classList.toggle('active',b.dataset.preset===state.theme.preset));
-  }
-  function readFile(input,target,label){const f=input.files[0];if(!f)return;if(f.size>1800000){toast('Use an image below 1.8 MB');input.value='';return}const r=new FileReader();r.onload=()=>{state.header[target]=r.result;$(label).textContent=f.name;markDirty();save(false)};r.readAsDataURL(f)}
+  function renderNavManager(){$('navManager').innerHTML=state.sections.filter(s=>s.id!=='custom').map(s=>`<label class="wb19-nav-row"><span>${esc(s.label)}</span><input type="checkbox" data-nav-id="${s.id}" ${state.nav.visible[s.id]!==false&&s.enabled?'checked':''} ${s.enabled?'':'disabled'}></label>`).join('');$('navManager').querySelectorAll('[data-nav-id]').forEach(el=>el.addEventListener('change',()=>{state.nav.visible[el.dataset.navId]=el.checked;markDirty()}))}
+  function syncControls(){$('basicEventName').value=award.name||'';$('basicEventCategory').value=award.eventCategory||award.industry||'';$('basicDescription').value=award.description||'';$('basicVenue').value=award.venue||'';$('basicCity').value=award.city||'';$('basicEventStart').value=award.eventStart||'';$('basicEventEnd').value=award.eventEnd||'';$('basicNominationStart').value=award.nominationStart||'';$('basicNominationEnd').value=award.nominationEnd||'';$('heroDesign').value=state.header.design;$('overlay').value=state.header.overlay;$('overlayValue').textContent=state.header.overlay+'%';$('primaryColor').value=state.theme.primary;$('accentColor').value=state.theme.accent;$('surfaceColor').value=state.theme.surface;$('fontStyle').value=state.theme.font;$('showForm').checked=state.form.showOnBanner;$('formTitle').value=state.form.title;$('stickyNav').checked=state.nav.sticky;$('navRewards').checked=state.nav.showRewards!==false;document.querySelectorAll('[data-form-field]').forEach(el=>el.checked=!!state.form.fields[el.dataset.formField]);$('thankEnabled').checked=state.pages.thankyou.enabled;$('thankTitle').value=state.pages.thankyou.title;$('thankBody').value=state.pages.thankyou.body;$('rewardsEnabled').checked=state.pages.rewards.enabled;$('rewardsTitle').value=state.pages.rewards.title;$('rewardsBody').value=state.pages.rewards.body;document.querySelectorAll('[data-preset]').forEach(b=>b.classList.toggle('active',b.dataset.preset===state.theme.preset))}
   function applyPreset(name){Object.assign(state.theme,presets[name]);state.theme.preset=name;if(name==='awards-night')state.header.design='immersive';if(name==='executive')state.header.design='split';if(name==='editorial')state.header.design='editorial';if(name==='modern')state.header.design='minimal';syncControls();markDirty();toast('Theme applied')}
   function continueCategories(){save(false);location.href='categories.html'}
 
+  /* Static control wiring */
   $('sideAwardName').textContent=award.name;$('crumbAward').textContent=award.name;
   [['basicEventName','name'],['basicEventCategory','eventCategory'],['basicDescription','description'],['basicVenue','venue'],['basicCity','city'],['basicEventStart','eventStart'],['basicEventEnd','eventEnd'],['basicNominationStart','nominationStart'],['basicNominationEnd','nominationEnd']].forEach(([id,key])=>$(id).addEventListener('input',e=>{award[key]=e.target.value;if(key==='nominationStart'||key==='nominationEnd')award.hasNominationDates=!!(award.nominationStart&&award.nominationEnd);if(key==='eventStart'||key==='eventEnd')award.hasEventDates=!!(award.eventStart&&award.eventEnd);saveAward();markDirty()}));
   document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('[data-panel]').forEach(p=>p.classList.toggle('active',p.dataset.panel===b.dataset.tab))}));
   document.querySelectorAll('[data-device]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-device]').forEach(x=>x.classList.toggle('active',x===b));$('previewFrame').className='wb19-canvas '+b.dataset.device}));
   $('heroDesign').addEventListener('change',e=>{state.header.design=e.target.value;markDirty()});$('overlay').addEventListener('input',e=>{state.header.overlay=Number(e.target.value);$('overlayValue').textContent=e.target.value+'%';markDirty()});
-  $('desktopBanner').addEventListener('change',e=>readFile(e.target,'desktopImage','desktopBannerLabel'));$('mobileBanner').addEventListener('change',e=>readFile(e.target,'mobileImage','mobileBannerLabel'));
-  document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>applyPreset(b.dataset.preset)));
-  [['primaryColor','primary'],['accentColor','accent'],['surfaceColor','surface']].forEach(([id,key])=>$(id).addEventListener('input',e=>{state.theme[key]=e.target.value;state.theme.preset='custom';document.querySelectorAll('[data-preset]').forEach(b=>b.classList.remove('active'));markDirty()}));$('fontStyle').addEventListener('change',e=>{state.theme.font=e.target.value;markDirty()});
+  $('desktopBanner').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;compressBanner(f,data=>{state.header.desktopImage=data;$('desktopBannerLabel').textContent=f.name+' · optimized';markDirty();save(false)})});$('mobileBanner').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;compressBanner(f,data=>{state.header.mobileImage=data;$('mobileBannerLabel').textContent=f.name+' · optimized';markDirty();save(false)})});
+  document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>applyPreset(b.dataset.preset)));[['primaryColor','primary'],['accentColor','accent'],['surfaceColor','surface']].forEach(([id,key])=>$(id).addEventListener('input',e=>{state.theme[key]=e.target.value;state.theme.preset='custom';document.querySelectorAll('[data-preset]').forEach(b=>b.classList.remove('active'));markDirty()}));$('fontStyle').addEventListener('change',e=>{state.theme.font=e.target.value;markDirty()});
   $('showForm').addEventListener('change',e=>{state.form.showOnBanner=e.target.checked;markDirty()});$('formTitle').addEventListener('input',e=>{state.form.title=e.target.value;markDirty()});document.querySelectorAll('[data-form-field]').forEach(el=>el.addEventListener('change',()=>{state.form.fields[el.dataset.formField]=el.checked;markDirty()}));
-  $('stickyNav').addEventListener('change',e=>{state.nav.sticky=e.target.checked;markDirty()});$('navRewards').addEventListener('change',e=>{state.nav.showRewards=e.target.checked;markDirty()});
-  $('thankEnabled').addEventListener('change',e=>{state.pages.thankyou.enabled=e.target.checked;markDirty()});$('thankTitle').addEventListener('input',e=>{state.pages.thankyou.title=e.target.value;markDirty()});$('thankBody').addEventListener('input',e=>{state.pages.thankyou.body=e.target.value;markDirty()});$('rewardsEnabled').addEventListener('change',e=>{state.pages.rewards.enabled=e.target.checked;markDirty()});$('rewardsTitle').addEventListener('input',e=>{state.pages.rewards.title=e.target.value;markDirty()});$('rewardsBody').addEventListener('input',e=>{state.pages.rewards.body=e.target.value;markDirty()});
+  $('stickyNav').addEventListener('change',e=>{state.nav.sticky=e.target.checked;markDirty()});$('navRewards').addEventListener('change',e=>{state.nav.showRewards=e.target.checked;markDirty()});$('thankEnabled').addEventListener('change',e=>{state.pages.thankyou.enabled=e.target.checked;markDirty()});$('thankTitle').addEventListener('input',e=>{state.pages.thankyou.title=e.target.value;markDirty(false)});$('thankBody').addEventListener('input',e=>{state.pages.thankyou.body=e.target.value;markDirty(false)});$('rewardsEnabled').addEventListener('change',e=>{state.pages.rewards.enabled=e.target.checked;markDirty()});$('rewardsTitle').addEventListener('input',e=>{state.pages.rewards.title=e.target.value;markDirty(false)});$('rewardsBody').addEventListener('input',e=>{state.pages.rewards.body=e.target.value;markDirty(false)});
   $('saveSiteBtn').addEventListener('click',()=>save(true));$('sampleDesignBtn').addEventListener('click',()=>applyPreset('awards-night'));$('refreshBtn').addEventListener('click',()=>{render();toast('Preview refreshed')});$('continueCategoriesBtn').addEventListener('click',continueCategories);$('bottomContinueBtn').addEventListener('click',continueCategories);
-  $('closeSectionDesigner').addEventListener('click',closeSectionDesigner);$('doneSectionDesigner').addEventListener('click',()=>{save(false);closeSectionDesigner();toast('Section updated')});$('previewSelectedSection').addEventListener('click',previewSelectedSection);
-  $('sectionDesignerModal').addEventListener('click',e=>{if(e.target===$('sectionDesignerModal'))closeSectionDesigner()});
-  document.querySelectorAll('[data-designer-tab]').forEach(b=>b.addEventListener('click',()=>setDesignerTab(b.dataset.designerTab)));
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSectionDesigner()});
-  window.addEventListener('beforeunload',()=>{if(dirty)save(false)});
+  $('closeSectionDesigner').addEventListener('click',closeSectionDesigner);$('doneSectionDesigner').addEventListener('click',()=>{save(false);closeSectionDesigner();toast('Section updated')});$('previewSelectedSection').addEventListener('click',previewSelectedSection);$('sectionDesignerModal').addEventListener('click',e=>{if(e.target===$('sectionDesignerModal'))closeSectionDesigner()});document.querySelectorAll('[data-designer-tab]').forEach(b=>b.addEventListener('click',()=>setDesignerTab(b.dataset.designerTab)));
+  $('closeEntityModal').addEventListener('click',closeEntityModal);$('cancelEntity').addEventListener('click',closeEntityModal);$('entityModal').addEventListener('click',e=>{if(e.target===$('entityModal'))closeEntityModal()});$('entityForm').addEventListener('submit',e=>{e.preventDefault();saveEntity()});
+  $('closePhotoStudio').addEventListener('click',closePhotoStudio);$('cancelPhotoStudio').addEventListener('click',closePhotoStudio);$('applyPhotoStudio').addEventListener('click',applyPhoto);$('photoStudioModal').addEventListener('click',e=>{if(e.target===$('photoStudioModal'))closePhotoStudio()});
+  [['photoAspect','aspect'],['photoBgMode','bgMode'],['photoBgColor','bgColor']].forEach(([id,key])=>$(id).addEventListener('input',e=>{if(!photoState)return;photoState[key]=e.target.value;renderPhotoCanvas()}));$('photoZoom').addEventListener('input',e=>{if(!photoState)return;photoState.zoom=Number(e.target.value)/100;updatePhotoLabels();renderPhotoCanvas()});$('photoPanX').addEventListener('input',e=>{if(!photoState)return;photoState.panX=Number(e.target.value);updatePhotoLabels();renderPhotoCanvas()});$('photoPanY').addEventListener('input',e=>{if(!photoState)return;photoState.panY=Number(e.target.value);updatePhotoLabels();renderPhotoCanvas()});$('photoQuality').addEventListener('input',e=>{if(!photoState)return;photoState.quality=Number(e.target.value)/100;updatePhotoLabels();renderPhotoCanvas()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('photoStudioModal').classList.contains('open'))closePhotoStudio();else if($('entityModal').classList.contains('open'))closeEntityModal();else if($('sectionDesignerModal').classList.contains('open'))closeSectionDesigner()}});window.addEventListener('beforeunload',()=>{if(dirty)save(false)});
 
-  syncControls();renderSectionManager();renderNavManager();selectSection('overview');render();updateSaveState();
+  ensureActiveFirst();syncControls();renderSectionManager();renderNavManager();render();updateSaveState();
 })();

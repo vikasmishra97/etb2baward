@@ -12,7 +12,8 @@
 <div class="app">
   <aside class="sidebar">
     <div class="brand"><div class="brandmark et-brandmark"><img src="et-logo.jpg" alt="ET Business Verticals logo"></div><b>ETB2B Awards</b></div>
-    <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
+    <a class="nav-create-award" href="create-award.html"><span>＋</span><div><b>Create new award</b><small>Start another awards program</small></div></a>
+    <button class="award-switch premium-award-switch" id="awardSwitcherBtn" type="button"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></button>
     <nav class="nav">
       <a href="index.html"><span class="ico">⌂</span><span>Home</span></a><div class="nav-label">Build</div><a href="award.html"><span class="ico">◇</span><span>Award</span></a><a class="active" href="website.html"><span class="ico">▣</span><span>Website</span></a><a href="categories.html"><span class="ico">▦</span><span>Categories</span></a><a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a><a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a><div class="nav-label">Operate</div><a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
       <div class="nav-label">Grow</div><a href="audience.html"><span class="ico">◉</span><span>Audience</span></a><a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a><a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
@@ -23,28 +24,28 @@
   </aside>
 
   <div class="content">
-    <header class="topbar"><div class="crumb"><span id="crumbAward">Award</span> / Website Studio</div><div class="top-actions"><button class="btn secondary" id="saveSiteBtn">Save</button><a class="btn secondary" href="website-preview.html" target="_blank">Open preview ↗</a><div class="avatar">VM</div></div></header>
+    <header class="topbar studio-topbar"><div class="crumb"><span id="crumbAward">Award</span> / Website Studio</div><div class="top-actions"><button class="btn secondary" id="saveSiteBtn">Save draft</button><a class="btn secondary" href="website-preview.html" target="_blank">Open preview ↗</a><div class="avatar">VM</div></div></header>
     <main class="main wb19-page">
       <div class="wb19-head">
-        <div><span>STEP 2 OF 5 · BUILD</span><h1>Website Studio</h1><p>Build the public award site while you watch it update live. Every section can have its own design style.</p></div>
+        <div><span>STEP 2 OF 5 · BUILD</span><h1>Website Studio</h1><p>Build a premium public awards website with live preview. Reorder sections, manage speakers and agenda, upload galleries, and style every block independently.</p></div>
         <div class="wb19-head-actions"><button class="btn secondary" id="sampleDesignBtn">Apply awards-night design</button><button class="btn primary" id="continueCategoriesBtn">Save & continue to Categories →</button></div>
       </div>
 
       <div class="wb19-progress"><div class="done"><i>✓</i><span><b>Award basics</b><small>Created</small></span></div><em></em><div class="active"><i>2</i><span><b>Website</b><small>Design live</small></span></div><em></em><div><i>3</i><span><b>Categories</b><small>Next</small></span></div><em></em><div><i>4</i><span><b>Entry form</b></span></div><em></em><div><i>5</i><span><b>Pricing</b></span></div></div>
 
-      <div class="wb19-shell">
+      <div class="wb19-shell premium-builder-shell">
         <aside class="wb19-controls card">
           <div class="wb19-tabs" role="tablist">
             <button class="active" data-tab="header">Header</button><button data-tab="sections">Sections</button><button data-tab="form">Registration</button><button data-tab="navigation">Navigation</button><button data-tab="pages">Pages</button>
           </div>
 
           <div class="wb19-panel active" data-panel="header">
-            <div class="wb19-panel-title"><div><small>BRAND & HERO</small><h2>Header / Banner</h2></div><span class="wb19-status">Live preview</span></div>
+            <div class="wb19-panel-title"><div><small>EVENT FOUNDATION</small><h2>Header & basics</h2></div><span class="wb19-status">Live</span></div>
+            <p class="wb19-help big-help">These details power the hero, nomination CTA and public navigation.</p>
             <div class="wb19-basic-card">
-              <div class="wb19-basic-head"><b>Basic details</b><small>Edit here or from Award setup. Changes sync instantly.</small></div>
-              <label class="wb19-field"><span>Event / Award name</span><input id="basicEventName"></label>
-              <label class="wb19-field"><span>Event category</span><input id="basicEventCategory" placeholder="e.g. HR & Talent Management"></label>
-              <label class="wb19-field"><span>Short description</span><textarea id="basicDescription" rows="3"></textarea></label>
+              <label class="wb19-field"><span>Event name</span><input id="basicEventName"></label>
+              <label class="wb19-field"><span>Event category</span><input id="basicEventCategory"></label>
+              <label class="wb19-field"><span>Short description</span><textarea id="basicDescription"></textarea></label>
               <div class="wb19-two"><label class="wb19-field"><span>Venue</span><input id="basicVenue"></label><label class="wb19-field"><span>City</span><input id="basicCity"></label></div>
               <div class="wb19-two"><label class="wb19-field"><span>Event start</span><input id="basicEventStart" type="datetime-local"></label><label class="wb19-field"><span>Event end</span><input id="basicEventEnd" type="datetime-local"></label></div>
               <div class="wb19-two"><label class="wb19-field"><span>Nomination starts</span><input id="basicNominationStart" type="datetime-local"></label><label class="wb19-field"><span>Nomination ends</span><input id="basicNominationEnd" type="datetime-local"></label></div>
@@ -68,9 +69,10 @@
           </div>
 
           <div class="wb19-panel" data-panel="sections">
-            <div class="wb19-panel-title"><div><small>HOME PAGE</small><h2>Sections & design</h2></div><span class="wb19-status">On / Off</span></div>
-            <p class="wb19-help">Turn sections on or off, choose a quick layout, or click Edit to open the full section designer with visual layout options.</p>
-            <div id="sectionManager" class="wb19-section-manager"></div>
+            <div class="wb19-panel-title"><div><small>HOME PAGE</small><h2>Sections & design</h2></div><span class="wb19-status" id="sectionCountBadge">0 active</span></div>
+            <p class="wb19-help big-help">Drag sections to change website order. Turn a section off and it automatically moves to the inactive area. Click <b>Customize</b> for content, layout and advanced management.</p>
+            <div class="section-manager-tip"><span>↕</span><div><b>Drag & drop is enabled</b><small>Reorder active sections exactly as you want them to appear on the public site.</small></div></div>
+            <div id="sectionManager" class="wb19-section-manager premium-section-manager"></div>
           </div>
 
           <div class="wb19-panel" data-panel="form">
@@ -100,16 +102,9 @@
         </aside>
 
         <section class="wb19-workspace">
-          <div class="wb19-toolbar card"><div><span class="wb19-save-dot"></span><b id="saveStatus">Draft saved</b></div><div class="wb19-devices"><button class="active" data-device="desktop">Desktop</button><button data-device="tablet">Tablet</button><button data-device="mobile">Mobile</button></div><div><button id="refreshBtn">↻ Refresh</button></div></div>
+          <div class="wb19-toolbar card"><div class="save-state"><span class="wb19-save-dot"></span><div><b id="saveStatus">Draft saved</b><small id="toolbarHint">Changes appear instantly</small></div></div><div class="wb19-devices"><button class="active" data-device="desktop">Desktop</button><button data-device="tablet">Tablet</button><button data-device="mobile">Mobile</button></div><div class="toolbar-right"><span class="readiness-mini"><b id="readinessScore">88%</b> ready</span><button id="refreshBtn">↻ Refresh</button></div></div>
           <div class="wb19-canvas-wrap"><div class="wb19-canvas desktop" id="previewFrame"><div id="liveSite"></div></div></div>
         </section>
-
-        <aside class="wb19-inspector card">
-          <div class="wb19-panel-title"><div><small>SECTION EDITOR</small><h2 id="inspectorHeading">Overview</h2></div><span id="inspectorTheme" class="wb19-status">Editorial</span></div>
-          <div id="sectionInspector"></div>
-          <div class="wb19-preview-links"><a href="website-preview.html" target="_blank">Public site ↗</a><a href="nominate.html" target="_blank">Category page ↗</a><a href="rewards.html" target="_blank">Rewards ↗</a></div>
-          <div class="wb19-ready"><small>WEBSITE READINESS</small><div><b id="readinessScore">88%</b><span><i id="readinessBar"></i></span></div><p id="readinessCopy">Add a banner and confirm your key sections before moving to Categories.</p></div>
-        </aside>
       </div>
       <div class="wb19-bottom"><div><b>Website first, categories next.</b><span>Once the public site feels right, continue to category setup. Nominate Now will use those categories automatically.</span></div><button class="btn primary" id="bottomContinueBtn">Save & continue to Categories →</button></div>
       <div class="footer-note">Vikas Mishra</div>
@@ -117,32 +112,54 @@
   </div>
 </div>
 
+<!-- Section designer -->
 <div class="wb19-designer-modal" id="sectionDesignerModal" aria-hidden="true">
-  <section class="wb19-designer-drawer" role="dialog" aria-modal="true" aria-labelledby="designerSectionName">
+  <section class="wb19-designer-drawer premium-designer-drawer" role="dialog" aria-modal="true" aria-labelledby="designerSectionName">
     <header class="wb19-designer-head">
       <div><small>SECTION DESIGNER</small><h2 id="designerSectionName">Overview</h2><span id="designerLayoutName">Editorial</span></div>
       <button type="button" id="closeSectionDesigner" aria-label="Close section designer">×</button>
     </header>
-    <div class="wb19-designer-tabs">
-      <button type="button" class="active" data-designer-tab="content">Content</button>
-      <button type="button" data-designer-tab="layout">Layout Design</button>
-    </div>
+    <div class="wb19-designer-tabs"><button type="button" class="active" data-designer-tab="content">Content & data</button><button type="button" data-designer-tab="layout">Layout Design</button></div>
     <div class="wb19-designer-scroll">
-      <div class="wb19-designer-panel active" data-designer-panel="content">
-        <div class="wb19-designer-note"><b>Edit content live</b><span>Changes appear instantly in the website preview.</span></div>
-        <div id="sectionDesignerContent"></div>
-      </div>
-      <div class="wb19-designer-panel" data-designer-panel="layout">
-        <div class="wb19-designer-note"><b>Layout Design</b><span>Choose a visual style made for this section. You can change it anytime.</span></div>
-        <div id="layoutGallery" class="wb19-layout-gallery"></div>
-      </div>
+      <div class="wb19-designer-panel active" data-designer-panel="content"><div class="wb19-designer-note"><b>Edit content live</b><span>Changes appear instantly in the website preview. Lists can be reordered by drag & drop.</span></div><div id="sectionDesignerContent"></div></div>
+      <div class="wb19-designer-panel" data-designer-panel="layout"><div class="wb19-designer-note"><b>Layout Design</b><span>Choose a premium visual style made for this section. You can switch anytime.</span></div><div id="layoutGallery" class="wb19-layout-gallery"></div></div>
     </div>
-    <footer class="wb19-designer-actions">
-      <button type="button" class="btn secondary" id="previewSelectedSection">Preview section</button>
-      <button type="button" class="btn primary" id="doneSectionDesigner">Done</button>
-    </footer>
+    <footer class="wb19-designer-actions"><button type="button" class="btn secondary" id="previewSelectedSection">Preview section</button><button type="button" class="btn primary" id="doneSectionDesigner">Done</button></footer>
   </section>
 </div>
+
+<!-- Generic entity editor -->
+<div class="entity-modal" id="entityModal" aria-hidden="true">
+  <section class="entity-drawer" role="dialog" aria-modal="true">
+    <header><div><small id="entityEyebrow">EDIT</small><h2 id="entityTitle">Edit item</h2><p id="entitySubtitle">Update details and save.</p></div><button type="button" id="closeEntityModal">×</button></header>
+    <form id="entityForm"><div id="entityBody" class="entity-body"></div><footer><button type="button" class="btn secondary" id="cancelEntity">Cancel</button><button type="submit" class="btn primary">Save changes</button></footer></form>
+  </section>
+</div>
+
+<!-- Photo studio -->
+<div class="photo-modal" id="photoStudioModal" aria-hidden="true">
+  <section class="photo-studio" role="dialog" aria-modal="true">
+    <header><div><small>SMART IMAGE UPLOAD</small><h2 id="photoStudioTitle">Speaker photo studio</h2><p>Crop, compress and clean the background before saving.</p></div><button type="button" id="closePhotoStudio">×</button></header>
+    <div class="photo-studio-body">
+      <div class="photo-stage"><div class="photo-canvas-shell"><canvas id="photoCanvas"></canvas></div><div class="photo-stats"><span><b id="photoOriginalSize">0 KB</b><small>Original</small></span><span>→</span><span><b id="photoOutputSize">Preview</b><small>Auto compressed</small></span></div></div>
+      <div class="photo-controls">
+        <div class="auto-compress-badge"><span>✓</span><div><b>Auto compression ON</b><small>Optimized for fast public pages and local demo storage.</small></div></div>
+        <label class="wb19-field"><span>Crop format</span><select id="photoAspect"><option value="portrait">Portrait 4:5</option><option value="square">Square 1:1</option><option value="landscape">Landscape 16:10</option></select></label>
+        <label class="wb19-range"><span><b>Zoom</b><em id="photoZoomValue">100%</em></span><input id="photoZoom" type="range" min="100" max="260" value="100"></label>
+        <label class="wb19-range"><span><b>Move left / right</b><em id="photoPanXValue">0</em></span><input id="photoPanX" type="range" min="-100" max="100" value="0"></label>
+        <label class="wb19-range"><span><b>Move up / down</b><em id="photoPanYValue">0</em></span><input id="photoPanY" type="range" min="-100" max="100" value="0"></label>
+        <div class="photo-tool-grid">
+          <label class="wb19-field"><span>Background tool</span><select id="photoBgMode"><option value="original">Keep original</option><option value="light">Remove light background</option><option value="dark">Remove dark background</option></select></label>
+          <label class="wb19-field"><span>New background color</span><input id="photoBgColor" type="color" value="#f7f1e5"></label>
+        </div>
+        <label class="wb19-range"><span><b>Compression quality</b><em id="photoQualityValue">76%</em></span><input id="photoQuality" type="range" min="48" max="90" value="76"></label>
+        <div class="photo-note"><b>Background remover</b><span>This prototype uses an on-device light/dark background cleanup. It works best with plain studio backgrounds.</span></div>
+      </div>
+    </div>
+    <footer><button type="button" class="btn secondary" id="cancelPhotoStudio">Cancel</button><button type="button" class="btn primary" id="applyPhotoStudio">Apply & compress image</button></footer>
+  </section>
+</div>
+
 <div id="toast" class="toast"></div>
 <script src="app.js"></script><script src="site-renderer.js"></script><script src="website-v19.js"></script>
 </body>

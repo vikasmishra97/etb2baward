@@ -134,7 +134,7 @@
     if(localStorage.getItem(STORAGE_PREFIX+'nav_compact')==='1') app.classList.add('nav-compact');
 
     const awardSwitch=sidebar.querySelector('.award-switch');
-    if(awardSwitch && !sidebar.querySelector('.new-award-cta')){
+    if(awardSwitch && !sidebar.querySelector('.new-award-cta,.nav-create-award')){
       const cta=document.createElement('a');
       cta.className='new-award-cta';cta.href='create-award.html';
       cta.innerHTML=`<span class="new-award-icon">${icon('plus')}</span><span><b>Create new award</b><small>Launch another program</small></span><span class="new-award-arrow">→</span>`;
