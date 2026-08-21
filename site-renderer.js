@@ -73,7 +73,7 @@
     return arr.map((g,i)=>Object.assign({id:g.id||`${prefix}${i+1}`,name:`Group ${i+1}`,active:true,weight:100},g,{id:g.id||`${prefix}${i+1}`}));
   }
   function normalizeState(raw,a){
-    const d=defaultState(a);if(!raw||typeof raw!=='object')return d;
+    const d=defaultState(a);if(!raw||typeof raw!=='object')raw={};
     d.theme=Object.assign(d.theme,raw.theme||{});d.header=Object.assign(d.header,raw.header||{});if(raw.header&&raw.header.brandingWidth==null)d.header.brandingWidth=84;if(raw.header&&raw.header.heroHeight==null)d.header.heroHeight=690;if(raw.header&&raw.header.illustrationImage&&raw.header.brandingWidth==null&&raw.header.design==='immersive')d.header.design='stage';d.form=Object.assign(d.form,raw.form||{});d.form.fields=Object.assign(d.form.fields,raw.form?.fields||{});if(!d.form.displayMode)d.form.displayMode=d.form.showOnBanner===false?'cta':'banner';d.form.showOnBanner=d.form.displayMode==='banner';d.form.layout=['card','stacked','compact','glass'].includes(d.form.layout)?d.form.layout:'card';d.form.customFields=(Array.isArray(raw.form?.customFields)?raw.form.customFields:[]).map((x,i)=>Object.assign({id:x.id||`rf${i+1}`,label:`Custom field ${i+1}`,name:`custom_${i+1}`,type:'text',placeholder:'',required:false,active:true,options:''},x,{id:x.id||`rf${i+1}`}));d.nav=Object.assign(d.nav,raw.nav||{});d.nav.visible=Object.assign(d.nav.visible,raw.nav?.visible||{});d.nav.pages=Object.assign(defaultState(a).nav.pages,raw.nav?.pages||{});
     d.pages={landing:Object.assign(d.pages.landing,raw.pages?.landing||{}),thankyou:Object.assign(d.pages.thankyou,raw.pages?.thankyou||{}),rewards:Object.assign(d.pages.rewards,raw.pages?.rewards||{})};
     const defPublic=defaultState(a).publicPages||[];const rawPublic=Array.isArray(raw.publicPages)?raw.publicPages:[];const rawPublicMap=Object.fromEntries(rawPublic.map(x=>[x.id,x]));
@@ -108,14 +108,14 @@
       if(!contacts.length&&(ct.email||ct.phone||ct.address))contacts=[{name:'Awards Helpdesk',email:ct.email||'',phone:ct.phone||'',company:'ETB2B Awards',designation:ct.address||'',groupId:ct.contactGroups[0]?.id||'',status:true}];
       ct.contacts=(contacts.length?contacts:dc.contacts).map((x,i)=>Object.assign({id:x.id||`ct${i+1}`,name:'Contact',email:'',phone:'',company:'',designation:'',groupId:ct.contactGroups[0]?.id||'',status:true},x,{id:x.id||`ct${i+1}`}));ct.showGroupHeadings=ct.showGroupHeadings!==false;
     }
-    d.sections.forEach(sec=>{if(sec.showInNav==null){const legacy=raw.nav?.visible&&Object.prototype.hasOwnProperty.call(raw.nav.visible,sec.id)?raw.nav.visible[sec.id]:defaultState(a).nav.visible[sec.id];sec.showInNav=legacy!==false;}if(sec.showTitle==null)sec.showTitle=true;if(sec.showNavLabel==null)sec.showNavLabel=true;if(!sec.navLabel)sec.navLabel=sec.label||sec.title||'Section';});
+    d.sections.forEach(sec=>{if(sec.showInNav==null){const legacy=raw.nav?.visible&&Object.prototype.hasOwnProperty.call(raw.nav.visible,sec.id)?raw.nav.visible[sec.id]:defaultState(a).nav.visible[sec.id];sec.showInNav=legacy!==false;}if(sec.showTitle==null)sec.showTitle=true;if(sec.showSubTitle==null)sec.showSubTitle=true;if(sec.showNavLabel==null)sec.showNavLabel=true;if(!sec.subTitle)sec.subTitle=sec.label||sec.title||'Section';if(!sec.navLabel)sec.navLabel=sec.label||sec.title||'Section';});
     d.sections=[...d.sections.filter(s=>s.enabled!==false),...d.sections.filter(s=>s.enabled===false)];
     const fallbackOrder=defaultState(a).nav.order||[];const incomingOrder=Array.isArray(raw.nav?.order)?raw.nav.order:[];d.nav.order=[...incomingOrder,...fallbackOrder.filter(x=>!incomingOrder.includes(x))];
     if(raw.primary)d.theme.primary=raw.primary;if(raw.accent)d.theme.accent=raw.accent;if(raw.template)d.theme.preset=raw.template==='luxury'?'awards-night':raw.template;if(raw.headingFont)d.theme.font=raw.headingFont;if(raw.cornerStyle)d.theme.radius=raw.cornerStyle;
     d.published=!!raw.published;d.updatedAt=raw.updatedAt||null;return d;
   }
   function sectionClass(s){return `public-section section-${esc(s.id||'generic')} design-${esc(s.theme||'classic')}`}
-  function sectionHead(s,kicker){if(s.showTitle===false)return'';return `<div class="public-section-head"><small>${esc(kicker||s.label)}</small><h2>${esc(s.title||s.label)}</h2></div>`}
+  function sectionHead(s,kicker){const sub=s.showSubTitle===false?'':`<small>${esc(kicker||s.subTitle||s.label)}</small>`;const title=s.showTitle===false?'':`<h2>${esc(s.title||s.label)}</h2>`;if(!sub&&!title)return'';return `<div class="public-section-head">${sub}${title}</div>`}
   function listCards(items){return `<div class="public-card-grid">${lines(items).map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><b>${esc(x)}</b></article>`).join('')}</div>`}
   function speakerAvatar(p){if(p.photo)return `<div class="speaker-photo"><img src="${esc(p.photo)}" alt="${esc(p.name)}"></div>`;return `<div class="speaker-avatar">${esc((p.name||'S').split(' ').map(x=>x[0]).slice(0,2).join(''))}</div>`}
   function renderSpeakers(s){

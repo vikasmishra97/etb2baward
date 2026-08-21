@@ -112,3 +112,11 @@
 .thumb-agenda-rail .thumb-body i{height:16px;border-radius:0;border-left:3px solid var(--studio-red);background:linear-gradient(90deg,#fff 0 28%,#f7f7f8 28%)}
 .thumb-agenda-speakers .thumb-body i{height:20px;background:linear-gradient(90deg,#eee 0 22%,#fff 22% 62%,#d6d7db 62% 72%,#fff 72%);border-radius:4px}
 .thumb-agenda-table .thumb-body i{height:13px;border-radius:0;border:0;border-bottom:1px solid #d5d6db;background:linear-gradient(90deg,transparent 0 24%,#f8f8f9 24%)}
+
+
+/* V19.15 — clearer title/sub-section/navigation controls */
+.section-control-intro{display:flex;flex-direction:column;gap:3px;padding:2px 0 12px;margin-bottom:10px;border-bottom:1px solid #eee9df}
+.section-control-intro b{font-size:12px;color:#171a23}.section-control-intro small{font-size:8.5px;color:#858b98;line-height:1.45}
+.section-visibility-controls .wb19-field{margin-bottom:14px}.section-visibility-controls .wb19-field:last-child{margin-bottom:10px}
+.section-visibility-controls .section-visibility-row{padding:3px 0 9px}.section-visibility-controls .section-visibility-row b{font-size:11px}
+.section-visibility-controls .section-visibility-row small{font-size:8.3px;max-width:280px}
