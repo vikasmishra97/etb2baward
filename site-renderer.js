@@ -108,14 +108,14 @@
       if(!contacts.length&&(ct.email||ct.phone||ct.address))contacts=[{name:'Awards Helpdesk',email:ct.email||'',phone:ct.phone||'',company:'ETB2B Awards',designation:ct.address||'',groupId:ct.contactGroups[0]?.id||'',status:true}];
       ct.contacts=(contacts.length?contacts:dc.contacts).map((x,i)=>Object.assign({id:x.id||`ct${i+1}`,name:'Contact',email:'',phone:'',company:'',designation:'',groupId:ct.contactGroups[0]?.id||'',status:true},x,{id:x.id||`ct${i+1}`}));ct.showGroupHeadings=ct.showGroupHeadings!==false;
     }
-    d.sections.forEach(sec=>{if(sec.showInNav==null){const legacy=raw.nav?.visible&&Object.prototype.hasOwnProperty.call(raw.nav.visible,sec.id)?raw.nav.visible[sec.id]:defaultState(a).nav.visible[sec.id];sec.showInNav=legacy!==false;}});
+    d.sections.forEach(sec=>{if(sec.showInNav==null){const legacy=raw.nav?.visible&&Object.prototype.hasOwnProperty.call(raw.nav.visible,sec.id)?raw.nav.visible[sec.id]:defaultState(a).nav.visible[sec.id];sec.showInNav=legacy!==false;}if(sec.showTitle==null)sec.showTitle=true;if(sec.showNavLabel==null)sec.showNavLabel=true;if(!sec.navLabel)sec.navLabel=sec.label||sec.title||'Section';});
     d.sections=[...d.sections.filter(s=>s.enabled!==false),...d.sections.filter(s=>s.enabled===false)];
     const fallbackOrder=defaultState(a).nav.order||[];const incomingOrder=Array.isArray(raw.nav?.order)?raw.nav.order:[];d.nav.order=[...incomingOrder,...fallbackOrder.filter(x=>!incomingOrder.includes(x))];
     if(raw.primary)d.theme.primary=raw.primary;if(raw.accent)d.theme.accent=raw.accent;if(raw.template)d.theme.preset=raw.template==='luxury'?'awards-night':raw.template;if(raw.headingFont)d.theme.font=raw.headingFont;if(raw.cornerStyle)d.theme.radius=raw.cornerStyle;
     d.published=!!raw.published;d.updatedAt=raw.updatedAt||null;return d;
   }
   function sectionClass(s){return `public-section section-${esc(s.id||'generic')} design-${esc(s.theme||'classic')}`}
-  function sectionHead(s,kicker){return `<div class="public-section-head"><small>${esc(kicker||s.label)}</small><h2>${esc(s.title||s.label)}</h2></div>`}
+  function sectionHead(s,kicker){if(s.showTitle===false)return'';return `<div class="public-section-head"><small>${esc(kicker||s.label)}</small><h2>${esc(s.title||s.label)}</h2></div>`}
   function listCards(items){return `<div class="public-card-grid">${lines(items).map((x,i)=>`<article><span>${String(i+1).padStart(2,'0')}</span><b>${esc(x)}</b></article>`).join('')}</div>`}
   function speakerAvatar(p){if(p.photo)return `<div class="speaker-photo"><img src="${esc(p.photo)}" alt="${esc(p.name)}"></div>`;return `<div class="speaker-avatar">${esc((p.name||'S').split(' ').map(x=>x[0]).slice(0,2).join(''))}</div>`}
   function renderSpeakers(s){
@@ -134,7 +134,8 @@
   function renderAgenda(s,state){
     const speakers=state.sections.find(x=>x.id==='speakers')?.speakers||[];const speakerMap=Object.fromEntries(speakers.map(x=>[x.id,x]));const groups=Object.fromEntries((s.agendaGroups||[]).map(x=>[x.id,x]));
     const activeGroupIds=new Set((s.agendaGroups||[]).filter(g=>g.active!==false).map(g=>g.id));const knownGroupIds=new Set((s.agendaGroups||[]).map(g=>g.id));const items=(s.agenda||[]).filter(x=>x.status!==false&&(!x.groupId||!knownGroupIds.has(x.groupId)||activeGroupIds.has(x.groupId)));if(!items.length)return '<div class="public-empty">Agenda will be announced soon.</div>';
-    return `<div class="public-agenda">${items.map((x,i)=>{const names=(x.speakerIds||[]).map(id=>speakerMap[id]?.name).filter(Boolean);const t=x.start?niceTime(x.start):x.time||'';return `<article><time>${esc(t)}</time><span>${String(i+1).padStart(2,'0')}</span><div class="agenda-copy"><b>${esc(x.title)}</b>${groups[x.groupId]?.name?`<small class="agenda-group">${esc(groups[x.groupId].name)}</small>`:''}${x.summary?`<p>${esc(x.summary)}</p>`:''}${names.length?`<small class="agenda-speakers">With ${esc(names.join(', '))}</small>`:''}</div></article>`}).join('')}</div>`;
+    const speakerCard=p=>`<div class="agenda-speaker-card">${p.photo?`<img src="${esc(p.photo)}" alt="${esc(p.name)}">`:`<span class="agenda-speaker-avatar">${esc((p.name||'S').split(' ').map(x=>x[0]).slice(0,2).join(''))}</span>`}<div><b>${esc(p.name||'Speaker')}</b>${p.role?`<span>${esc(p.role)}</span>`:''}${p.company?`<small>${esc(p.company)}</small>`:''}</div></div>`;
+    return `<div class="public-agenda">${items.map((x,i)=>{const linked=(x.speakerIds||[]).map(id=>speakerMap[id]).filter(Boolean);const start=x.start?niceTime(x.start):x.time||'';const end=x.end?niceTime(x.end):'';const t=end&&end!==start?`${start} – ${end}`:start;return `<article><time>${esc(t)}</time><span>${String(i+1).padStart(2,'0')}</span><div class="agenda-copy"><b>${esc(x.title)}</b>${groups[x.groupId]?.name?`<small class="agenda-group">${esc(groups[x.groupId].name)}</small>`:''}${x.summary?`<p>${esc(x.summary)}</p>`:''}${linked.length?`<div class="agenda-speaker-profiles">${linked.map(speakerCard).join('')}</div>`:''}</div></article>`}).join('')}</div>`;
   }
   function renderGallery(s){
     const activeGroupIds=new Set((s.galleryGroups||[]).filter(g=>g.active!==false).map(g=>g.id));const knownGroupIds=new Set((s.galleryGroups||[]).map(g=>g.id));const imgs=(s.images||[]).filter(x=>x.status!==false&&x.image&&(!x.groupId||!knownGroupIds.has(x.groupId)||activeGroupIds.has(x.groupId)));if(!imgs.length)return `<div class="public-glimpse"><div><p>${esc(s.body)}</p></div><div class="glimpse-grid"><span></span><span></span><span></span></div></div>`;
@@ -207,7 +208,7 @@
   function navItems(a,state,opts={}){
     const current=opts.currentPage||'home';const homeHref=current==='home'?'#home':'website-preview.html';
     const items=[{id:'home',label:'Home',href:homeHref,type:'home',active:current==='home'}];
-    (state.sections||[]).filter(s=>s.enabled!==false&&s.showInNav!==false&&s.id!=='custom').forEach(s=>items.push({id:'section:'+s.id,label:s.navLabel||s.label,href:current==='home'?'#section-'+s.id:'website-preview.html#section-'+s.id,type:'section',active:false}));
+    (state.sections||[]).filter(s=>s.enabled!==false&&s.showInNav!==false&&s.showNavLabel!==false&&s.id!=='custom').forEach(s=>items.push({id:'section:'+s.id,label:s.navLabel||s.label,href:current==='home'?'#section-'+s.id:'website-preview.html#section-'+s.id,type:'section',active:false}));
     (state.publicPages||[]).filter(pg=>pg.enabled!==false&&pg.showInNav!==false).forEach(pg=>items.push({id:'page:'+pg.id,label:pg.navLabel||pg.label,href:publicPageHref(pg.id),type:'page',active:current===pg.id}));
     const map=Object.fromEntries(items.map(i=>[i.id,i]));const order=Array.isArray(state.nav.order)?state.nav.order:[];const ordered=[];order.forEach(id=>{if(map[id]&&!ordered.some(x=>x.id===id))ordered.push(map[id])});items.forEach(i=>{if(!ordered.some(x=>x.id===i.id))ordered.push(i)});return ordered;
   }
