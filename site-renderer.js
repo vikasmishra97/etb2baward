@@ -260,23 +260,39 @@
     // Keep the public header focused on brand + navigation. Primary CTA lives in the hero,
     // so it never crowds the premium nav or reappears in compact sticky mode.
     const inner=`<div class="public-nav-primary"><a class="public-brand" href="website-preview.html"><img src="${esc(logo)}" alt="Logo"><span><b>${esc(a?.name||'ETB2B Awards')}</b><small>ETB2B Awards</small></span></a>${sponsor}<div class="public-nav-awards-pill"><span>ET B2B</span><b>Awards</b></div>${twoRow?'':`<nav class="public-nav-inline">${navLinks}</nav>`}</div>${twoRow?`<div class="public-nav-secondary"><nav>${navLinks}</nav></div>`:''}`;
-    return `<header class="public-nav nav-${esc(navStyle)} ${twoRow?'two-row':'one-row'} ${state.nav.sticky?'sticky':''}" data-public-nav>${inner}</header>`;
+    const compact=state.nav.sticky?`<div class="public-nav-compact" data-public-nav-compact aria-hidden="true"><nav aria-label="Sticky award navigation">${navLinks}</nav></div>`:'';
+    return `<header class="public-nav nav-${esc(navStyle)} ${twoRow?'two-row':'one-row'} ${state.nav.sticky?'sticky':''}" data-public-nav>${inner}</header>${compact}`;
   }
   function bindNavigation(root,opts={}){
-    const nav=root?.querySelector?.('[data-public-nav]');if(!nav||opts.builder)return;
-    let ticking=false;
+    const nav=root?.querySelector?.('[data-public-nav]');
+    const compact=root?.querySelector?.('[data-public-nav-compact]');
+    if(!nav||opts.builder)return;
+    let ticking=false,revealAt=72;
+    const measure=()=>{
+      // Measure once from the actual full header. The compact bar is fixed and never
+      // changes document height, which removes the scroll jump/lag of the old collapsing nav.
+      revealAt=Math.max(56,(nav.offsetTop||0)+(nav.offsetHeight||72)-6);
+    };
+    const closeOtherMenus=(scope,current)=>{
+      scope?.querySelectorAll?.('details.public-more[open]').forEach(x=>{if(x!==current)x.open=false});
+    };
+    const wireMenus=scope=>scope?.querySelectorAll?.('details.public-more').forEach(d=>{
+      d.addEventListener('toggle',()=>{if(d.open){closeOtherMenus(root,d)}});
+    });
     const update=()=>{
       const y=window.scrollY||document.documentElement.scrollTop||0;
-      // At the top show the full premium header. After scrolling, keep a compact nav
-      // permanently visible instead of hiding it based on scroll direction.
-      nav.classList.toggle('is-condensed',y>=72);
-      nav.classList.remove('is-away');
+      const show=!!compact && nav.classList.contains('sticky') && y>=revealAt;
+      if(compact){
+        compact.classList.toggle('is-visible',show);
+        compact.setAttribute('aria-hidden',show?'false':'true');
+      }
       ticking=false;
     };
+    measure();
+    wireMenus(nav);wireMenus(compact);
     window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(update);ticking=true}},{passive:true});
-    window.addEventListener('resize',()=>{if(!ticking){requestAnimationFrame(update);ticking=true}},{passive:true});
+    window.addEventListener('resize',()=>{measure();if(!ticking){requestAnimationFrame(update);ticking=true}},{passive:true});
     update();
-    nav.querySelectorAll('details.public-more').forEach(d=>{d.addEventListener('toggle',()=>{if(d.open)document.querySelectorAll('details.public-more[open]').forEach(x=>{if(x!==d)x.open=false})})});
   }
   function bindScrollTop(root,opts={}){
     if(opts.builder)return;
