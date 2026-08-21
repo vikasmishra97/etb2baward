@@ -13,11 +13,25 @@
 <div class="public-site public-page-shell pp-shell category-experience-shell">
   <div id="publicShellNav"></div>
   <main class="category-main">
+    <section class="category-journey" aria-label="Nomination journey">
+      <div class="category-journey-copy">
+        <span>YOUR NOMINATION JOURNEY</span>
+        <b>Three simple steps to submit your entry</b>
+      </div>
+      <div class="category-journey-steps">
+        <div class="category-journey-step active" id="journeyStepChoose"><i>1</i><span><b>Choose categories</b><small id="journeySelectionText">Select the best-fit categories</small></span></div>
+        <div class="category-journey-line"></div>
+        <div class="category-journey-step"><i>2</i><span><b>Complete entries</b><small>Fill each nomination form</small></span></div>
+        <div class="category-journey-line"></div>
+        <div class="category-journey-step"><i>3</i><span><b>Review & pay</b><small>One checkout for all entries</small></span></div>
+      </div>
+    </section>
+
     <section class="category-hero category-hero-master">
       <div class="category-hero-copy">
         <span class="pp-kicker" id="categoryEyebrow">AWARD CATEGORIES</span>
-        <h1 id="categoryTitle">Choose the award track. Then choose your category.</h1>
-        <p id="categoryIntro">Browse Master Categories first, then select one or more Sub Categories that best match your work.</p>
+        <h1 id="categoryTitle">Find the right award category</h1>
+        <p id="categoryIntro">Start with an award track, compare the categories, and add the best fits to your nomination list.</p>
         <div class="category-hero-meta">
           <span class="category-meta-pill"><b id="masterCount">0</b> award tracks</span>
           <span class="category-meta-pill"><b id="categoryCount">0</b> open categories</span>
@@ -33,28 +47,37 @@
       </div>
     </section>
 
-    <section class="category-ai" id="categoryAiSection">
-      <div class="category-ai-heading">
-        <div class="category-ai-icon">✦</div>
-        <div><span>AI CATEGORY FINDER</span><h2>Tell us what you are nominating.</h2><p>We’ll recommend the strongest Sub Categories and show which Master Category each one belongs to.</p></div>
+    <section class="category-ai category-ai-collapsed" id="categoryAiSection">
+      <button class="category-ai-trigger" type="button" id="aiFinderToggle" aria-expanded="false" aria-controls="categoryAiBody">
+        <span class="category-ai-icon">✦</span>
+        <span class="category-ai-trigger-copy"><small>AI CATEGORY CONCIERGE</small><b>Not sure where your entry fits?</b><em>Describe your work and get the strongest category matches.</em></span>
+        <span class="category-ai-trigger-action">Find my category <i>→</i></span>
+      </button>
+      <div class="category-ai-body" id="categoryAiBody" hidden>
+        <div class="category-ai-heading">
+          <div><span>AI CATEGORY FINDER</span><h2>Tell us what you are nominating.</h2><p>We’ll recommend the strongest Sub Categories and show which Master Category each one belongs to.</p></div>
+        </div>
+        <div class="category-ai-input-row">
+          <textarea id="aiCategoryInput" placeholder="Example: We designed a healthcare interior project focused on patient experience, sustainability and smart technology..."></textarea>
+          <button type="button" id="aiRecommendBtn">✦ Find my best categories</button>
+        </div>
+        <div class="category-ai-chips">
+          <button data-ai-example="architecture healthcare project design">Healthcare project</button>
+          <button data-ai-example="interior office workplace design">Workplace interiors</button>
+          <button data-ai-example="leadership founder architect impact">Individual leadership</button>
+          <button data-ai-example="innovation technology sustainability project">Innovation & sustainability</button>
+        </div>
+        <div class="category-ai-results" id="aiCategoryResults" hidden></div>
       </div>
-      <div class="category-ai-input-row">
-        <textarea id="aiCategoryInput" placeholder="Example: We designed a healthcare interior project focused on patient experience, sustainability and smart technology..."></textarea>
-        <button type="button" id="aiRecommendBtn">✦ Find my best categories</button>
-      </div>
-      <div class="category-ai-chips">
-        <button data-ai-example="architecture healthcare project design">Healthcare project</button>
-        <button data-ai-example="interior office workplace design">Workplace interiors</button>
-        <button data-ai-example="leadership founder architect impact">Individual leadership</button>
-        <button data-ai-example="innovation technology sustainability project">Innovation & sustainability</button>
-      </div>
-      <div class="category-ai-results" id="aiCategoryResults" hidden></div>
     </section>
 
     <section class="category-toolbar-wrap category-toolbar-master">
       <div class="category-toolbar">
-        <label class="category-search-pro"><span>⌕</span><input id="categorySearch" placeholder="Search Master or Sub Category, eligibility or description"></label>
-        <div class="category-view-note" id="categoryViewNote">Showing all open categories</div>
+        <label class="category-search-pro"><span>⌕</span><input id="categorySearch" placeholder="Search category, track or eligibility"></label>
+        <div class="category-toolbar-actions">
+          <button type="button" class="category-selected-filter" id="selectedOnlyToggle" aria-pressed="false"><span>✓</span> Selected <em id="selectedFilterCount">0</em></button>
+          <div class="category-view-note" id="categoryViewNote">Showing all open categories</div>
+        </div>
       </div>
     </section>
 

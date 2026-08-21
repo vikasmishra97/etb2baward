@@ -47,14 +47,14 @@
   if(settings.selectionMode==='single'&&selected.length>1)selected=selected.slice(0,1);
   if(settings.selectionMode==='multiple'&&Number(settings.maxSelections||0)>0&&selected.length>Number(settings.maxSelections))selected=selected.slice(0,Number(settings.maxSelections));
   localStorage.setItem(selectionKey,JSON.stringify(selected));
-  let activeMaster='all',detailCat=null;
+  let activeMaster='all',detailCat=null,selectedOnly=false;
   const toast=msg=>{const t=document.getElementById('publicToast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)};
   const categoryById=id=>openCats.find(c=>String(c.id)===String(id));
   const maxAllowed=()=>settings.selectionMode==='single'?1:Number(settings.maxSelections||0);
   const pageConfig=()=> (state.publicPages||[]).find(p=>p.id==='categories')||{};
   function niceDeadline(){if(!award.hasNominationDates||!award.nominationEnd)return 'Deadline to be announced';try{return 'Closes '+new Intl.DateTimeFormat('en-IN',{day:'numeric',month:'short',year:'numeric'}).format(new Date(award.nominationEnd))}catch(e){return 'Nomination deadline'}}
 
-  function persist(){localStorage.setItem(selectionKey,JSON.stringify(selected));renderDock();renderCatalog();renderRail()}
+  function persist(){if(selectedOnly&&!selected.length)selectedOnly=false;localStorage.setItem(selectionKey,JSON.stringify(selected));renderDock();renderCatalog();renderRail();renderJourney()}
   function addOrToggle(id){
     id=String(id);
     if(settings.selectionMode==='single'){selected=[id];persist();toast('Category selected');return}
@@ -75,6 +75,18 @@
     const max=maxAllowed();
     document.getElementById('selectionModePill').textContent=settings.selectionMode==='single'?'Select one category':('Select multiple categories'+(max?' · max '+max:''));
     document.getElementById('heroSelectionHint').textContent=settings.selectionMode==='single'?'Choose one category':(max?'Choose up to '+max+' categories':'No category limit');
+    renderJourney();
+  }
+
+  function renderJourney(){
+    const text=document.getElementById('journeySelectionText');
+    const step=document.getElementById('journeyStepChoose');
+    const count=document.getElementById('selectedFilterCount');
+    if(text)text.textContent=selected.length?(selected.length+' categor'+(selected.length===1?'y':'ies')+' selected'):'Select the best-fit categories';
+    if(step)step.classList.toggle('done',selected.length>0);
+    if(count)count.textContent=selected.length;
+    const filter=document.getElementById('selectedOnlyToggle');
+    if(filter){filter.classList.toggle('active',selectedOnly);filter.setAttribute('aria-pressed',selectedOnly?'true':'false')}
   }
 
   function renderRail(){
@@ -98,15 +110,16 @@
   function renderCatalog(){
     const q=document.getElementById('categorySearch').value.trim().toLowerCase();
     let mastersToShow=activeMaster==='all'?visibleMasters:visibleMasters.filter(m=>String(m.id)===String(activeMaster));
+    if(selectedOnly)mastersToShow=mastersToShow.filter(m=>openCats.some(c=>String(c.masterId)===String(m.id)&&selected.includes(String(c.id))));
     const sections=[];let resultCount=0;
     mastersToShow.forEach((m,masterIndex)=>{
-      const list=openCats.filter(c=>String(c.masterId)===String(m.id)&&(`${c.name} ${m.name} ${m.description||''} ${c.description||''} ${c.eligibility||''}`).toLowerCase().includes(q));
+      const list=openCats.filter(c=>String(c.masterId)===String(m.id)&&(!selectedOnly||selected.includes(String(c.id)))&&(`${c.name} ${m.name} ${m.description||''} ${c.description||''} ${c.eligibility||''}`).toLowerCase().includes(q));
       if(!list.length)return;resultCount+=list.length;
       sections.push(`<section class="master-category-public-section" data-master-section="${esc(m.id)}"><header class="master-public-head"><div class="master-public-index">${String(masterIndex+1).padStart(2,'0')}</div><div><span>MASTER CATEGORY</span><h2>${esc(m.name)}</h2><p>${esc(m.description||('Explore '+m.name+' award categories.'))}</p></div><strong>${list.length} Sub Categor${list.length===1?'y':'ies'}</strong></header><div class="subcategory-public-grid">${list.map(cardHTML).join('')}</div></section>`);
     });
     const grid=document.getElementById('categoryGrid');
     grid.innerHTML=sections.length?sections.join(''):'<div class="category-empty-pro"><b>No categories found</b><p>Try a different search or Master Category.</p></div>';
-    document.getElementById('categoryViewNote').textContent='Showing '+resultCount+' of '+openCats.length+' open categories';
+    document.getElementById('categoryViewNote').textContent=selectedOnly?('Showing '+resultCount+' selected categor'+(resultCount===1?'y':'ies')):('Showing '+resultCount+' of '+openCats.length+' open categories');
     grid.querySelectorAll('[data-select]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();addOrToggle(b.dataset.select)}));
     grid.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>openDetail(b.dataset.view)));
   }
@@ -139,12 +152,17 @@
   }
 
   document.getElementById('categorySearch').addEventListener('input',renderCatalog);
-  document.getElementById('aiRecommendBtn').addEventListener('click',runAI);
-  document.querySelectorAll('[data-ai-example]').forEach(b=>b.addEventListener('click',()=>{document.getElementById('aiCategoryInput').value=b.dataset.aiExample;runAI()}));
+  const selectedFilter=document.getElementById('selectedOnlyToggle');
+  if(selectedFilter)selectedFilter.addEventListener('click',()=>{selectedOnly=!selectedOnly;renderJourney();renderRail();renderCatalog()});
+  const aiToggle=document.getElementById('aiFinderToggle'),aiBody=document.getElementById('categoryAiBody');
+  const setAiOpen=open=>{if(!aiToggle||!aiBody)return;aiToggle.setAttribute('aria-expanded',open?'true':'false');aiBody.hidden=!open;document.getElementById('categoryAiSection')?.classList.toggle('category-ai-collapsed',!open)};
+  if(aiToggle)aiToggle.addEventListener('click',()=>setAiOpen(aiToggle.getAttribute('aria-expanded')!=='true'));
+  document.getElementById('aiRecommendBtn').addEventListener('click',()=>{setAiOpen(true);runAI()});
+  document.querySelectorAll('[data-ai-example]').forEach(b=>b.addEventListener('click',()=>{setAiOpen(true);document.getElementById('aiCategoryInput').value=b.dataset.aiExample;runAI()}));
   document.getElementById('reviewSelectionBtn').addEventListener('click',syncBucketAndGo);document.getElementById('heroReviewBtn').addEventListener('click',syncBucketAndGo);
   document.querySelectorAll('[data-close-category-detail]').forEach(b=>b.addEventListener('click',closeDetail));
   document.getElementById('detailSelectBtn').addEventListener('click',()=>{if(!detailCat)return;addOrToggle(detailCat.id);openDetail(detailCat.id)});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail()});
   if(settings.aiFinder===false)document.getElementById('categoryAiSection').hidden=true;
-  renderHero();renderRail();renderCatalog();renderDock();
+  renderHero();renderRail();renderCatalog();renderDock();renderJourney();
 })();
