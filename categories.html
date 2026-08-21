@@ -38,7 +38,7 @@
           <h1>Category architecture</h1>
           <p>Organise your awards in two levels: create Master Categories first, then place every public Sub Category inside the right master.</p>
         </div>
-        <div class="top-actions"><button class="btn secondary" id="saveBtn">Save draft</button><a class="btn primary" href="entry-form.html">Continue to Entry Form →</a></div>
+        <div class="top-actions"><button class="btn secondary" id="saveBtn">Save draft</button><a class="btn primary" href="nominate.html" target="_blank">Preview public categories ↗</a></div>
       </div>
 
       <div class="ca-setup-track cat-track" aria-label="Award setup progress">
@@ -57,10 +57,10 @@
         <div class="category-arch-flow"><span class="active">1</span><b>Master Category</b><i>→</i><span>2</span><b>Sub Category</b><i>→</i><span>3</span><b>Public Selection</b></div>
       </section>
 
-      <div class="category-admin-tabs" role="tablist">
-        <button class="active" data-admin-tab="masters"><span>01</span> Master Categories <b id="masterTabCount">0</b></button>
-        <button data-admin-tab="subs"><span>02</span> Sub Categories <b id="subTabCount">0</b></button>
-        <button data-admin-tab="experience"><span>03</span> Public Experience</button>
+      <div class="category-admin-tabs category-stepper" role="tablist" aria-label="Category setup steps">
+        <button class="active" data-admin-tab="masters"><span>01</span><div><strong>Master Categories</strong><small>Create award tracks</small></div><b id="masterTabCount">0</b></button>
+        <button data-admin-tab="subs"><span>02</span><div><strong>Sub Categories</strong><small>Add selectable categories</small></div><b id="subTabCount">0</b></button>
+        <button data-admin-tab="experience"><span>03</span><div><strong>Selection Rules</strong><small>Single / multiple entry</small></div><b class="step-ready-mark">✓</b></button>
       </div>
 
       <section class="category-tab-panel active" data-admin-panel="masters">
@@ -70,6 +70,7 @@
         </div>
         <div class="master-category-grid" id="masterCategoryGrid"></div>
         <div class="category-empty-state" id="masterEmpty" hidden><span>01</span><h3>Create your first Master Category</h3><p>Every Sub Category must belong to a Master Category.</p><button class="btn primary" id="masterEmptyBtn">+ Add Master Category</button></div>
+        <div class="category-step-actions"><div><span>STEP 1</span><b>Master Category setup</b><small>Create at least one track, then continue.</small></div><div class="category-step-buttons"><button class="btn secondary" data-save-step="masters">Save step</button><button class="btn primary" data-next-step="subs">Save & continue to Sub Categories →</button></div></div>
       </section>
 
       <section class="category-tab-panel" data-admin-panel="subs">
@@ -81,6 +82,7 @@
           <table class="subcategory-table"><thead><tr><th>Sub Category</th><th>Master Category</th><th>Type / Fee</th><th>Allowed Area</th><th>Status</th><th>Actions</th></tr></thead><tbody id="subCategoryBody"></tbody></table>
         </div>
         <div class="category-empty-state" id="subEmpty" hidden><span>02</span><h3>No Sub Categories yet</h3><p>Create a Master Category first, then add the actual categories entrants will select.</p><button class="btn primary" id="subEmptyBtn">+ Add Sub Category</button></div>
+        <div class="category-step-actions"><div><span>STEP 2</span><b>Sub Category setup</b><small>Add the categories entrants will actually choose.</small></div><div class="category-step-buttons"><button class="btn secondary" data-go-step="masters">← Master Categories</button><button class="btn secondary" data-save-step="subs">Save step</button><button class="btn primary" data-next-step="experience">Save & continue to Selection Rules →</button></div></div>
       </section>
 
       <section class="category-tab-panel" data-admin-panel="experience">
@@ -102,9 +104,8 @@
             <span class="cat-kicker">PUBLIC STRUCTURE</span><h3>Master → Sub Category</h3><div id="publicStructurePreview"></div>
           </div>
         </div>
+        <div class="category-step-actions category-step-actions-final"><div><span>STEP 3</span><b>Category setup complete</b><small>Save the public selection rules, then connect categories to your Entry Form.</small></div><div class="category-step-buttons"><button class="btn secondary" data-go-step="subs">← Sub Categories</button><button class="btn secondary" data-save-step="experience">Save step</button><button class="btn primary" id="finishCategoriesBtn">Save & continue to Entry Form →</button></div></div>
       </section>
-
-      <div class="cat-bottom-actions"><div><b>Next: build the nomination form</b><span>Your Sub Categories are now ready to connect with form questions and pricing.</span></div><a class="btn primary" href="entry-form.html">Continue to Entry Form →</a></div>
       <div class="footer-note">Vikas Mishra</div>
     </main>
   </div>
@@ -196,7 +197,19 @@
   function syncGroupNames(){subs.forEach(c=>{const m=masterById(c.masterId);if(m)c.group=m.name})}
   function persist(render=true){syncGroupNames();write(masterKey,masters);write(categoryKey,subs);write(settingsKey,settings);if(render)renderAll()}
 
-  function setTab(tab){activeTab=tab;document.querySelectorAll('[data-admin-tab]').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===tab));document.querySelectorAll('[data-admin-panel]').forEach(p=>p.classList.toggle('active',p.dataset.adminPanel===tab))}
+  function setTab(tab){activeTab=tab;document.querySelectorAll('[data-admin-tab]').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===tab));document.querySelectorAll('[data-admin-panel]').forEach(p=>p.classList.toggle('active',p.dataset.adminPanel===tab));}
+  function scrollToCategorySteps(){const el=document.querySelector('.category-admin-tabs');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+  function saveCurrentStep(label){persist();toast(label+' saved')}
+  function saveAndContinue(next){
+    if(next==='subs'&&!masters.length){toast('Add at least one Master Category before continuing');return}
+    if(next==='experience'&&!subs.length){toast('Add at least one Sub Category before continuing');return}
+    persist();setTab(next);scrollToCategorySteps();toast('Step saved');
+  }
+  function finishCategorySetup(){
+    if(!masters.length){toast('Add at least one Master Category first');setTab('masters');scrollToCategorySteps();return}
+    if(!subs.length){toast('Add at least one Sub Category first');setTab('subs');scrollToCategorySteps();return}
+    persist();toast('Category setup saved');setTimeout(()=>{location.href='entry-form.html'},180);
+  }
 
   function renderMasters(){
     const grid=$('masterCategoryGrid');
@@ -251,7 +264,11 @@
   function openModal(idValue,focusId){$(idValue).classList.add('open');$(idValue).setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$(focusId)?.focus(),70)}
   function closeModal(idValue){$(idValue).classList.remove('open');$(idValue).setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
 
-  document.querySelectorAll('[data-admin-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.adminTab)));
+  document.querySelectorAll('[data-admin-tab]').forEach(b=>b.addEventListener('click',()=>{setTab(b.dataset.adminTab);scrollToCategorySteps()}));
+  document.querySelectorAll('[data-go-step]').forEach(b=>b.addEventListener('click',()=>{setTab(b.dataset.goStep);scrollToCategorySteps()}));
+  document.querySelectorAll('[data-save-step]').forEach(b=>b.addEventListener('click',()=>saveCurrentStep(b.dataset.saveStep==='masters'?'Master Categories':b.dataset.saveStep==='subs'?'Sub Categories':'Selection Rules')));
+  document.querySelectorAll('[data-next-step]').forEach(b=>b.addEventListener('click',()=>saveAndContinue(b.dataset.nextStep)));
+  $('finishCategoriesBtn').onclick=finishCategorySetup;
   $('addMasterBtn').onclick=()=>openMaster();$('masterEmptyBtn').onclick=()=>openMaster();$('saveMasterBtn').onclick=saveMaster;document.querySelectorAll('[data-close-master]').forEach(b=>b.onclick=()=>closeModal('masterModal'));
   $('addSubBtn').onclick=()=>openSub();$('subEmptyBtn').onclick=()=>openSub();$('saveSubBtn').onclick=saveSub;document.querySelectorAll('[data-close-sub]').forEach(b=>b.onclick=()=>closeModal('subModal'));$('subType').onchange=toggleSubPrice;$('subSearch').oninput=renderSubs;$('masterFilter').onchange=renderSubs;
   $('saveBtn').onclick=()=>{persist();toast('Category architecture saved')};
