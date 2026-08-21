@@ -17,46 +17,28 @@
       <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
       <div class="nav-label">Build</div><a href="award.html"><span class="ico">◇</span><span>Award</span></a><a href="website.html"><span class="ico">▣</span><span>Website</span></a><a class="active" href="categories.html"><span class="ico">▦</span><span>Categories</span></a><a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a><a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a><div class="nav-label">Operate</div>
       <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
-      <div class="nav-label">Grow</div>
-      <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
-      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
-      <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
-      <div class="nav-label">Judge</div>
-      <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
-      <a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a>
-      <a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a>
-      <a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
-      <div class="nav-label">Celebrate</div>
-      <a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a>
-      <a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a>
-      <a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
-      <div class="nav-label">Insights</div>
-      <a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
-      <div class="nav-label">System</div>
-      <a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
+      <div class="nav-label">Grow</div><a href="audience.html"><span class="ico">◉</span><span>Audience</span></a><a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a><a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
+      <div class="nav-label">Judge</div><a href="judges.html"><span class="ico">♟</span><span>Judges</span></a><a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a><a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a><a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div><a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a><a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a><a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Insights</div><a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
+      <div class="nav-label">System</div><a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
     </nav>
   </aside>
 
   <div class="content">
     <header class="topbar">
-      <div class="crumb"><span id="crumbAward">India FinTech Awards 2027</span> / Categories</div>
-      <div class="top-actions">
-        <button class="btn ghost" id="copilotBtn">✦ Ask Award Copilot</button>
-        <div class="avatar">VM</div>
-      </div>
+      <div class="crumb"><span id="crumbAward">India FinTech Awards 2027</span> / Category Architecture</div>
+      <div class="top-actions"><button class="btn ghost" id="copilotBtn">✦ Category Copilot</button><div class="avatar">VM</div></div>
     </header>
 
     <main class="main">
       <div class="page-head cat-page-head">
         <div>
           <span class="eyebrow">BUILD · STEP 2 OF 5</span>
-          <h1>What can people enter?</h1>
-          <p>Build a clear category structure. Start with smart suggestions, then customize fees and eligibility only where needed.</p>
+          <h1>Category architecture</h1>
+          <p>Organise your awards in two levels: create Master Categories first, then place every public Sub Category inside the right master.</p>
         </div>
-        <div class="top-actions">
-          <button class="btn secondary" id="saveBtn">Save draft</button>
-          <a class="btn primary" href="entry-form.html" id="continueBtn">Continue to Entry Form →</a>
-        </div>
+        <div class="top-actions"><button class="btn secondary" id="saveBtn">Save draft</button><a class="btn primary" href="entry-form.html">Continue to Entry Form →</a></div>
       </div>
 
       <div class="ca-setup-track cat-track" aria-label="Award setup progress">
@@ -67,398 +49,220 @@
         <a class="ca-track-item" href="website.html"><span>5</span><div><b>Website</b><small>Later</small></div></a>
       </div>
 
-      <div class="card pad cat-policy-card">
-        <div class="cat-policy-copy">
-          <span class="cat-kicker">PUBLIC CATEGORY EXPERIENCE</span>
-          <h2>How should entrants select categories?</h2>
-          <p>Choose whether an entrant can enter one category only or build a multi-category nomination bucket.</p>
+      <section class="category-architecture-card">
+        <div class="category-arch-summary">
+          <div><span class="cat-kicker">CATEGORY ARCHITECTURE</span><h2>Build a structure entrants can understand instantly.</h2><p>Master Categories act as award tracks. Sub Categories are the actual categories entrants select and nominate for.</p></div>
+          <div class="category-arch-stats"><div><strong id="masterStat">0</strong><span>Master categories</span></div><div><strong id="subStat">0</strong><span>Sub categories</span></div><div><strong id="openStat">0</strong><span>Open for entries</span></div></div>
         </div>
-        <div class="cat-policy-options" role="radiogroup" aria-label="Category selection policy">
-          <button type="button" class="cat-policy-option" data-selection-mode="single">
-            <span class="cat-policy-radio">○</span><div><b>Single category</b><small>One category per nomination journey</small></div>
-          </button>
-          <button type="button" class="cat-policy-option" data-selection-mode="multiple">
-            <span class="cat-policy-radio">○</span><div><b>Multiple categories</b><small>Build a bucket, complete forms one by one, then pay once</small></div>
-          </button>
-        </div>
-        <div class="cat-policy-settings" id="multiPolicySettings">
-          <label class="cat-policy-field"><span>Maximum categories per entrant</span><select id="maxCategorySelections"><option value="2">2</option><option value="3">3</option><option value="5">5</option><option value="8">8</option><option value="10">10</option><option value="0">No limit</option></select></label>
-          <label class="cat-policy-switch"><input type="checkbox" id="autoImportAnswers"><span></span><div><b>Smart answer reuse</b><small>Automatically import answers when the same question appears in another selected category.</small></div></label>
-          <label class="cat-policy-switch"><input type="checkbox" id="aiCategoryFinder"><span></span><div><b>AI Category Finder</b><small>Show entrants a guided category-fit assistant on the public Categories page.</small></div></label>
-        </div>
-        <div class="cat-policy-status"><span>Live rule</span><strong id="selectionPolicySummary">Multiple categories · up to 5</strong></div>
+        <div class="category-arch-flow"><span class="active">1</span><b>Master Category</b><i>→</i><span>2</span><b>Sub Category</b><i>→</i><span>3</span><b>Public Selection</b></div>
+      </section>
+
+      <div class="category-admin-tabs" role="tablist">
+        <button class="active" data-admin-tab="masters"><span>01</span> Master Categories <b id="masterTabCount">0</b></button>
+        <button data-admin-tab="subs"><span>02</span> Sub Categories <b id="subTabCount">0</b></button>
+        <button data-admin-tab="experience"><span>03</span> Public Experience</button>
       </div>
 
-      <div class="cat-layout">
-        <section class="cat-main-col">
-          <div class="card pad cat-ai-card" id="suggestionCard">
-            <div class="cat-ai-head">
-              <div class="cat-ai-icon">✦</div>
-              <div>
-                <span class="cat-kicker">AWARD COPILOT</span>
-                <h2>Suggested categories for your award</h2>
-                <p id="suggestionIntro">Based on your award setup, here is a balanced starting structure. Add all or choose only what fits.</p>
-              </div>
-              <button class="btn secondary cat-add-all" id="addAllBtn">+ Add all</button>
-            </div>
-            <div class="cat-suggestion-grid" id="suggestionGrid"></div>
-            <div class="cat-ai-foot">
-              <button class="cat-link-btn" id="generateMoreBtn">✦ Suggest 5 more</button>
-              <span>Suggestions are editable after you add them.</span>
-            </div>
+      <section class="category-tab-panel active" data-admin-panel="masters">
+        <div class="category-panel-head">
+          <div><span class="cat-kicker">STEP 1</span><h2>Create your award tracks</h2><p>Examples: Individual, Firm, Architectural Project, Interior Design Project, Leadership, Innovation.</p></div>
+          <button class="btn primary" id="addMasterBtn">+ Add Master Category</button>
+        </div>
+        <div class="master-category-grid" id="masterCategoryGrid"></div>
+        <div class="category-empty-state" id="masterEmpty" hidden><span>01</span><h3>Create your first Master Category</h3><p>Every Sub Category must belong to a Master Category.</p><button class="btn primary" id="masterEmptyBtn">+ Add Master Category</button></div>
+      </section>
+
+      <section class="category-tab-panel" data-admin-panel="subs">
+        <div class="category-panel-head category-panel-head-stacked">
+          <div><span class="cat-kicker">STEP 2</span><h2>Build Sub Categories</h2><p>These are the selectable award categories shown to entrants on the public website.</p></div>
+          <div class="subcategory-actions"><label class="cat-search"><span>⌕</span><input id="subSearch" placeholder="Search sub categories"></label><select id="masterFilter" class="premium-select"><option value="all">All Master Categories</option></select><button class="btn primary" id="addSubBtn">+ Add Sub Category</button></div>
+        </div>
+        <div class="subcategory-table-wrap">
+          <table class="subcategory-table"><thead><tr><th>Sub Category</th><th>Master Category</th><th>Type / Fee</th><th>Allowed Area</th><th>Status</th><th>Actions</th></tr></thead><tbody id="subCategoryBody"></tbody></table>
+        </div>
+        <div class="category-empty-state" id="subEmpty" hidden><span>02</span><h3>No Sub Categories yet</h3><p>Create a Master Category first, then add the actual categories entrants will select.</p><button class="btn primary" id="subEmptyBtn">+ Add Sub Category</button></div>
+      </section>
+
+      <section class="category-tab-panel" data-admin-panel="experience">
+        <div class="category-panel-head"><div><span class="cat-kicker">STEP 3</span><h2>Public selection rules</h2><p>Control whether entrants choose one category or build a multi-category nomination bucket.</p></div><a class="btn secondary" href="nominate.html" target="_blank">Preview Categories ↗</a></div>
+        <div class="category-experience-admin-grid">
+          <div class="card pad cat-policy-card-v2">
+            <h3>Selection mode</h3>
+            <button type="button" class="cat-policy-option" data-selection-mode="single"><span class="cat-policy-radio">○</span><div><b>Single category</b><small>Entrant can choose only one Sub Category.</small></div></button>
+            <button type="button" class="cat-policy-option" data-selection-mode="multiple"><span class="cat-policy-radio">○</span><div><b>Multiple categories</b><small>Entrant builds a nomination bucket and pays once.</small></div></button>
+            <label class="cat-policy-field" id="maxSelectionWrap"><span>Maximum categories per entrant</span><select id="maxCategorySelections"><option value="2">2</option><option value="3">3</option><option value="5">5</option><option value="8">8</option><option value="10">10</option><option value="0">No limit</option></select></label>
           </div>
-
-          <div class="card pad section">
-            <div class="cat-list-head">
-              <div>
-                <div class="section-title cat-title-inline"><h2>Your categories</h2><span class="cat-count-pill" id="categoryCount">0</span></div>
-                <p class="cat-subcopy">Drag to reorder. The public entry form will use this order.</p>
-              </div>
-              <div class="cat-list-actions">
-                <label class="cat-search"><span>⌕</span><input id="categorySearch" placeholder="Search categories"></label>
-                <button class="btn primary" id="addCategoryBtn">+ Add category</button>
-              </div>
-            </div>
-
-            <div class="cat-empty" id="categoryEmpty" hidden>
-              <div class="cat-empty-icon">▦</div>
-              <h3>Add your first category</h3>
-              <p>Use a Copilot suggestion above or create a category manually.</p>
-              <button class="btn primary" id="emptyAddBtn">+ Add category</button>
-            </div>
-
-            <div class="cat-category-list" id="categoryList"></div>
+          <div class="card pad cat-policy-card-v2">
+            <h3>Smart assistance</h3>
+            <label class="cat-policy-switch"><input type="checkbox" id="autoImportAnswers"><span></span><div><b>Smart answer reuse</b><small>Reuse identical answers across selected categories.</small></div></label>
+            <label class="cat-policy-switch"><input type="checkbox" id="aiCategoryFinder"><span></span><div><b>AI Category Finder</b><small>Help entrants discover the best Sub Categories.</small></div></label>
+            <div class="cat-policy-status"><span>LIVE RULE</span><strong id="selectionPolicySummary">Multiple categories · up to 5</strong></div>
           </div>
-
-          <div class="cat-bottom-actions">
-            <div><b>Next: build one entry form</b><span>You can later show different questions for specific categories.</span></div>
-            <a class="btn primary" href="entry-form.html">Continue to Entry Form →</a>
+          <div class="card pad category-public-preview-card">
+            <span class="cat-kicker">PUBLIC STRUCTURE</span><h3>Master → Sub Category</h3><div id="publicStructurePreview"></div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <aside class="cat-side-col">
-          <div class="card pad cat-progress-card">
-            <div class="section-title"><h2>Setup progress</h2><b id="setupPct">40%</b></div>
-            <div class="progress"><span id="setupBar" style="width:40%"></span></div>
-            <div class="cat-progress-list">
-              <div><span class="ok">✓</span><p><b>Award basics</b><small>Name, dates and brand</small></p></div>
-              <div><span id="catProgressIcon">○</span><p><b>Categories</b><small id="catProgressText">Add at least one</small></p></div>
-              <div><span>○</span><p><b>Entry Form</b><small>Not started</small></p></div>
-              <div><span>○</span><p><b>Pricing</b><small>Not started</small></p></div>
-              <div><span>○</span><p><b>Website</b><small>Not started</small></p></div>
-            </div>
-          </div>
-
-          <div class="callout section cat-insight" id="insightCard">
-            <h3>✦ Category strategy</h3>
-            <p id="insightText">Aim for 5–12 categories for a first edition. Keep names distinct and easy for entrants to understand.</p>
-          </div>
-
-          <div class="card pad section cat-summary-card">
-            <div class="section-title"><h2>At a glance</h2><span>Live</span></div>
-            <div class="cat-summary-row"><span>Categories</span><b id="summaryCategories">0</b></div>
-            <div class="cat-summary-row"><span>Public selection</span><b id="summarySelectionMode">Multiple</b></div>
-            <div class="cat-summary-row"><span>Using base fee</span><b id="summaryBaseFee">0</b></div>
-            <div class="cat-summary-row"><span>Custom fee</span><b id="summaryCustomFee">0</b></div>
-            <div class="cat-summary-row"><span>With eligibility rules</span><b id="summaryEligibility">0</b></div>
-            <div class="cat-summary-note"><span>Base entry fee</span><strong id="baseFeeLabel">₹2,000</strong></div>
-          </div>
-        </aside>
-      </div>
-
+      <div class="cat-bottom-actions"><div><b>Next: build the nomination form</b><span>Your Sub Categories are now ready to connect with form questions and pricing.</span></div><a class="btn primary" href="entry-form.html">Continue to Entry Form →</a></div>
       <div class="footer-note">Vikas Mishra</div>
     </main>
   </div>
 </div>
 
-<div class="cat-modal" id="categoryModal" aria-hidden="true">
-  <div class="cat-modal-backdrop" data-close-modal></div>
-  <div class="cat-drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
-    <div class="cat-drawer-head">
-      <div><span class="eyebrow" id="drawerEyebrow">NEW CATEGORY</span><h2 id="drawerTitle">Add category</h2></div>
-      <button class="cat-close" type="button" data-close-modal>×</button>
-    </div>
+<div class="cat-modal" id="masterModal" aria-hidden="true">
+  <div class="cat-modal-backdrop" data-close-master></div>
+  <div class="cat-drawer" role="dialog" aria-modal="true">
+    <div class="cat-drawer-head"><div><span class="eyebrow" id="masterDrawerEyebrow">NEW MASTER CATEGORY</span><h2 id="masterDrawerTitle">Add Master Category</h2></div><button class="cat-close" type="button" data-close-master>×</button></div>
     <div class="cat-drawer-body">
-      <div class="field">
-        <label for="catName">Category name *</label>
-        <input id="catName" maxlength="80" placeholder="e.g. Best FinTech Startup">
-        <small class="field-error" id="catNameError"></small>
-      </div>
-      <div class="field">
-        <div class="ca-field-meta"><label for="catDescription">Description</label><small><span id="catDescCount">0</span>/240</small></div>
-        <textarea id="catDescription" maxlength="240" placeholder="Help entrants quickly understand what belongs in this category."></textarea>
-      </div>
-      <div class="form-grid">
-        <div class="field">
-          <label for="catGroup">Group / parent</label>
-          <input id="catGroup" placeholder="Optional, e.g. Company Awards">
-          <small>Useful when you have many categories.</small>
-        </div>
-        <div class="field">
-          <label for="catStatus">Status</label>
-          <select id="catStatus"><option value="open">Open</option><option value="draft">Draft</option><option value="closed">Closed</option></select>
-        </div>
-      </div>
-
-      <div class="ca-section-divider">Entry fee</div>
-      <div class="cat-fee-choice">
-        <button type="button" class="cat-fee-option active" data-fee-mode="base"><span>●</span><div><b>Use award base fee</b><small id="drawerBaseFee">₹2,000 per entry</small></div></button>
-        <button type="button" class="cat-fee-option" data-fee-mode="custom"><span>○</span><div><b>Custom fee</b><small>Override only for this category</small></div></button>
-      </div>
-      <div class="field cat-custom-fee" id="customFeeRow" hidden>
-        <label for="catFee">Category fee</label>
-        <div class="ca-money"><span id="feeSymbol">₹</span><input id="catFee" type="number" min="0" step="1" value="2000"></div>
-      </div>
-
-      <div class="ca-section-divider">Eligibility</div>
-      <div class="field">
-        <label for="catEligibility">Who can enter?</label>
-        <textarea id="catEligibility" maxlength="300" placeholder="Optional. e.g. Companies incorporated in India with a product launched after Jan 2026."></textarea>
-        <small>Keep this short. Detailed terms can live in your Rules page.</small>
-      </div>
-      <div class="form-grid">
-        <div class="field">
-          <label for="catMaxEntries">Max entries per entrant</label>
-          <select id="catMaxEntries"><option value="0">No limit</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="5">5</option><option value="10">10</option></select>
-        </div>
-        <div class="field">
-          <label for="catCode">Internal code</label>
-          <input id="catCode" maxlength="20" placeholder="Auto generated">
-          <small>Optional, useful for reports.</small>
-        </div>
-      </div>
+      <div class="field"><label for="masterName">Master Category name *</label><input id="masterName" maxlength="70" placeholder="e.g. Architectural Project"><small class="field-error" id="masterNameError"></small></div>
+      <div class="field"><label for="masterDescription">Short description</label><textarea id="masterDescription" maxlength="220" placeholder="Help entrants understand what this award track covers."></textarea></div>
+      <div class="form-grid"><div class="field"><label for="masterCode">Code</label><input id="masterCode" maxlength="16" placeholder="ARCH"></div><div class="field"><label for="masterStatus">Status</label><select id="masterStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div></div>
+      <div class="master-drawer-tip"><b>Public behaviour</b><p>Active Master Categories appear as tracks on the public Categories page. Their Sub Categories are grouped underneath automatically.</p></div>
     </div>
-    <div class="cat-drawer-foot">
-      <button class="btn secondary" type="button" data-close-modal>Cancel</button>
-      <button class="btn primary" type="button" id="saveCategoryBtn">Add category</button>
-    </div>
+    <div class="cat-drawer-foot"><button class="btn secondary" data-close-master>Cancel</button><button class="btn primary" id="saveMasterBtn">Save Master Category</button></div>
   </div>
 </div>
 
-<div class="cat-copilot-panel" id="copilotPanel" aria-hidden="true">
-  <div class="cat-copilot-head"><div><span class="eyebrow">AWARD COPILOT</span><h3>Category assistant</h3></div><button id="closeCopilot">×</button></div>
-  <p>Ask for help with category structure. This manager demo uses preset recommendations.</p>
-  <div class="cat-copilot-options">
-    <button data-copilot-action="simplify">Make my categories simpler</button>
-    <button data-copilot-action="overlap">Check for overlapping categories</button>
-    <button data-copilot-action="growth">Which category should I promote?</button>
+<div class="cat-modal" id="subModal" aria-hidden="true">
+  <div class="cat-modal-backdrop" data-close-sub></div>
+  <div class="cat-drawer cat-drawer-wide" role="dialog" aria-modal="true">
+    <div class="cat-drawer-head"><div><span class="eyebrow" id="subDrawerEyebrow">NEW SUB CATEGORY</span><h2 id="subDrawerTitle">Add Sub Category</h2></div><button class="cat-close" type="button" data-close-sub>×</button></div>
+    <div class="cat-drawer-body">
+      <div class="form-grid"><div class="field"><label for="subType">Category type *</label><select id="subType"><option value="paid">Paid</option><option value="free">Free</option></select></div><div class="field"><label for="subMaster">Master Category *</label><select id="subMaster"></select></div></div>
+      <div class="field"><label for="subName">Sub Category name *</label><input id="subName" maxlength="90" placeholder="e.g. Interior Design - Healthcare"><small class="field-error" id="subNameError"></small></div>
+      <div class="field"><label for="subDescription">Description</label><textarea id="subDescription" maxlength="280" placeholder="What kind of work belongs in this category?"></textarea></div>
+      <div class="form-grid"><div class="field"><label for="subCurrency">Currency</label><select id="subCurrency"><option value="INR">₹ INR</option><option value="USD">$ USD</option><option value="AED">د.إ AED</option><option value="GBP">£ GBP</option><option value="SGD">S$ SGD</option></select></div><div class="field" id="subPriceField"><label for="subPrice">Price</label><input id="subPrice" type="number" min="0" step="1" placeholder="18000"></div></div>
+      <div class="form-grid"><div class="field"><label for="subArea">Allowed area</label><select id="subArea"><option value="national">Only National</option><option value="international">Only International</option><option value="global">National + International</option></select></div><div class="field"><label for="subStatus">Status</label><select id="subStatus"><option value="open">Open</option><option value="draft">Draft</option><option value="closed">Closed</option></select></div></div>
+      <div class="field"><label for="subEligibility">Eligibility</label><textarea id="subEligibility" maxlength="320" placeholder="Who can enter? Include the most important eligibility rule."></textarea></div>
+      <div class="form-grid"><div class="field"><label for="subCode">Category code</label><input id="subCode" maxlength="20" placeholder="ARCH-HEALTH"></div><div class="field"><label for="subMaxEntries">Max entries per entrant</label><input id="subMaxEntries" type="number" min="0" value="0"><small>0 = no limit</small></div></div>
+    </div>
+    <div class="cat-drawer-foot"><button class="btn secondary" data-close-sub>Cancel</button><button class="btn primary" id="saveSubBtn">Save Sub Category</button></div>
   </div>
-  <div class="cat-copilot-answer" id="copilotAnswer">Choose a prompt above to see a recommendation.</div>
 </div>
 
+<div class="copilot-panel" id="copilotPanel" aria-hidden="true"><div class="copilot-head"><div><span class="spark">✦</span><div><b>Category Copilot</b><small>Structure assistant</small></div></div><button id="closeCopilot">×</button></div><div class="copilot-body"><p class="copilot-intro">I can help you simplify category architecture and identify missing award tracks.</p><button data-copilot-action="masters">Suggest Master Categories</button><button data-copilot-action="gaps">Find structure gaps</button><button data-copilot-action="overlap">Check duplicate Sub Categories</button><div class="copilot-answer" id="copilotAnswer">Choose an action and I’ll analyse your current structure.</div></div></div>
 <div id="toast" class="toast"></div>
+
 <script src="app.js"></script>
 <script>
 (function(){
-  const $ = id => document.getElementById(id);
-  const savedAward = (()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})();
-  const award = savedAward || {name:'India FinTech Awards 2027',currency:'INR',baseFee:2000,entryType:'paid',suggestedCategories:['Best FinTech Startup','Best Digital Banking Innovation','Best Payments Solution','FinTech Leader of the Year','Best AI in Financial Services']};
-  const symbolMap={INR:'₹',USD:'$',AED:'د.إ',GBP:'£',SGD:'S$'};
-  const curSymbol=symbolMap[award.currency]||'₹';
-  const baseFee=award.entryType==='free'?0:Number(award.baseFee||0);
-  let categories=[];
-  let suggestions=[];
-  let editingId=null;
-  let feeMode='base';
-  const categorySettingsKey='etb2b_awards_category_settings_'+(award.slug||'demo');
-  let selectionSettings=(()=>{try{return Object.assign({selectionMode:'multiple',maxSelections:5,autoImportAnswers:true,aiFinder:true},JSON.parse(localStorage.getItem(categorySettingsKey)||'{}'))}catch(e){return {selectionMode:'multiple',maxSelections:5,autoImportAnswers:true,aiFinder:true}}})();
+  const $=id=>document.getElementById(id);
+  const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})();
+  const award=savedAward||{name:'India FinTech Awards 2027',slug:'demo',currency:'INR',baseFee:2000,entryType:'paid',suggestedCategories:['Best FinTech Startup','Best Digital Banking Innovation','Best Payments Solution','FinTech Leader of the Year','Best AI in Financial Services']};
+  const slug=award.slug||'demo';
+  const categoryKey='etb2b_awards_categories_'+slug;
+  const masterKey='etb2b_awards_master_categories_'+slug;
+  const settingsKey='etb2b_awards_category_settings_'+slug;
+  const symbols={INR:'₹',USD:'$',AED:'د.إ',GBP:'£',SGD:'S$'};
+  let masters=read(masterKey,[]),subs=read(categoryKey,[]);
+  let settings=Object.assign({selectionMode:'multiple',maxSelections:5,autoImportAnswers:true,aiFinder:true},read(settingsKey,{}));
+  let editingMaster=null,editingSub=null,activeTab='masters',dragMaster=null,dragSub=null;
 
-  const fallbackSuggestions=['Best FinTech Startup','Best Digital Banking Innovation','Best Payments Solution','FinTech Leader of the Year','Best AI in Financial Services'];
-  const extraSuggestions=['Customer Experience Excellence','Best Emerging Technology','Innovation Team of the Year','Sustainability Impact Award','Best Partnership or Collaboration','Rising Star of the Year','Best Use of Data & Analytics','Financial Inclusion Award','Best B2B Solution','Best Consumer FinTech'];
-
+  function read(key,fallback){try{const v=JSON.parse(localStorage.getItem(key)||'null');return v??fallback}catch(e){return fallback}}
+  function write(key,value){localStorage.setItem(key,JSON.stringify(value))}
+  function esc(v){return String(v??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#039;'}[m]))}
+  function codeFrom(name){return String(name||'CAT').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim().split(/\s+/).slice(0,3).map(x=>x.slice(0,4)).join('-').slice(0,16)}
   function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
-  function esc(v){return String(v||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-  function money(v){return baseFee===0&&Number(v||0)===0?'Free':curSymbol+Number(v||0).toLocaleString('en-IN')}
-  function codeFrom(name){return (name||'CAT').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim().split(/\s+/).slice(0,4).map(x=>x.slice(0,3)).join('-').slice(0,20)}
-  function categoryStoreKey(){return savedAward&&savedAward.slug?'etb2b_awards_categories_'+savedAward.slug:'etb2b_awards_categories_demo'}
-  function persist(){localStorage.setItem(categoryStoreKey(),JSON.stringify(categories));updateUI()}
+  function id(){return Date.now()+Math.random().toString(36).slice(2,7)}
+  function money(c){const symbol=symbols[c.currency||award.currency]||'₹';return c.categoryType==='free'||Number(c.fee||0)===0?'Free':symbol+Number(c.fee||0).toLocaleString('en-IN')}
+  function masterById(masterId){return masters.find(m=>String(m.id)===String(masterId))}
+  function subCount(masterId){return subs.filter(c=>String(c.masterId)===String(masterId)).length}
 
-  $('sideAwardName').textContent=award.name||'Untitled Award';
-  $('crumbAward').textContent=award.name||'Untitled Award';
-  $('baseFeeLabel').textContent=award.entryType==='free'?'Free':money(baseFee);
-  $('drawerBaseFee').textContent=(award.entryType==='free'?'Free':money(baseFee))+' per entry';
-  $('feeSymbol').textContent=curSymbol;
-  $('catFee').value=baseFee;
-
-  const savedCats=localStorage.getItem(categoryStoreKey());
-  if(savedCats){try{categories=JSON.parse(savedCats)||[]}catch(e){categories=[]}}
-  else if(!savedAward){
-    categories=[
-      {id:1,name:'Best Startup',description:'Recognising a high-growth startup demonstrating innovation and market impact.',group:'Company Awards',status:'open',feeMode:'base',fee:2000,eligibility:'Startups founded within the last 7 years.',maxEntries:'1',code:'BES-STA'},
-      {id:2,name:'Best CEO',description:'Celebrating exceptional leadership and business impact.',group:'People Awards',status:'open',feeMode:'base',fee:2000,eligibility:'Open to CEOs and founders leading an eligible organisation.',maxEntries:'1',code:'BES-CEO'},
-      {id:3,name:'Best Product',description:'For products creating measurable customer or industry value.',group:'Innovation Awards',status:'open',feeMode:'custom',fee:2500,eligibility:'Product must be commercially available during the eligibility period.',maxEntries:'3',code:'BES-PRO'},
-      {id:4,name:'Best Campaign',description:'Recognising a standout campaign with strong strategy, creativity and results.',group:'Marketing Awards',status:'draft',feeMode:'custom',fee:1500,eligibility:'Campaign must have run within the eligibility period.',maxEntries:'3',code:'BES-CAM'}
-    ];
-  }
-  suggestions=(award.suggestedCategories&&award.suggestedCategories.length?award.suggestedCategories:fallbackSuggestions).map((name,i)=>({id:'s'+i,name,reason:i===0?'Strong flagship category':i===3?'Adds a people/leadership dimension':'Common fit for this award'}));
-
-  function persistSelectionSettings(){
-    localStorage.setItem(categorySettingsKey,JSON.stringify(selectionSettings));
-    renderSelectionPolicy();
-  }
-  function renderSelectionPolicy(){
-    document.querySelectorAll('[data-selection-mode]').forEach(btn=>{
-      const active=btn.dataset.selectionMode===selectionSettings.selectionMode;
-      btn.classList.toggle('active',active);
-      const radio=btn.querySelector('.cat-policy-radio');if(radio)radio.textContent=active?'●':'○';
+  function migrate(){
+    if(!Array.isArray(subs))subs=[];
+    if(!subs.length){
+      const defaults=(award.suggestedCategories||['Best Innovation','Leadership Award','Project of the Year','Rising Star']).map((name,i)=>({id:id(),name,description:'Recognising excellence and measurable impact in this category.',group:i<2?'Innovation & Technology':'Excellence',status:'open',feeMode:'custom',fee:award.entryType==='free'?0:Number(award.baseFee||0),currency:award.currency||'INR',categoryType:award.entryType==='free'?'free':'paid',allowedArea:'global',eligibility:'Open to eligible entrants.',maxEntries:'0',code:codeFrom(name)}));
+      subs=defaults;
+    }
+    if(!Array.isArray(masters)||!masters.length){
+      const groupNames=[...new Set(subs.map(c=>String(c.group||'').trim()).filter(Boolean))];
+      const names=groupNames.length?groupNames:['General Awards'];
+      masters=names.map((name,i)=>({id:'m-'+id(),name,description:i===0?'Primary award track for related categories.':'Grouped award track.',status:'active',code:codeFrom(name)}));
+    }
+    subs.forEach(c=>{
+      if(!c.categoryType)c.categoryType=Number(c.fee||0)===0?'free':'paid';
+      if(!c.currency)c.currency=award.currency||'INR';
+      if(!c.allowedArea)c.allowedArea='global';
+      let m=masterById(c.masterId);
+      if(!m&&c.group)m=masters.find(x=>x.name.toLowerCase()===String(c.group).toLowerCase());
+      if(!m)m=masters[0];
+      c.masterId=m?m.id:'';c.group=m?m.name:(c.group||'General Awards');
+      if(c.feeMode!=='custom')c.fee=Number(c.fee??award.baseFee??0);
+      c.feeMode='custom';
     });
-    const multi=selectionSettings.selectionMode==='multiple';
-    $('multiPolicySettings').classList.toggle('is-single',!multi);
-    $('maxCategorySelections').disabled=!multi;
-    $('maxCategorySelections').value=String(selectionSettings.maxSelections ?? 5);
-    $('autoImportAnswers').checked=selectionSettings.autoImportAnswers!==false;
-    $('aiCategoryFinder').checked=selectionSettings.aiFinder!==false;
-    const max=Number(selectionSettings.maxSelections||0);
-    const summary=multi?('Multiple categories · '+(max?('up to '+max):'no limit')):'Single category only';
-    $('selectionPolicySummary').textContent=summary;
-    $('summarySelectionMode').textContent=multi?'Multiple':'Single';
+    syncGroupNames();persist(false);
+  }
+  function syncGroupNames(){subs.forEach(c=>{const m=masterById(c.masterId);if(m)c.group=m.name})}
+  function persist(render=true){syncGroupNames();write(masterKey,masters);write(categoryKey,subs);write(settingsKey,settings);if(render)renderAll()}
+
+  function setTab(tab){activeTab=tab;document.querySelectorAll('[data-admin-tab]').forEach(b=>b.classList.toggle('active',b.dataset.adminTab===tab));document.querySelectorAll('[data-admin-panel]').forEach(p=>p.classList.toggle('active',p.dataset.adminPanel===tab))}
+
+  function renderMasters(){
+    const grid=$('masterCategoryGrid');
+    $('masterEmpty').hidden=masters.length>0;
+    grid.innerHTML=masters.map((m,i)=>`<article class="master-category-card ${m.status==='inactive'?'is-inactive':''}" draggable="true" data-master-id="${esc(m.id)}"><div class="master-order">${String(i+1).padStart(2,'0')}</div><div class="master-card-main"><div class="master-card-top"><span class="master-code">${esc(m.code||codeFrom(m.name))}</span><span class="master-status ${m.status}">${m.status==='active'?'Active':'Inactive'}</span></div><h3>${esc(m.name)}</h3><p>${esc(m.description||'Use this Master Category to group related Sub Categories.')}</p><div class="master-card-meta"><span><b>${subCount(m.id)}</b> Sub Categories</span><span>${subCount(m.id)?'Public grouping ready':'Needs Sub Categories'}</span></div></div><div class="master-card-actions"><button data-master-move="up" data-id="${esc(m.id)}" ${i===0?'disabled':''}>↑</button><button data-master-move="down" data-id="${esc(m.id)}" ${i===masters.length-1?'disabled':''}>↓</button><button data-edit-master="${esc(m.id)}">Edit</button><button class="danger-link" data-delete-master="${esc(m.id)}">Delete</button></div></article>`).join('');
+    grid.querySelectorAll('[data-edit-master]').forEach(b=>b.onclick=()=>openMaster(b.dataset.editMaster));
+    grid.querySelectorAll('[data-delete-master]').forEach(b=>b.onclick=()=>deleteMaster(b.dataset.deleteMaster));
+    grid.querySelectorAll('[data-master-move]').forEach(b=>b.onclick=()=>moveMaster(b.dataset.id,b.dataset.masterMove));
+    grid.querySelectorAll('[draggable=true]').forEach(card=>{card.addEventListener('dragstart',()=>dragMaster=card.dataset.masterId);card.addEventListener('dragover',e=>{e.preventDefault();card.classList.add('drag-over')});card.addEventListener('dragleave',()=>card.classList.remove('drag-over'));card.addEventListener('drop',e=>{e.preventDefault();card.classList.remove('drag-over');if(!dragMaster||dragMaster===card.dataset.masterId)return;const from=masters.findIndex(x=>String(x.id)===String(dragMaster)),to=masters.findIndex(x=>String(x.id)===String(card.dataset.masterId));const [item]=masters.splice(from,1);masters.splice(to,0,item);persist()})});
   }
 
-  function renderSuggestions(){
-    const existing=new Set(categories.map(c=>c.name.toLowerCase()));
-    const items=suggestions.filter(s=>!existing.has(s.name.toLowerCase()));
-    $('suggestionGrid').innerHTML=items.map(s=>`<button class="cat-suggestion" data-suggestion="${esc(s.name)}"><span class="cat-suggestion-plus">+</span><div><b>${esc(s.name)}</b><small>${esc(s.reason)}</small></div></button>`).join('');
-    $('addAllBtn').disabled=items.length===0;
-    $('addAllBtn').textContent=items.length?'+ Add all':'✓ Added';
-    if(items.length===0)$('suggestionIntro').textContent='You have added all current suggestions. Generate more ideas or create your own categories.';
-    document.querySelectorAll('.cat-suggestion').forEach(btn=>btn.addEventListener('click',()=>addSuggestion(btn.dataset.suggestion)));
+  function renderSubs(){
+    const masterFilter=$('masterFilter'),current=masterFilter.value||'all';
+    masterFilter.innerHTML='<option value="all">All Master Categories</option>'+masters.map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');
+    if([...masterFilter.options].some(o=>o.value===current))masterFilter.value=current;
+    const q=$('subSearch').value.trim().toLowerCase(),filter=masterFilter.value;
+    const list=subs.filter(c=>(filter==='all'||String(c.masterId)===filter)&&(`${c.name} ${c.group} ${c.description||''}`).toLowerCase().includes(q));
+    $('subEmpty').hidden=subs.length>0;
+    $('subCategoryBody').innerHTML=list.length?list.map((c,i)=>{const m=masterById(c.masterId);return `<tr draggable="true" data-sub-id="${esc(c.id)}"><td><div class="subcategory-name-cell"><span class="sub-drag">⋮⋮</span><div><b>${esc(c.name)}</b><small>${esc(c.code||codeFrom(c.name))}${c.description?' · '+esc(c.description.slice(0,72))+(c.description.length>72?'…':''):''}</small></div></div></td><td><span class="master-pill">${esc(m?.name||c.group||'Unassigned')}</span></td><td><b>${money(c)}</b><small class="table-note">${c.categoryType==='free'?'Free entry':'Paid entry'}</small></td><td>${areaLabel(c.allowedArea)}</td><td><span class="sub-status ${esc(c.status||'open')}">${esc((c.status||'open').toUpperCase())}</span></td><td><div class="table-actions"><button data-sub-move="up" data-id="${esc(c.id)}" title="Move up">↑</button><button data-sub-move="down" data-id="${esc(c.id)}" title="Move down">↓</button><button data-edit-sub="${esc(c.id)}">Edit</button><button class="danger-link" data-delete-sub="${esc(c.id)}">Delete</button></div></td></tr>`}).join(''):'<tr><td colspan="6"><div class="table-no-results">No matching Sub Categories.</div></td></tr>';
+    $('subCategoryBody').querySelectorAll('[data-edit-sub]').forEach(b=>b.onclick=()=>openSub(b.dataset.editSub));
+    $('subCategoryBody').querySelectorAll('[data-delete-sub]').forEach(b=>b.onclick=()=>deleteSub(b.dataset.deleteSub));
+    $('subCategoryBody').querySelectorAll('[data-sub-move]').forEach(b=>b.onclick=()=>moveSub(b.dataset.id,b.dataset.subMove));
+    $('subCategoryBody').querySelectorAll('tr[draggable=true]').forEach(row=>{row.addEventListener('dragstart',()=>dragSub=row.dataset.subId);row.addEventListener('dragover',e=>{e.preventDefault();row.classList.add('drag-over')});row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('drag-over');if(!dragSub||dragSub===row.dataset.subId)return;const from=subs.findIndex(x=>String(x.id)===String(dragSub)),to=subs.findIndex(x=>String(x.id)===String(row.dataset.subId));const [item]=subs.splice(from,1);subs.splice(to,0,item);persist()})});
   }
+  function areaLabel(v){return v==='national'?'National only':v==='international'?'International only':'National + International'}
 
-  function addSuggestion(name){
-    if(categories.some(c=>c.name.toLowerCase()===name.toLowerCase())){toast('Category already added');return;}
-    categories.push({id:Date.now()+Math.random(),name,description:'',group:'',status:'open',feeMode:'base',fee:baseFee,eligibility:'',maxEntries:'0',code:codeFrom(name)});
-    persist();toast(name+' added');
+  function renderExperience(){
+    document.querySelectorAll('[data-selection-mode]').forEach(btn=>{const on=btn.dataset.selectionMode===settings.selectionMode;btn.classList.toggle('active',on);btn.querySelector('.cat-policy-radio').textContent=on?'●':'○'});
+    $('maxCategorySelections').value=String(settings.maxSelections??5);$('maxSelectionWrap').style.opacity=settings.selectionMode==='single'?'.45':'1';$('maxCategorySelections').disabled=settings.selectionMode==='single';$('autoImportAnswers').checked=settings.autoImportAnswers!==false;$('aiCategoryFinder').checked=settings.aiFinder!==false;
+    const max=Number(settings.maxSelections||0);$('selectionPolicySummary').textContent=settings.selectionMode==='single'?'Single category only':'Multiple categories · '+(max?'up to '+max:'no limit');
+    const activeMasters=masters.filter(m=>m.status!=='inactive');$('publicStructurePreview').innerHTML=activeMasters.length?activeMasters.map(m=>`<div class="public-structure-row"><span>${esc(m.name)}</span><b>${subs.filter(c=>String(c.masterId)===String(m.id)&&c.status!=='draft').length} categories</b></div>`).join(''):'<div class="public-structure-empty">Add an active Master Category to preview the structure.</div>';
   }
+  function renderStats(){$('masterStat').textContent=masters.length;$('subStat').textContent=subs.length;$('openStat').textContent=subs.filter(c=>c.status==='open').length;$('masterTabCount').textContent=masters.length;$('subTabCount').textContent=subs.length}
+  function renderAll(){renderStats();renderMasters();renderSubs();renderExperience()}
 
-  function statusBadge(status){
-    if(status==='open')return '<span class="badge green">Open</span>';
-    if(status==='closed')return '<span class="badge red">Closed</span>';
-    return '<span class="badge orange">Draft</span>';
+  function openMaster(idValue){
+    editingMaster=idValue||null;const m=idValue?masterById(idValue):null;$('masterDrawerEyebrow').textContent=m?'EDIT MASTER CATEGORY':'NEW MASTER CATEGORY';$('masterDrawerTitle').textContent=m?m.name:'Add Master Category';$('masterName').value=m?.name||'';$('masterDescription').value=m?.description||'';$('masterCode').value=m?.code||'';$('masterStatus').value=m?.status||'active';$('masterNameError').textContent='';openModal('masterModal','masterName')
   }
+  function saveMaster(){const name=$('masterName').value.trim();if(!name){$('masterNameError').textContent='Enter a Master Category name';return}if(masters.some(m=>m.name.toLowerCase()===name.toLowerCase()&&String(m.id)!==String(editingMaster))){$('masterNameError').textContent='This Master Category already exists';return}const data={name,description:$('masterDescription').value.trim(),code:$('masterCode').value.trim()||codeFrom(name),status:$('masterStatus').value};if(editingMaster){Object.assign(masterById(editingMaster),data);toast('Master Category updated')}else{masters.push({id:'m-'+id(),...data});toast('Master Category added')}persist();closeModal('masterModal')}
+  function deleteMaster(masterId){const m=masterById(masterId),count=subCount(masterId);if(count){toast('Move or delete '+count+' Sub Categor'+(count===1?'y':'ies')+' first');return}if(!confirm('Delete '+m.name+'?'))return;masters=masters.filter(x=>String(x.id)!==String(masterId));persist();toast('Master Category deleted')}
+  function moveMaster(masterId,dir){const i=masters.findIndex(m=>String(m.id)===String(masterId)),j=dir==='up'?i-1:i+1;if(i<0||j<0||j>=masters.length)return;[masters[i],masters[j]]=[masters[j],masters[i]];persist()}
 
-  function renderCategories(){
-    const q=$('categorySearch').value.trim().toLowerCase();
-    const filtered=categories.filter(c=>(c.name+' '+(c.group||'')).toLowerCase().includes(q));
-    $('categoryList').innerHTML=filtered.map((c,idx)=>{
-      const actualIndex=categories.findIndex(x=>x.id===c.id);
-      const fee=c.feeMode==='base'?baseFee:Number(c.fee||0);
-      return `<article class="cat-row" draggable="true" data-id="${c.id}">
-        <div class="cat-drag" title="Drag to reorder">⋮⋮</div>
-        <div class="cat-row-main"><div class="cat-row-title"><b>${esc(c.name)}</b>${c.group?`<span>${esc(c.group)}</span>`:''}</div><p>${esc(c.description||'No description yet')}</p><div class="cat-row-meta"><span>${c.feeMode==='base'?'Base fee':'Custom fee'} · ${money(fee)}</span><span>${c.eligibility?'Eligibility set':'Open eligibility'}</span><span>${c.maxEntries==='0'?'No entry limit':'Max '+esc(c.maxEntries)+' / entrant'}</span></div></div>
-        <div class="cat-row-state">${statusBadge(c.status)}</div>
-        <div class="cat-row-actions">
-          <button class="cat-icon-btn" data-move="up" data-id="${c.id}" title="Move up" ${actualIndex===0?'disabled':''}>↑</button>
-          <button class="cat-icon-btn" data-move="down" data-id="${c.id}" title="Move down" ${actualIndex===categories.length-1?'disabled':''}>↓</button>
-          <button class="cat-more" data-id="${c.id}" aria-label="Edit category">•••</button>
-        </div>
-      </article>`;
-    }).join('');
-    $('categoryEmpty').hidden=categories.length!==0 || !!q;
-    if(categories.length===0 && !q)$('categoryList').innerHTML='';
-    if(filtered.length===0 && categories.length>0 && q)$('categoryList').innerHTML='<div class="cat-no-results">No categories match your search.</div>';
-
-    document.querySelectorAll('.cat-more').forEach(btn=>btn.addEventListener('click',()=>openEditor(btn.dataset.id)));
-    document.querySelectorAll('[data-move]').forEach(btn=>btn.addEventListener('click',()=>moveCategory(btn.dataset.id,btn.dataset.move)));
-    wireDragDrop();
+  function fillMasterSelect(selected){$('subMaster').innerHTML=masters.filter(m=>m.status!=='inactive'||String(m.id)===String(selected)).map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');if(selected)$('subMaster').value=String(selected)}
+  function openSub(idValue){
+    if(!masters.length){toast('Create a Master Category first');setTab('masters');openMaster();return}editingSub=idValue||null;const c=idValue?subs.find(x=>String(x.id)===String(idValue)):null;$('subDrawerEyebrow').textContent=c?'EDIT SUB CATEGORY':'NEW SUB CATEGORY';$('subDrawerTitle').textContent=c?c.name:'Add Sub Category';fillMasterSelect(c?.masterId||masters[0].id);$('subType').value=c?.categoryType||'paid';$('subName').value=c?.name||'';$('subDescription').value=c?.description||'';$('subCurrency').value=c?.currency||award.currency||'INR';$('subPrice').value=Number(c?.fee??award.baseFee??0);$('subArea').value=c?.allowedArea||'global';$('subStatus').value=c?.status||'open';$('subEligibility').value=c?.eligibility||'';$('subCode').value=c?.code||'';$('subMaxEntries').value=String(c?.maxEntries||0);$('subNameError').textContent='';toggleSubPrice();openModal('subModal','subName')
   }
+  function toggleSubPrice(){$('subPriceField').hidden=$('subType').value==='free'}
+  function saveSub(){const name=$('subName').value.trim(),masterId=$('subMaster').value;if(!name){$('subNameError').textContent='Enter a Sub Category name';return}if(!masterId){toast('Choose a Master Category');return}if(subs.some(c=>c.name.toLowerCase()===name.toLowerCase()&&String(c.id)!==String(editingSub))){$('subNameError').textContent='This Sub Category already exists';return}const m=masterById(masterId),type=$('subType').value;const data={name,masterId,group:m?.name||'',description:$('subDescription').value.trim(),categoryType:type,currency:$('subCurrency').value,feeMode:'custom',fee:type==='free'?0:Number($('subPrice').value||0),allowedArea:$('subArea').value,status:$('subStatus').value,eligibility:$('subEligibility').value.trim(),code:$('subCode').value.trim()||codeFrom(name),maxEntries:String($('subMaxEntries').value||0)};if(editingSub){Object.assign(subs.find(x=>String(x.id)===String(editingSub)),data);toast('Sub Category updated')}else{subs.push({id:id(),...data});toast('Sub Category added')}persist();closeModal('subModal')}
+  function deleteSub(subId){const c=subs.find(x=>String(x.id)===String(subId));if(!c||!confirm('Delete '+c.name+'?'))return;subs=subs.filter(x=>String(x.id)!==String(subId));persist();toast('Sub Category deleted')}
+  function moveSub(subId,dir){const i=subs.findIndex(c=>String(c.id)===String(subId)),j=dir==='up'?i-1:i+1;if(i<0||j<0||j>=subs.length)return;[subs[i],subs[j]]=[subs[j],subs[i]];persist()}
 
-  function moveCategory(id,direction){
-    const i=categories.findIndex(c=>String(c.id)===String(id));if(i<0)return;
-    const j=direction==='up'?i-1:i+1;if(j<0||j>=categories.length)return;
-    [categories[i],categories[j]]=[categories[j],categories[i]];persist();
-  }
+  function openModal(idValue,focusId){$(idValue).classList.add('open');$(idValue).setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$(focusId)?.focus(),70)}
+  function closeModal(idValue){$(idValue).classList.remove('open');$(idValue).setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
 
-  function wireDragDrop(){
-    let dragId=null;
-    document.querySelectorAll('.cat-row').forEach(row=>{
-      row.addEventListener('dragstart',()=>{dragId=row.dataset.id;row.classList.add('dragging')});
-      row.addEventListener('dragend',()=>{row.classList.remove('dragging');document.querySelectorAll('.cat-row').forEach(r=>r.classList.remove('drag-over'))});
-      row.addEventListener('dragover',e=>{e.preventDefault();if(row.dataset.id!==dragId)row.classList.add('drag-over')});
-      row.addEventListener('dragleave',()=>row.classList.remove('drag-over'));
-      row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('drag-over');if(!dragId||row.dataset.id===dragId)return;const from=categories.findIndex(c=>String(c.id)===String(dragId));const to=categories.findIndex(c=>String(c.id)===String(row.dataset.id));const [item]=categories.splice(from,1);categories.splice(to,0,item);persist()});
-    });
-  }
+  document.querySelectorAll('[data-admin-tab]').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.adminTab)));
+  $('addMasterBtn').onclick=()=>openMaster();$('masterEmptyBtn').onclick=()=>openMaster();$('saveMasterBtn').onclick=saveMaster;document.querySelectorAll('[data-close-master]').forEach(b=>b.onclick=()=>closeModal('masterModal'));
+  $('addSubBtn').onclick=()=>openSub();$('subEmptyBtn').onclick=()=>openSub();$('saveSubBtn').onclick=saveSub;document.querySelectorAll('[data-close-sub]').forEach(b=>b.onclick=()=>closeModal('subModal'));$('subType').onchange=toggleSubPrice;$('subSearch').oninput=renderSubs;$('masterFilter').onchange=renderSubs;
+  $('saveBtn').onclick=()=>{persist();toast('Category architecture saved')};
+  document.querySelectorAll('[data-selection-mode]').forEach(b=>b.onclick=()=>{settings.selectionMode=b.dataset.selectionMode;persist();renderExperience();toast(settings.selectionMode==='single'?'Single-category mode enabled':'Multi-category mode enabled')});
+  $('maxCategorySelections').onchange=()=>{settings.maxSelections=Number($('maxCategorySelections').value||0);persist();renderExperience()};$('autoImportAnswers').onchange=()=>{settings.autoImportAnswers=$('autoImportAnswers').checked;persist()};$('aiCategoryFinder').onchange=()=>{settings.aiFinder=$('aiCategoryFinder').checked;persist()};
+  $('copilotBtn').onclick=()=>{$('copilotPanel').classList.add('open');$('copilotPanel').setAttribute('aria-hidden','false')};$('closeCopilot').onclick=()=>{$('copilotPanel').classList.remove('open');$('copilotPanel').setAttribute('aria-hidden','true')};document.querySelectorAll('[data-copilot-action]').forEach(b=>b.onclick=()=>{let text='';if(b.dataset.copilotAction==='masters')text=masters.length<3?'Consider 3–6 Master Categories that reflect how entrants think: by entrant type, project type, or business outcome.':'Your Master Category count is healthy. Keep each track distinct and easy to scan.';if(b.dataset.copilotAction==='gaps')text=masters.filter(m=>subCount(m.id)===0).length?'Some Master Categories have no Sub Categories yet. Add at least one selectable category to each active track.':'Every Master Category currently has at least one Sub Category.';if(b.dataset.copilotAction==='overlap'){const names=subs.map(c=>c.name.toLowerCase());const dup=names.some((n,i)=>names.some((m,j)=>i!==j&&(n.includes(m)||m.includes(n))));text=dup?'Some Sub Category names may overlap. Clarify the eligibility or naming before publishing.':'No obvious Sub Category overlap detected.'}$('copilotAnswer').textContent=text});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal('masterModal');closeModal('subModal')}});
+  $('masterName').addEventListener('input',()=>{if(!$('masterCode').value)$('masterCode').value=codeFrom($('masterName').value);$('masterNameError').textContent=''});$('subName').addEventListener('input',()=>{if(!$('subCode').value)$('subCode').value=codeFrom($('subName').value);$('subNameError').textContent=''});
 
-  function updateUI(){
-    renderSuggestions();renderCategories();
-    const count=categories.length;
-    $('categoryCount').textContent=count;
-    $('summaryCategories').textContent=count;
-    $('summaryBaseFee').textContent=categories.filter(c=>c.feeMode==='base').length;
-    $('summaryCustomFee').textContent=categories.filter(c=>c.feeMode==='custom').length;
-    $('summaryEligibility').textContent=categories.filter(c=>c.eligibility&&c.eligibility.trim()).length;
-    const ready=count>0;
-    $('catProgressIcon').textContent=ready?'✓':'○';$('catProgressIcon').className=ready?'ok':'';
-    $('catProgressText').textContent=ready?count+' categor'+(count===1?'y':'ies')+' added':'Add at least one';
-    const pct=ready?40:20;$('setupPct').textContent=pct+'%';$('setupBar').style.width=pct+'%';
-    if(count===0)$('insightText').textContent='Start with 5–12 distinct categories. Avoid creating many similar categories before you have enough entry volume.';
-    else if(count<5)$('insightText').textContent='You have '+count+' categories. Consider adding a few more only if entrants need clearer choices.';
-    else if(count>15)$('insightText').textContent='You have '+count+' categories. Consider grouping or combining similar ones so entrants are not overwhelmed.';
-    else $('insightText').textContent='Good range: '+count+' categories is manageable for entrants and gives you enough variety for a strong first edition.';
-  }
-
-  function resetEditor(){
-    editingId=null;feeMode='base';
-    $('drawerEyebrow').textContent='NEW CATEGORY';$('drawerTitle').textContent='Add category';$('saveCategoryBtn').textContent='Add category';
-    $('catName').value='';$('catDescription').value='';$('catGroup').value='';$('catStatus').value='open';$('catEligibility').value='';$('catMaxEntries').value='0';$('catCode').value='';$('catFee').value=baseFee;$('catDescCount').textContent='0';$('catNameError').textContent='';
-    setFeeMode('base');
-  }
-
-  function openModal(){
-    $('categoryModal').classList.add('open');$('categoryModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$('catName').focus(),80);
-  }
-  function closeModal(){$('categoryModal').classList.remove('open');$('categoryModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
-  function openEditor(id){
-    const c=categories.find(x=>String(x.id)===String(id));if(!c)return;
-    editingId=c.id;$('drawerEyebrow').textContent='EDIT CATEGORY';$('drawerTitle').textContent=c.name;$('saveCategoryBtn').textContent='Save changes';
-    $('catName').value=c.name;$('catDescription').value=c.description||'';$('catGroup').value=c.group||'';$('catStatus').value=c.status||'open';$('catEligibility').value=c.eligibility||'';$('catMaxEntries').value=String(c.maxEntries||'0');$('catCode').value=c.code||'';$('catFee').value=Number(c.fee||baseFee);$('catDescCount').textContent=$('catDescription').value.length;$('catNameError').textContent='';setFeeMode(c.feeMode||'base');openModal();
-  }
-  function setFeeMode(mode){feeMode=mode;document.querySelectorAll('.cat-fee-option').forEach(btn=>{const on=btn.dataset.feeMode===mode;btn.classList.toggle('active',on);btn.querySelector('span').textContent=on?'●':'○'});$('customFeeRow').hidden=mode!=='custom'}
-
-  function saveCategory(){
-    const name=$('catName').value.trim();if(!name){$('catNameError').textContent='Enter a category name';$('catName').focus();return;}
-    const duplicate=categories.some(c=>c.name.toLowerCase()===name.toLowerCase()&&String(c.id)!==String(editingId));if(duplicate){$('catNameError').textContent='A category with this name already exists';$('catName').focus();return;}
-    const data={name,description:$('catDescription').value.trim(),group:$('catGroup').value.trim(),status:$('catStatus').value,feeMode,fee:feeMode==='base'?baseFee:Number($('catFee').value||0),eligibility:$('catEligibility').value.trim(),maxEntries:$('catMaxEntries').value,code:$('catCode').value.trim()||codeFrom(name)};
-    if(editingId!==null){const i=categories.findIndex(c=>String(c.id)===String(editingId));categories[i]={...categories[i],...data};toast('Category updated')}
-    else{categories.push({id:Date.now(),...data});toast('Category added')}
-    persist();closeModal();
-  }
-
-  $('addAllBtn').addEventListener('click',()=>{
-    const existing=new Set(categories.map(c=>c.name.toLowerCase()));let added=0;
-    suggestions.forEach(s=>{if(!existing.has(s.name.toLowerCase())){categories.push({id:Date.now()+Math.random(),name:s.name,description:'',group:'',status:'open',feeMode:'base',fee:baseFee,eligibility:'',maxEntries:'0',code:codeFrom(s.name)});added++}});
-    if(added){persist();toast(added+' categories added')}else toast('All suggestions are already added');
-  });
-  $('generateMoreBtn').addEventListener('click',()=>{
-    const names=new Set(suggestions.map(s=>s.name));const candidates=extraSuggestions.filter(x=>!names.has(x));const next=candidates.slice(0,5).map((name,i)=>({id:'x'+Date.now()+i,name,reason:i===0?'Helps broaden participation':'Additional category idea'}));suggestions=[...suggestions,...next];renderSuggestions();toast(next.length?'5 new suggestions ready':'No more preset suggestions');
-  });
-  $('addCategoryBtn').addEventListener('click',()=>{resetEditor();openModal()});$('emptyAddBtn').addEventListener('click',()=>{resetEditor();openModal()});
-  $('categorySearch').addEventListener('input',renderCategories);
-  $('catDescription').addEventListener('input',()=>{$('catDescCount').textContent=$('catDescription').value.length});
-  $('catName').addEventListener('input',()=>{if(!$('catCode').dataset.touched)$('catCode').value=codeFrom($('catName').value);$('catNameError').textContent=''});
-  $('catCode').addEventListener('input',()=>{$('catCode').dataset.touched='1'});
-  document.querySelectorAll('.cat-fee-option').forEach(btn=>btn.addEventListener('click',()=>setFeeMode(btn.dataset.feeMode)));
-  document.querySelectorAll('[data-close-modal]').forEach(x=>x.addEventListener('click',closeModal));
-  $('saveCategoryBtn').addEventListener('click',saveCategory);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
-  $('saveBtn').addEventListener('click',()=>{localStorage.setItem(categoryStoreKey(),JSON.stringify(categories));toast('Category draft saved')});
-
-  $('copilotBtn').addEventListener('click',()=>{$('copilotPanel').classList.add('open');$('copilotPanel').setAttribute('aria-hidden','false')});
-  $('closeCopilot').addEventListener('click',()=>{$('copilotPanel').classList.remove('open');$('copilotPanel').setAttribute('aria-hidden','true')});
-  document.querySelectorAll('[data-copilot-action]').forEach(btn=>btn.addEventListener('click',()=>{
-    const a=btn.dataset.copilotAction;let text='';
-    if(a==='simplify') text=categories.length>10?'You have '+categories.length+' categories. Start by grouping similar categories under 3–5 parent groups, then combine names that differ only slightly.':'Your category count is already fairly simple. Keep names short and make each one answer a different entrant need.';
-    if(a==='overlap'){const names=categories.map(c=>c.name.toLowerCase());const overlap=names.some((n,i)=>names.some((m,j)=>i!==j&&(n.includes(m)||m.includes(n))));text=overlap?'I found names that may feel similar. Review categories sharing the same core words and clarify the eligibility or combine them.':'No obvious naming overlap detected in this demo. Next, review eligibility rules to make sure categories do not compete for the same entries.'}
-    if(a==='growth') text=categories.length?'Promote a category that is strategically important but has lower awareness. In a live version, I would use entry volume and conversion data to recommend the exact one.':'Add categories first. Once entries arrive, Award Copilot can identify which category needs promotion.';
-    $('copilotAnswer').textContent=text;
-  }));
-
-  document.querySelectorAll('[data-selection-mode]').forEach(btn=>btn.addEventListener('click',()=>{selectionSettings.selectionMode=btn.dataset.selectionMode;persistSelectionSettings();toast(selectionSettings.selectionMode==='multiple'?'Multi-category selection enabled':'Single-category selection enabled')}));
-  $('maxCategorySelections').addEventListener('change',()=>{selectionSettings.maxSelections=Number($('maxCategorySelections').value||0);persistSelectionSettings()});
-  $('autoImportAnswers').addEventListener('change',()=>{selectionSettings.autoImportAnswers=$('autoImportAnswers').checked;persistSelectionSettings()});
-  $('aiCategoryFinder').addEventListener('change',()=>{selectionSettings.aiFinder=$('aiCategoryFinder').checked;persistSelectionSettings()});
-  renderSelectionPolicy();
-  updateUI();
+  $('sideAwardName').textContent=award.name||'ETB2B Awards';$('crumbAward').textContent=award.name||'ETB2B Awards';
+  migrate();renderAll();setTab('masters');
 })();
 </script>
 </body>

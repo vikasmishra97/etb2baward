@@ -13,12 +13,13 @@
 <div class="public-site public-page-shell pp-shell category-experience-shell">
   <div id="publicShellNav"></div>
   <main class="category-main">
-    <section class="category-hero">
+    <section class="category-hero category-hero-master">
       <div class="category-hero-copy">
         <span class="pp-kicker" id="categoryEyebrow">AWARD CATEGORIES</span>
-        <h1 id="categoryTitle">Find the category that fits your work.</h1>
-        <p id="categoryIntro">Explore the award categories, compare the fit, and build your nomination list before you start filling forms.</p>
+        <h1 id="categoryTitle">Choose the award track. Then choose your category.</h1>
+        <p id="categoryIntro">Browse Master Categories first, then select one or more Sub Categories that best match your work.</p>
         <div class="category-hero-meta">
+          <span class="category-meta-pill"><b id="masterCount">0</b> award tracks</span>
           <span class="category-meta-pill"><b id="categoryCount">0</b> open categories</span>
           <span class="category-meta-pill" id="selectionModePill">Select multiple categories</span>
           <span class="category-meta-pill" id="deadlinePill">Nomination deadline</span>
@@ -35,30 +36,36 @@
     <section class="category-ai" id="categoryAiSection">
       <div class="category-ai-heading">
         <div class="category-ai-icon">✦</div>
-        <div><span>AI CATEGORY FINDER</span><h2>Not sure where your work belongs?</h2><p>Describe your project, company, campaign or achievement. We’ll surface the closest category matches.</p></div>
+        <div><span>AI CATEGORY FINDER</span><h2>Tell us what you are nominating.</h2><p>We’ll recommend the strongest Sub Categories and show which Master Category each one belongs to.</p></div>
       </div>
       <div class="category-ai-input-row">
-        <textarea id="aiCategoryInput" placeholder="Example: We built an AI-led payments fraud platform that reduced false positives by 34% and improved customer experience..."></textarea>
+        <textarea id="aiCategoryInput" placeholder="Example: We designed a healthcare interior project focused on patient experience, sustainability and smart technology..."></textarea>
         <button type="button" id="aiRecommendBtn">✦ Find my best categories</button>
       </div>
       <div class="category-ai-chips">
-        <button data-ai-example="startup innovation growth">Startup innovation</button>
-        <button data-ai-example="leadership CEO transformation people">Leadership</button>
-        <button data-ai-example="AI technology automation product">AI & technology</button>
-        <button data-ai-example="campaign marketing customer experience">Campaign & CX</button>
+        <button data-ai-example="architecture healthcare project design">Healthcare project</button>
+        <button data-ai-example="interior office workplace design">Workplace interiors</button>
+        <button data-ai-example="leadership founder architect impact">Individual leadership</button>
+        <button data-ai-example="innovation technology sustainability project">Innovation & sustainability</button>
       </div>
       <div class="category-ai-results" id="aiCategoryResults" hidden></div>
     </section>
 
-    <section class="category-toolbar-wrap">
+    <section class="category-toolbar-wrap category-toolbar-master">
       <div class="category-toolbar">
-        <label class="category-search-pro"><span>⌕</span><input id="categorySearch" placeholder="Search category name, group or eligibility"></label>
+        <label class="category-search-pro"><span>⌕</span><input id="categorySearch" placeholder="Search Master or Sub Category, eligibility or description"></label>
         <div class="category-view-note" id="categoryViewNote">Showing all open categories</div>
       </div>
-      <div class="category-group-filters" id="categoryGroupFilters"></div>
     </section>
 
-    <section id="categoryGrid" class="category-grid-pro"></section>
+    <section class="category-catalog-layout">
+      <aside class="master-category-rail">
+        <div class="master-rail-head"><span>AWARD TRACKS</span><b>Master Categories</b></div>
+        <div class="master-rail-list" id="masterCategoryRail"></div>
+        <div class="master-rail-help"><span>✦</span><p><b>Not sure?</b><br>Use AI Category Finder above and compare the best-fit categories.</p></div>
+      </aside>
+      <div class="category-master-sections" id="categoryGrid"></div>
+    </section>
   </main>
   <footer class="pp-footer"><span id="footerAward">ETB2B Awards</span><span>Powered by ETB2B Awards · Vikas Mishra</span></footer>
 </div>
@@ -73,10 +80,10 @@
     <div class="category-detail-grid">
       <div><span>Eligibility</span><p id="detailEligibility"></p></div>
       <div><span>Entry fee</span><strong id="detailFee"></strong></div>
-      <div><span>Status</span><strong id="detailStatus"></strong></div>
+      <div><span>Allowed area</span><strong id="detailArea"></strong></div>
       <div><span>Entry limit</span><strong id="detailLimit"></strong></div>
     </div>
-    <div class="category-detail-ai" id="detailAiNote">✦ Category AI can help compare this category with your other choices.</div>
+    <div class="category-detail-ai" id="detailAiNote">✦ Smart Answer Reuse will carry identical responses into other selected categories.</div>
     <div class="category-detail-actions">
       <button type="button" class="category-secondary" data-close-category-detail>Close</button>
       <button type="button" class="category-primary" id="detailSelectBtn">Add to nomination list</button>
