@@ -13,34 +13,3 @@ html,body,.pp-shell,.pp-shell *{font-family:Inter,system-ui,-apple-system,"Segoe
 @media(max-width:560px){.info-grid,.jury-grid,.guideline-steps{grid-template-columns:1fr}.info-hero{padding-top:48px}.info-hero h1{font-size:40px}.criterion-row{grid-template-columns:1fr}.criterion-weight{grid-column:auto}.jury-card{align-items:flex-start}}
 
 .contact-page-escalation{grid-column:1/-1;margin-top:18px;padding:22px 0 0;border-top:1px solid rgba(20,23,30,.14);font-size:15px;line-height:1.7;text-align:var(--body-align,left);color:var(--body-text,#22252e)}
-
-/* V19.18 — standalone award pages: tablet & mobile polish */
-html,body{max-width:100%;overflow-x:hidden}
-.pp-shell,.public-page-shell{width:100%;overflow-x:hidden}
-@media(max-width:900px){
-  .pp-main,.public-page-shell .pp-main{padding:48px 22px 72px!important}
-  .info-hero{padding-top:52px!important}
-  .info-grid,.jury-grid,.guideline-steps{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  .category-grid,.rewards-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  .criterion-row{grid-template-columns:64px minmax(0,1fr) auto!important}
-  .contact-directory{grid-template-columns:1fr!important}
-  .pp-footer{padding-left:22px!important;padding-right:22px!important;flex-wrap:wrap}
-}
-@media(max-width:600px){
-  .pp-main,.public-page-shell .pp-main{padding:36px 15px 58px!important}
-  .info-hero{padding:34px 0 24px!important}
-  .info-hero h1,.nominate-top h1,.thank-card h1{font-size:clamp(34px,11vw,44px)!important;overflow-wrap:anywhere}
-  .info-hero p,.nominate-top p{font-size:14px!important;line-height:1.6!important}
-  .info-grid,.jury-grid,.guideline-steps,.category-grid,.rewards-grid{grid-template-columns:1fr!important}
-  .info-card,.jury-card,.guideline-step,.category-card,.reward-card{padding:17px!important;border-radius:14px!important}
-  .jury-card{align-items:flex-start!important}
-  .criterion-row{grid-template-columns:1fr!important;gap:8px!important;padding:16px!important}
-  .criterion-weight{grid-column:auto!important}
-  .category-search{flex-direction:column!important}
-  .category-search .pp-btn{width:100%}
-  .nominate-top{grid-template-columns:1fr!important;align-items:start!important}
-  .nominate-count{justify-self:start!important}
-  .nomination-card{padding:20px 16px!important;border-radius:16px!important}
-  .pp-footer{padding:20px 15px!important;flex-direction:column!important;align-items:flex-start!important;line-height:1.5!important}
-  .contact-page-escalation{font-size:14px!important;overflow-wrap:anywhere}
-}
