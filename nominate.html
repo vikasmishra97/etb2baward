@@ -1,1 +1,99 @@
-<!doctype html><html><head><link rel="icon" type="image/jpeg" href="et-logo.jpg"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Categories · ETB2B Awards</title><link rel="stylesheet" href="site-runtime.css"><link rel="stylesheet" href="public-pages-v19.css"></head><body data-page="categories"><div class="public-site public-page-shell pp-shell"><div id="publicShellNav"></div><main class="pp-main"><section class="nominate-top"><div><span class="pp-kicker">AWARD CATEGORIES</span><h1>Choose your category</h1><p>Select the category that best matches your work. Review the category fit, then start your nomination.</p></div><div class="nominate-count"><b id="categoryCount">0</b><small>AVAILABLE CATEGORIES</small></div></section><div class="category-search"><input id="categorySearch" placeholder="Search categories"></div><section id="categoryGrid" class="category-grid"></section></main><footer class="pp-footer"><span id="footerAward">ETB2B Awards</span><span>Powered by ETB2B Awards · Vikas Mishra</span></footer></div><div class="nomination-modal" id="nominationModal"><div class="nomination-card"><span class="pp-kicker">START NOMINATION</span><h2 id="modalCategory">Category</h2><p>This public prototype saves the nomination starter in your browser so you can test the journey end to end.</p><label><span>Nominee / company name</span><input id="nomineeName" placeholder="Company or person"></label><label><span>Your email</span><input id="nomineeEmail" type="email" placeholder="name@company.com"></label><div class="actions"><button class="secondary" id="closeNomination">Cancel</button><button class="primary" id="startNomination">Start nomination →</button></div></div></div><div id="publicToast" class="public-toast"></div><script src="site-renderer.js"></script><script src="public-shell.js"></script><script src="public-pages-v19.js"></script></body></html>
+<!doctype html>
+<html>
+<head>
+  <link rel="icon" type="image/jpeg" href="et-logo.jpg">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Categories · ETB2B Awards</title>
+  <link rel="stylesheet" href="site-runtime.css">
+  <link rel="stylesheet" href="public-pages-v19.css">
+  <link rel="stylesheet" href="category-experience.css">
+</head>
+<body data-page="categories">
+<div class="public-site public-page-shell pp-shell category-experience-shell">
+  <div id="publicShellNav"></div>
+  <main class="category-main">
+    <section class="category-hero">
+      <div class="category-hero-copy">
+        <span class="pp-kicker" id="categoryEyebrow">AWARD CATEGORIES</span>
+        <h1 id="categoryTitle">Find the category that fits your work.</h1>
+        <p id="categoryIntro">Explore the award categories, compare the fit, and build your nomination list before you start filling forms.</p>
+        <div class="category-hero-meta">
+          <span class="category-meta-pill"><b id="categoryCount">0</b> open categories</span>
+          <span class="category-meta-pill" id="selectionModePill">Select multiple categories</span>
+          <span class="category-meta-pill" id="deadlinePill">Nomination deadline</span>
+        </div>
+      </div>
+      <div class="category-hero-stat">
+        <span>YOUR NOMINATION LIST</span>
+        <strong id="heroSelectedCount">0</strong>
+        <small id="heroSelectionHint">Choose up to 5 categories</small>
+        <button type="button" id="heroReviewBtn" disabled>Review selection →</button>
+      </div>
+    </section>
+
+    <section class="category-ai" id="categoryAiSection">
+      <div class="category-ai-heading">
+        <div class="category-ai-icon">✦</div>
+        <div><span>AI CATEGORY FINDER</span><h2>Not sure where your work belongs?</h2><p>Describe your project, company, campaign or achievement. We’ll surface the closest category matches.</p></div>
+      </div>
+      <div class="category-ai-input-row">
+        <textarea id="aiCategoryInput" placeholder="Example: We built an AI-led payments fraud platform that reduced false positives by 34% and improved customer experience..."></textarea>
+        <button type="button" id="aiRecommendBtn">✦ Find my best categories</button>
+      </div>
+      <div class="category-ai-chips">
+        <button data-ai-example="startup innovation growth">Startup innovation</button>
+        <button data-ai-example="leadership CEO transformation people">Leadership</button>
+        <button data-ai-example="AI technology automation product">AI & technology</button>
+        <button data-ai-example="campaign marketing customer experience">Campaign & CX</button>
+      </div>
+      <div class="category-ai-results" id="aiCategoryResults" hidden></div>
+    </section>
+
+    <section class="category-toolbar-wrap">
+      <div class="category-toolbar">
+        <label class="category-search-pro"><span>⌕</span><input id="categorySearch" placeholder="Search category name, group or eligibility"></label>
+        <div class="category-view-note" id="categoryViewNote">Showing all open categories</div>
+      </div>
+      <div class="category-group-filters" id="categoryGroupFilters"></div>
+    </section>
+
+    <section id="categoryGrid" class="category-grid-pro"></section>
+  </main>
+  <footer class="pp-footer"><span id="footerAward">ETB2B Awards</span><span>Powered by ETB2B Awards · Vikas Mishra</span></footer>
+</div>
+
+<div class="category-detail-modal" id="categoryDetailModal" aria-hidden="true">
+  <div class="category-detail-backdrop" data-close-category-detail></div>
+  <article class="category-detail-panel" role="dialog" aria-modal="true">
+    <button class="category-detail-close" type="button" data-close-category-detail>×</button>
+    <span class="pp-kicker" id="detailGroup">AWARD CATEGORY</span>
+    <h2 id="detailTitle">Category</h2>
+    <p class="category-detail-description" id="detailDescription"></p>
+    <div class="category-detail-grid">
+      <div><span>Eligibility</span><p id="detailEligibility"></p></div>
+      <div><span>Entry fee</span><strong id="detailFee"></strong></div>
+      <div><span>Status</span><strong id="detailStatus"></strong></div>
+      <div><span>Entry limit</span><strong id="detailLimit"></strong></div>
+    </div>
+    <div class="category-detail-ai" id="detailAiNote">✦ Category AI can help compare this category with your other choices.</div>
+    <div class="category-detail-actions">
+      <button type="button" class="category-secondary" data-close-category-detail>Close</button>
+      <button type="button" class="category-primary" id="detailSelectBtn">Add to nomination list</button>
+    </div>
+  </article>
+</div>
+
+<div class="category-selection-dock" id="categorySelectionDock" hidden>
+  <div class="category-selection-dock-inner">
+    <div class="category-dock-summary"><span class="category-dock-icon">✓</span><div><b><span id="dockCount">0</span> selected</b><small id="dockTotal">₹0 total entry fee</small></div></div>
+    <div class="category-dock-chips" id="dockChips"></div>
+    <button type="button" id="reviewSelectionBtn">Review nominations →</button>
+  </div>
+</div>
+<div id="publicToast" class="public-toast"></div>
+<script src="site-renderer.js"></script>
+<script src="public-shell.js"></script>
+<script src="category-experience.js"></script>
+</body>
+</html>

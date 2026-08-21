@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Categories · ETB2B Awards</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="categories-v19-17.css">
 </head>
 <body>
 <div class="app">
@@ -64,6 +65,28 @@
         <a class="ca-track-item" href="entry-form.html"><span>3</span><div><b>Entry Form</b><small>Next</small></div></a><i></i>
         <a class="ca-track-item" href="pricing.html"><span>4</span><div><b>Pricing</b><small>Later</small></div></a><i></i>
         <a class="ca-track-item" href="website.html"><span>5</span><div><b>Website</b><small>Later</small></div></a>
+      </div>
+
+      <div class="card pad cat-policy-card">
+        <div class="cat-policy-copy">
+          <span class="cat-kicker">PUBLIC CATEGORY EXPERIENCE</span>
+          <h2>How should entrants select categories?</h2>
+          <p>Choose whether an entrant can enter one category only or build a multi-category nomination bucket.</p>
+        </div>
+        <div class="cat-policy-options" role="radiogroup" aria-label="Category selection policy">
+          <button type="button" class="cat-policy-option" data-selection-mode="single">
+            <span class="cat-policy-radio">○</span><div><b>Single category</b><small>One category per nomination journey</small></div>
+          </button>
+          <button type="button" class="cat-policy-option" data-selection-mode="multiple">
+            <span class="cat-policy-radio">○</span><div><b>Multiple categories</b><small>Build a bucket, complete forms one by one, then pay once</small></div>
+          </button>
+        </div>
+        <div class="cat-policy-settings" id="multiPolicySettings">
+          <label class="cat-policy-field"><span>Maximum categories per entrant</span><select id="maxCategorySelections"><option value="2">2</option><option value="3">3</option><option value="5">5</option><option value="8">8</option><option value="10">10</option><option value="0">No limit</option></select></label>
+          <label class="cat-policy-switch"><input type="checkbox" id="autoImportAnswers"><span></span><div><b>Smart answer reuse</b><small>Automatically import answers when the same question appears in another selected category.</small></div></label>
+          <label class="cat-policy-switch"><input type="checkbox" id="aiCategoryFinder"><span></span><div><b>AI Category Finder</b><small>Show entrants a guided category-fit assistant on the public Categories page.</small></div></label>
+        </div>
+        <div class="cat-policy-status"><span>Live rule</span><strong id="selectionPolicySummary">Multiple categories · up to 5</strong></div>
       </div>
 
       <div class="cat-layout">
@@ -134,6 +157,7 @@
           <div class="card pad section cat-summary-card">
             <div class="section-title"><h2>At a glance</h2><span>Live</span></div>
             <div class="cat-summary-row"><span>Categories</span><b id="summaryCategories">0</b></div>
+            <div class="cat-summary-row"><span>Public selection</span><b id="summarySelectionMode">Multiple</b></div>
             <div class="cat-summary-row"><span>Using base fee</span><b id="summaryBaseFee">0</b></div>
             <div class="cat-summary-row"><span>Custom fee</span><b id="summaryCustomFee">0</b></div>
             <div class="cat-summary-row"><span>With eligibility rules</span><b id="summaryEligibility">0</b></div>
@@ -236,6 +260,8 @@
   let suggestions=[];
   let editingId=null;
   let feeMode='base';
+  const categorySettingsKey='etb2b_awards_category_settings_'+(award.slug||'demo');
+  let selectionSettings=(()=>{try{return Object.assign({selectionMode:'multiple',maxSelections:5,autoImportAnswers:true,aiFinder:true},JSON.parse(localStorage.getItem(categorySettingsKey)||'{}'))}catch(e){return {selectionMode:'multiple',maxSelections:5,autoImportAnswers:true,aiFinder:true}}})();
 
   const fallbackSuggestions=['Best FinTech Startup','Best Digital Banking Innovation','Best Payments Solution','FinTech Leader of the Year','Best AI in Financial Services'];
   const extraSuggestions=['Customer Experience Excellence','Best Emerging Technology','Innovation Team of the Year','Sustainability Impact Award','Best Partnership or Collaboration','Rising Star of the Year','Best Use of Data & Analytics','Financial Inclusion Award','Best B2B Solution','Best Consumer FinTech'];
@@ -265,6 +291,28 @@
     ];
   }
   suggestions=(award.suggestedCategories&&award.suggestedCategories.length?award.suggestedCategories:fallbackSuggestions).map((name,i)=>({id:'s'+i,name,reason:i===0?'Strong flagship category':i===3?'Adds a people/leadership dimension':'Common fit for this award'}));
+
+  function persistSelectionSettings(){
+    localStorage.setItem(categorySettingsKey,JSON.stringify(selectionSettings));
+    renderSelectionPolicy();
+  }
+  function renderSelectionPolicy(){
+    document.querySelectorAll('[data-selection-mode]').forEach(btn=>{
+      const active=btn.dataset.selectionMode===selectionSettings.selectionMode;
+      btn.classList.toggle('active',active);
+      const radio=btn.querySelector('.cat-policy-radio');if(radio)radio.textContent=active?'●':'○';
+    });
+    const multi=selectionSettings.selectionMode==='multiple';
+    $('multiPolicySettings').classList.toggle('is-single',!multi);
+    $('maxCategorySelections').disabled=!multi;
+    $('maxCategorySelections').value=String(selectionSettings.maxSelections ?? 5);
+    $('autoImportAnswers').checked=selectionSettings.autoImportAnswers!==false;
+    $('aiCategoryFinder').checked=selectionSettings.aiFinder!==false;
+    const max=Number(selectionSettings.maxSelections||0);
+    const summary=multi?('Multiple categories · '+(max?('up to '+max):'no limit')):'Single category only';
+    $('selectionPolicySummary').textContent=summary;
+    $('summarySelectionMode').textContent=multi?'Multiple':'Single';
+  }
 
   function renderSuggestions(){
     const existing=new Set(categories.map(c=>c.name.toLowerCase()));
@@ -405,6 +453,11 @@
     $('copilotAnswer').textContent=text;
   }));
 
+  document.querySelectorAll('[data-selection-mode]').forEach(btn=>btn.addEventListener('click',()=>{selectionSettings.selectionMode=btn.dataset.selectionMode;persistSelectionSettings();toast(selectionSettings.selectionMode==='multiple'?'Multi-category selection enabled':'Single-category selection enabled')}));
+  $('maxCategorySelections').addEventListener('change',()=>{selectionSettings.maxSelections=Number($('maxCategorySelections').value||0);persistSelectionSettings()});
+  $('autoImportAnswers').addEventListener('change',()=>{selectionSettings.autoImportAnswers=$('autoImportAnswers').checked;persistSelectionSettings()});
+  $('aiCategoryFinder').addEventListener('change',()=>{selectionSettings.aiFinder=$('aiCategoryFinder').checked;persistSelectionSettings()});
+  renderSelectionPolicy();
   updateUI();
 })();
 </script>
