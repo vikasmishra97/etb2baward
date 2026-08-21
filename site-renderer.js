@@ -15,7 +15,7 @@
       theme:{preset:'awards-night',primary:'#a90e17',accent:'#d8ad59',surface:'#fffaf2',font:'editorial',radius:'soft',bodyFont:'inter',bodyHeadingSize:50,bodySubheadingSize:16,bodyParagraphSize:16,bodyTextAlign:'left',bodyBg:'#ffffff',bodyText:'#22252e',bodySectionSpacing:70,bodyBackgroundImage:''},
       header:{desktopImage:'',mobileImage:'',illustrationImage:'',brandingBanner:'',sponsorLogo:'',bottomSponsor:'',seoImage:'',thumbnailImage:'',seoTitle:'',seoDescription:'',design:'stage',overlay:58,heroPosition:'center',illustrationSize:48,brandingWidth:84,heroHeight:690},
       form:{showOnBanner:true,displayMode:'banner',layout:'card',title:'Register your interest',subtitle:'Stay informed about nominations',fields:{name:true,email:true,mobile:true,company:true,designation:false},customFields:[]},
-      nav:{sticky:true,style:'transparent',background:'#4b0d13',opacity:88,textColor:'#ffffff',twoRow:true,order:['home','page:categories','page:jury','page:guidelines','page:criteria','page:terms','section:overview','section:why','section:speakers','section:agenda','section:contact','page:faq','page:contact','page:previous','page:rewards'],pages:{home:true,categories:true,jury:true,guidelines:true,criteria:true,terms:true,faq:true,contact:true,previous:true},visible:{overview:true,keypoints:false,who:false,why:true,eventDescription:false,speakers:true,agenda:true,resources:false,glimpse:false,contact:true}},
+      nav:{sticky:true,homeVisible:true,style:'transparent',background:'#4b0d13',opacity:88,textColor:'#ffffff',twoRow:true,order:['home','page:categories','page:jury','page:guidelines','page:criteria','page:terms','section:overview','section:why','section:speakers','section:agenda','section:faqSection','section:aboutVertical','section:contact','page:faq','page:contact','page:previous','page:rewards'],pages:{home:true,categories:true,jury:true,guidelines:true,criteria:true,terms:true,faq:true,contact:true,previous:true},visible:{overview:true,keypoints:false,who:false,why:true,eventDescription:false,speakers:true,agenda:true,resources:false,glimpse:false,contact:true}},
       pages:{landing:{title:name,enabled:true},thankyou:{enabled:true,title:'Thank you for your interest',body:'We have received your details. Our awards team will keep you updated with nomination news and important dates.'},rewards:{enabled:true,title:'Recognition that travels beyond the trophy',body:'Winners receive a digital certificate, winner badge, editorial visibility and a place in the official ETB2B Awards winner gallery.'}},
       publicPages:[
         {id:'categories',label:'Categories',navLabel:'Categories',enabled:true,showInNav:true,eyebrow:'AWARD CATEGORIES',title:'Choose your category',intro:'Select the category that best matches your work. Review the category fit, then start your nomination.'},
@@ -60,7 +60,15 @@
         {id:'glimpse',label:'Glimpse / About',enabled:true,theme:'split',title:'A glimpse of the experience',body:'A premium stage, high-value networking and stories that continue well beyond awards night. Use this section for previous-edition photography, highlights or a brand film.',
           galleryGroups:[{id:'highlights',name:'Event Highlights',active:true,weight:100},{id:'winners',name:'Winners',active:true,weight:90},{id:'networking',name:'Networking',active:true,weight:80}],
           images:[]},
+        {id:'faqSection',label:'FAQs',enabled:true,showInNav:false,theme:'faq-accordion',subTitle:'FAQ',title:'Frequently Asked Questions',navLabel:'FAQs',
+          faqs:[
+            {id:'fq1',question:'Who can enter the awards?',answer:'Eligibility depends on the selected category. Organisations, teams and individuals should review the category description and entry guidelines before submitting.',status:true},
+            {id:'fq2',question:'Can I submit more than one entry?',answer:'Yes. Multiple nominations and categories are supported where the work meets the relevant criteria.',status:true},
+            {id:'fq3',question:'What happens after I submit?',answer:'Your entry is checked for completion and eligibility before it enters the judging workflow.',status:true}
+          ]},
+        {id:'aboutVertical',label:'About Vertical',enabled:true,showInNav:false,theme:'about-editorial',subTitle:'ABOUT THE VERTICAL',title:'About ETB2B',navLabel:'About',companyName:'ETB2B Awards',companyLogo:'',body:'The Economic Times Business Verticals brings together focused industry communities, trusted editorial context and high-value business experiences. Use this section to explain the vertical, brand or organisation behind your awards programme.'},
         {id:'contact',label:'Contact',enabled:true,theme:'dark',title:'Need help with your nomination?',showGroupHeadings:true,
+          escalationText:'For any issues requiring immediate escalation, please write to shahbaz.khan@timesinternet.in - Md. Shahbaz Khan, Head of Special Initiatives & Business Strategy, The Economic Times Business Verticals.',
           contactGroups:[{id:'delegates',name:'For Delegates',active:true},{id:'sponsors',name:'For Sponsors',active:true},{id:'media',name:'For Media',active:true}],
           contacts:[{id:'ct1',name:'Awards Helpdesk',email:'awards@etb2b.com',phone:'+91 98765 43210',company:'ETB2B Awards',designation:'Awards Team',groupId:'delegates',status:true}],
           email:'awards@etb2b.com',phone:'+91 98765 43210',address:a?.venue||'ETB2B Awards Team'},
@@ -108,6 +116,9 @@
       if(!contacts.length&&(ct.email||ct.phone||ct.address))contacts=[{name:'Awards Helpdesk',email:ct.email||'',phone:ct.phone||'',company:'ETB2B Awards',designation:ct.address||'',groupId:ct.contactGroups[0]?.id||'',status:true}];
       ct.contacts=(contacts.length?contacts:dc.contacts).map((x,i)=>Object.assign({id:x.id||`ct${i+1}`,name:'Contact',email:'',phone:'',company:'',designation:'',groupId:ct.contactGroups[0]?.id||'',status:true},x,{id:x.id||`ct${i+1}`}));ct.showGroupHeadings=ct.showGroupHeadings!==false;
     }
+    const fq=d.sections.find(s=>s.id==='faqSection');if(fq){const df=defaultState(a).sections.find(s=>s.id==='faqSection');fq.faqs=(Array.isArray(fq.faqs)&&fq.faqs.length?fq.faqs:df.faqs).map((x,i)=>Object.assign({id:x.id||`fq${i+1}`,question:'Question',answer:'Answer',status:true},x,{id:x.id||`fq${i+1}`}));}
+    const av=d.sections.find(s=>s.id==='aboutVertical');if(av){const da=defaultState(a).sections.find(s=>s.id==='aboutVertical');if(av.companyName==null)av.companyName=da.companyName;if(av.companyLogo==null)av.companyLogo='';if(av.body==null)av.body=da.body;}
+    if(ct&&!ct.escalationText)ct.escalationText='For any issues requiring immediate escalation, please write to shahbaz.khan@timesinternet.in - Md. Shahbaz Khan, Head of Special Initiatives & Business Strategy, The Economic Times Business Verticals.';
     d.sections.forEach(sec=>{if(sec.showInNav==null){const legacy=raw.nav?.visible&&Object.prototype.hasOwnProperty.call(raw.nav.visible,sec.id)?raw.nav.visible[sec.id]:defaultState(a).nav.visible[sec.id];sec.showInNav=legacy!==false;}if(sec.showTitle==null)sec.showTitle=true;if(sec.showSubTitle==null)sec.showSubTitle=true;if(sec.showNavLabel==null)sec.showNavLabel=true;if(!sec.subTitle)sec.subTitle=sec.label||sec.title||'Section';if(!sec.navLabel)sec.navLabel=sec.label||sec.title||'Section';});
     d.sections=[...d.sections.filter(s=>s.enabled!==false),...d.sections.filter(s=>s.enabled===false)];
     const fallbackOrder=defaultState(a).nav.order||[];const incomingOrder=Array.isArray(raw.nav?.order)?raw.nav.order:[];d.nav.order=[...incomingOrder,...fallbackOrder.filter(x=>!incomingOrder.includes(x))];
@@ -146,6 +157,14 @@
     const grouped=groups.map(g=>({g,items:contacts.filter(c=>(c.groupId||groups[0]?.id)===g.id)})).filter(x=>x.items.length);const other=contacts.filter(c=>!groups.some(g=>g.id===c.groupId));if(other.length)grouped.push({g:{name:'Contact'},items:other});
     return grouped.map(({g,items})=>`<div class="public-contact-group">${s.showGroupHeadings!==false&&grouped.length>1?`<h3>${esc(g.name)}</h3>`:''}<div class="public-contact">${items.map(c=>`<article><div class="contact-person"><b>${esc(c.name)}</b>${c.designation?`<span>${esc(c.designation)}</span>`:''}${c.company?`<small>${esc(c.company)}</small>`:''}</div>${c.email?`<a href="mailto:${esc(c.email)}"><small>Email</small><b>${esc(c.email)}</b></a>`:''}${c.phone?`<a href="tel:${esc(c.phone)}"><small>Phone</small><b>${esc(c.phone)}</b></a>`:''}</article>`).join('')}</div></div>`).join('');
   }
+  function renderFaqSection(s){
+    const faqs=(s.faqs||[]).filter(x=>x.status!==false);if(!faqs.length)return '<div class="public-empty">FAQs will be added soon.</div>';
+    return `<div class="public-faq-list">${faqs.map((x,i)=>`<details ${i===0?'open':''}><summary><span>${String(i+1).padStart(2,'0')}</span><b>${esc(x.question)}</b><i>+</i></summary><p>${esc(x.answer)}</p></details>`).join('')}</div>`;
+  }
+  function renderAboutVertical(s){
+    const logo=s.companyLogo?`<div class="about-vertical-logo"><img src="${esc(s.companyLogo)}" alt="${esc(s.companyName||'Company logo')}"></div>`:'';
+    return `<div class="public-about-vertical">${logo}<div class="about-vertical-copy">${s.companyName?`<h3>${esc(s.companyName)}</h3>`:''}<p>${esc(s.body||'')}</p></div></div>`;
+  }
   function renderSection(s,state){if(!s.enabled)return'';const id=`section-${s.id}`;
     if(s.id==='overview'||s.id==='eventDescription')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}<div class="public-prose">${esc(s.body)}</div></section>`;
     if(s.id==='keypoints'||s.id==='who'||s.id==='why')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${listCards(s.items)}</section>`;
@@ -154,7 +173,9 @@
     if(s.id==='agenda')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${renderAgenda(s,state)}</section>`;
     if(s.id==='resources')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}<div class="public-resources">${(s.resources||[]).map(r=>`<a href="${esc(r.url||'#')}" target="_blank" rel="noopener"><span>↗</span><b>${esc(r.title)}</b><small>Open resource</small></a>`).join('')}</div></section>`;
     if(s.id==='glimpse')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${renderGallery(s)}</section>`;
-    if(s.id==='contact')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${renderContacts(s)}</section>`;
+    if(s.id==='faqSection')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${renderFaqSection(s)}</section>`;
+    if(s.id==='aboutVertical')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${renderAboutVertical(s)}</section>`;
+    if(s.id==='contact')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${renderContacts(s)}${s.escalationText?`<div class="contact-escalation">${esc(s.escalationText)}</div>`:''}</section>`;
     if(s.id==='custom')return `<section id="${id}" class="${sectionClass(s)} custom-code-section">${sectionHead(s)}<div class="custom-code-output">${s.html||''}</div></section>`;
     return'';
   }
@@ -207,7 +228,7 @@
   function publicPageHref(id){return({categories:'nominate.html',jury:'jury.html',guidelines:'entry-guidelines.html',criteria:'judging-criteria.html',terms:'terms.html',faq:'faq.html',contact:'contact.html',previous:'previous-edition.html',rewards:'rewards.html'})[id]||'website-preview.html'}
   function navItems(a,state,opts={}){
     const current=opts.currentPage||'home';const homeHref=current==='home'?'#home':'website-preview.html';
-    const items=[{id:'home',label:'Home',href:homeHref,type:'home',active:current==='home'}];
+    const items=state.nav.homeVisible===false?[]:[{id:'home',label:'Home',href:homeHref,type:'home',active:current==='home'}];
     (state.sections||[]).filter(s=>s.enabled!==false&&s.showInNav!==false&&s.showNavLabel!==false&&s.id!=='custom').forEach(s=>items.push({id:'section:'+s.id,label:s.navLabel||s.label,href:current==='home'?'#section-'+s.id:'website-preview.html#section-'+s.id,type:'section',active:false}));
     (state.publicPages||[]).filter(pg=>pg.enabled!==false&&pg.showInNav!==false).forEach(pg=>items.push({id:'page:'+pg.id,label:pg.navLabel||pg.label,href:publicPageHref(pg.id),type:'page',active:current===pg.id}));
     const map=Object.fromEntries(items.map(i=>[i.id,i]));const order=Array.isArray(state.nav.order)?state.nav.order:[];const ordered=[];order.forEach(id=>{if(map[id]&&!ordered.some(x=>x.id===id))ordered.push(map[id])});items.forEach(i=>{if(!ordered.some(x=>x.id===i.id))ordered.push(i)});return ordered;

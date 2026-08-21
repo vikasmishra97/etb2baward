@@ -120,3 +120,12 @@
 .section-visibility-controls .wb19-field{margin-bottom:14px}.section-visibility-controls .wb19-field:last-child{margin-bottom:10px}
 .section-visibility-controls .section-visibility-row{padding:3px 0 9px}.section-visibility-controls .section-visibility-row b{font-size:11px}
 .section-visibility-controls .section-visibility-row small{font-size:8.3px;max-width:280px}
+
+
+/* V19.16 — navigation ownership + FAQ / About Vertical editors */
+.nav-managed-note{display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 13px;border:1px solid #e4ddcf;border-radius:14px;background:linear-gradient(135deg,#fffaf0,#fff)}
+.nav-managed-note>span{width:28px;height:28px;display:grid;place-items:center;border-radius:9px;background:#2b1720;color:#fff;font-size:13px}.nav-managed-note b{display:block;font-size:11px}.nav-managed-note small{display:block;margin-top:2px;color:#7b7f89;font-size:9px;line-height:1.5}
+.premium-nav-sort .nav-sort-row{grid-template-columns:34px minmax(0,1fr) auto auto}.premium-nav-sort .nav-sort-row.nav-hidden{opacity:.67;background:#faf9f7}.nav-order-switch{display:inline-flex;align-items:center;gap:6px;cursor:pointer}.nav-order-switch input{position:absolute;opacity:0;pointer-events:none}.nav-order-switch i{width:30px;height:18px;border-radius:99px;background:#d8d7d3;position:relative;transition:.18s}.nav-order-switch i:after{content:"";position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;left:2px;top:2px;box-shadow:0 1px 4px rgba(0,0,0,.18);transition:.18s}.nav-order-switch input:checked+i{background:#b50e18}.nav-order-switch input:checked+i:after{left:14px}.nav-order-switch span{font-size:9px;font-weight:900;color:#777d88;min-width:22px}
+.mandatory-contact-note{margin:14px 0 16px;padding:14px;border:1px solid #e8d9ba;border-radius:15px;background:linear-gradient(135deg,#fff8e9,#fff)}.mandatory-contact-note>div>b{font-size:12px}.mandatory-contact-note>div>small{display:block;color:#737986;font-size:9px;line-height:1.55;margin:3px 0 10px}.mandatory-contact-note textarea{min-height:105px}
+.faq-editor-row .entity-meta span{max-width:430px;white-space:normal;line-height:1.4}.about-vertical-editor .entity-media-editor{margin:12px 0 16px}.about-vertical-editor textarea.tall{min-height:190px}
+@media(max-width:700px){.premium-nav-sort .nav-sort-row{grid-template-columns:30px minmax(0,1fr) auto}.nav-order-switch{grid-column:2}.nav-sort-badge{grid-column:3;grid-row:1/3}}
