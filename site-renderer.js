@@ -149,8 +149,22 @@
     return `<div class="public-agenda">${items.map((x,i)=>{const linked=(x.speakerIds||[]).map(id=>speakerMap[id]).filter(Boolean);const start=x.start?niceTime(x.start):x.time||'';const end=x.end?niceTime(x.end):'';const t=end&&end!==start?`${start} – ${end}`:start;return `<article><time>${esc(t)}</time><span>${String(i+1).padStart(2,'0')}</span><div class="agenda-copy"><b>${esc(x.title)}</b>${groups[x.groupId]?.name?`<small class="agenda-group">${esc(groups[x.groupId].name)}</small>`:''}${x.summary?`<p>${esc(x.summary)}</p>`:''}${linked.length?`<div class="agenda-speaker-profiles">${linked.map(speakerCard).join('')}</div>`:''}</div></article>`}).join('')}</div>`;
   }
   function renderGallery(s){
-    const activeGroupIds=new Set((s.galleryGroups||[]).filter(g=>g.active!==false).map(g=>g.id));const knownGroupIds=new Set((s.galleryGroups||[]).map(g=>g.id));const imgs=(s.images||[]).filter(x=>x.status!==false&&x.image&&(!x.groupId||!knownGroupIds.has(x.groupId)||activeGroupIds.has(x.groupId)));if(!imgs.length)return `<div class="public-glimpse"><div><p>${esc(s.body)}</p></div><div class="glimpse-grid"><span></span><span></span><span></span></div></div>`;
-    return `<div class="public-gallery-intro"><p>${esc(s.body)}</p></div><div class="public-gallery-grid">${imgs.map((x,i)=>`<figure><img src="${esc(x.image)}" alt="${esc(x.title||'Event image')}"><figcaption><b>${esc(x.title||'Event highlight')}</b>${x.socialHandle?`<span>${esc(x.socialHandle)}</span>`:''}</figcaption></figure>`).join('')}</div>`;
+    const activeGroupIds=new Set((s.galleryGroups||[]).filter(g=>g.active!==false).map(g=>g.id));
+    const knownGroupIds=new Set((s.galleryGroups||[]).map(g=>g.id));
+    const imgs=(s.images||[]).filter(x=>x.status!==false&&x.image&&(!x.groupId||!knownGroupIds.has(x.groupId)||activeGroupIds.has(x.groupId)));
+    if(!imgs.length)return `<div class="public-glimpse"><div><p>${esc(s.body)}</p></div><div class="glimpse-grid"><span></span><span></span><span></span></div></div>`;
+    const card=x=>`<figure><img src="${esc(x.image)}" alt="${esc(x.title||'Event image')}"><figcaption><b>${esc(x.title||'Event highlight')}</b>${x.socialHandle?`<span>${esc(x.socialHandle)}</span>`:''}</figcaption></figure>`;
+    const intro=`<div class="public-gallery-intro"><p>${esc(s.body)}</p></div>`;
+    if(['glimpse-auto-carousel','glimpse-infinite-reel','glimpse-coverflow-3d'].includes(s.theme)){
+      const loop=[...imgs,...imgs,...imgs];
+      const klass=s.theme==='glimpse-auto-carousel'?'glimpse-motion-carousel':s.theme==='glimpse-infinite-reel'?'glimpse-motion-reel':'glimpse-motion-coverflow';
+      return `${intro}<div class="public-gallery-motion ${klass}" aria-label="Event highlights carousel"><div class="public-gallery-track">${loop.map(card).join('')}</div></div>`;
+    }
+    if(s.theme==='glimpse-depth-stack'){
+      const top=imgs.slice(0,6);
+      return `${intro}<div class="public-gallery-depth-stack">${top.map((x,i)=>`<figure style="--depth-index:${i}">${card(x).replace(/^<figure>|<\/figure>$/g,'')}</figure>`).join('')}</div>`;
+    }
+    return `${intro}<div class="public-gallery-grid">${imgs.map(card).join('')}</div>`;
   }
   function renderContacts(s){
     const allGroups=s.contactGroups||[];const groups=allGroups.filter(g=>g.active!==false);const activeIds=new Set(groups.map(g=>g.id));const knownIds=new Set(allGroups.map(g=>g.id));const contacts=(s.contacts||[]).filter(c=>c.status!==false&&(!c.groupId||!knownIds.has(c.groupId)||activeIds.has(c.groupId)));if(!contacts.length)return '<div class="public-empty">Contact details will be available soon.</div>';
@@ -162,8 +176,9 @@
     return `<div class="public-faq-list">${faqs.map((x,i)=>`<details ${i===0?'open':''}><summary><span>${String(i+1).padStart(2,'0')}</span><b>${esc(x.question)}</b><i>+</i></summary><p>${esc(x.answer)}</p></details>`).join('')}</div>`;
   }
   function renderAboutVertical(s){
-    const logo=s.companyLogo?`<div class="about-vertical-logo"><img src="${esc(s.companyLogo)}" alt="${esc(s.companyName||'Company logo')}"></div>`:'';
-    return `<div class="public-about-vertical">${logo}<div class="about-vertical-copy">${s.companyName?`<h3>${esc(s.companyName)}</h3>`:''}<p>${esc(s.body||'')}</p></div></div>`;
+    const hasLogo=!!s.companyLogo;
+    const logo=hasLogo?`<div class="about-vertical-logo"><img src="${esc(s.companyLogo)}" alt="${esc(s.companyName||'Company logo')}"></div>`:'';
+    return `<div class="public-about-vertical ${hasLogo?'has-logo':'no-logo'}">${logo}<div class="about-vertical-copy">${s.companyName?`<h3>${esc(s.companyName)}</h3>`:''}<p>${esc(s.body||'')}</p></div></div>`;
   }
   function renderSection(s,state){if(!s.enabled)return'';const id=`section-${s.id}`;
     if(s.id==='overview'||s.id==='eventDescription')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}<div class="public-prose">${esc(s.body)}</div></section>`;
@@ -263,6 +278,15 @@
     update();
     nav.querySelectorAll('details.public-more').forEach(d=>{d.addEventListener('toggle',()=>{if(d.open)document.querySelectorAll('details.public-more[open]').forEach(x=>{if(x!==d)x.open=false})})});
   }
+  function bindScrollTop(root,opts={}){
+    if(opts.builder)return;
+    const btn=root?.querySelector?.('[data-scroll-top]');if(!btn)return;
+    let ticking=false;
+    const update=()=>{btn.classList.toggle('is-visible',(window.scrollY||document.documentElement.scrollTop||0)>520);ticking=false};
+    window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(update);ticking=true}},{passive:true});
+    btn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+    update();
+  }
   function bindRegistration(root,opts={}){
     const popup=root?.querySelector?.('[data-interest-popup]');
     const open=()=>{if(!popup)return;popup.classList.add('open');popup.setAttribute('aria-hidden','false');if(!opts.builder)document.body.classList.add('public-modal-open')};
@@ -281,8 +305,9 @@
     const heroIdentity=state.header.illustrationImage?`<div class="hero-branding-mark"><img src="${esc(state.header.illustrationImage)}" alt="${esc(a?.name||'Award')} branding"></div>`:`<h1>${esc(a?.name||'Your Award')}</h1>`;
     const heroPos=esc(state.header.heroPosition||'center');
     const nav=navigationMarkup(a,state,cta,{builder:opts.builder,currentPage:'home'});
-    container.innerHTML=`<div class="public-site preset-${esc(state.theme.preset)} font-${esc(state.theme.font)} radius-${esc(state.theme.radius)} ${opts.builder?'builder-site-preview':''}" style="${themeVars(state)}">${brandStrip}${nav}<section class="public-hero hero-${esc(state.header.design)} hero-pos-${heroPos}" id="home"><div class="hero-overlay"></div><div class="hero-content"><div class="hero-copy"><small class="hero-kicker">${esc((a?.eventCategory||'ETB2B AWARDS').toUpperCase())}</small>${heroIdentity}<p>${esc(a?.description||'Recognising excellence, innovation and measurable impact.')}</p><div class="hero-meta"><span><i class="meta-icon">${iconSvg('location')}</i><b>${esc([a?.venue,a?.city].filter(Boolean).join(', ')||'Venue to be announced')}</b></span><span><i class="meta-icon">${iconSvg('calendar')}</i><b>${esc(a?.hasEventDates?niceDate(a.eventStart):'Event date to be announced')}</b></span>${a?.hasNominationDates?`<span><i class="meta-icon">${iconSvg('nomination')}</i><b>Nominations: ${esc(niceDate(a.nominationStart))} – ${esc(niceDate(a.nominationEnd))}</b></span>`:''}</div></div><div id="interest" class="hero-form-wrap">${heroForm(state,cta)}</div></div></section>${registrationPopup(state,cta)}<main class="public-main align-${esc(['left','center','right'].includes(state.theme.bodyTextAlign)?state.theme.bodyTextAlign:'left')}">${visibleSections.map(s=>renderSection(s,state)).join('')}</main><section class="public-final-cta"><small>ETB2B AWARDS</small><h2>${esc(cta.mode==='nominate'?'Ready to make your work count?':'Be part of the next edition')}</h2><p>${esc(cta.sub)}</p><a href="${cta.mode==='nominate'?'nominate.html':cta.mode==='closed'?'#':'#interest'}" data-hero-cta>${esc(cta.label)} →</a></section><footer class="public-footer"><span>© ${new Date().getFullYear()} ${esc(a?.name||'ETB2B Awards')}</span>${bottomSponsor}<span>Powered by ETB2B Awards · Vikas Mishra</span></footer></div>`;
+    container.innerHTML=`<div class="public-site preset-${esc(state.theme.preset)} font-${esc(state.theme.font)} radius-${esc(state.theme.radius)} ${opts.builder?'builder-site-preview':''}" style="${themeVars(state)}">${brandStrip}${nav}<section class="public-hero hero-${esc(state.header.design)} hero-pos-${heroPos}" id="home"><div class="hero-overlay"></div><div class="hero-content"><div class="hero-copy"><small class="hero-kicker">${esc((a?.eventCategory||'ETB2B AWARDS').toUpperCase())}</small>${heroIdentity}<p>${esc(a?.description||'Recognising excellence, innovation and measurable impact.')}</p><div class="hero-meta"><span><i class="meta-icon">${iconSvg('location')}</i><b>${esc([a?.venue,a?.city].filter(Boolean).join(', ')||'Venue to be announced')}</b></span><span><i class="meta-icon">${iconSvg('calendar')}</i><b>${esc(a?.hasEventDates?niceDate(a.eventStart):'Event date to be announced')}</b></span>${a?.hasNominationDates?`<span><i class="meta-icon">${iconSvg('nomination')}</i><b>Nominations: ${esc(niceDate(a.nominationStart))} – ${esc(niceDate(a.nominationEnd))}</b></span>`:''}</div></div><div id="interest" class="hero-form-wrap">${heroForm(state,cta)}</div></div></section>${registrationPopup(state,cta)}<main class="public-main align-${esc(['left','center','right'].includes(state.theme.bodyTextAlign)?state.theme.bodyTextAlign:'left')}">${visibleSections.map(s=>renderSection(s,state)).join('')}</main><footer class="public-footer"><span>© ${new Date().getFullYear()} ${esc(a?.name||'ETB2B Awards')}</span>${bottomSponsor}<span>Powered by ETB2B Awards · Vikas Mishra</span></footer>${opts.builder?'':`<button type="button" class="public-scroll-top" data-scroll-top aria-label="Scroll back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 14 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Top</span></button>`}</div>`;
     bindRegistration(container,opts);
+    bindScrollTop(container,opts);
     if(opts.builder){container.querySelectorAll('a').forEach(x=>x.addEventListener('click',e=>e.preventDefault()));container.querySelectorAll('form').forEach(f=>f.addEventListener('submit',e=>e.preventDefault()));}
     else bindNavigation(container,opts);
   }
