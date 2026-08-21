@@ -41,6 +41,12 @@
             {id:'sp2',name:'Rohit Mehra',role:'Founder & CEO',company:'Nexora',groupId:'jury',photo:'',status:true,weight:90},
             {id:'sp3',name:'Maya Shah',role:'Industry Jury Chair',company:'ETB2B Awards',groupId:'leaders',photo:'',status:true,weight:80}
           ]},
+        {id:'sponsors',label:'Sponsors',enabled:true,theme:'sponsor-tiered',title:'Partners & Sponsors',showGroupHeadings:true,
+          sponsorGroups:[{id:'title',name:'Title Partner',active:true,weight:100},{id:'associate',name:'In Association With',active:true,weight:90},{id:'supporting',name:'Supporting Partners',active:true,weight:80}],
+          sponsors:[
+            {id:'sn1',name:'Title Partner',website:'',groupId:'title',logo:'',status:true,weight:100},
+            {id:'sn2',name:'Associate Partner',website:'',groupId:'associate',logo:'',status:true,weight:90}
+          ]},
         {id:'agenda',label:'Agenda',enabled:true,theme:'editorial',title:'Agenda',
           agendaGroups:[{id:'opening',name:'Opening',active:true,weight:100},{id:'awards',name:'Awards',active:true,weight:90},{id:'networking',name:'Networking',active:true,weight:70}],
           agenda:[
@@ -83,6 +89,11 @@
       sp.speakers=(Array.isArray(sp.speakers)&&sp.speakers.length?sp.speakers:ds.speakers).map((p,i)=>Object.assign({id:p.id||`sp${i+1}`,name:'Speaker',role:'',company:'',groupId:sp.speakerGroups[0]?.id||'',photo:'',status:true,weight:100},p,{id:p.id||`sp${i+1}`}));
       sp.showGroupHeadings=sp.showGroupHeadings!==false;
     }
+    const sn=d.sections.find(s=>s.id==='sponsors');if(sn){
+      const ds=defaultState(a).sections.find(s=>s.id==='sponsors');sn.sponsorGroups=normalizeGroupArray(sn.sponsorGroups,ds.sponsorGroups,'sng');
+      sn.sponsors=(Array.isArray(sn.sponsors)?sn.sponsors:ds.sponsors).map((p,i)=>Object.assign({id:p.id||`sn${i+1}`,name:'Sponsor',website:'',groupId:sn.sponsorGroups[0]?.id||'',logo:'',status:true,weight:100},p,{id:p.id||`sn${i+1}`}));
+      sn.showGroupHeadings=sn.showGroupHeadings!==false;
+    }
     const ag=d.sections.find(s=>s.id==='agenda');if(ag){
       const da=defaultState(a).sections.find(s=>s.id==='agenda');ag.agendaGroups=normalizeGroupArray(ag.agendaGroups,da.agendaGroups,'agp');
       ag.agenda=(Array.isArray(ag.agenda)&&ag.agenda.length?ag.agenda:da.agenda).map((x,i)=>Object.assign({id:x.id||`ag${i+1}`,title:'Agenda item',start:'',end:'',time:x.time||'',groupId:ag.agendaGroups[0]?.id||'',speakerIds:[],summary:'',points:'',status:true},x,{id:x.id||`ag${i+1}`,speakerIds:Array.isArray(x.speakerIds)?x.speakerIds:[]}));
@@ -114,6 +125,12 @@
     const ungrouped=active.filter(p=>!groups.some(g=>g.id===p.groupId));if(ungrouped.length)grouped.push({g:{id:'other',name:'Speakers'},people:ungrouped});
     return grouped.map(({g,people})=>`<div class="public-speaker-group">${s.showGroupHeadings!==false&&grouped.length>1?`<h3>${esc(g.name)}</h3>`:''}<div class="public-speakers">${people.map(p=>`<article>${speakerAvatar(p)}<b>${esc(p.name)}</b><span>${esc(p.role)}</span><small>${esc(p.company)}</small></article>`).join('')}</div></div>`).join('');
   }
+  function renderSponsors(s){
+    const allGroups=s.sponsorGroups||[];const groups=allGroups.filter(g=>g.active!==false);const activeIds=new Set(groups.map(g=>g.id));const knownIds=new Set(allGroups.map(g=>g.id));const active=(s.sponsors||[]).filter(p=>p.status!==false&&(!p.groupId||!knownIds.has(p.groupId)||activeIds.has(p.groupId)));
+    if(!active.length)return '<div class="public-empty">Sponsor announcements coming soon.</div>';
+    const grouped=groups.map(g=>({g,items:active.filter(p=>(p.groupId||groups[0]?.id)===g.id)})).filter(x=>x.items.length);const other=active.filter(p=>!groups.some(g=>g.id===p.groupId));if(other.length)grouped.push({g:{id:'other',name:'Partners'},items:other});
+    return `<div class="public-sponsor-groups">${grouped.map(({g,items})=>`<div class="public-sponsor-group">${s.showGroupHeadings!==false?`<h3>${esc(g.name)}</h3>`:''}<div class="public-sponsors">${items.map(p=>`<${p.website?'a':'div'} class="public-sponsor-card" ${p.website?`href="${esc(p.website)}" target="_blank" rel="noopener"`:''}>${p.logo?`<img src="${esc(p.logo)}" alt="${esc(p.name)}">`:`<span class="sponsor-placeholder">${esc(p.name)}</span>`}<small>${esc(p.name)}</small></${p.website?'a':'div'}>`).join('')}</div></div>`).join('')}</div>`;
+  }
   function renderAgenda(s,state){
     const speakers=state.sections.find(x=>x.id==='speakers')?.speakers||[];const speakerMap=Object.fromEntries(speakers.map(x=>[x.id,x]));const groups=Object.fromEntries((s.agendaGroups||[]).map(x=>[x.id,x]));
     const activeGroupIds=new Set((s.agendaGroups||[]).filter(g=>g.active!==false).map(g=>g.id));const knownGroupIds=new Set((s.agendaGroups||[]).map(g=>g.id));const items=(s.agenda||[]).filter(x=>x.status!==false&&(!x.groupId||!knownGroupIds.has(x.groupId)||activeGroupIds.has(x.groupId)));if(!items.length)return '<div class="public-empty">Agenda will be announced soon.</div>';
@@ -132,6 +149,7 @@
     if(s.id==='overview'||s.id==='eventDescription')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}<div class="public-prose">${esc(s.body)}</div></section>`;
     if(s.id==='keypoints'||s.id==='who'||s.id==='why')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${listCards(s.items)}</section>`;
     if(s.id==='speakers')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${renderSpeakers(s)}</section>`;
+    if(s.id==='sponsors')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${renderSponsors(s)}</section>`;
     if(s.id==='agenda')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${renderAgenda(s,state)}</section>`;
     if(s.id==='resources')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}<div class="public-resources">${(s.resources||[]).map(r=>`<a href="${esc(r.url||'#')}" target="_blank" rel="noopener"><span>↗</span><b>${esc(r.title)}</b><small>Open resource</small></a>`).join('')}</div></section>`;
     if(s.id==='glimpse')return `<section id="${id}" class="${sectionClass(s)}">${sectionHead(s)}${renderGallery(s)}</section>`;
