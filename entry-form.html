@@ -47,7 +47,7 @@
     <main class="main">
       <div class="page-head ef-page-head">
         <div>
-          <span class="eyebrow">BUILD · STEP 3 OF 5</span>
+          <span class="eyebrow">BUILD · STEP 4 OF 5</span>
           <h1>What should entrants tell you?</h1>
           <p>Create one clear nomination form, then personalize questions by category only when needed.</p>
         </div>
@@ -56,13 +56,7 @@
         </div>
       </div>
 
-      <div class="ca-setup-track ef-track" aria-label="Award setup progress">
-        <a class="ca-track-item done-track" href="create-award.html"><span>✓</span><div><b>Award</b><small>Complete</small></div></a><i></i>
-        <a class="ca-track-item done-track" href="categories.html"><span>✓</span><div><b>Categories</b><small id="trackCategories">Complete</small></div></a><i></i>
-        <div class="ca-track-item active"><span>3</span><div><b>Entry Form</b><small>You're here</small></div></div><i></i>
-        <a class="ca-track-item" href="pricing.html"><span>4</span><div><b>Pricing</b><small>Next</small></div></a><i></i>
-        <a class="ca-track-item" href="website.html"><span>5</span><div><b>Website</b><small>Later</small></div></a>
-      </div>
+      <nav class="build-progress" aria-label="Award setup progress"><a class="build-progress-step done" href="create-award.html"><span class="build-progress-num">✓</span><span class="build-progress-copy"><b>Award basics</b><small>Complete</small></span></a><i class="build-progress-line" aria-hidden="true"></i><a class="build-progress-step done" href="website.html"><span class="build-progress-num">✓</span><span class="build-progress-copy"><b>Website</b><small>Complete</small></span></a><i class="build-progress-line" aria-hidden="true"></i><a class="build-progress-step done" href="categories.html"><span class="build-progress-num">✓</span><span class="build-progress-copy"><b>Categories</b><small>Complete</small></span></a><i class="build-progress-line" aria-hidden="true"></i><div class="build-progress-step active" aria-current="step"><span class="build-progress-num">4</span><span class="build-progress-copy"><b>Entry Form</b><small>You're here</small></span></div><i class="build-progress-line" aria-hidden="true"></i><a class="build-progress-step" href="pricing.html"><span class="build-progress-num">5</span><span class="build-progress-copy"><b>Pricing</b><small>Fees & payments</small></span></a></nav>
 
       <div class="ef-layout">
         <section class="ef-main-col">
@@ -120,18 +114,18 @@
           </div>
 
           <div class="card pad section ef-builder-card">
-            <div class="ef-list-head">
-              <div>
+            <div class="ef-list-head ef-list-head-centered">
+              <div class="ef-list-title-block">
                 <div class="section-title ef-title-inline"><h2>Form questions</h2><span class="cat-count-pill" id="questionCount">0</span></div>
                 <p class="ef-subcopy" id="builderQuestionHelp">Click any question to edit it. New fields are automatically added to the category selected above.</p>
               </div>
-              <div class="ef-builder-head-actions">
+              <div class="ef-builder-head-actions ef-builder-head-actions-centered">
                 <div class="ef-section-view-control" role="group" aria-label="Section view">
-                  <span class="ef-view-label">Sections</span>
-                  <button class="ef-view-btn" type="button" id="collapseSectionsBtn" title="Collapse all sections" aria-label="Collapse all sections"><span>⌃</span> Collapse</button>
-                  <button class="ef-view-btn" type="button" id="expandSectionsBtn" title="Expand all sections" aria-label="Expand all sections"><span>⌄</span> Expand</button>
+                  <button class="ef-view-btn ef-view-collapse" type="button" id="collapseSectionsBtn" title="Collapse all sections" aria-label="Collapse all sections"><span>−</span> Collapse all</button>
+                  <button class="ef-view-btn ef-view-expand" type="button" id="expandSectionsBtn" title="Expand all sections" aria-label="Expand all sections"><span>＋</span> Expand all</button>
                 </div>
               </div>
+              <div class="ef-list-head-balance" aria-hidden="true"></div>
             </div>
 
             <div class="ef-builder-note"><span>Tip</span> Use <b>All categories / Shared form</b> for common fields. Select a category above to add only the questions or sections that category needs.</div>
@@ -184,10 +178,10 @@
             <div class="progress"><span id="setupBar" style="width:60%"></span></div>
             <div class="cat-progress-list">
               <div><span class="ok">✓</span><p><b>Award basics</b><small>Name, dates and brand</small></p></div>
+              <div><span class="ok">✓</span><p><b>Website</b><small>Design ready</small></p></div>
               <div><span class="ok">✓</span><p><b>Categories</b><small id="categoryProgressText">Ready</small></p></div>
               <div><span id="formProgressIcon">○</span><p><b>Entry Form</b><small id="formProgressText">Add questions</small></p></div>
               <div><span>○</span><p><b>Pricing</b><small>Not started</small></p></div>
-              <div><span>○</span><p><b>Website</b><small>Not started</small></p></div>
             </div>
           </div>
 

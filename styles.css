@@ -496,3 +496,141 @@ body{background:radial-gradient(circle at 75% -15%,rgba(200,154,67,.07),transpar
   .ef-question-workspace{padding-right:0}
 }
 .ef-copilot-primary-actions{display:grid;grid-template-columns:1fr;gap:7px;margin:10px 0 12px}.ef-copilot-primary-actions .btn{width:100%;justify-content:center}
+
+
+/* V19.24 - unified BUILD tracker + entry form overflow repair */
+.build-progress{
+  display:grid;
+  grid-template-columns:minmax(124px,1fr) minmax(18px,.35fr) minmax(124px,1fr) minmax(18px,.35fr) minmax(124px,1fr) minmax(18px,.35fr) minmax(124px,1fr) minmax(18px,.35fr) minmax(124px,1fr);
+  align-items:center;
+  gap:8px;
+  width:100%;
+  margin:0 0 22px;
+  padding:12px 14px;
+  border:1px solid #e2e3e9;
+  border-radius:16px;
+  background:#fff;
+  box-shadow:0 4px 18px rgba(28,31,54,.045);
+  overflow:hidden;
+}
+.build-progress-step{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:7px 8px;
+  border-radius:11px;
+  color:#6d7182;
+  transition:.16s ease;
+}
+a.build-progress-step:hover{background:#faf7f7;color:#2d3042}
+.build-progress-num{
+  width:30px;
+  height:30px;
+  flex:0 0 30px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#f1f2f5;
+  color:#858999;
+  font-size:10px;
+  font-weight:900;
+}
+.build-progress-copy{min-width:0;display:block}
+.build-progress-copy b{display:block;font-size:10px;line-height:1.2;color:#303345;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.build-progress-copy small{display:block;margin-top:2px;font-size:7.5px;line-height:1.2;color:#9699a8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.build-progress-line{display:block;width:100%;height:1px;background:#e3e4e9}
+.build-progress-step.done .build-progress-num{background:#eaf8f1;color:#19865d}
+.build-progress-step.done .build-progress-copy b{color:#4a4e5d}
+.build-progress-step.active{background:#fff5f5;box-shadow:inset 0 0 0 1px #f2c9cc}
+.build-progress-step.active .build-progress-num{background:#d71920;color:#fff;box-shadow:0 4px 10px rgba(215,25,32,.18)}
+.build-progress-step.active .build-progress-copy b{color:#b41017}
+.build-progress-step.active .build-progress-copy small{color:#b66d72}
+
+/* Entry Form: keep tracker visible and keep the workspace inside the viewport. */
+.ef-track{display:grid!important}
+.ef-builder-card,.ef-question-workspace,.ef-question-list,.ef-section-group{min-width:0}
+.ef-question-workspace{width:100%!important;max-width:1040px!important;margin:0 auto!important;padding-right:72px!important;overflow:visible!important}
+.ef-question-list{width:100%;min-width:0}
+.ef-question-toolbar{right:8px!important;left:auto!important;max-width:58px}
+.ef-layout,.ef-main-col,.ef-command-card,.ef-builder-card{max-width:100%}
+.ef-builder-card{overflow:hidden!important}
+.ef-question-workspace{overflow:visible!important}
+
+/* Center and highlight Collapse / Expand so section control is easy to discover. */
+.ef-list-head-centered{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center!important;
+  gap:16px!important;
+}
+.ef-list-title-block{min-width:0}
+.ef-builder-head-actions-centered{justify-self:center!important}
+.ef-list-head-balance{min-width:0}
+.ef-section-view-control{
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  padding:4px!important;
+  border:1px solid #efc5c8!important;
+  border-radius:12px!important;
+  background:#fff7f7!important;
+  box-shadow:0 6px 16px rgba(215,25,32,.08)!important;
+}
+.ef-section-view-control .ef-view-label{display:none!important}
+.ef-section-view-control .ef-view-btn{
+  height:34px!important;
+  min-width:112px;
+  padding:0 13px!important;
+  border:0!important;
+  border-radius:8px!important;
+  background:transparent!important;
+  color:#b3131a!important;
+  font-size:9px!important;
+  font-weight:900!important;
+  letter-spacing:.01em;
+  cursor:pointer;
+}
+.ef-section-view-control .ef-view-btn span{font-size:15px!important;color:inherit!important;font-weight:700}
+.ef-section-view-control .ef-view-btn:hover{background:#d71920!important;color:#fff!important;box-shadow:0 4px 10px rgba(215,25,32,.16)}
+.ef-section-view-control .ef-view-btn+.ef-view-btn{border-left:1px solid #f0d8da!important}
+
+@media(max-width:1180px){
+  .build-progress{grid-template-columns:repeat(5,minmax(112px,1fr));gap:6px;overflow-x:auto;scrollbar-width:thin}
+  .build-progress-line{display:none}
+  .build-progress-step{min-width:112px}
+  .ef-list-head-centered{grid-template-columns:1fr auto}
+  .ef-list-head-balance{display:none}
+  .ef-commandbar{grid-template-columns:minmax(130px,.7fr) minmax(210px,1fr) auto!important}
+  .ef-command-counts{display:none!important}
+  .ef-command-actions{min-width:0;gap:4px!important}
+  .ef-command-btn{padding:0 7px!important}
+}
+@media(max-width:900px){
+  .build-progress{padding:9px 10px;margin-bottom:16px}
+  .ef-question-workspace{padding-right:0!important}
+  .ef-question-toolbar{
+    position:sticky!important;
+    top:auto!important;
+    right:auto!important;
+    bottom:10px!important;
+    margin:10px auto 0!important;
+    width:max-content!important;
+    max-width:100%!important;
+    flex-direction:row!important;
+    overflow-x:auto!important;
+    padding:5px!important;
+  }
+  .ef-question-toolbar button{width:42px!important;height:42px!important;flex:0 0 42px}
+  .ef-list-head-centered{grid-template-columns:1fr!important}
+  .ef-builder-head-actions-centered{justify-self:center!important;width:100%}
+  .ef-section-view-control{width:min(330px,100%);display:grid!important;grid-template-columns:1fr 1fr!important}
+  .ef-section-view-control .ef-view-btn{min-width:0;width:100%}
+}
+@media(max-width:700px){
+  .build-progress-step{min-width:104px;padding:6px}
+  .build-progress-copy small{display:none}
+  .build-progress-num{width:27px;height:27px;flex-basis:27px}
+  .ef-commandbar{grid-template-columns:1fr!important}
+}
