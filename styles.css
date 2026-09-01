@@ -635,350 +635,43 @@ a.build-progress-step:hover{background:#faf7f7;color:#2d3042}
   .ef-commandbar{grid-template-columns:1fr!important}
 }
 
-/* V19.21 - adaptive compact question tool rail */
-.ef-question-workspace{
-  padding-right:54px!important;
+/* V19.22 - clean Website/Category header actions */
+.wb19-head-actions-clean{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  flex-wrap:nowrap;
 }
-.ef-question-toolbar{
-  right:7px!important;
-  width:42px!important;
-  max-width:42px!important;
-  padding:5px 3px!important;
-  gap:2px!important;
-  border-radius:10px!important;
-  box-shadow:0 6px 18px rgba(28,31,54,.12)!important;
-  transition:top .16s ease,width .16s ease,padding .16s ease!important;
-}
-.ef-question-toolbar button{
-  width:34px!important;
-  height:34px!important;
-  min-width:34px!important;
-  min-height:34px!important;
-  border-radius:7px!important;
-  font-size:14px!important;
-}
-.ef-question-toolbar button:first-child span{
-  font-size:24px!important;
-}
-.ef-question-toolbar button[data-toolbar-action="add-title"] span{
-  font-size:14px!important;
-}
-.ef-question-toolbar button:after{
-  right:42px!important;
-}
-
-/* Extra-small rail when sections are collapsed / the form is short. */
-.ef-question-toolbar.ef-toolbar-tight{
-  width:36px!important;
-  max-width:36px!important;
-  padding:4px 2px!important;
-  gap:1px!important;
-}
-.ef-question-toolbar.ef-toolbar-tight button{
-  width:30px!important;
-  height:30px!important;
-  min-width:30px!important;
-  min-height:30px!important;
-  border-radius:6px!important;
-  font-size:12px!important;
-}
-.ef-question-toolbar.ef-toolbar-tight button:first-child span{
-  font-size:21px!important;
-}
-.ef-question-toolbar.ef-toolbar-tight button[data-toolbar-action="add-title"] span{
-  font-size:12px!important;
-}
-
-/* No active field = no floating rail. */
-.ef-question-toolbar[hidden]{display:none!important}
-
-@media(max-width:1180px){
-  .ef-question-workspace{padding-right:48px!important}
-  .ef-question-toolbar{right:5px!important}
-}
-
-@media(max-width:900px){
-  .ef-question-workspace{padding-right:0!important}
-  .ef-question-toolbar,
-  .ef-question-toolbar.ef-toolbar-tight{
-    width:max-content!important;
-    max-width:calc(100% - 16px)!important;
-    padding:4px!important;
-    gap:2px!important;
-    border-radius:10px!important;
-  }
-  .ef-question-toolbar button,
-  .ef-question-toolbar.ef-toolbar-tight button{
-    width:34px!important;
-    height:34px!important;
-    min-width:34px!important;
-    min-height:34px!important;
-    flex:0 0 34px!important;
-  }
-}
-
-/* V19.22 - form readability, compact section controls and persistent next-step CTA */
-:root{--ef-red:#d71920;--ef-red-soft:#fff4f4;--ef-red-line:#f0c4c7}
-
-/* Section summaries: more readable without increasing the card height too much. */
-.ef-section-summary{
-  min-height:72px!important;
-  padding-top:13px!important;
-  padding-bottom:13px!important;
-}
-.ef-section-heading>span{
-  font-size:9px!important;
-  letter-spacing:.105em!important;
-  margin-bottom:4px!important;
-}
-.ef-section-heading h3{
-  font-size:16px!important;
-  line-height:1.25!important;
-  font-weight:850!important;
-  letter-spacing:-.01em;
-}
-.ef-section-heading p{
-  margin-top:4px!important;
-  font-size:10.5px!important;
-  line-height:1.35!important;
-  max-width:560px!important;
-}
-.ef-section-stats>span:not(.ef-scope-chip){
-  font-size:8.5px!important;
-  padding:4px 7px!important;
-}
-.ef-section-actions button{
-  height:32px!important;
-  font-size:9px!important;
-  padding:0 10px!important;
-}
-
-/* Compact question rows stay readable in long 30-50 field forms. */
-.ef-row-title{
-  font-size:13px!important;
-  line-height:1.3!important;
-  font-weight:800!important;
-}
-.ef-row-meta{
-  font-size:9px!important;
-  line-height:1.35!important;
-}
-.ef-subcopy{font-size:10px!important}
-
-/* Larger ET-red section chevron with one consistent icon that rotates. */
-.ef-section-toggle{
-  width:34px!important;
-  height:34px!important;
-  border-color:var(--ef-red-line)!important;
-  background:var(--ef-red-soft)!important;
-  color:var(--ef-red)!important;
-  border-radius:9px!important;
-  overflow:hidden;
-}
-.ef-section-toggle span{
-  display:block;
-  font-size:25px!important;
-  line-height:1!important;
-  font-weight:700!important;
-  transform:rotate(0deg);
-  transition:transform .16s ease;
-  transform-origin:center;
-  margin-top:-1px;
-}
-.ef-section-group:not(.collapsed) .ef-section-toggle span{transform:rotate(90deg)}
-.ef-section-toggle:hover{
-  border-color:var(--ef-red)!important;
-  background:var(--ef-red)!important;
-  color:#fff!important;
-  box-shadow:0 4px 10px rgba(215,25,32,.14);
-}
-
-/* Smaller, cleaner centered Collapse / Expand control. */
-.ef-section-view-control{
-  padding:3px!important;
-  gap:2px!important;
-  border-radius:10px!important;
-  box-shadow:0 3px 10px rgba(215,25,32,.055)!important;
-}
-.ef-section-view-control .ef-view-btn{
-  height:29px!important;
-  min-width:86px!important;
-  padding:0 9px!important;
-  border-radius:7px!important;
-  font-size:8.5px!important;
-  gap:3px!important;
-}
-.ef-section-view-control .ef-view-btn span{
-  font-size:13px!important;
-  font-weight:800!important;
-}
-
-/* Keep the next-step action visible without crowding the top command row. */
-.ef-bottom-actions{
-  position:sticky;
-  bottom:10px;
-  z-index:14;
-  min-height:64px;
-  padding:10px 12px 10px 15px!important;
-  border-color:#eadadd!important;
-  background:rgba(255,255,255,.96)!important;
-  box-shadow:0 10px 30px rgba(28,31,54,.10)!important;
-  backdrop-filter:blur(12px);
-}
-.ef-next-copy{min-width:0}
-.ef-next-copy .ef-next-kicker{
-  display:block!important;
-  margin:0 0 2px!important;
-  color:var(--ef-red)!important;
-  font-size:8px!important;
-  font-weight:900!important;
-  letter-spacing:.09em;
-  text-transform:uppercase;
-}
-.ef-next-copy b{
-  font-size:12.5px!important;
-  line-height:1.2;
-}
-.ef-next-copy>span:last-child{
-  font-size:9px!important;
-  line-height:1.35;
-}
-.ef-next-btn{
-  height:42px!important;
-  min-width:148px;
-  padding:0 15px!important;
-  border-radius:11px!important;
-  display:inline-flex!important;
+.wb19-head-actions-clean .btn{
+  min-height:42px;
+  display:inline-flex;
   align-items:center;
   justify-content:center;
-  gap:10px;
-  box-shadow:0 7px 16px rgba(215,25,32,.18)!important;
   white-space:nowrap;
 }
-.ef-next-btn span{font-size:11px!important;color:#fff!important;margin:0!important}
-.ef-next-btn b{font-size:17px!important;color:#fff!important;line-height:1}
-.ef-next-btn:hover{transform:translateY(-1px);box-shadow:0 9px 20px rgba(215,25,32,.22)!important}
-
-@media(max-width:1180px){
-  .ef-section-heading h3{font-size:15px!important}
-  .ef-section-heading p{font-size:10px!important;max-width:430px!important}
-  .ef-section-view-control .ef-view-btn{min-width:80px!important}
+.cat-header-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:nowrap;
 }
-@media(max-width:900px){
-  .ef-section-view-control{width:auto!important;display:inline-flex!important}
-  .ef-section-view-control .ef-view-btn{width:auto!important;min-width:82px!important}
-  .ef-bottom-actions{position:relative;bottom:auto;z-index:auto}
+.cat-header-actions .btn{
+  min-height:42px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
 }
-@media(max-width:700px){
-  .ef-section-heading h3{font-size:14px!important;white-space:normal!important}
-  .ef-section-heading p{font-size:9.5px!important;white-space:normal!important}
-  .ef-section-toggle{width:32px!important;height:32px!important}
-  .ef-section-toggle span{font-size:23px!important}
-  .ef-bottom-actions{gap:10px!important}
-  .ef-next-btn{width:100%;min-width:0}
-}
-
-
-/* V19.27 - Entry Form full-page readability pass */
-body.entry-form-page{
-  font-size:15px;
-}
-body.entry-form-page .topbar .crumb{font-size:14px;line-height:1.35}
-body.entry-form-page .nav a{font-size:14px}
-body.entry-form-page .nav-label{font-size:11px}
-body.entry-form-page .brand b{font-size:17px}
-body.entry-form-page .award-switch strong{font-size:14px}
-
-body.entry-form-page .ef-page-head .eyebrow{
-  font-size:11px!important;
-  line-height:1.2;
-  letter-spacing:.13em;
-}
-body.entry-form-page .ef-page-head h1{
-  font-size:clamp(30px,2.45vw,35px)!important;
-  line-height:1.08;
-}
-body.entry-form-page .ef-page-head p{
-  font-size:14px!important;
-  line-height:1.5;
-  max-width:800px!important;
-}
-body.entry-form-page .ef-saved-pill{font-size:10px!important;padding:7px 11px}
-
-body.entry-form-page .build-progress-copy b{font-size:11.5px!important}
-body.entry-form-page .build-progress-copy small{font-size:9px!important}
-body.entry-form-page .build-progress-num{font-size:11px!important}
-
-body.entry-form-page .ef-command-brand b{font-size:13.5px!important}
-body.entry-form-page .ef-command-brand small{font-size:9.5px!important;line-height:1.35}
-body.entry-form-page .ef-command-category label{font-size:8.5px!important}
-body.entry-form-page .ef-command-category select{font-size:11.5px!important}
-body.entry-form-page .ef-command-counts span{font-size:8.5px!important}
-body.entry-form-page .ef-command-counts b{font-size:9.5px!important}
-body.entry-form-page .ef-command-btn{font-size:10.5px!important}
-body.entry-form-page .ef-command-add{font-size:11.5px!important}
-
-body.entry-form-page .ef-intro-row .field label{font-size:9.5px!important}
-body.entry-form-page .ef-intro-row .field input,
-body.entry-form-page .ef-intro-row .field select,
-body.entry-form-page .ef-intro-row .field textarea{font-size:11.5px!important}
-
-body.entry-form-page .ef-title-inline h2{font-size:18px!important;line-height:1.2}
-body.entry-form-page .ef-title-inline .cat-count-pill{font-size:10px!important}
-body.entry-form-page .ef-subcopy{font-size:11.5px!important;line-height:1.45}
-body.entry-form-page .ef-builder-note{font-size:10.5px!important;line-height:1.45}
-body.entry-form-page .ef-builder-note>span{font-size:8.5px!important}
-
-body.entry-form-page .ef-section-heading>span{font-size:9.5px!important}
-body.entry-form-page .ef-section-heading h3{font-size:17px!important;line-height:1.25!important}
-body.entry-form-page .ef-section-heading p{font-size:11px!important;line-height:1.4!important;max-width:610px!important}
-body.entry-form-page .ef-section-stats>span:not(.ef-scope-chip){font-size:9px!important}
-body.entry-form-page .ef-scope-chip{font-size:8.5px!important}
-body.entry-form-page .ef-section-actions button{font-size:10px!important}
-
-body.entry-form-page .ef-row-title{font-size:13.5px!important;line-height:1.3!important}
-body.entry-form-page .ef-row-meta{font-size:9.5px!important;line-height:1.35!important}
-body.entry-form-page .ef-row-scope .ef-scope-chip{font-size:8px!important}
-body.entry-form-page .ef-row-type{font-size:10px!important}
-
-body.entry-form-page .ef-section-kicker{font-size:9px!important}
-body.entry-form-page .ef-inline-question{font-size:14px!important;line-height:1.35}
-body.entry-form-page .ef-card-question>small{font-size:10px!important;line-height:1.45}
-body.entry-form-page .ef-card-type select{font-size:11.5px!important}
-body.entry-form-page .ef-inline-answer{font-size:11px!important}
-body.entry-form-page .ef-inline-option input{font-size:11px!important}
-body.entry-form-page .ef-add-option-inline{font-size:10.5px!important}
-body.entry-form-page .ef-card-meta span{font-size:9px!important}
-body.entry-form-page .ef-card-footer>button:not(.ef-required-inline){font-size:10px!important}
-body.entry-form-page .ef-required-inline b{font-size:10.5px!important}
-body.entry-form-page .ef-card-footer>button.ef-card-scope-btn{font-size:9.5px!important}
-
-body.entry-form-page .ef-next-copy .ef-next-kicker{font-size:9px!important}
-body.entry-form-page .ef-next-copy b{font-size:14px!important}
-body.entry-form-page .ef-next-copy>span:last-child{font-size:10.5px!important}
-body.entry-form-page .ef-next-btn span{font-size:12.5px!important}
-
-/* Keep the larger type from creating horizontal overflow at laptop widths. */
-@media(max-width:1180px){
-  body.entry-form-page .build-progress-copy b{font-size:10.5px!important}
-  body.entry-form-page .build-progress-copy small{font-size:8.5px!important}
-  body.entry-form-page .ef-command-brand b{font-size:12.5px!important}
-  body.entry-form-page .ef-command-btn{font-size:10px!important}
-  body.entry-form-page .ef-section-heading h3{font-size:16px!important}
-  body.entry-form-page .ef-section-heading p{font-size:10.5px!important;max-width:470px!important}
-}
-@media(max-width:980px){
-  body.entry-form-page .build-progress-copy small{display:none!important}
-  body.entry-form-page .build-progress-step{padding:6px!important;gap:7px!important}
-  body.entry-form-page .ef-page-head h1{font-size:29px!important}
-}
-@media(max-width:700px){
-  body.entry-form-page{font-size:14px}
-  body.entry-form-page .ef-page-head h1{font-size:26px!important}
-  body.entry-form-page .ef-page-head p{font-size:13px!important}
-  body.entry-form-page .ef-title-inline h2{font-size:17px!important}
-  body.entry-form-page .ef-section-heading h3{font-size:15.5px!important;white-space:normal!important}
-  body.entry-form-page .ef-section-heading p{font-size:10.5px!important;white-space:normal!important}
-  body.entry-form-page .ef-row-title{font-size:12.5px!important}
-  body.entry-form-page .ef-row-meta{font-size:9px!important}
+@media(max-width:760px){
+  .wb19-head-actions-clean,
+  .cat-header-actions{
+    width:100%;
+    justify-content:flex-start;
+    flex-wrap:wrap;
+  }
+  .wb19-head-actions-clean .btn,
+  .cat-header-actions .btn{
+    width:auto;
+  }
 }
