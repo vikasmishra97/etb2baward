@@ -877,3 +877,108 @@ a.build-progress-step:hover{background:#faf7f7;color:#2d3042}
   .ef-bottom-actions{gap:10px!important}
   .ef-next-btn{width:100%;min-width:0}
 }
+
+
+/* V19.27 - Entry Form full-page readability pass */
+body.entry-form-page{
+  font-size:15px;
+}
+body.entry-form-page .topbar .crumb{font-size:14px;line-height:1.35}
+body.entry-form-page .nav a{font-size:14px}
+body.entry-form-page .nav-label{font-size:11px}
+body.entry-form-page .brand b{font-size:17px}
+body.entry-form-page .award-switch strong{font-size:14px}
+
+body.entry-form-page .ef-page-head .eyebrow{
+  font-size:11px!important;
+  line-height:1.2;
+  letter-spacing:.13em;
+}
+body.entry-form-page .ef-page-head h1{
+  font-size:clamp(30px,2.45vw,35px)!important;
+  line-height:1.08;
+}
+body.entry-form-page .ef-page-head p{
+  font-size:14px!important;
+  line-height:1.5;
+  max-width:800px!important;
+}
+body.entry-form-page .ef-saved-pill{font-size:10px!important;padding:7px 11px}
+
+body.entry-form-page .build-progress-copy b{font-size:11.5px!important}
+body.entry-form-page .build-progress-copy small{font-size:9px!important}
+body.entry-form-page .build-progress-num{font-size:11px!important}
+
+body.entry-form-page .ef-command-brand b{font-size:13.5px!important}
+body.entry-form-page .ef-command-brand small{font-size:9.5px!important;line-height:1.35}
+body.entry-form-page .ef-command-category label{font-size:8.5px!important}
+body.entry-form-page .ef-command-category select{font-size:11.5px!important}
+body.entry-form-page .ef-command-counts span{font-size:8.5px!important}
+body.entry-form-page .ef-command-counts b{font-size:9.5px!important}
+body.entry-form-page .ef-command-btn{font-size:10.5px!important}
+body.entry-form-page .ef-command-add{font-size:11.5px!important}
+
+body.entry-form-page .ef-intro-row .field label{font-size:9.5px!important}
+body.entry-form-page .ef-intro-row .field input,
+body.entry-form-page .ef-intro-row .field select,
+body.entry-form-page .ef-intro-row .field textarea{font-size:11.5px!important}
+
+body.entry-form-page .ef-title-inline h2{font-size:18px!important;line-height:1.2}
+body.entry-form-page .ef-title-inline .cat-count-pill{font-size:10px!important}
+body.entry-form-page .ef-subcopy{font-size:11.5px!important;line-height:1.45}
+body.entry-form-page .ef-builder-note{font-size:10.5px!important;line-height:1.45}
+body.entry-form-page .ef-builder-note>span{font-size:8.5px!important}
+
+body.entry-form-page .ef-section-heading>span{font-size:9.5px!important}
+body.entry-form-page .ef-section-heading h3{font-size:17px!important;line-height:1.25!important}
+body.entry-form-page .ef-section-heading p{font-size:11px!important;line-height:1.4!important;max-width:610px!important}
+body.entry-form-page .ef-section-stats>span:not(.ef-scope-chip){font-size:9px!important}
+body.entry-form-page .ef-scope-chip{font-size:8.5px!important}
+body.entry-form-page .ef-section-actions button{font-size:10px!important}
+
+body.entry-form-page .ef-row-title{font-size:13.5px!important;line-height:1.3!important}
+body.entry-form-page .ef-row-meta{font-size:9.5px!important;line-height:1.35!important}
+body.entry-form-page .ef-row-scope .ef-scope-chip{font-size:8px!important}
+body.entry-form-page .ef-row-type{font-size:10px!important}
+
+body.entry-form-page .ef-section-kicker{font-size:9px!important}
+body.entry-form-page .ef-inline-question{font-size:14px!important;line-height:1.35}
+body.entry-form-page .ef-card-question>small{font-size:10px!important;line-height:1.45}
+body.entry-form-page .ef-card-type select{font-size:11.5px!important}
+body.entry-form-page .ef-inline-answer{font-size:11px!important}
+body.entry-form-page .ef-inline-option input{font-size:11px!important}
+body.entry-form-page .ef-add-option-inline{font-size:10.5px!important}
+body.entry-form-page .ef-card-meta span{font-size:9px!important}
+body.entry-form-page .ef-card-footer>button:not(.ef-required-inline){font-size:10px!important}
+body.entry-form-page .ef-required-inline b{font-size:10.5px!important}
+body.entry-form-page .ef-card-footer>button.ef-card-scope-btn{font-size:9.5px!important}
+
+body.entry-form-page .ef-next-copy .ef-next-kicker{font-size:9px!important}
+body.entry-form-page .ef-next-copy b{font-size:14px!important}
+body.entry-form-page .ef-next-copy>span:last-child{font-size:10.5px!important}
+body.entry-form-page .ef-next-btn span{font-size:12.5px!important}
+
+/* Keep the larger type from creating horizontal overflow at laptop widths. */
+@media(max-width:1180px){
+  body.entry-form-page .build-progress-copy b{font-size:10.5px!important}
+  body.entry-form-page .build-progress-copy small{font-size:8.5px!important}
+  body.entry-form-page .ef-command-brand b{font-size:12.5px!important}
+  body.entry-form-page .ef-command-btn{font-size:10px!important}
+  body.entry-form-page .ef-section-heading h3{font-size:16px!important}
+  body.entry-form-page .ef-section-heading p{font-size:10.5px!important;max-width:470px!important}
+}
+@media(max-width:980px){
+  body.entry-form-page .build-progress-copy small{display:none!important}
+  body.entry-form-page .build-progress-step{padding:6px!important;gap:7px!important}
+  body.entry-form-page .ef-page-head h1{font-size:29px!important}
+}
+@media(max-width:700px){
+  body.entry-form-page{font-size:14px}
+  body.entry-form-page .ef-page-head h1{font-size:26px!important}
+  body.entry-form-page .ef-page-head p{font-size:13px!important}
+  body.entry-form-page .ef-title-inline h2{font-size:17px!important}
+  body.entry-form-page .ef-section-heading h3{font-size:15.5px!important;white-space:normal!important}
+  body.entry-form-page .ef-section-heading p{font-size:10.5px!important;white-space:normal!important}
+  body.entry-form-page .ef-row-title{font-size:12.5px!important}
+  body.entry-form-page .ef-row-meta{font-size:9px!important}
+}
