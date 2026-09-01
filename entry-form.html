@@ -107,36 +107,32 @@
             <div class="ef-list-head">
               <div>
                 <div class="section-title ef-title-inline"><h2>Form questions</h2><span class="cat-count-pill" id="questionCount">0</span></div>
-                <p class="ef-subcopy">Build the form like Google Forms: choose a field, type the question, and manage required settings directly on the card.</p>
+                <p class="ef-subcopy">Click any question to edit it. The floating toolbar stays beside the active question, just like Google Forms.</p>
               </div>
               <button class="btn primary" id="addQuestionBtn">+ Add question</button>
             </div>
 
-            <div class="ef-add-tray ef-add-tray-open" id="addTray">
-              <div class="ef-add-tray-head">
-                <div><b>Add a question or section</b><small>All available field types are shown below.</small></div>
-                <button id="closeTray" type="button" aria-label="Hide question types">×</button>
+            <div class="ef-builder-note"><span>Tip</span> Select a question to open its editing controls. Use the floating toolbar to add questions, titles, media or sections exactly where you need them.</div>
+
+            <div class="ef-question-workspace" id="questionWorkspace">
+              <div class="ef-empty" id="formEmpty" hidden>
+                <div class="cat-empty-icon">+</div>
+                <h3>Your form is empty</h3>
+                <p>Add your first question or let Award Copilot build a recommended starting form.</p>
+                <button class="btn primary" id="emptyGenerateBtn">Generate starter form</button>
               </div>
-              <div class="ef-type-grid">
-                <button data-add-type="short"><span>Aa</span><b>Short text</b><small>Name, title, URL</small></button>
-                <button data-add-type="long"><span>¶</span><b>Long answer</b><small>Summary, impact</small></button>
-                <button data-add-type="single"><span>◉</span><b>Single choice</b><small>Choose one</small></button>
-                <button data-add-type="multi"><span>☑</span><b>Multiple choice</b><small>Choose many</small></button>
-                <button data-add-type="number"><span>123</span><b>Number</b><small>Revenue, metrics</small></button>
-                <button data-add-type="file"><span>⇧</span><b>File upload</b><small>PDF, deck, image</small></button>
-                <button data-add-type="url"><span>↗</span><b>Link / video</b><small>Website or demo</small></button>
-                <button data-add-type="section"><span>—</span><b>Section header</b><small>Organize questions</small></button>
+
+              <div class="ef-question-list" id="questionList"></div>
+
+              <div class="ef-question-toolbar" id="questionToolbar" hidden aria-label="Question tools">
+                <button type="button" data-toolbar-action="add-question" data-tip="Add question"><span>+</span></button>
+                <button type="button" data-toolbar-action="import" data-tip="Import questions"><span>&#8681;</span></button>
+                <button type="button" data-toolbar-action="add-title" data-tip="Add title and description"><span>Tt</span></button>
+                <button type="button" data-toolbar-action="add-image" data-tip="Add image"><span>&#9638;</span></button>
+                <button type="button" data-toolbar-action="add-video" data-tip="Add video"><span>&#9654;</span></button>
+                <button type="button" data-toolbar-action="add-section" data-tip="Add section"><span>&#9645;</span></button>
               </div>
             </div>
-
-            <div class="ef-empty" id="formEmpty" hidden>
-              <div class="cat-empty-icon">☷</div>
-              <h3>Your form is empty</h3>
-              <p>Choose any field above to add your first question, or let Award Copilot build a recommended starting form.</p>
-              <button class="btn primary" id="emptyGenerateBtn">✦ Generate starter form</button>
-            </div>
-
-            <div class="ef-question-list" id="questionList"></div>
           </div>
 
           <div class="ef-bottom-actions">
@@ -146,6 +142,21 @@
         </section>
 
         <aside class="ef-side-col">
+          <div class="card pad section ef-mini-preview-card">
+            <div class="section-title"><h2>Entrant preview</h2><button class="ef-link-btn" id="miniPreviewBtn">Open full preview</button></div>
+            <div class="ef-mini-browser">
+              <div class="ef-browser-bar"><span></span><span></span><span></span><small id="previewDomain">awards.example.com</small></div>
+              <div class="ef-mini-screen">
+                <div class="ef-mini-award" id="miniAwardName">India FinTech Awards 2027</div>
+                <h3 id="miniFormTitle">Nomination form</h3>
+                <p id="miniIntro">Tell us what makes your work exceptional.</p>
+                <div id="miniFields"></div>
+                <button>Save & continue →</button>
+              </div>
+            </div>
+          </div>
+
+
           <div class="card pad ef-progress-card">
             <div class="section-title"><h2>Setup progress</h2><b id="setupPct">60%</b></div>
             <div class="progress"><span id="setupBar" style="width:60%"></span></div>
@@ -165,20 +176,6 @@
             <div class="ef-stat-row"><span>Required questions</span><b id="requiredCount">0</b></div>
             <div class="ef-stat-row"><span>Category-specific</span><b id="specificCount">0</b></div>
             <div class="ef-stat-row"><span>Conditional logic</span><b id="logicCount">0</b></div>
-          </div>
-
-          <div class="card pad section ef-mini-preview-card">
-            <div class="section-title"><h2>Entrant preview</h2><button class="ef-link-btn" id="miniPreviewBtn">Open full preview</button></div>
-            <div class="ef-mini-browser">
-              <div class="ef-browser-bar"><span></span><span></span><span></span><small id="previewDomain">awards.example.com</small></div>
-              <div class="ef-mini-screen">
-                <div class="ef-mini-award" id="miniAwardName">India FinTech Awards 2027</div>
-                <h3 id="miniFormTitle">Nomination form</h3>
-                <p id="miniIntro">Tell us what makes your work exceptional.</p>
-                <div id="miniFields"></div>
-                <button>Save & continue →</button>
-              </div>
-            </div>
           </div>
 
           <div class="callout section ef-insight">
@@ -215,14 +212,21 @@
         <div class="field">
           <label for="fieldType">Answer type</label>
           <select id="fieldType">
-            <option value="short">Short text</option>
-            <option value="long">Long answer</option>
-            <option value="single">Single choice</option>
-            <option value="multi">Multiple choice</option>
+            <option value="short">Short answer</option>
+            <option value="long">Paragraph</option>
+            <option value="single">Multiple choice</option>
+            <option value="multi">Checkboxes</option>
+            <option value="dropdown">Dropdown</option>
             <option value="number">Number</option>
+            <option value="email">Email</option>
+            <option value="url">Link / URL</option>
+            <option value="date">Date</option>
+            <option value="time">Time</option>
             <option value="file">File upload</option>
-            <option value="url">Link / video</option>
-            <option value="section">Section header</option>
+            <option value="heading">Title &amp; description</option>
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+            <option value="section">Section</option>
           </select>
         </div>
         <div class="field" id="requiredFieldWrap">
@@ -262,6 +266,14 @@
         </div>
       </div>
 
+      <div id="mediaSettings" hidden>
+        <div class="ca-section-divider">Media</div>
+        <div class="field">
+          <label for="fieldMediaUrl">Public media URL</label>
+          <input id="fieldMediaUrl" type="url" placeholder="https://...">
+        </div>
+      </div>
+
       <div id="categorySettings">
         <div class="ca-section-divider">Category visibility</div>
         <div class="ef-visibility-choice">
@@ -286,6 +298,43 @@
       <div class="ef-drawer-spacer"></div>
       <button class="btn secondary" type="button" data-close-field>Cancel</button>
       <button class="btn primary" type="button" id="saveFieldBtn">Save question</button>
+    </div>
+  </div>
+</div>
+
+<div class="ef-import-modal" id="importModal" aria-hidden="true">
+  <div class="ef-import-backdrop" data-close-import></div>
+  <div class="ef-import-dialog" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+    <div class="ef-import-head">
+      <div><span class="eyebrow">IMPORT QUESTIONS</span><h2 id="importTitle">Add multiple questions</h2></div>
+      <button class="cat-close" type="button" data-close-import>&times;</button>
+    </div>
+    <div class="ef-import-body">
+      <div class="field">
+        <label for="importQuestionType">Question type</label>
+        <select id="importQuestionType">
+          <option value="short">Short answer</option>
+          <option value="long">Paragraph</option>
+          <option value="single">Multiple choice</option>
+          <option value="multi">Checkboxes</option>
+          <option value="dropdown">Dropdown</option>
+          <option value="number">Number</option>
+          <option value="email">Email</option>
+          <option value="url">Link / URL</option>
+          <option value="date">Date</option>
+          <option value="time">Time</option>
+          <option value="file">File upload</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="importQuestionText">Questions</label>
+        <textarea id="importQuestionText" rows="9" placeholder="Paste one question per line"></textarea>
+        <small>Each line will be added as a separate question after the selected question.</small>
+      </div>
+    </div>
+    <div class="ef-import-foot">
+      <button class="btn secondary" type="button" data-close-import>Cancel</button>
+      <button class="btn primary" type="button" id="importAddBtn">Add questions</button>
     </div>
   </div>
 </div>
@@ -344,20 +393,29 @@
   ];}
 
   const typeMeta={
-    short:{icon:'Aa',name:'Short text',hint:'One-line answer'},
-    long:{icon:'¶',name:'Long answer',hint:'Paragraph response'},
-    single:{icon:'◉',name:'Single choice',hint:'Choose one'},
-    multi:{icon:'☑',name:'Multiple choice',hint:'Choose many'},
+    short:{icon:'Aa',name:'Short answer',hint:'One-line answer'},
+    long:{icon:'P',name:'Paragraph',hint:'Long answer'},
+    single:{icon:'O',name:'Multiple choice',hint:'Choose one'},
+    multi:{icon:'[]',name:'Checkboxes',hint:'Choose many'},
+    dropdown:{icon:'v',name:'Dropdown',hint:'Choose from a list'},
     number:{icon:'123',name:'Number',hint:'Numeric answer'},
-    file:{icon:'⇧',name:'File upload',hint:'Upload evidence'},
-    url:{icon:'↗',name:'Link / video',hint:'URL answer'},
-    section:{icon:'—',name:'Section header',hint:'Organize the form'}
+    email:{icon:'@',name:'Email',hint:'Email address'},
+    url:{icon:'->',name:'Link / URL',hint:'Website or video URL'},
+    date:{icon:'D',name:'Date',hint:'Date answer'},
+    time:{icon:'T',name:'Time',hint:'Time answer'},
+    file:{icon:'^',name:'File upload',hint:'Upload evidence'},
+    heading:{icon:'Tt',name:'Title & description',hint:'Add explanatory text'},
+    image:{icon:'IMG',name:'Image',hint:'Add an image block'},
+    video:{icon:'VID',name:'Video',hint:'Add a video block'},
+    section:{icon:'=',name:'Section',hint:'Split the form into sections'}
   };
+  const questionTypeKeys=['short','long','single','multi','dropdown','number','email','url','date','time','file'];
+  const contentTypeKeys=['heading','image','video','section'];
 
   const defaults=[
     {type:'section',label:'About you',help:'Tell us who is submitting this entry.'},
     {type:'short',label:'Contact name',help:'Primary contact for this nomination.',required:true,limit:100,limitUnit:'chars'},
-    {type:'short',label:'Work email',help:'We will send submission updates here.',required:true,limit:120,limitUnit:'chars'},
+    {type:'email',label:'Work email',help:'We will send submission updates here.',required:true,limit:120,limitUnit:'chars'},
     {type:'short',label:'Organisation name',help:'Company, team or individual being entered.',required:true,limit:140,limitUnit:'chars'},
     {type:'section',label:'About this entry',help:'Help the judges understand the work and why it deserves recognition.'},
     {type:'short',label:'Entry title',help:'Use a clear title that judges can recognise.',required:true,limit:120,limitUnit:'chars'},
@@ -369,45 +427,85 @@
     {type:'url',label:'Demo, website or video link',help:'Optional link to supporting material.',required:false,limit:300,limitUnit:'chars'}
   ];
 
-  function normalizeField(f){return Object.assign({
-    id:'q_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),type:'short',label:'Untitled question',help:'',required:false,
-    limit:0,limitUnit:'chars',options:['Option 1','Option 2'],visibility:'all',categories:[],logic:{enabled:false,fieldId:'',operator:'equals',value:''},fileTypes:'PDF, PPT/PPTX',fileSize:'25 MB'
-  },f,{logic:Object.assign({enabled:false,fieldId:'',operator:'equals',value:''},f.logic||{})});}
+  function normalizeField(f){
+    const base={
+      id:'q_'+Date.now()+'_'+Math.random().toString(36).slice(2,7),type:'short',label:'Untitled question',help:'',required:false,
+      limit:0,limitUnit:'chars',options:['Option 1','Option 2'],visibility:'all',categories:[],logic:{enabled:false,fieldId:'',operator:'equals',value:''},
+      fileTypes:'PDF, PPT/PPTX',fileSize:'25 MB',mediaUrl:''
+    };
+    const out=Object.assign(base,f||{});
+    out.logic=Object.assign({enabled:false,fieldId:'',operator:'equals',value:''},(f&&f.logic)||{});
+    if(!Array.isArray(out.options)||!out.options.length)out.options=['Option 1','Option 2'];
+    return out;
+  }
 
   let saved=(()=>{try{return JSON.parse(localStorage.getItem(formKey)||'null')}catch(e){return null}})();
   let form={title:'Nomination form',intro:'Tell us what makes your work exceptional. You can save a draft and return before the deadline.',categoryMode:'before',fields:defaults.map(normalizeField)};
-  if(saved&&Array.isArray(saved.fields)){form={title:saved.title||'Nomination form',intro:saved.intro||'',categoryMode:saved.categoryMode||'before',fields:saved.fields.map(normalizeField)};}
+  if(saved&&Array.isArray(saved.fields))form={title:saved.title||'Nomination form',intro:saved.intro||'',categoryMode:saved.categoryMode||'before',fields:saved.fields.map(normalizeField)};
 
   let editingId=null;
   let draftField=null;
   let dragId=null;
   let visibilityMode='all';
+  let activeFieldId=form.fields[0]?.id||null;
 
   function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1900)}
   function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
-  function save(silent){form.title=$('formTitle').value.trim()||'Nomination form';form.intro=$('formIntro').value.trim();form.categoryMode=$('formCategoryMode').value;localStorage.setItem(formKey,JSON.stringify(form));if(!silent)toast('Entry form saved');updateUI();}
+  function isQuestion(f){return f&&!contentTypeKeys.includes(f.type)}
+  function questionFields(){return form.fields.filter(isQuestion)}
   function categoryName(id){const c=categories.find(x=>x.id===id);return c?c.name:''}
-  function questionFields(){return form.fields.filter(f=>f.type!=='section')}
-  function countWordsForField(f){if(f.type==='long')return Number(f.limit||300);return 0}
-  function estimateMinutes(){let sec=0;form.fields.forEach(f=>{if(f.type==='section')return;if(f.type==='long')sec+=Math.min(300,Math.max(45,Number(f.limit||300)*.45));else if(f.type==='file')sec+=75;else if(['single','multi'].includes(f.type))sec+=25;else sec+=20;});return Math.max(2,Math.round(sec/60))}
-  function health(){const qs=questionFields();const mins=estimateMinutes();let score=96;if(qs.length>12)score-=Math.min(25,(qs.length-12)*3);if(mins>12)score-=Math.min(25,(mins-12)*3);const longWords=qs.reduce((n,f)=>n+countWordsForField(f),0);if(longWords>1800)score-=8;score=Math.max(45,Math.round(score));return score}
   function displayLimit(f){if(!f.limit)return'';return f.limit+' '+(f.limitUnit==='words'?'words':'characters')}
+  function countWordsForField(f){return f.type==='long'?Number(f.limit||300):0}
+  function estimateMinutes(){let sec=0;form.fields.forEach(f=>{if(!isQuestion(f))return;if(f.type==='long')sec+=Math.min(300,Math.max(45,Number(f.limit||300)*.45));else if(f.type==='file')sec+=75;else if(['single','multi','dropdown'].includes(f.type))sec+=25;else sec+=20;});return Math.max(2,Math.round(sec/60))}
+  function health(){const qs=questionFields();const mins=estimateMinutes();let score=96;if(qs.length>12)score-=Math.min(25,(qs.length-12)*3);if(mins>12)score-=Math.min(25,(mins-12)*3);const longWords=qs.reduce((n,f)=>n+countWordsForField(f),0);if(longWords>1800)score-=8;return Math.max(45,Math.round(score))}
+  function save(silent){form.title=$('formTitle').value.trim()||'Nomination form';form.intro=$('formIntro').value.trim();form.categoryMode=$('formCategoryMode').value;localStorage.setItem(formKey,JSON.stringify(form));if(!silent)toast('Entry form saved');updateUI()}
 
   function typeSelectOptions(current){
-    return Object.entries(typeMeta).map(([key,meta])=>'<option value="'+esc(key)+'" '+(key===current?'selected':'')+'>'+esc(meta.name)+'</option>').join('');
+    return questionTypeKeys.map(key=>'<option value="'+esc(key)+'" '+(key===current?'selected':'')+'>'+esc(typeMeta[key].name)+'</option>').join('');
   }
 
-  function inlineAnswerPreview(f){
+  function activeAnswerPreview(f){
     if(f.type==='long')return '<div class="ef-inline-answer ef-inline-long"><span>Long answer text</span><i></i><i></i></div>';
-    if(f.type==='single'||f.type==='multi'){
-      const marker=f.type==='single'?'○':'□';
-      const opts=(f.options&&f.options.length?f.options:['Option 1','Option 2']);
-      return '<div class="ef-inline-options">'+opts.map((o,i)=>'<div class="ef-inline-option"><span>'+marker+'</span><input value="'+esc(o)+'" data-inline-option="'+i+'" aria-label="Option '+(i+1)+'"><button type="button" data-action="remove-option" data-option-index="'+i+'" aria-label="Remove option">×</button></div>').join('')+'<button type="button" class="ef-add-option-inline" data-action="add-option">+ Add option</button></div>';
+    if(['single','multi','dropdown'].includes(f.type)){
+      const marker=f.type==='single'?'O':(f.type==='multi'?'[]':'1.');
+      const opts=f.options&&f.options.length?f.options:['Option 1','Option 2'];
+      return '<div class="ef-inline-options">'+opts.map((o,i)=>'<div class="ef-inline-option"><span>'+esc(marker)+'</span><input value="'+esc(o)+'" data-inline-option="'+i+'" aria-label="Option '+(i+1)+'"><button type="button" data-action="remove-option" data-option-index="'+i+'" aria-label="Remove option">x</button></div>').join('')+'<button type="button" class="ef-add-option-inline" data-action="add-option">+ Add option</button></div>';
     }
-    if(f.type==='file')return '<div class="ef-inline-answer ef-inline-upload"><span>⇧</span><div><b>File upload</b><small>'+esc(f.fileTypes||'PDF, PPT/PPTX')+' · '+esc(f.fileSize||'25 MB')+'</small></div></div>';
+    if(f.type==='file')return '<div class="ef-inline-answer ef-inline-upload"><span>^</span><div><b>File upload</b><small>'+esc(f.fileTypes||'PDF, PPT/PPTX')+' - '+esc(f.fileSize||'25 MB')+'</small></div></div>';
     if(f.type==='url')return '<div class="ef-inline-answer ef-inline-line"><span>https://</span></div>';
+    if(f.type==='email')return '<div class="ef-inline-answer ef-inline-line"><span>name@example.com</span></div>';
     if(f.type==='number')return '<div class="ef-inline-answer ef-inline-line"><span>Number answer</span></div>';
+    if(f.type==='date')return '<div class="ef-inline-answer ef-inline-line"><span>DD / MM / YYYY</span></div>';
+    if(f.type==='time')return '<div class="ef-inline-answer ef-inline-line"><span>Time</span></div>';
     return '<div class="ef-inline-answer ef-inline-line"><span>Short answer text</span></div>';
+  }
+
+  function compactAnswerPreview(f){
+    if(f.type==='long')return '<div class="ef-compact-lines"><i></i><i></i></div>';
+    if(['single','multi'].includes(f.type)){
+      const marker=f.type==='single'?'O':'[]';
+      return '<div class="ef-compact-options">'+(f.options||[]).slice(0,2).map(o=>'<span><i>'+esc(marker)+'</i>'+esc(o)+'</span>').join('')+'</div>';
+    }
+    if(f.type==='dropdown')return '<div class="ef-compact-select">'+esc((f.options&&f.options[0])||'Choose')+' <span>v</span></div>';
+    if(f.type==='file')return '<div class="ef-compact-upload">^ Add file</div>';
+    return '<div class="ef-compact-line"></div>';
+  }
+
+  function mediaPreview(f){
+    if(!f.mediaUrl)return '<div class="ef-media-placeholder">'+(f.type==='image'?'Image block':'Video block')+' - paste a public URL</div>';
+    if(f.type==='image')return '<div class="ef-media-preview"><img src="'+esc(f.mediaUrl)+'" alt="'+esc(f.label||'Form image')+'"></div>';
+    return '<div class="ef-media-preview ef-video-preview"><span>Play</span><div><b>'+esc(f.label||'Video')+'</b><small>'+esc(f.mediaUrl)+'</small></div></div>';
+  }
+
+  function renderContentCard(f,active){
+    if(!active){
+      if(f.type==='image'||f.type==='video')return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-compact-content"><span>'+esc(typeMeta[f.type].name.toUpperCase())+'</span><b>'+esc(f.label||typeMeta[f.type].name)+'</b>'+mediaPreview(f)+'</div>';
+      return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-compact-content"><span>'+esc(typeMeta[f.type].name.toUpperCase())+'</span><b>'+esc(f.label)+'</b><small>'+esc(f.help||'')+'</small></div>';
+    }
+    if(f.type==='image'||f.type==='video'){
+      return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-main"><div class="ef-section-kicker">'+esc(typeMeta[f.type].name.toUpperCase())+'</div><input class="ef-inline-question" data-inline-label value="'+esc(f.label||typeMeta[f.type].name)+'" aria-label="Block title"><input class="ef-inline-media-url" data-inline-media value="'+esc(f.mediaUrl||'')+'" placeholder="Paste public '+(f.type==='image'?'image':'video')+' URL">'+mediaPreview(f)+'</div><div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button></div>';
+    }
+    return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-main"><div class="ef-section-kicker">'+esc(typeMeta[f.type].name.toUpperCase())+'</div><input class="ef-inline-question ef-inline-section-title" data-inline-label value="'+esc(f.label)+'" aria-label="Title"><textarea class="ef-inline-help-edit" data-inline-help placeholder="Description (optional)">'+esc(f.help||'')+'</textarea></div><div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button></div>';
   }
 
   function renderQuestions(){
@@ -415,22 +513,40 @@
     list.innerHTML='';
     $('formEmpty').hidden=form.fields.length>0;
     $('questionCount').textContent=questionFields().length;
-    form.fields.forEach((f,index)=>{
+    if(activeFieldId&&!form.fields.some(f=>f.id===activeFieldId))activeFieldId=form.fields[0]?.id||null;
+    form.fields.forEach(f=>{
+      const active=f.id===activeFieldId;
       const el=document.createElement('div');
       el.dataset.id=f.id;
-      if(f.type==='section'){
-        el.className='ef-gform-card ef-gform-section';
-        el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">⋮⋮</div><div class="ef-card-main"><div class="ef-section-kicker">SECTION HEADER</div><input class="ef-inline-question ef-inline-section-title" data-inline-label value="'+esc(f.label)+'" aria-label="Section title"><textarea class="ef-inline-help-preview" readonly tabindex="-1">'+esc(f.help||'Add a short section description from Edit settings.')+'</textarea></div><div class="ef-card-footer"><button type="button" data-action="edit">✎ Edit settings</button><button type="button" data-action="duplicate">⧉ Duplicate</button><button type="button" data-action="delete" class="ef-card-delete">× Delete</button></div>';
+      if(contentTypeKeys.includes(f.type)){
+        el.className='ef-gform-card ef-gform-content ef-content-'+f.type+(active?' active':' ef-gform-compact');
+        el.innerHTML=renderContentCard(f,active);
+        list.appendChild(el);bindDrag(el);return;
+      }
+      if(!active){
+        el.className='ef-gform-card ef-gform-compact';
+        el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-compact-main"><div class="ef-compact-question">'+esc(f.label)+(f.required?'<em>*</em>':'')+'</div>'+compactAnswerPreview(f)+'</div>';
         list.appendChild(el);bindDrag(el);return;
       }
       const meta=[];
       if(f.limit)meta.push('Max '+displayLimit(f));
       if(f.visibility==='selected'&&f.categories.length)meta.push(f.categories.length+' categor'+(f.categories.length===1?'y':'ies'));
       if(f.logic&&f.logic.enabled)meta.push('Conditional');
-      el.className='ef-gform-card';
-      el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">⋮⋮</div><div class="ef-card-head"><div class="ef-card-question"><input class="ef-inline-question" data-inline-label value="'+esc(f.label)+'" aria-label="Question text"><small>'+esc(f.help||typeMeta[f.type]?.hint||'')+'</small></div><div class="ef-card-type"><span>'+esc(typeMeta[f.type]?.icon||'Aa')+'</span><select data-inline-type aria-label="Question type">'+typeSelectOptions(f.type)+'</select></div></div><div class="ef-card-answer">'+inlineAnswerPreview(f)+'</div>'+(meta.length?'<div class="ef-card-meta">'+meta.map(m=>'<span>'+esc(m)+'</span>').join('')+'</div>':'')+'<div class="ef-card-footer"><button type="button" data-action="edit">✎ Edit settings</button><button type="button" data-action="duplicate">⧉ Duplicate</button><button type="button" data-action="delete" class="ef-card-delete">× Delete</button><div class="ef-card-footer-spacer"></div><button type="button" class="ef-required-inline '+(f.required?'active':'')+'" data-action="toggle-required"><span class="ef-switch"><i></i></span><b>Required</b></button></div>';
+      el.className='ef-gform-card active';
+      el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-head"><div class="ef-card-question"><input class="ef-inline-question" data-inline-label value="'+esc(f.label)+'" aria-label="Question text"><small>'+esc(f.help||typeMeta[f.type]?.hint||'')+'</small></div><button type="button" class="ef-card-media-btn" data-action="question-image" title="Attach image">&#9638;</button><div class="ef-card-type"><span>'+esc(typeMeta[f.type]?.icon||'Aa')+'</span><select data-inline-type aria-label="Question type">'+typeSelectOptions(f.type)+'</select></div></div><div class="ef-card-answer">'+activeAnswerPreview(f)+'</div>'+(f.mediaUrl?'<div class="ef-question-media"><img src="'+esc(f.mediaUrl)+'" alt="Question image"></div>':'')+(meta.length?'<div class="ef-card-meta">'+meta.map(m=>'<span>'+esc(m)+'</span>').join('')+'</div>':'')+'<div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button><div class="ef-card-footer-divider"></div><button type="button" class="ef-required-inline '+(f.required?'active':'')+'" data-action="toggle-required"><b>Required</b><span class="ef-switch"><i></i></span></button><button type="button" class="ef-more-settings" data-action="edit" title="More settings">&#8942;</button></div>';
       list.appendChild(el);bindDrag(el);
     });
+    requestAnimationFrame(positionToolbar);
+  }
+
+  function positionToolbar(){
+    const toolbar=$('questionToolbar');
+    const workspace=$('questionWorkspace');
+    const active=workspace&&workspace.querySelector('.ef-gform-card.active');
+    if(!toolbar||!workspace||!active){if(toolbar)toolbar.hidden=true;return}
+    toolbar.hidden=false;
+    const top=active.offsetTop+Math.max(2,Math.min(16,active.offsetHeight/2-70));
+    toolbar.style.top=top+'px';
   }
 
   function bindDrag(el){
@@ -444,13 +560,39 @@
     el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');if(!dragId||dragId===el.dataset.id)return;const from=form.fields.findIndex(x=>x.id===dragId),to=form.fields.findIndex(x=>x.id===el.dataset.id);if(from<0||to<0)return;const [item]=form.fields.splice(from,1);form.fields.splice(to,0,item);save(true)});
   }
 
+  function setActiveField(id,scroll){
+    if(!form.fields.some(f=>f.id===id))return;
+    activeFieldId=id;renderQuestions();
+    if(scroll)requestAnimationFrame(()=>{const el=$('questionList').querySelector('[data-id="'+CSS.escape(id)+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'})});
+  }
+
+  function newField(type,label){
+    const question=!contentTypeKeys.includes(type);
+    const f=normalizeField({
+      type:type||'short',label:label||(type==='section'?'Untitled section':type==='heading'?'Title and description':type==='image'?'Image':type==='video'?'Video':'Question'),
+      required:question&&type!=='file',limit:type==='long'?500:(['short','email','url'].includes(type)?160:0),limitUnit:type==='long'?'words':'chars'
+    });
+    if(['single','multi','dropdown'].includes(type))f.options=['Option 1'];
+    return f;
+  }
+
+  function insertFieldsAfterActive(fields,scroll){
+    let idx=form.fields.findIndex(x=>x.id===activeFieldId);
+    if(idx<0)idx=form.fields.length-1;
+    form.fields.splice(idx+1,0,...fields);
+    activeFieldId=fields[fields.length-1].id;
+    save(true);
+    if(scroll)requestAnimationFrame(()=>{const el=$('questionList').querySelector('[data-id="'+CSS.escape(activeFieldId)+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'})});
+  }
+  function addFieldAfterActive(type){insertFieldsAfterActive([newField(type)],true)}
+
   function renderMiniPreview(){
     $('miniAwardName').textContent=award.name||'Untitled Award';
     $('miniFormTitle').textContent=$('formTitle').value||'Nomination form';
     $('miniIntro').textContent=$('formIntro').value||'';
     $('previewDomain').textContent=(award.website||((award.slug||'your-award')+'.etb2b_awards.app')).replace(/^https?:\/\//,'').slice(0,28);
     const box=$('miniFields');box.innerHTML='';
-    form.fields.filter(f=>f.type!=='section').slice(0,3).forEach(f=>{const d=document.createElement('div');d.className='ef-mini-field';d.innerHTML='<span>'+esc(f.label)+(f.required?' *':'')+'</span><i></i>';box.appendChild(d)});
+    questionFields().slice(0,3).forEach(f=>{const d=document.createElement('div');d.className='ef-mini-field';d.innerHTML='<span>'+esc(f.label)+(f.required?' *':'')+'</span><i></i>';box.appendChild(d)});
     if(questionFields().length>3){const more=document.createElement('small');more.className='ef-mini-more';more.textContent='+'+(questionFields().length-3)+' more questions';box.appendChild(more)}
   }
 
@@ -458,141 +600,123 @@
     const qs=questionFields();const req=qs.filter(f=>f.required).length;const specific=qs.filter(f=>f.visibility==='selected'&&f.categories.length).length;const logic=qs.filter(f=>f.logic&&f.logic.enabled).length;const mins=estimateMinutes();const score=health();
     $('estimatedTime').textContent=mins+' min';$('requiredCount').textContent=req;$('specificCount').textContent=specific;$('logicCount').textContent=logic;$('healthScore').textContent=score;
     const badge=$('healthBadge');
-    if(score>=80){badge.textContent='Good';badge.className='badge green';$('healthTitle').textContent='Easy to complete';$('healthText').textContent='Balanced length for an awards entry.';}
-    else if(score>=65){badge.textContent='Review';badge.className='badge orange';$('healthTitle').textContent='A little demanding';$('healthText').textContent='Consider removing or shortening a few questions.';}
-    else{badge.textContent='Long';badge.className='badge red';$('healthTitle').textContent='Likely to lose entries';$('healthText').textContent='Reduce the number or length of required answers.';}
+    if(score>=80){badge.textContent='Good';badge.className='badge green';$('healthTitle').textContent='Easy to complete';$('healthText').textContent='Balanced length for an awards entry.'}
+    else if(score>=65){badge.textContent='Review';badge.className='badge orange';$('healthTitle').textContent='A little demanding';$('healthText').textContent='Consider removing or shortening a few questions.'}
+    else{badge.textContent='Long';badge.className='badge red';$('healthTitle').textContent='Likely to lose entries';$('healthText').textContent='Reduce the number or length of required answers.'}
     $('insightText').textContent=mins>12?'Your form is estimated at '+mins+' minutes. Shortening it may improve completion.':'Ask only what you will use for eligibility, judging or storytelling. Extra questions reduce completion.';
   }
 
   function updateProgress(){
     const qs=questionFields();const complete=qs.length>=4;const pct=complete?60:45;$('setupPct').textContent=pct+'%';$('setupBar').style.width=pct+'%';
-    $('formProgressIcon').textContent=complete?'✓':'○';$('formProgressIcon').className=complete?'ok':'';$('formProgressText').textContent=complete?qs.length+' questions ready':'Add at least 4 questions';
+    $('formProgressIcon').textContent=complete?'OK':'O';$('formProgressIcon').className=complete?'ok':'';$('formProgressText').textContent=complete?qs.length+' questions ready':'Add at least 4 questions';
     $('categoryProgressText').textContent=categories.length+' categor'+(categories.length===1?'y':'ies')+' ready';$('trackCategories').textContent=categories.length?'Complete':'No categories';
   }
-
   function updateUI(){renderQuestions();renderMiniPreview();renderHealth();updateProgress()}
 
   function makeTailoredForm(){
     const isFintech=/fintech|financial|bank|payment/i.test(award.name||'');
     const tailored=defaults.map(x=>normalizeField(x));
-    if(isFintech){
-      const idx=tailored.findIndex(f=>f.label==='Impact & measurable results');
-      tailored.splice(idx+1,0,normalizeField({type:'long',label:'Trust, security & compliance',help:'How did you address customer trust, risk, security or regulatory considerations?',required:true,limit:350,limitUnit:'words'}));
-    } else {
-      const idx=tailored.findIndex(f=>f.label==='Impact & measurable results');
-      tailored.splice(idx+1,0,normalizeField({type:'long',label:'Future potential',help:'How can this work scale, influence the industry or create lasting value?',required:false,limit:300,limitUnit:'words'}));
-    }
-    if(categories.length){
-      const leader=categories.find(c=>/leader|person|ceo|individual/i.test(c.name||''));
-      if(leader)tailored.push(normalizeField({type:'long',label:'Leadership contribution',help:'Describe the individual contribution and influence of the nominee.',required:true,limit:400,limitUnit:'words',visibility:'selected',categories:[leader.id]}));
-    }
+    const idx=tailored.findIndex(f=>f.label==='Impact & measurable results');
+    tailored.splice(idx+1,0,normalizeField(isFintech?{type:'long',label:'Trust, security & compliance',help:'How did you address customer trust, risk, security or regulatory considerations?',required:true,limit:350,limitUnit:'words'}:{type:'long',label:'Future potential',help:'How can this work scale, influence the industry or create lasting value?',required:false,limit:300,limitUnit:'words'}));
+    if(categories.length){const leader=categories.find(c=>/leader|person|ceo|individual/i.test(c.name||''));if(leader)tailored.push(normalizeField({type:'long',label:'Leadership contribution',help:'Describe the individual contribution and influence of the nominee.',required:true,limit:400,limitUnit:'words',visibility:'selected',categories:[leader.id]}))}
     return tailored;
   }
 
   function shorten(){
-    let removed=0;
-    const optionalLong=form.fields.filter(f=>f.type==='long'&&!f.required);
-    optionalLong.forEach(f=>{if(removed<2){form.fields=form.fields.filter(x=>x.id!==f.id);removed++}});
-    form.fields.forEach(f=>{if(f.type==='long'&&Number(f.limit)>500)f.limit=500});
+    let removed=0;form.fields.filter(f=>f.type==='long'&&!f.required).forEach(f=>{if(removed<2){form.fields=form.fields.filter(x=>x.id!==f.id);removed++}});
     form.fields.forEach(f=>{if(f.type==='long'&&Number(f.limit||0)>400)f.limit=400});
     if(!removed&&form.fields.filter(f=>f.type==='long').length>3){const longs=form.fields.filter(f=>f.type==='long');const target=longs[longs.length-1];target.required=false;target.limit=Math.min(Number(target.limit||300),300)}
-    save(true);toast('Form shortened · estimated '+estimateMinutes()+' min');
+    activeFieldId=form.fields[0]?.id||null;save(true);toast('Form shortened - estimated '+estimateMinutes()+' min');
   }
 
-  function openAddTray(){$('addTray').hidden=false;$('addTray').scrollIntoView({behavior:'smooth',block:'nearest'})}
-  function closeAddTray(){$('addTray').hidden=true}
-
   function openField(id,type){
-    editingId=id||null;
-    const existing=id?form.fields.find(x=>x.id===id):null;
-    draftField=normalizeField(existing?JSON.parse(JSON.stringify(existing)):{type:type||'short',label:type==='section'?'New section':'Untitled question',required:type==='section'?false:true,limit:type==='long'?500:(type==='short'?160:0),limitUnit:type==='long'?'words':'chars'});
+    editingId=id||null;const existing=id?form.fields.find(x=>x.id===id):null;
+    draftField=normalizeField(existing?JSON.parse(JSON.stringify(existing)):newField(type||'short'));
     visibilityMode=draftField.visibility||'all';
-    $('fieldDrawerEyebrow').textContent=editingId?'EDIT QUESTION':'NEW QUESTION';$('fieldDrawerTitle').textContent=editingId?'Edit question':'Add question';$('saveFieldBtn').textContent=editingId?'Save changes':'Add question';$('deleteFieldBtn').hidden=!editingId;
+    $('fieldDrawerEyebrow').textContent=editingId?'EDIT FIELD':'NEW FIELD';$('fieldDrawerTitle').textContent=editingId?'Field settings':'Add field';$('saveFieldBtn').textContent=editingId?'Save changes':'Add field';$('deleteFieldBtn').hidden=!editingId;
     fillDrawer();$('fieldModal').classList.add('open');$('fieldModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$('fieldLabel').focus(),80);
   }
   function closeField(){$('fieldModal').classList.remove('open');$('fieldModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open');draftField=null;editingId=null}
-
   function fillDrawer(){
-    $('fieldLabel').value=draftField.label||'';$('fieldHelp').value=draftField.help||'';$('fieldType').value=draftField.type;$('fieldLimit').value=draftField.limit||0;$('fieldLimitUnit').value=draftField.limitUnit||'chars';$('fieldFileTypes').value=draftField.fileTypes||'PDF, PPT/PPTX';$('fieldFileSize').value=draftField.fileSize||'25 MB';
+    $('fieldLabel').value=draftField.label||'';$('fieldHelp').value=draftField.help||'';$('fieldType').value=draftField.type;$('fieldLimit').value=draftField.limit||0;$('fieldLimitUnit').value=draftField.limitUnit||'chars';$('fieldFileTypes').value=draftField.fileTypes||'PDF, PPT/PPTX';$('fieldFileSize').value=draftField.fileSize||'25 MB';if($('fieldMediaUrl'))$('fieldMediaUrl').value=draftField.mediaUrl||'';
     setToggle($('requiredToggle'),!!draftField.required);setToggle($('logicToggle'),!!draftField.logic.enabled);
-    document.querySelectorAll('.ef-visibility-option').forEach(b=>b.classList.toggle('active',b.dataset.visibility===visibilityMode));
-    renderDrawerSpecial();renderOptions();renderCategoryPicker();renderLogicFields();
+    document.querySelectorAll('.ef-visibility-option').forEach(b=>b.classList.toggle('active',b.dataset.visibility===visibilityMode));renderDrawerSpecial();renderOptions();renderCategoryPicker();renderLogicFields();
   }
   function setToggle(el,on){el.classList.toggle('active',on)}
   function renderDrawerSpecial(){
-    const t=$('fieldType').value;const isSection=t==='section';$('requiredFieldWrap').hidden=isSection;$('limitSettings').hidden=!['short','long','number','url'].includes(t);$('choiceSettings').hidden=!['single','multi'].includes(t);$('fileSettings').hidden=t!=='file';$('categorySettings').hidden=isSection;$('logicSettings').hidden=isSection;
+    const t=$('fieldType').value;const content=contentTypeKeys.includes(t);$('requiredFieldWrap').hidden=content;$('limitSettings').hidden=!['short','long','number','email','url'].includes(t);$('choiceSettings').hidden=!['single','multi','dropdown'].includes(t);$('fileSettings').hidden=t!=='file';if($('mediaSettings'))$('mediaSettings').hidden=!['image','video'].includes(t);$('categorySettings').hidden=content;$('logicSettings').hidden=content;
   }
-  function renderOptions(){const box=$('optionEditor');box.innerHTML='';(draftField.options||[]).forEach((o,i)=>{const row=document.createElement('div');row.className='ef-option-row';row.innerHTML='<span>≡</span><input value="'+esc(o)+'" data-option-index="'+i+'"><button data-remove-option="'+i+'">×</button>';box.appendChild(row)})}
+  function renderOptions(){const box=$('optionEditor');box.innerHTML='';(draftField.options||[]).forEach((o,i)=>{const row=document.createElement('div');row.className='ef-option-row';row.innerHTML='<span>=</span><input value="'+esc(o)+'" data-option-index="'+i+'"><button data-remove-option="'+i+'">x</button>';box.appendChild(row)})}
   function renderCategoryPicker(){const box=$('categoryPicker');box.hidden=visibilityMode!=='selected';box.innerHTML='';categories.forEach(c=>{const checked=(draftField.categories||[]).includes(c.id);const label=document.createElement('label');label.innerHTML='<input type="checkbox" value="'+esc(c.id)+'" '+(checked?'checked':'')+'><span>'+esc(c.name)+'</span>';box.appendChild(label)})}
-  function logicCandidates(){return form.fields.filter(f=>f.id!==editingId&&['single','multi','short','number'].includes(f.type))}
-  function renderLogicFields(){
-    $('logicGrid').hidden=!draftField.logic.enabled;const select=$('logicField');const candidates=logicCandidates();select.innerHTML='<option value="">Choose earlier question</option>'+candidates.map(f=>'<option value="'+esc(f.id)+'">'+esc(f.label)+'</option>').join('');select.value=draftField.logic.fieldId||'';$('logicOperator').value=draftField.logic.operator||'equals';$('logicValue').value=draftField.logic.value||'';
-    if(!candidates.length&&draftField.logic.enabled){select.innerHTML='<option value="">No eligible earlier questions yet</option>';select.disabled=true;$('logicOperator').disabled=true;$('logicValue').disabled=true;}else{select.disabled=false;$('logicOperator').disabled=false;$('logicValue').disabled=false;}
-  }
-
+  function logicCandidates(){return form.fields.filter(f=>f.id!==editingId&&['single','multi','dropdown','short','number','email'].includes(f.type))}
+  function renderLogicFields(){const grid=$('logicGrid');grid.hidden=!draftField.logic.enabled;const select=$('logicField');const candidates=logicCandidates();select.innerHTML='<option value="">Choose earlier question</option>'+candidates.map(f=>'<option value="'+esc(f.id)+'">'+esc(f.label)+'</option>').join('');select.value=draftField.logic.fieldId||'';$('logicOperator').value=draftField.logic.operator||'equals';$('logicValue').value=draftField.logic.value||'';const disabled=!candidates.length&&draftField.logic.enabled;if(disabled)select.innerHTML='<option value="">No eligible earlier questions yet</option>';select.disabled=disabled;$('logicOperator').disabled=disabled;$('logicValue').disabled=disabled}
   function collectDraft(){
-    draftField.label=$('fieldLabel').value.trim();draftField.help=$('fieldHelp').value.trim();draftField.type=$('fieldType').value;draftField.required=$('requiredToggle').classList.contains('active')&&draftField.type!=='section';draftField.limit=Number($('fieldLimit').value||0);draftField.limitUnit=$('fieldLimitUnit').value;draftField.fileTypes=$('fieldFileTypes').value;draftField.fileSize=$('fieldFileSize').value;draftField.visibility=visibilityMode;
-    draftField.categories=visibilityMode==='selected'?[...$('categoryPicker').querySelectorAll('input:checked')].map(x=>x.value):[];
-    draftField.logic.enabled=$('logicToggle').classList.contains('active')&&draftField.type!=='section';
-    if(draftField.logic.enabled&&$('logicField')){draftField.logic.fieldId=$('logicField').value;draftField.logic.operator=$('logicOperator').value;draftField.logic.value=$('logicValue').value.trim()}
-    if(['single','multi'].includes(draftField.type)){draftField.options=[...$('optionEditor').querySelectorAll('input')].map(x=>x.value.trim()).filter(Boolean);if(draftField.options.length<2)draftField.options=['Option 1','Option 2']}
-    if(draftField.type==='section'){draftField.required=false;draftField.visibility='all';draftField.categories=[];draftField.logic.enabled=false}
+    draftField.label=$('fieldLabel').value.trim();draftField.help=$('fieldHelp').value.trim();draftField.type=$('fieldType').value;draftField.required=$('requiredToggle').classList.contains('active')&&!contentTypeKeys.includes(draftField.type);draftField.limit=Number($('fieldLimit').value||0);draftField.limitUnit=$('fieldLimitUnit').value;draftField.fileTypes=$('fieldFileTypes').value;draftField.fileSize=$('fieldFileSize').value;if($('fieldMediaUrl'))draftField.mediaUrl=$('fieldMediaUrl').value.trim();draftField.visibility=visibilityMode;
+    draftField.categories=visibilityMode==='selected'?[...$('categoryPicker').querySelectorAll('input:checked')].map(x=>x.value):[];draftField.logic.enabled=$('logicToggle').classList.contains('active')&&!contentTypeKeys.includes(draftField.type);
+    if(draftField.logic.enabled){draftField.logic.fieldId=$('logicField').value;draftField.logic.operator=$('logicOperator').value;draftField.logic.value=$('logicValue').value.trim()}
+    if(['single','multi','dropdown'].includes(draftField.type)){draftField.options=[...$('optionEditor').querySelectorAll('input')].map(x=>x.value.trim()).filter(Boolean);if(!draftField.options.length)draftField.options=['Option 1']}
+    if(contentTypeKeys.includes(draftField.type)){draftField.required=false;draftField.visibility='all';draftField.categories=[];draftField.logic.enabled=false}
   }
-
-  function saveField(){
-    collectDraft();$('fieldLabelError').textContent='';if(!draftField.label){$('fieldLabelError').textContent='Add a question or section title.';$('fieldLabel').focus();return}
-    const wasEditing=!!editingId;
-    if(editingId){const idx=form.fields.findIndex(x=>x.id===editingId);form.fields[idx]=normalizeField(draftField)}else form.fields.push(normalizeField(draftField));
-    closeField();save(true);toast(wasEditing?'Question updated':'Question added');
-  }
-
-  function duplicateField(id){const f=form.fields.find(x=>x.id===id);if(!f)return;const idx=form.fields.findIndex(x=>x.id===id);const copy=normalizeField(JSON.parse(JSON.stringify(f)));copy.id='q_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);copy.label=f.label+' copy';form.fields.splice(idx+1,0,copy);save(true);toast('Question duplicated')}
-  function deleteField(id){const f=form.fields.find(x=>x.id===id);if(!f)return;if(!confirm('Delete “'+f.label+'”?'))return;form.fields=form.fields.filter(x=>x.id!==id);save(true);toast('Question deleted')}
+  function saveField(){collectDraft();$('fieldLabelError').textContent='';if(!draftField.label){$('fieldLabelError').textContent='Add a question or title.';$('fieldLabel').focus();return}const wasEditing=!!editingId;if(editingId){const idx=form.fields.findIndex(x=>x.id===editingId);form.fields[idx]=normalizeField(draftField);activeFieldId=draftField.id}else{insertFieldsAfterActive([normalizeField(draftField)],false)}closeField();save(true);toast(wasEditing?'Field updated':'Field added')}
+  function duplicateField(id){const f=form.fields.find(x=>x.id===id);if(!f)return;const idx=form.fields.findIndex(x=>x.id===id);const copy=normalizeField(JSON.parse(JSON.stringify(f)));copy.id='q_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);copy.label=f.label+' copy';form.fields.splice(idx+1,0,copy);activeFieldId=copy.id;save(true);requestAnimationFrame(()=>document.querySelector('[data-id="'+CSS.escape(copy.id)+'"]')?.scrollIntoView({behavior:'smooth',block:'center'}));toast('Field duplicated')}
+  function deleteField(id){const f=form.fields.find(x=>x.id===id);if(!f)return;if(!confirm('Delete "'+f.label+'"?'))return;const idx=form.fields.findIndex(x=>x.id===id);form.fields.splice(idx,1);activeFieldId=form.fields[Math.min(idx,form.fields.length-1)]?.id||null;save(true);toast('Field deleted')}
 
   function fieldVisibleForCategory(f,catId){return f.visibility!=='selected'||!f.categories.length||f.categories.includes(catId)}
   function publicInput(f){
     const req=f.required?' <em>*</em>':'';const help=f.help?'<small>'+esc(f.help)+'</small>':'';
     if(f.type==='section')return '<div class="ef-public-section"><span>SECTION</span><h3>'+esc(f.label)+'</h3>'+help+'</div>';
+    if(f.type==='heading')return '<div class="ef-public-heading"><h3>'+esc(f.label)+'</h3>'+help+'</div>';
+    if(f.type==='image')return '<div class="ef-public-media">'+(f.mediaUrl?'<img src="'+esc(f.mediaUrl)+'" alt="'+esc(f.label)+'">':'<div class="ef-public-media-empty">Image</div>')+(f.label?'<small>'+esc(f.label)+'</small>':'')+'</div>';
+    if(f.type==='video')return '<div class="ef-public-video"><b>'+esc(f.label||'Video')+'</b>'+(f.mediaUrl?'<a href="'+esc(f.mediaUrl)+'" target="_blank" rel="noopener">Open video</a>':'<span>Add a video URL</span>')+'</div>';
     let control='';
     if(f.type==='long')control='<textarea placeholder="Type your answer..."></textarea>';
     else if(f.type==='single'||f.type==='multi')control='<div class="ef-public-options">'+(f.options||[]).map(o=>'<label><input type="'+(f.type==='single'?'radio':'checkbox')+'" disabled> '+esc(o)+'</label>').join('')+'</div>';
-    else if(f.type==='file')control='<div class="ef-public-upload">⇧ <b>Upload supporting file</b><span>'+esc(f.fileTypes||'PDF')+' · '+esc(f.fileSize||'25 MB')+'</span></div>';
-    else control='<input placeholder="'+(f.type==='url'?'https://':'Type your answer...')+'">';
+    else if(f.type==='dropdown')control='<select disabled><option>Select an option</option>'+(f.options||[]).map(o=>'<option>'+esc(o)+'</option>').join('')+'</select>';
+    else if(f.type==='file')control='<div class="ef-public-upload">^ <b>Upload supporting file</b><span>'+esc(f.fileTypes||'PDF')+' - '+esc(f.fileSize||'25 MB')+'</span></div>';
+    else control='<input type="'+(f.type==='date'?'date':f.type==='time'?'time':f.type==='email'?'email':f.type==='number'?'number':'text')+'" placeholder="'+(f.type==='url'?'https://':'Type your answer...')+'">';
     const limit=f.limit?'<span class="ef-public-limit">Max '+esc(displayLimit(f))+'</span>':'';
     return '<div class="ef-public-field"><label>'+esc(f.label)+req+'</label>'+help+control+limit+'</div>';
   }
-  function openPreview(){
-    const select=$('previewCategory');select.innerHTML='<option value="">All / first category</option>'+categories.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('');renderPublicPreview();$('previewModal').classList.add('open');$('previewModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
-  }
+  function openPreview(){const select=$('previewCategory');select.innerHTML='<option value="">All / first category</option>'+categories.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('');renderPublicPreview();$('previewModal').classList.add('open');$('previewModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
   function closePreview(){$('previewModal').classList.remove('open');$('previewModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
-  function renderPublicPreview(){
-    const cat=$('previewCategory').value||categories[0]?.id||'';$('publicAwardName').textContent=award.name||'Untitled Award';$('publicFormTitle').textContent=$('formTitle').value||'Nomination form';$('publicFormIntro').textContent=$('formIntro').value||'';
-    const visible=form.fields.filter(f=>fieldVisibleForCategory(f,cat));$('publicFields').innerHTML=visible.map(publicInput).join('')||'<div class="empty">No questions for this category yet.</div>';
-  }
+  function renderPublicPreview(){const cat=$('previewCategory').value||categories[0]?.id||'';$('publicAwardName').textContent=award.name||'Untitled Award';$('publicFormTitle').textContent=$('formTitle').value||'Nomination form';$('publicFormIntro').textContent=$('formIntro').value||'';const visible=form.fields.filter(f=>fieldVisibleForCategory(f,cat));$('publicFields').innerHTML=visible.map(publicInput).join('')||'<div class="empty">No questions for this category yet.</div>'}
 
-  $('sideAwardName').textContent=award.name||'Untitled Award';$('crumbAward').textContent=award.name||'Untitled Award';$('publicAwardName').textContent=award.name||'Untitled Award';$('miniAwardName').textContent=award.name||'Untitled Award';
-  $('formTitle').value=form.title;$('formIntro').value=form.intro;$('formCategoryMode').value=form.categoryMode;
+  function openImport(){$('importQuestionText').value='';$('importModal').classList.add('open');$('importModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$('importQuestionText').focus(),60)}
+  function closeImport(){$('importModal').classList.remove('open');$('importModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
+  function importQuestions(){const lines=$('importQuestionText').value.split(/\n+/).map(x=>x.trim()).filter(Boolean);if(!lines.length){toast('Add at least one question');return}const type=$('importQuestionType').value;const fields=lines.map(line=>newField(type,line));insertFieldsAfterActive(fields,true);closeImport();toast(lines.length+' questions added')}
+
+  $('sideAwardName').textContent=award.name||'Untitled Award';$('crumbAward').textContent=award.name||'Untitled Award';$('publicAwardName').textContent=award.name||'Untitled Award';$('miniAwardName').textContent=award.name||'Untitled Award';$('formTitle').value=form.title;$('formIntro').value=form.intro;$('formCategoryMode').value=form.categoryMode;
 
   $('saveBtn').addEventListener('click',()=>save(false));$('formTitle').addEventListener('input',renderMiniPreview);$('formIntro').addEventListener('input',renderMiniPreview);$('formCategoryMode').addEventListener('change',()=>save(true));
-  $('addQuestionBtn').addEventListener('click',openAddTray);$('closeTray').addEventListener('click',closeAddTray);$('emptyGenerateBtn').addEventListener('click',()=>{$('generateFormBtn').click()});
-  document.querySelectorAll('[data-add-type]').forEach(b=>b.addEventListener('click',()=>openField(null,b.dataset.addType)));
+  $('addQuestionBtn').addEventListener('click',()=>addFieldAfterActive('short'));$('emptyGenerateBtn').addEventListener('click',()=>{$('generateFormBtn').click()});
+
   $('questionList').addEventListener('click',e=>{
-    const b=e.target.closest('[data-action]');if(!b)return;const row=e.target.closest('[data-id]');if(!row)return;const id=row.dataset.id;const f=form.fields.find(x=>x.id===id);if(!f)return;
-    if(b.dataset.action==='edit')openField(id);
-    if(b.dataset.action==='duplicate')duplicateField(id);
-    if(b.dataset.action==='delete')deleteField(id);
-    if(b.dataset.action==='toggle-required'){f.required=!f.required;save(true);toast(f.required?'Question marked required':'Question made optional')}
-    if(b.dataset.action==='add-option'){f.options=Array.isArray(f.options)?f.options:[];f.options.push('New option');save(true)}
-    if(b.dataset.action==='remove-option'){const idx=Number(b.dataset.optionIndex);if(Array.isArray(f.options)&&f.options.length>2){f.options.splice(idx,1);save(true)}else toast('Keep at least two options')}
+    const row=e.target.closest('[data-id]');if(!row)return;const id=row.dataset.id;const f=form.fields.find(x=>x.id===id);if(!f)return;
+    const b=e.target.closest('[data-action]');
+    if(!b){if(id!==activeFieldId)setActiveField(id,false);return}
+    const action=b.dataset.action;
+    if(action==='edit')openField(id);
+    if(action==='duplicate')duplicateField(id);
+    if(action==='delete')deleteField(id);
+    if(action==='toggle-required'){f.required=!f.required;save(true);toast(f.required?'Question marked required':'Question made optional')}
+    if(action==='add-option'){f.options=Array.isArray(f.options)?f.options:[];f.options.push('New option');save(true)}
+    if(action==='remove-option'){const idx=Number(b.dataset.optionIndex);if(Array.isArray(f.options)&&f.options.length>1){f.options.splice(idx,1);save(true)}else toast('Keep at least one option')}
+    if(action==='question-image'){const url=prompt('Paste a public image URL for this question:',f.mediaUrl||'');if(url!==null){f.mediaUrl=url.trim();save(true)}}
   });
+  $('questionList').addEventListener('focusin',e=>{const row=e.target.closest('[data-id]');if(row&&row.dataset.id!==activeFieldId)setActiveField(row.dataset.id,false)});
   $('questionList').addEventListener('change',e=>{
     const row=e.target.closest('[data-id]');if(!row)return;const f=form.fields.find(x=>x.id===row.dataset.id);if(!f)return;
-    if(e.target.matches('[data-inline-type]')){const next=e.target.value;f.type=next;if(next==='section'){f.required=false;f.visibility='all';f.categories=[];if(f.logic)f.logic.enabled=false}else if(['single','multi'].includes(next)&&(!Array.isArray(f.options)||f.options.length<2))f.options=['Option 1','Option 2'];save(true);toast('Question type updated');return}
+    if(e.target.matches('[data-inline-type]')){const next=e.target.value;f.type=next;if(['single','multi','dropdown'].includes(next)&&(!Array.isArray(f.options)||!f.options.length))f.options=['Option 1'];save(true);toast('Question type updated');return}
     if(e.target.matches('[data-inline-label]')){const value=e.target.value.trim();if(value)f.label=value;else e.target.value=f.label;save(true);return}
+    if(e.target.matches('[data-inline-help]')){f.help=e.target.value.trim();save(true);return}
+    if(e.target.matches('[data-inline-media]')){f.mediaUrl=e.target.value.trim();save(true);return}
     if(e.target.matches('[data-inline-option]')){const idx=Number(e.target.dataset.inlineOption);const value=e.target.value.trim();if(!Array.isArray(f.options))f.options=[];f.options[idx]=value||('Option '+(idx+1));save(true)}
   });
   $('questionList').addEventListener('keydown',e=>{if(e.target.matches('[data-inline-label]')&&e.key==='Enter'){e.preventDefault();e.target.blur()}});
 
+  $('questionToolbar').addEventListener('click',e=>{const b=e.target.closest('[data-toolbar-action]');if(!b)return;const action=b.dataset.toolbarAction;if(action==='add-question')addFieldAfterActive('short');if(action==='import')openImport();if(action==='add-title')addFieldAfterActive('heading');if(action==='add-image')addFieldAfterActive('image');if(action==='add-video')addFieldAfterActive('video');if(action==='add-section')addFieldAfterActive('section')});
+
+  document.querySelectorAll('[data-close-import]').forEach(x=>x.addEventListener('click',closeImport));$('importAddBtn').addEventListener('click',importQuestions);
   document.querySelectorAll('[data-close-field]').forEach(x=>x.addEventListener('click',closeField));$('fieldType').addEventListener('change',()=>{draftField.type=$('fieldType').value;renderDrawerSpecial()});
   $('requiredToggle').addEventListener('click',()=>setToggle($('requiredToggle'),!$('requiredToggle').classList.contains('active')));$('logicToggle').addEventListener('click',()=>{draftField.logic.enabled=!$('logicToggle').classList.contains('active');setToggle($('logicToggle'),draftField.logic.enabled);renderLogicFields()});
   document.querySelectorAll('.ef-visibility-option').forEach(b=>b.addEventListener('click',()=>{visibilityMode=b.dataset.visibility;document.querySelectorAll('.ef-visibility-option').forEach(x=>x.classList.toggle('active',x===b));renderCategoryPicker()}));
@@ -600,21 +724,15 @@
   $('optionEditor').addEventListener('click',e=>{const b=e.target.closest('[data-remove-option]');if(!b)return;draftField.options=[...$('optionEditor').querySelectorAll('input')].map(x=>x.value);draftField.options.splice(Number(b.dataset.removeOption),1);renderOptions()});
   $('saveFieldBtn').addEventListener('click',saveField);$('deleteFieldBtn').addEventListener('click',()=>{const id=editingId;closeField();if(id)deleteField(id)});
 
-  $('generateFormBtn').addEventListener('click',()=>{if(form.fields.length&& !confirm('Replace the current form with a tailored recommended form?'))return;form.fields=makeTailoredForm();save(true);toast('Recommended form generated · '+questionFields().length+' questions')});
+  $('generateFormBtn').addEventListener('click',()=>{if(form.fields.length&&!confirm('Replace the current form with a tailored recommended form?'))return;form.fields=makeTailoredForm();activeFieldId=form.fields[0]?.id||null;save(true);toast('Recommended form generated - '+questionFields().length+' questions')});
   $('shortenFormBtn').addEventListener('click',shorten);
   $('previewBtn').addEventListener('click',openPreview);$('miniPreviewBtn').addEventListener('click',openPreview);document.querySelectorAll('[data-close-preview]').forEach(x=>x.addEventListener('click',closePreview));$('previewCategory').addEventListener('change',renderPublicPreview);
 
   $('copilotBtn').addEventListener('click',()=>{$('copilotPanel').classList.toggle('open')});$('closeCopilot').addEventListener('click',()=>$('copilotPanel').classList.remove('open'));
-  document.querySelectorAll('[data-copilot-action]').forEach(b=>b.addEventListener('click',()=>{
-    const a=b.dataset.copilotAction;let msg='';
-    if(a==='judge')msg='Your strongest judging-ready questions are Executive summary, Innovation & differentiation, and Impact & measurable results. Keep those required and mirror them in the scoring criteria.';
-    if(a==='shorter')msg='The form is about '+estimateMinutes()+' minutes. Keep 3 core narrative questions, make supporting links optional, and avoid asking company information twice.';
-    if(a==='evidence')msg='Ask for measurable outcomes inside the Impact question, then provide one optional supporting upload. This keeps evidence useful without making every entrant build a large deck.';
-    if(a==='category')msg=categories.length?'You have '+categories.length+' categories. Keep the core form universal and add only 1–2 category-specific questions where judging genuinely differs.':'Add categories first, then I can suggest category-specific questions.';
-    $('copilotAnswer').textContent=msg;
-  }));
+  document.querySelectorAll('[data-copilot-action]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.copilotAction;let msg='';if(a==='judge')msg='Your strongest judging-ready questions are Executive summary, Innovation & differentiation, and Impact & measurable results. Keep those required and mirror them in the scoring criteria.';if(a==='shorter')msg='The form is about '+estimateMinutes()+' minutes. Keep 3 core narrative questions, make supporting links optional, and avoid asking company information twice.';if(a==='evidence')msg='Ask for measurable outcomes inside the Impact question, then provide one optional supporting upload.';if(a==='category')msg=categories.length?'You have '+categories.length+' categories. Keep the core form universal and add only category-specific questions where judging genuinely differs.':'Add categories first, then I can suggest category-specific questions.';$('copilotAnswer').textContent=msg}));
 
-  window.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('fieldModal').classList.contains('open'))closeField();else if($('previewModal').classList.contains('open'))closePreview();else $('copilotPanel').classList.remove('open')}});
+  window.addEventListener('resize',positionToolbar);
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('importModal').classList.contains('open'))closeImport();else if($('fieldModal').classList.contains('open'))closeField();else if($('previewModal').classList.contains('open'))closePreview();else $('copilotPanel').classList.remove('open')}});
   updateUI();
 })();
 </script>
