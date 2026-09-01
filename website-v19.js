@@ -77,7 +77,7 @@
 
   function sectionKind(s){if(['overview','eventDescription'].includes(s.id))return'prose';if(['keypoints','who','why'].includes(s.id))return'list';if(s.id==='speakers')return'speakers';if(s.id==='sponsors')return'sponsors';if(s.id==='agenda')return'agenda';if(s.id==='resources')return'resources';if(s.id==='glimpse')return'glimpse';if(s.id==='contact')return'contact';if(s.id==='faqSection')return'faq';if(s.id==='aboutVertical')return'about';return'custom'}
   function layoutsFor(s){return layoutCatalog[sectionKind(s)]||layoutCatalog.prose}
-  function layoutName(s){const f=layoutsFor(s).find(x=>x.id===s.theme);return f?f.name:(s.theme||'Classic').replace(/-/g,' ').replace(/\b\w/g,m=>m.toUpperCase())}
+  function layoutName(s){if(s?.theme==='external-custom')return'Custom Design';const f=layoutsFor(s).find(x=>x.id===s.theme);return f?f.name:(s.theme||'Classic').replace(/-/g,' ').replace(/\b\w/g,m=>m.toUpperCase())}
   function currentSection(){return state.sections.find(s=>s.id===selectedId)||state.sections[0]}
   function sectionBy(id){return state.sections.find(s=>s.id===id)}
   function pageBy(id){return (state.publicPages||[]).find(p=>p.id===id)}
@@ -288,8 +288,71 @@
   function getGroups(kind){if(kind==='speakers')return speakerSection().speakerGroups;if(kind==='sponsors')return sponsorSection().sponsorGroups;if(kind==='agenda')return sectionBy('agenda').agendaGroups;if(kind==='glimpse')return sectionBy('glimpse').galleryGroups;if(kind==='contact')return sectionBy('contact').contactGroups;return[]}
   function removeGroup(kind,index){const arr=getGroups(kind);if(arr.length<=1){toast('Keep at least one group');return}const removed=arr[index];if(!confirm(`Remove group "${removed.name}"? Items will move to the first remaining group.`))return;arr.splice(index,1);const fallback=arr[0].id;if(kind==='speakers')speakerSection().speakers.forEach(x=>{if(x.groupId===removed.id)x.groupId=fallback});if(kind==='sponsors')sponsorSection().sponsors.forEach(x=>{if(x.groupId===removed.id)x.groupId=fallback});if(kind==='agenda')sectionBy('agenda').agenda.forEach(x=>{if(x.groupId===removed.id)x.groupId=fallback});if(kind==='glimpse')sectionBy('glimpse').images.forEach(x=>{if(x.groupId===removed.id)x.groupId=fallback});if(kind==='contact')sectionBy('contact').contacts.forEach(x=>{if(x.groupId===removed.id)x.groupId=fallback});markDirty();renderEditor()}
 
-  function layoutThumb(layout,kind){return `<div class="wb19-layout-thumb thumb-${layout.preview} kind-${kind}"><span class="thumb-kicker"></span><span class="thumb-title"></span><div class="thumb-body"><i></i><i></i><i></i><i></i></div><span class="thumb-footer"></span></div>`}
-  function renderLayoutGallery(){const box=$('layoutGallery');if(!box)return;const s=currentSection(),kind=sectionKind(s);box.innerHTML=layoutsFor(s).map(layout=>`<button type="button" class="wb19-layout-card ${s.theme===layout.id?'active':''}" data-layout-card="${layout.id}">${layoutThumb(layout,kind)}<span class="wb19-layout-meta"><b>${layout.name}</b><small>${layout.desc}</small></span><i class="wb19-layout-check">✓</i></button>`).join('');box.querySelectorAll('[data-layout-card]').forEach(btn=>btn.addEventListener('click',()=>{s.theme=btn.dataset.layoutCard;markDirty();renderSectionManager();renderLayoutGallery();updateSelectedLabels();toast(layoutName(s)+' layout applied')}))}
+  function trimPreview(v,n=46){const text=String(v||'').replace(/\s+/g,' ').trim();return text.length>n?text.slice(0,n-1).trimEnd()+'…':text}
+  function stripMarkup(v){const box=document.createElement('div');box.innerHTML=String(v||'');return (box.textContent||box.innerText||'').replace(/\s+/g,' ').trim()}
+  function customDesignProvider(value){const raw=String(value||'').trim();if(!/^https?:\/\//i.test(raw))return'';try{const host=new URL(raw).hostname.toLowerCase();if(host==='figma.com'||host.endsWith('.figma.com'))return'Figma';if(host==='lovable.dev'||host.endsWith('.lovable.dev')||host==='lovable.app'||host.endsWith('.lovable.app'))return'Lovable';return'External'}catch(e){return''}}
+  function validCustomDesignUrl(value){const raw=String(value||'').trim();if(!/^https?:\/\//i.test(raw))return false;try{const u=new URL(raw);return u.protocol==='https:'||u.protocol==='http:'}catch(e){return false}}
+  function liveLayoutItems(s,kind){
+    let items=[];
+    if(kind==='prose'){
+      const text=stripMarkup(s.body||'');
+      items=(text.match(/[^.!?]+[.!?]?/g)||[]).map(x=>x.trim()).filter(Boolean).slice(0,3).map(x=>`<i class="live-copy-item">${esc(trimPreview(x,58))}</i>`);
+    } else if(kind==='list'){
+      items=lines(s.items).slice(0,4).map((x,i)=>`<i class="live-list-item"><span>${String(i+1).padStart(2,'0')}</span><b>${esc(trimPreview(x,34))}</b></i>`);
+    } else if(kind==='speakers'){
+      items=(s.speakers||[]).filter(x=>x.status!==false).slice(0,4).map(p=>`<i class="live-person-item">${p.photo?`<img src="${attr(p.photo)}" alt="">`:`<span class="live-avatar">${esc(initials(p.name))}</span>`}<em><b>${esc(trimPreview(p.name,20))}</b><small>${esc(trimPreview(p.role||p.company||'',24))}</small></em></i>`);
+    } else if(kind==='sponsors'){
+      items=(s.sponsors||[]).filter(x=>x.status!==false).slice(0,4).map(p=>`<i class="live-logo-item">${p.logo?`<img src="${attr(p.logo)}" alt="${attr(p.name||'Sponsor')}">`:`<b>${esc(trimPreview(p.name||'Sponsor',20))}</b>`}</i>`);
+    } else if(kind==='agenda'){
+      items=(s.agenda||[]).filter(x=>x.status!==false).slice(0,4).map(x=>`<i class="live-agenda-item"><span>${esc(trimPreview(x.start?fmtDateTime(x.start):x.time||'Time',18))}</span><b>${esc(trimPreview(x.title||'Session',34))}</b></i>`);
+    } else if(kind==='resources'){
+      items=(s.resources||[]).slice(0,4).map(r=>`<i class="live-resource-item"><span>↗</span><b>${esc(trimPreview(r.title||'Resource',34))}</b></i>`);
+    } else if(kind==='glimpse'){
+      items=(s.images||[]).filter(x=>x.status!==false&&x.image).slice(0,4).map(im=>`<i class="live-image-item"><img src="${attr(im.image)}" alt="${attr(im.title||'Event image')}"><b>${esc(trimPreview(im.title||'Image',18))}</b></i>`);
+      if(!items.length&&s.body)items=[`<i class="live-copy-item">${esc(trimPreview(s.body,70))}</i>`];
+    } else if(kind==='contact'){
+      items=(s.contacts||[]).filter(x=>x.status!==false).slice(0,4).map(c=>`<i class="live-contact-item"><span>${esc(initials(c.name))}</span><em><b>${esc(trimPreview(c.name||'Contact',20))}</b><small>${esc(trimPreview(c.email||c.phone||'',24))}</small></em></i>`);
+    } else if(kind==='faq'){
+      items=(s.faqs||[]).filter(x=>x.status!==false).slice(0,4).map((f,i)=>`<i class="live-faq-item"><span>${String(i+1).padStart(2,'0')}</span><b>${esc(trimPreview(f.question||'Question',42))}</b></i>`);
+    } else if(kind==='about'){
+      items=[`<i class="live-about-item">${s.companyLogo?`<img src="${attr(s.companyLogo)}" alt="">`:`<span>${esc(initials(s.companyName||s.title||'About'))}</span>`}<em><b>${esc(trimPreview(s.companyName||s.title||'About',26))}</b><small>${esc(trimPreview(s.body||'',52))}</small></em></i>`];
+    } else {
+      const text=stripMarkup(s.html||s.body||'');
+      if(text)items=[`<i class="live-copy-item">${esc(trimPreview(text,72))}</i>`];
+    }
+    return items.length?items.join(''):'<i class="live-empty-item">No live content added yet</i>';
+  }
+  function liveLayoutFooter(s,kind){
+    if(kind==='speakers')return `${(s.speakers||[]).filter(x=>x.status!==false).length} live profiles`;
+    if(kind==='sponsors')return `${(s.sponsors||[]).filter(x=>x.status!==false).length} live sponsors`;
+    if(kind==='agenda')return `${(s.agenda||[]).filter(x=>x.status!==false).length} live sessions`;
+    if(kind==='glimpse')return `${(s.images||[]).filter(x=>x.status!==false&&x.image).length} live images`;
+    if(kind==='contact')return `${(s.contacts||[]).filter(x=>x.status!==false).length} live contacts`;
+    if(kind==='faq')return `${(s.faqs||[]).filter(x=>x.status!==false).length} live questions`;
+    if(kind==='list')return `${lines(s.items).length} live items`;
+    if(kind==='resources')return `${(s.resources||[]).length} live resources`;
+    return 'Live content preview';
+  }
+  function layoutThumb(layout,kind,s){
+    const kicker=s.showSubTitle===false?'':trimPreview(s.subTitle||s.label||'',24);
+    const title=s.showTitle===false?'':trimPreview(s.title||s.label||'',42);
+    return `<div class="wb19-layout-thumb wb19-live-layout-thumb thumb-${layout.preview} kind-${kind}">${kicker?`<span class="live-thumb-kicker">${esc(kicker)}</span>`:''}${title?`<span class="live-thumb-title">${esc(title)}</span>`:''}<div class="live-thumb-body">${liveLayoutItems(s,kind)}</div><span class="live-thumb-footer">${esc(liveLayoutFooter(s,kind))}</span></div>`;
+  }
+  function customDesignBox(s){
+    const url=String(s.customDesignUrl||'').trim(),provider=customDesignProvider(url),valid=validCustomDesignUrl(url),active=s.theme==='external-custom';
+    return `<div class="wb19-custom-design-box ${active?'active':''}" data-custom-design-box><div class="custom-design-head"><span class="custom-design-icon">↗</span><div><small>CUSTOM</small><b>Import Figma / Lovable design</b><p>Paste a public design or published-page link and use it as this section's custom layout.</p></div>${active?'<i class="custom-design-active">✓</i>':''}</div><label class="wb19-field custom-design-field"><span>Figma / Lovable URL</span><input type="url" data-custom-design-url placeholder="https://www.figma.com/... or https://....lovable.app" value="${attr(url)}"></label><div class="custom-design-meta"><span data-custom-design-status class="${valid?'valid':''}">${valid?`${provider||'External'} link ready`:'Add a public http(s) link'}</span><div><button type="button" class="custom-design-open" data-open-custom-design ${valid?'':'disabled'}>Open source ↗</button><button type="button" class="custom-design-apply" data-apply-custom-design>${active?'Refresh custom design':'Use custom design'}</button>${url?'<button type="button" class="custom-design-clear" data-clear-custom-design>Clear</button>':''}</div></div></div>`;
+  }
+  function renderLayoutGallery(){
+    const box=$('layoutGallery');if(!box)return;const s=currentSection(),kind=sectionKind(s);
+    box.innerHTML=layoutsFor(s).map(layout=>`<button type="button" class="wb19-layout-card ${s.theme===layout.id?'active':''}" data-layout-card="${layout.id}">${layoutThumb(layout,kind,s)}<span class="wb19-layout-meta"><b>${layout.name}</b><small>${layout.desc}</small></span><i class="wb19-layout-check">✓</i></button>`).join('')+customDesignBox(s);
+    box.querySelectorAll('[data-layout-card]').forEach(btn=>btn.addEventListener('click',()=>{s.theme=btn.dataset.layoutCard;markDirty();renderSectionManager();renderLayoutGallery();updateSelectedLabels();toast(layoutName(s)+' layout applied')}));
+    const input=box.querySelector('[data-custom-design-url]'),status=box.querySelector('[data-custom-design-status]'),openBtn=box.querySelector('[data-open-custom-design]');
+    const refreshCustomMeta=()=>{const url=String(input?.value||'').trim(),valid=validCustomDesignUrl(url),provider=customDesignProvider(url);if(status){status.textContent=valid?`${provider||'External'} link ready`:'Add a public http(s) link';status.classList.toggle('valid',valid)}if(openBtn)openBtn.disabled=!valid};
+    input?.addEventListener('input',()=>{s.customDesignUrl=input.value.trim();refreshCustomMeta();markDirty(s.theme==='external-custom')});
+    box.querySelector('[data-apply-custom-design]')?.addEventListener('click',()=>{const url=String(input?.value||'').trim();if(!validCustomDesignUrl(url)){toast('Paste a valid Figma or Lovable link first');input?.focus();return}s.customDesignUrl=url;s.theme='external-custom';markDirty();renderSectionManager();renderLayoutGallery();updateSelectedLabels();toast((customDesignProvider(url)||'Custom')+' design applied')});
+    openBtn?.addEventListener('click',()=>{const url=String(input?.value||'').trim();if(!validCustomDesignUrl(url)){toast('Add a valid design link first');return}window.open(url,'_blank','noopener,noreferrer')});
+    box.querySelector('[data-clear-custom-design]')?.addEventListener('click',()=>{s.customDesignUrl='';if(s.theme==='external-custom')s.theme=layoutsFor(s)[0]?.id||'classic';markDirty();renderSectionManager();renderLayoutGallery();updateSelectedLabels();toast('Custom design link cleared')});
+  }
   function setDesignerTab(tab){document.querySelectorAll('[data-designer-tab]').forEach(b=>b.classList.toggle('active',b.dataset.designerTab===tab));document.querySelectorAll('[data-designer-panel]').forEach(p=>p.classList.toggle('active',p.dataset.designerPanel===tab))}
   function openSectionDesigner(id,tab='content'){selectedId=id;renderSectionManager();renderEditor();setDesignerTab(tab);const modal=$('sectionDesignerModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('wb19-modal-open')}
   function closeSectionDesigner(){const modal=$('sectionDesignerModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.classList.remove('wb19-modal-open')}

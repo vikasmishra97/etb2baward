@@ -637,3 +637,11 @@
   .public-hero.hero-immersive .hero-content{padding-top:14px!important;padding-bottom:42px!important}
   .hero-immersive .hero-branding-mark{margin-top:4px!important}
 }
+
+
+/* V19.20 - custom Figma / Lovable section embed */
+.custom-external-section{padding:0!important;max-width:none!important;background:transparent!important;overflow:visible}
+.public-custom-design-frame{width:100%;min-height:640px;background:#fff;border:0;overflow:hidden}
+.public-custom-design-frame iframe{display:block;width:100%;height:clamp(560px,72vw,920px);border:0;background:#fff}
+.builder-site-preview .public-custom-design-frame iframe{pointer-events:none}
+@media(max-width:700px){.public-custom-design-frame{min-height:460px}.public-custom-design-frame iframe{height:560px}}
