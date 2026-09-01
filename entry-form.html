@@ -106,23 +106,17 @@
           <div class="card pad section ef-builder-card">
             <div class="ef-list-head">
               <div>
-                <div class="section-title ef-title-inline"><h2>Questions</h2><span class="cat-count-pill" id="questionCount">0</span></div>
-                <p class="ef-subcopy">Drag questions to reorder. Section headers keep longer forms easy to scan.</p>
+                <div class="section-title ef-title-inline"><h2>Form questions</h2><span class="cat-count-pill" id="questionCount">0</span></div>
+                <p class="ef-subcopy">Build the form like Google Forms: choose a field, type the question, and manage required settings directly on the card.</p>
               </div>
               <button class="btn primary" id="addQuestionBtn">+ Add question</button>
             </div>
 
-            <div class="ef-empty" id="formEmpty" hidden>
-              <div class="cat-empty-icon">☷</div>
-              <h3>Your form is empty</h3>
-              <p>Add a question manually or let Award Copilot build a recommended starting form.</p>
-              <button class="btn primary" id="emptyGenerateBtn">✦ Generate starter form</button>
-            </div>
-
-            <div class="ef-question-list" id="questionList"></div>
-
-            <div class="ef-add-tray" id="addTray" hidden>
-              <div class="ef-add-tray-head"><b>Add to form</b><button id="closeTray">×</button></div>
+            <div class="ef-add-tray ef-add-tray-open" id="addTray">
+              <div class="ef-add-tray-head">
+                <div><b>Add a question or section</b><small>All available field types are shown below.</small></div>
+                <button id="closeTray" type="button" aria-label="Hide question types">×</button>
+              </div>
               <div class="ef-type-grid">
                 <button data-add-type="short"><span>Aa</span><b>Short text</b><small>Name, title, URL</small></button>
                 <button data-add-type="long"><span>¶</span><b>Long answer</b><small>Summary, impact</small></button>
@@ -134,6 +128,15 @@
                 <button data-add-type="section"><span>—</span><b>Section header</b><small>Organize questions</small></button>
               </div>
             </div>
+
+            <div class="ef-empty" id="formEmpty" hidden>
+              <div class="cat-empty-icon">☷</div>
+              <h3>Your form is empty</h3>
+              <p>Choose any field above to add your first question, or let Award Copilot build a recommended starting form.</p>
+              <button class="btn primary" id="emptyGenerateBtn">✦ Generate starter form</button>
+            </div>
+
+            <div class="ef-question-list" id="questionList"></div>
           </div>
 
           <div class="ef-bottom-actions">
@@ -390,35 +393,55 @@
   function health(){const qs=questionFields();const mins=estimateMinutes();let score=96;if(qs.length>12)score-=Math.min(25,(qs.length-12)*3);if(mins>12)score-=Math.min(25,(mins-12)*3);const longWords=qs.reduce((n,f)=>n+countWordsForField(f),0);if(longWords>1800)score-=8;score=Math.max(45,Math.round(score));return score}
   function displayLimit(f){if(!f.limit)return'';return f.limit+' '+(f.limitUnit==='words'?'words':'characters')}
 
+  function typeSelectOptions(current){
+    return Object.entries(typeMeta).map(([key,meta])=>'<option value="'+esc(key)+'" '+(key===current?'selected':'')+'>'+esc(meta.name)+'</option>').join('');
+  }
+
+  function inlineAnswerPreview(f){
+    if(f.type==='long')return '<div class="ef-inline-answer ef-inline-long"><span>Long answer text</span><i></i><i></i></div>';
+    if(f.type==='single'||f.type==='multi'){
+      const marker=f.type==='single'?'○':'□';
+      const opts=(f.options&&f.options.length?f.options:['Option 1','Option 2']);
+      return '<div class="ef-inline-options">'+opts.map((o,i)=>'<div class="ef-inline-option"><span>'+marker+'</span><input value="'+esc(o)+'" data-inline-option="'+i+'" aria-label="Option '+(i+1)+'"><button type="button" data-action="remove-option" data-option-index="'+i+'" aria-label="Remove option">×</button></div>').join('')+'<button type="button" class="ef-add-option-inline" data-action="add-option">+ Add option</button></div>';
+    }
+    if(f.type==='file')return '<div class="ef-inline-answer ef-inline-upload"><span>⇧</span><div><b>File upload</b><small>'+esc(f.fileTypes||'PDF, PPT/PPTX')+' · '+esc(f.fileSize||'25 MB')+'</small></div></div>';
+    if(f.type==='url')return '<div class="ef-inline-answer ef-inline-line"><span>https://</span></div>';
+    if(f.type==='number')return '<div class="ef-inline-answer ef-inline-line"><span>Number answer</span></div>';
+    return '<div class="ef-inline-answer ef-inline-line"><span>Short answer text</span></div>';
+  }
+
   function renderQuestions(){
     const list=$('questionList');
     list.innerHTML='';
     $('formEmpty').hidden=form.fields.length>0;
     $('questionCount').textContent=questionFields().length;
     form.fields.forEach((f,index)=>{
+      const el=document.createElement('div');
+      el.dataset.id=f.id;
       if(f.type==='section'){
-        const el=document.createElement('div');
-        el.className='ef-section-row';el.draggable=true;el.dataset.id=f.id;
-        el.innerHTML='<div class="ef-drag">⋮⋮</div><div class="ef-section-line"><span>SECTION</span><b>'+esc(f.label)+'</b><small>'+esc(f.help||'')+'</small></div><div class="ef-row-actions"><button data-action="edit" title="Edit">✎</button><button data-action="duplicate" title="Duplicate">⧉</button></div>';
+        el.className='ef-gform-card ef-gform-section';
+        el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">⋮⋮</div><div class="ef-card-main"><div class="ef-section-kicker">SECTION HEADER</div><input class="ef-inline-question ef-inline-section-title" data-inline-label value="'+esc(f.label)+'" aria-label="Section title"><textarea class="ef-inline-help-preview" readonly tabindex="-1">'+esc(f.help||'Add a short section description from Edit settings.')+'</textarea></div><div class="ef-card-footer"><button type="button" data-action="edit">✎ Edit settings</button><button type="button" data-action="duplicate">⧉ Duplicate</button><button type="button" data-action="delete" class="ef-card-delete">× Delete</button></div>';
         list.appendChild(el);bindDrag(el);return;
       }
       const meta=[];
-      if(f.required)meta.push('Required');
-      if(f.limit)meta.push(displayLimit(f));
+      if(f.limit)meta.push('Max '+displayLimit(f));
       if(f.visibility==='selected'&&f.categories.length)meta.push(f.categories.length+' categor'+(f.categories.length===1?'y':'ies'));
       if(f.logic&&f.logic.enabled)meta.push('Conditional');
-      const el=document.createElement('div');el.className='ef-question-row';el.draggable=true;el.dataset.id=f.id;
-      el.innerHTML='<div class="ef-drag">⋮⋮</div><div class="ef-type-icon">'+esc(typeMeta[f.type]?.icon||'Aa')+'</div><div class="ef-row-main"><div class="ef-row-title"><b>'+esc(f.label)+'</b>'+(f.required?'<span class="ef-required-pill">Required</span>':'')+'</div><p>'+esc(f.help||typeMeta[f.type]?.hint||'')+'</p><div class="ef-row-meta"><span>'+esc(typeMeta[f.type]?.name||f.type)+'</span>'+meta.map(m=>'<span>'+esc(m)+'</span>').join('')+'</div></div><div class="ef-row-actions"><button data-action="edit" title="Edit">✎</button><button data-action="duplicate" title="Duplicate">⧉</button><button data-action="delete" title="Delete">×</button></div>';
+      el.className='ef-gform-card';
+      el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">⋮⋮</div><div class="ef-card-head"><div class="ef-card-question"><input class="ef-inline-question" data-inline-label value="'+esc(f.label)+'" aria-label="Question text"><small>'+esc(f.help||typeMeta[f.type]?.hint||'')+'</small></div><div class="ef-card-type"><span>'+esc(typeMeta[f.type]?.icon||'Aa')+'</span><select data-inline-type aria-label="Question type">'+typeSelectOptions(f.type)+'</select></div></div><div class="ef-card-answer">'+inlineAnswerPreview(f)+'</div>'+(meta.length?'<div class="ef-card-meta">'+meta.map(m=>'<span>'+esc(m)+'</span>').join('')+'</div>':'')+'<div class="ef-card-footer"><button type="button" data-action="edit">✎ Edit settings</button><button type="button" data-action="duplicate">⧉ Duplicate</button><button type="button" data-action="delete" class="ef-card-delete">× Delete</button><div class="ef-card-footer-spacer"></div><button type="button" class="ef-required-inline '+(f.required?'active':'')+'" data-action="toggle-required"><span class="ef-switch"><i></i></span><b>Required</b></button></div>';
       list.appendChild(el);bindDrag(el);
     });
   }
 
   function bindDrag(el){
-    el.addEventListener('dragstart',()=>{dragId=el.dataset.id;el.classList.add('dragging')});
-    el.addEventListener('dragend',()=>{dragId=null;el.classList.remove('dragging');document.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'))});
+    const handle=el.querySelector('.ef-card-drag');
+    if(!handle)return;
+    handle.draggable=true;
+    handle.addEventListener('dragstart',e=>{dragId=el.dataset.id;el.classList.add('dragging');if(e.dataTransfer){e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',dragId)}});
+    handle.addEventListener('dragend',()=>{dragId=null;el.classList.remove('dragging');document.querySelectorAll('.drag-over').forEach(x=>x.classList.remove('drag-over'))});
     el.addEventListener('dragover',e=>{e.preventDefault();if(dragId&&dragId!==el.dataset.id)el.classList.add('drag-over')});
     el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));
-    el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');if(!dragId||dragId===el.dataset.id)return;const from=form.fields.findIndex(x=>x.id===dragId),to=form.fields.findIndex(x=>x.id===el.dataset.id);const [item]=form.fields.splice(from,1);form.fields.splice(to,0,item);save(true);});
+    el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');if(!dragId||dragId===el.dataset.id)return;const from=form.fields.findIndex(x=>x.id===dragId),to=form.fields.findIndex(x=>x.id===el.dataset.id);if(from<0||to<0)return;const [item]=form.fields.splice(from,1);form.fields.splice(to,0,item);save(true)});
   }
 
   function renderMiniPreview(){
@@ -552,8 +575,23 @@
 
   $('saveBtn').addEventListener('click',()=>save(false));$('formTitle').addEventListener('input',renderMiniPreview);$('formIntro').addEventListener('input',renderMiniPreview);$('formCategoryMode').addEventListener('change',()=>save(true));
   $('addQuestionBtn').addEventListener('click',openAddTray);$('closeTray').addEventListener('click',closeAddTray);$('emptyGenerateBtn').addEventListener('click',()=>{$('generateFormBtn').click()});
-  document.querySelectorAll('[data-add-type]').forEach(b=>b.addEventListener('click',()=>{closeAddTray();openField(null,b.dataset.addType)}));
-  $('questionList').addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(!b)return;const row=e.target.closest('[data-id]');if(!row)return;const id=row.dataset.id;if(b.dataset.action==='edit')openField(id);if(b.dataset.action==='duplicate')duplicateField(id);if(b.dataset.action==='delete')deleteField(id)});
+  document.querySelectorAll('[data-add-type]').forEach(b=>b.addEventListener('click',()=>openField(null,b.dataset.addType)));
+  $('questionList').addEventListener('click',e=>{
+    const b=e.target.closest('[data-action]');if(!b)return;const row=e.target.closest('[data-id]');if(!row)return;const id=row.dataset.id;const f=form.fields.find(x=>x.id===id);if(!f)return;
+    if(b.dataset.action==='edit')openField(id);
+    if(b.dataset.action==='duplicate')duplicateField(id);
+    if(b.dataset.action==='delete')deleteField(id);
+    if(b.dataset.action==='toggle-required'){f.required=!f.required;save(true);toast(f.required?'Question marked required':'Question made optional')}
+    if(b.dataset.action==='add-option'){f.options=Array.isArray(f.options)?f.options:[];f.options.push('New option');save(true)}
+    if(b.dataset.action==='remove-option'){const idx=Number(b.dataset.optionIndex);if(Array.isArray(f.options)&&f.options.length>2){f.options.splice(idx,1);save(true)}else toast('Keep at least two options')}
+  });
+  $('questionList').addEventListener('change',e=>{
+    const row=e.target.closest('[data-id]');if(!row)return;const f=form.fields.find(x=>x.id===row.dataset.id);if(!f)return;
+    if(e.target.matches('[data-inline-type]')){const next=e.target.value;f.type=next;if(next==='section'){f.required=false;f.visibility='all';f.categories=[];if(f.logic)f.logic.enabled=false}else if(['single','multi'].includes(next)&&(!Array.isArray(f.options)||f.options.length<2))f.options=['Option 1','Option 2'];save(true);toast('Question type updated');return}
+    if(e.target.matches('[data-inline-label]')){const value=e.target.value.trim();if(value)f.label=value;else e.target.value=f.label;save(true);return}
+    if(e.target.matches('[data-inline-option]')){const idx=Number(e.target.dataset.inlineOption);const value=e.target.value.trim();if(!Array.isArray(f.options))f.options=[];f.options[idx]=value||('Option '+(idx+1));save(true)}
+  });
+  $('questionList').addEventListener('keydown',e=>{if(e.target.matches('[data-inline-label]')&&e.key==='Enter'){e.preventDefault();e.target.blur()}});
 
   document.querySelectorAll('[data-close-field]').forEach(x=>x.addEventListener('click',closeField));$('fieldType').addEventListener('change',()=>{draftField.type=$('fieldType').value;renderDrawerSpecial()});
   $('requiredToggle').addEventListener('click',()=>setToggle($('requiredToggle'),!$('requiredToggle').classList.contains('active')));$('logicToggle').addEventListener('click',()=>{draftField.logic.enabled=!$('logicToggle').classList.contains('active');setToggle($('logicToggle'),draftField.logic.enabled);renderLogicFields()});
