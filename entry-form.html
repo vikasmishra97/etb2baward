@@ -40,7 +40,6 @@
     <header class="topbar">
       <div class="crumb"><span id="crumbAward">India FinTech Awards 2027</span> / Entry Form</div>
       <div class="top-actions">
-        <button class="btn ghost" id="copilotBtn">✦ Ask Award Copilot</button>
         <div class="avatar">VM</div>
       </div>
     </header>
@@ -52,9 +51,8 @@
           <h1>What should entrants tell you?</h1>
           <p>Create one clear nomination form, then personalize questions by category only when needed.</p>
         </div>
-        <div class="top-actions">
-          <button class="btn secondary" id="previewBtn">Preview as entrant</button>
-          <button class="btn primary" id="saveBtn">Save form</button>
+        <div class="top-actions ef-page-save-status">
+          <span class="ef-saved-pill">Autosaved</span>
         </div>
       </div>
 
@@ -68,56 +66,55 @@
 
       <div class="ef-layout">
         <section class="ef-main-col">
-          <div class="card pad ef-ai-card">
-            <div class="ef-ai-icon">✦</div>
-            <div class="ef-ai-copy">
-              <span class="cat-kicker">AWARD COPILOT</span>
-              <h2>Build a strong entry form in one click</h2>
-              <p id="copilotIntro">I can tailor questions to your award, categories and judging goals. You stay in control of every question.</p>
-            </div>
-            <div class="ef-ai-actions">
-              <button class="btn primary" id="generateFormBtn">✦ Generate recommended form</button>
-              <button class="btn secondary" id="shortenFormBtn">Make it shorter</button>
-            </div>
-          </div>
+          <div class="card ef-command-card">
+            <div class="ef-commandbar">
+              <div class="ef-command-brand">
+                <span class="ef-command-icon">☷</span>
+                <div><b>Entry form</b><small id="compactScopeText">Manage the shared form</small></div>
+              </div>
 
-          <div class="card pad section ef-form-settings">
-            <div class="section-title"><h2>Form introduction</h2><span>Shown before question 1</span></div>
-            <div class="form-grid">
-              <div class="field">
-                <label for="formTitle">Form title</label>
-                <input id="formTitle" maxlength="100" value="Nomination form">
-              </div>
-              <div class="field">
-                <label for="formCategoryMode">Category selection</label>
-                <select id="formCategoryMode">
-                  <option value="before">Ask category before the form</option>
-                  <option value="inside">Ask category inside the form</option>
-                  <option value="hidden">Category is pre-selected</option>
-                </select>
-              </div>
-            </div>
-            <div class="field ef-no-margin">
-              <label for="formIntro">Short instructions</label>
-              <textarea id="formIntro" maxlength="300">Tell us what makes your work exceptional. You can save a draft and return before the deadline.</textarea>
-            </div>
-          </div>
-
-          <div class="card pad section ef-category-form-manager">
-            <div class="ef-category-form-head">
-              <div>
-                <span class="cat-kicker">CATEGORY FORM</span>
-                <h2>Edit form for</h2>
-                <p>Choose a category to see the exact form entrants will get. Shared questions stay visible in every category.</p>
-              </div>
-              <div class="ef-category-form-controls">
+              <div class="ef-command-category">
+                <label for="builderCategorySelect">Edit form for</label>
                 <select id="builderCategorySelect" aria-label="Edit form for category"></select>
-                <button class="btn secondary" type="button" id="builderCategoryPreviewBtn">Preview this form</button>
+              </div>
+
+              <div class="ef-command-counts" aria-label="Form field counts">
+                <span><b id="builderCommonCount">0</b> shared</span>
+                <span><b id="builderSpecificCount">0</b> specific</span>
+              </div>
+
+              <div class="ef-command-actions">
+                <button class="ef-command-btn" type="button" id="introToggleBtn" aria-expanded="false" aria-controls="formIntroPanel"><span>✎</span> Form intro</button>
+                <button class="ef-command-btn" type="button" id="builderCategoryPreviewBtn"><span>◉</span> Preview</button>
+                <button class="ef-command-btn ef-command-ai" type="button" id="copilotBtn"><span>✦</span> AI</button>
+                <button class="ef-command-btn ef-command-save" type="button" id="saveBtn"><span>✓</span> Save</button>
+                <button class="btn primary ef-command-add" type="button" id="addQuestionBtn">+ Add question</button>
               </div>
             </div>
-            <div class="ef-category-form-summary">
-              <span><b id="builderCommonCount">0</b> shared</span>
-              <span><b id="builderSpecificCount">0</b> category-specific</span>
+
+            <div class="ef-intro-panel" id="formIntroPanel" hidden>
+              <div class="ef-intro-row">
+                <div class="field">
+                  <label for="formTitle">Form title</label>
+                  <input id="formTitle" maxlength="100" value="Nomination form">
+                </div>
+                <div class="field">
+                  <label for="formCategoryMode">Category selection</label>
+                  <select id="formCategoryMode">
+                    <option value="before">Ask category before the form</option>
+                    <option value="inside">Ask category inside the form</option>
+                    <option value="hidden">Category is pre-selected</option>
+                  </select>
+                </div>
+                <div class="field ef-intro-copy-field">
+                  <label for="formIntro">Short instructions</label>
+                  <textarea id="formIntro" maxlength="300">Tell us what makes your work exceptional. You can save a draft and return before the deadline.</textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="ef-command-support" aria-hidden="true">
+              <button id="previewBtn" type="button" tabindex="-1">Preview</button>
               <small id="builderScopeText">Shared questions are used by every category.</small>
             </div>
           </div>
@@ -129,9 +126,11 @@
                 <p class="ef-subcopy" id="builderQuestionHelp">Click any question to edit it. New fields are automatically added to the category selected above.</p>
               </div>
               <div class="ef-builder-head-actions">
-                <button class="ef-view-btn" type="button" id="collapseSectionsBtn">Collapse all</button>
-                <button class="ef-view-btn" type="button" id="expandSectionsBtn">Expand all</button>
-                <button class="btn primary" id="addQuestionBtn">+ Add question</button>
+                <div class="ef-section-view-control" role="group" aria-label="Section view">
+                  <span class="ef-view-label">Sections</span>
+                  <button class="ef-view-btn" type="button" id="collapseSectionsBtn" title="Collapse all sections" aria-label="Collapse all sections"><span>⌃</span> Collapse</button>
+                  <button class="ef-view-btn" type="button" id="expandSectionsBtn" title="Expand all sections" aria-label="Expand all sections"><span>⌄</span> Expand</button>
+                </div>
               </div>
             </div>
 
@@ -389,6 +388,10 @@
 <div class="cat-copilot-panel ef-copilot-panel" id="copilotPanel" aria-hidden="true">
   <div class="cat-copilot-head"><div><span class="eyebrow">AWARD COPILOT</span><h3>Form assistant</h3></div><button id="closeCopilot">×</button></div>
   <p>Improve the form without rebuilding it manually. This manager demo uses preset recommendations.</p>
+  <div class="ef-copilot-primary-actions">
+    <button class="btn primary" id="generateFormBtn" type="button">✦ Generate recommended form</button>
+    <button class="btn secondary" id="shortenFormBtn" type="button">Make it shorter</button>
+  </div>
   <div class="cat-copilot-options">
     <button data-copilot-action="judge">Align questions to judging</button>
     <button data-copilot-action="shorter">Reduce completion time</button>
@@ -783,6 +786,7 @@
     $('builderCommonCount').textContent=common.filter(isQuestion).length;
     $('builderSpecificCount').textContent=specific.filter(isQuestion).length;
     $('builderScopeText').textContent=builderCategoryId?'Showing shared fields + fields for '+(categoryName(builderCategoryId)||'this category')+'. New questions and sections will be added to this category only.':'Manage the shared questions and sections that appear in every category form.';
+    if($('compactScopeText'))$('compactScopeText').textContent=builderCategoryId?'Editing '+(categoryName(builderCategoryId)||'selected category'):'Manage the shared form';
     $('builderQuestionHelp').textContent=builderCategoryId?'You are editing '+(categoryName(builderCategoryId)||'this category')+'. Shared fields stay visible; new fields are category-specific by default.':'You are editing the shared form. New fields will appear in every category by default.';
   }
   function updateUI(){renderCategoryFormManager();renderQuestions();renderMiniPreview();renderHealth();updateProgress()}
@@ -861,6 +865,7 @@
   $('sideAwardName').textContent=award.name||'Untitled Award';$('crumbAward').textContent=award.name||'Untitled Award';$('publicAwardName').textContent=award.name||'Untitled Award';$('miniAwardName').textContent=award.name||'Untitled Award';$('formTitle').value=form.title;$('formIntro').value=form.intro;$('formCategoryMode').value=form.categoryMode;
 
   $('saveBtn').addEventListener('click',()=>save(false));$('formTitle').addEventListener('input',renderMiniPreview);$('formIntro').addEventListener('input',renderMiniPreview);$('formCategoryMode').addEventListener('change',()=>save(true));
+  $('introToggleBtn').addEventListener('click',()=>{const panel=$('formIntroPanel');const willOpen=panel.hidden;panel.hidden=!willOpen;$('introToggleBtn').classList.toggle('active',willOpen);$('introToggleBtn').setAttribute('aria-expanded',String(willOpen));if(willOpen)requestAnimationFrame(()=>$('formTitle').focus({preventScroll:true}))});
   $('builderCategorySelect').addEventListener('change',e=>{builderCategoryId=e.target.value||'';try{localStorage.setItem(builderCategoryKey,builderCategoryId)}catch(err){}activeFieldId=builderFields()[0]?.id||null;updateUI();requestAnimationFrame(()=>$('questionWorkspace')?.scrollIntoView({behavior:'smooth',block:'start'}));});
   $('builderCategoryPreviewBtn').addEventListener('click',openPreview);
   $('collapseSectionsBtn').addEventListener('click',()=>{builderSectionGroups().forEach(g=>{if(g.section)collapsedSections.add(g.section.id)});persistCollapsedSections();renderQuestions();toast('Sections collapsed')});
