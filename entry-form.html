@@ -691,12 +691,28 @@
     const toolbar=$('questionToolbar');
     const workspace=$('questionWorkspace');
     const active=workspace&&workspace.querySelector('.ef-gform-card.active, .ef-section-summary.active');
-    if(!toolbar||!workspace||!active){if(toolbar)toolbar.hidden=true;return}
+    if(!toolbar||!workspace||!active){
+      if(toolbar){toolbar.hidden=true;toolbar.classList.remove('ef-toolbar-tight')}
+      return;
+    }
+
     toolbar.hidden=false;
     const workspaceRect=workspace.getBoundingClientRect();
     const activeRect=active.getBoundingClientRect();
-    const top=(activeRect.top-workspaceRect.top)+Math.max(4,Math.min(18,activeRect.height/2-76));
-    toolbar.style.top=Math.max(0,top)+'px';
+    const workspaceHeight=Math.max(workspace.clientHeight,workspace.scrollHeight);
+
+    // When the form is short/collapsed, shrink the tool rail automatically.
+    // Expanded/long forms keep the normal compact rail.
+    toolbar.classList.toggle('ef-toolbar-tight',workspaceHeight<360);
+
+    // Measure after the compact class is applied and keep the rail fully inside
+    // the question workspace so it never hangs over the pricing/footer area.
+    const toolbarHeight=toolbar.offsetHeight||0;
+    const activeTop=activeRect.top-workspaceRect.top;
+    const preferredTop=Math.max(6,activeTop+6);
+    const maxTop=Math.max(6,workspaceHeight-toolbarHeight-6);
+    const top=Math.min(preferredTop,maxTop);
+    toolbar.style.top=top+'px';
   }
 
   function bindDrag(el){

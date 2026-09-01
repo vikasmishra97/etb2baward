@@ -634,3 +634,85 @@ a.build-progress-step:hover{background:#faf7f7;color:#2d3042}
   .build-progress-num{width:27px;height:27px;flex-basis:27px}
   .ef-commandbar{grid-template-columns:1fr!important}
 }
+
+/* V19.21 - adaptive compact question tool rail */
+.ef-question-workspace{
+  padding-right:54px!important;
+}
+.ef-question-toolbar{
+  right:7px!important;
+  width:42px!important;
+  max-width:42px!important;
+  padding:5px 3px!important;
+  gap:2px!important;
+  border-radius:10px!important;
+  box-shadow:0 6px 18px rgba(28,31,54,.12)!important;
+  transition:top .16s ease,width .16s ease,padding .16s ease!important;
+}
+.ef-question-toolbar button{
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  min-height:34px!important;
+  border-radius:7px!important;
+  font-size:14px!important;
+}
+.ef-question-toolbar button:first-child span{
+  font-size:24px!important;
+}
+.ef-question-toolbar button[data-toolbar-action="add-title"] span{
+  font-size:14px!important;
+}
+.ef-question-toolbar button:after{
+  right:42px!important;
+}
+
+/* Extra-small rail when sections are collapsed / the form is short. */
+.ef-question-toolbar.ef-toolbar-tight{
+  width:36px!important;
+  max-width:36px!important;
+  padding:4px 2px!important;
+  gap:1px!important;
+}
+.ef-question-toolbar.ef-toolbar-tight button{
+  width:30px!important;
+  height:30px!important;
+  min-width:30px!important;
+  min-height:30px!important;
+  border-radius:6px!important;
+  font-size:12px!important;
+}
+.ef-question-toolbar.ef-toolbar-tight button:first-child span{
+  font-size:21px!important;
+}
+.ef-question-toolbar.ef-toolbar-tight button[data-toolbar-action="add-title"] span{
+  font-size:12px!important;
+}
+
+/* No active field = no floating rail. */
+.ef-question-toolbar[hidden]{display:none!important}
+
+@media(max-width:1180px){
+  .ef-question-workspace{padding-right:48px!important}
+  .ef-question-toolbar{right:5px!important}
+}
+
+@media(max-width:900px){
+  .ef-question-workspace{padding-right:0!important}
+  .ef-question-toolbar,
+  .ef-question-toolbar.ef-toolbar-tight{
+    width:max-content!important;
+    max-width:calc(100% - 16px)!important;
+    padding:4px!important;
+    gap:2px!important;
+    border-radius:10px!important;
+  }
+  .ef-question-toolbar button,
+  .ef-question-toolbar.ef-toolbar-tight button{
+    width:34px!important;
+    height:34px!important;
+    min-width:34px!important;
+    min-height:34px!important;
+    flex:0 0 34px!important;
+  }
+}
