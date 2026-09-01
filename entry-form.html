@@ -121,8 +121,8 @@
               </div>
               <div class="ef-builder-head-actions ef-builder-head-actions-centered">
                 <div class="ef-section-view-control" role="group" aria-label="Section view">
-                  <button class="ef-view-btn ef-view-collapse" type="button" id="collapseSectionsBtn" title="Collapse all sections" aria-label="Collapse all sections"><span>−</span> Collapse all</button>
-                  <button class="ef-view-btn ef-view-expand" type="button" id="expandSectionsBtn" title="Expand all sections" aria-label="Expand all sections"><span>＋</span> Expand all</button>
+                  <button class="ef-view-btn ef-view-collapse" type="button" id="collapseSectionsBtn" title="Collapse all sections" aria-label="Collapse all sections"><span>−</span> Collapse</button>
+                  <button class="ef-view-btn ef-view-expand" type="button" id="expandSectionsBtn" title="Expand all sections" aria-label="Expand all sections"><span>＋</span> Expand</button>
                 </div>
               </div>
               <div class="ef-list-head-balance" aria-hidden="true"></div>
@@ -152,8 +152,8 @@
           </div>
 
           <div class="ef-bottom-actions">
-            <div><b>Next: decide what entrants pay</b><span>Your saved questions will be used across the public nomination experience.</span></div>
-            <a class="btn primary" href="pricing.html" id="continuePricing">Continue to Pricing →</a>
+            <div class="ef-next-copy"><span class="ef-next-kicker">Next step</span><b>Set pricing &amp; entry fees</b><span>Your form is saved automatically. Continue when you are ready.</span></div>
+            <a class="btn primary ef-next-btn" href="pricing.html" id="continuePricing"><span>Next: Pricing</span><b aria-hidden="true">→</b></a>
           </div>
         </section>
 
@@ -660,7 +660,7 @@
     const summary=document.createElement('div');
     summary.className='ef-section-summary'+(activeFieldId===sectionId?' active':'');
     summary.dataset.id=sectionId;
-    summary.innerHTML='<div class="ef-card-drag ef-section-drag" title="Drag section">...</div><button type="button" class="ef-section-toggle" data-action="toggle-section" title="'+(collapsed?'Expand section':'Collapse section')+'"><span>'+ (collapsed?'&#8250;':'&#8964;') +'</span></button><div class="ef-section-heading"><span>SECTION '+displayIndex+'</span><h3>'+esc(section.label||'Untitled section')+'</h3><p>'+esc(section.help||'Click a field below to edit it.')+'</p></div><div class="ef-section-stats"><span>'+questionItems.length+' question'+(questionItems.length===1?'':'s')+'</span><span>'+required+' required</span>'+scopeBadge(section)+'</div><div class="ef-section-actions"><button type="button" data-action="edit">Edit section</button></div>';
+    summary.innerHTML='<div class="ef-card-drag ef-section-drag" title="Drag section">...</div><button type="button" class="ef-section-toggle" data-action="toggle-section" title="'+(collapsed?'Expand section':'Collapse section')+'"><span>&#8250;</span></button><div class="ef-section-heading"><span>SECTION '+displayIndex+'</span><h3>'+esc(section.label||'Untitled section')+'</h3><p>'+esc(section.help||'Click a field below to edit it.')+'</p></div><div class="ef-section-stats"><span>'+questionItems.length+' question'+(questionItems.length===1?'':'s')+'</span><span>'+required+' required</span>'+scopeBadge(section)+'</div><div class="ef-section-actions"><button type="button" data-action="edit">Edit section</button></div>';
     shell.appendChild(summary);
     const body=document.createElement('div');
     body.className='ef-section-fields';
