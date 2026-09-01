@@ -103,16 +103,35 @@
             </div>
           </div>
 
+          <div class="card pad section ef-category-form-manager">
+            <div class="ef-category-form-head">
+              <div>
+                <span class="cat-kicker">CATEGORY FORM</span>
+                <h2>Edit form for</h2>
+                <p>Choose a category to see the exact form entrants will get. Shared questions stay visible in every category.</p>
+              </div>
+              <div class="ef-category-form-controls">
+                <select id="builderCategorySelect" aria-label="Edit form for category"></select>
+                <button class="btn secondary" type="button" id="builderCategoryPreviewBtn">Preview this form</button>
+              </div>
+            </div>
+            <div class="ef-category-form-summary">
+              <span><b id="builderCommonCount">0</b> shared</span>
+              <span><b id="builderSpecificCount">0</b> category-specific</span>
+              <small id="builderScopeText">Shared questions are used by every category.</small>
+            </div>
+          </div>
+
           <div class="card pad section ef-builder-card">
             <div class="ef-list-head">
               <div>
                 <div class="section-title ef-title-inline"><h2>Form questions</h2><span class="cat-count-pill" id="questionCount">0</span></div>
-                <p class="ef-subcopy">Click any question to edit it. The floating toolbar stays beside the active question, just like Google Forms.</p>
+                <p class="ef-subcopy" id="builderQuestionHelp">Click any question to edit it. New fields are automatically added to the category selected above.</p>
               </div>
               <button class="btn primary" id="addQuestionBtn">+ Add question</button>
             </div>
 
-            <div class="ef-builder-note"><span>Tip</span> Select a question to open its editing controls. Use the floating toolbar to add questions, titles, media or sections exactly where you need them.</div>
+            <div class="ef-builder-note"><span>Tip</span> Use <b>All categories / Shared form</b> for common fields. Select a category above to add only the questions or sections that category needs.</div>
 
             <div class="ef-question-workspace" id="questionWorkspace">
               <div class="ef-empty" id="formEmpty" hidden>
@@ -275,10 +294,10 @@
       </div>
 
       <div id="categorySettings">
-        <div class="ca-section-divider">Category visibility</div>
+        <div class="ca-section-divider">Apply to categories</div>
         <div class="ef-visibility-choice">
-          <button type="button" class="ef-visibility-option active" data-visibility="all"><span>●</span><div><b>All categories</b><small>Everyone sees this question</small></div></button>
-          <button type="button" class="ef-visibility-option" data-visibility="selected"><span>○</span><div><b>Specific categories</b><small>Show only for selected entries</small></div></button>
+          <button type="button" class="ef-visibility-option active" data-visibility="all"><span>●</span><div><b>All categories</b><small>Shared field used in every category form</small></div></button>
+          <button type="button" class="ef-visibility-option" data-visibility="selected"><span>○</span><div><b>Selected categories</b><small>Use this field only where it is needed</small></div></button>
         </div>
         <div class="ef-category-picker" id="categoryPicker" hidden></div>
       </div>
@@ -326,6 +345,7 @@
           <option value="file">File upload</option>
         </select>
       </div>
+      <div class="ef-import-scope" id="importScopeHint"></div>
       <div class="field">
         <label for="importQuestionText">Questions</label>
         <textarea id="importQuestionText" rows="9" placeholder="Paste one question per line"></textarea>
@@ -447,6 +467,9 @@
   let draftField=null;
   let dragId=null;
   let visibilityMode='all';
+  const builderCategoryKey='etb2b_awards_entry_form_builder_category_'+awardSlug;
+  let builderCategoryId=(()=>{try{return localStorage.getItem(builderCategoryKey)||''}catch(e){return ''}})();
+  if(builderCategoryId&&!categories.some(c=>c.id===builderCategoryId))builderCategoryId='';
   let activeFieldId=form.fields[0]?.id||null;
 
   function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1900)}
@@ -454,6 +477,22 @@
   function isQuestion(f){return f&&!contentTypeKeys.includes(f.type)}
   function questionFields(){return form.fields.filter(isQuestion)}
   function categoryName(id){const c=categories.find(x=>x.id===id);return c?c.name:''}
+  function fieldVisibleForCategory(f,catId){return f.visibility!=='selected'||!f.categories.length||f.categories.includes(catId)}
+  function fieldVisibleInBuilder(f){
+    if(!builderCategoryId)return f.visibility!=='selected'||!f.categories.length;
+    return fieldVisibleForCategory(f,builderCategoryId);
+  }
+  function builderFields(){return form.fields.filter(fieldVisibleInBuilder)}
+  function builderQuestionFields(){return builderFields().filter(isQuestion)}
+  function scopeLabel(f){
+    if(f.visibility!=='selected'||!f.categories.length)return 'All categories';
+    if(f.categories.length===1)return categoryName(f.categories[0])||'1 category';
+    return f.categories.length+' categories';
+  }
+  function scopeBadge(f){
+    const common=f.visibility!=='selected'||!f.categories.length;
+    return '<span class="ef-scope-chip '+(common?'shared':'specific')+'">'+esc(common?'ALL CATEGORIES':scopeLabel(f))+'</span>';
+  }
   function displayLimit(f){if(!f.limit)return'';return f.limit+' '+(f.limitUnit==='words'?'words':'characters')}
   function countWordsForField(f){return f.type==='long'?Number(f.limit||300):0}
   function estimateMinutes(){let sec=0;form.fields.forEach(f=>{if(!isQuestion(f))return;if(f.type==='long')sec+=Math.min(300,Math.max(45,Number(f.limit||300)*.45));else if(f.type==='file')sec+=75;else if(['single','multi','dropdown'].includes(f.type))sec+=25;else sec+=20;});return Math.max(2,Math.round(sec/60))}
@@ -499,22 +538,23 @@
 
   function renderContentCard(f,active){
     if(!active){
-      if(f.type==='image'||f.type==='video')return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-compact-content"><span>'+esc(typeMeta[f.type].name.toUpperCase())+'</span><b>'+esc(f.label||typeMeta[f.type].name)+'</b>'+mediaPreview(f)+'</div>';
-      return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-compact-content"><span>'+esc(typeMeta[f.type].name.toUpperCase())+'</span><b>'+esc(f.label)+'</b><small>'+esc(f.help||'')+'</small></div>';
+      if(f.type==='image'||f.type==='video')return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-compact-content"><div class="ef-compact-top">'+scopeBadge(f)+'</div><span>'+esc(typeMeta[f.type].name.toUpperCase())+'</span><b>'+esc(f.label||typeMeta[f.type].name)+'</b>'+mediaPreview(f)+'</div>';
+      return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-compact-content"><div class="ef-compact-top">'+scopeBadge(f)+'</div><span>'+esc(typeMeta[f.type].name.toUpperCase())+'</span><b>'+esc(f.label)+'</b><small>'+esc(f.help||'')+'</small></div>';
     }
     if(f.type==='image'||f.type==='video'){
-      return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-main"><div class="ef-section-kicker">'+esc(typeMeta[f.type].name.toUpperCase())+'</div><input class="ef-inline-question" data-inline-label value="'+esc(f.label||typeMeta[f.type].name)+'" aria-label="Block title"><input class="ef-inline-media-url" data-inline-media value="'+esc(f.mediaUrl||'')+'" placeholder="Paste public '+(f.type==='image'?'image':'video')+' URL">'+mediaPreview(f)+'</div><div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button></div>';
+      return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-main"><div class="ef-section-kicker">'+esc(typeMeta[f.type].name.toUpperCase())+'</div><input class="ef-inline-question" data-inline-label value="'+esc(f.label||typeMeta[f.type].name)+'" aria-label="Block title"><input class="ef-inline-media-url" data-inline-media value="'+esc(f.mediaUrl||'')+'" placeholder="Paste public '+(f.type==='image'?'image':'video')+' URL">'+mediaPreview(f)+'</div><div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button><button type="button" class="ef-card-scope-btn" data-action="scope" title="Choose categories">'+esc(scopeLabel(f))+'</button></div>';
     }
-    return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-main"><div class="ef-section-kicker">'+esc(typeMeta[f.type].name.toUpperCase())+'</div><input class="ef-inline-question ef-inline-section-title" data-inline-label value="'+esc(f.label)+'" aria-label="Title"><textarea class="ef-inline-help-edit" data-inline-help placeholder="Description (optional)">'+esc(f.help||'')+'</textarea></div><div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button></div>';
+    return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-main"><div class="ef-section-kicker">'+esc(typeMeta[f.type].name.toUpperCase())+'</div><input class="ef-inline-question ef-inline-section-title" data-inline-label value="'+esc(f.label)+'" aria-label="Title"><textarea class="ef-inline-help-edit" data-inline-help placeholder="Description (optional)">'+esc(f.help||'')+'</textarea></div><div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button><button type="button" class="ef-card-scope-btn" data-action="scope" title="Choose categories">'+esc(scopeLabel(f))+'</button></div>';
   }
 
   function renderQuestions(){
     const list=$('questionList');
     list.innerHTML='';
-    $('formEmpty').hidden=form.fields.length>0;
-    $('questionCount').textContent=questionFields().length;
-    if(activeFieldId&&!form.fields.some(f=>f.id===activeFieldId))activeFieldId=form.fields[0]?.id||null;
-    form.fields.forEach(f=>{
+    const visibleFields=builderFields();
+    $('formEmpty').hidden=visibleFields.length>0;
+    $('questionCount').textContent=builderQuestionFields().length;
+    if(activeFieldId&&!visibleFields.some(f=>f.id===activeFieldId))activeFieldId=visibleFields[0]?.id||null;
+    visibleFields.forEach(f=>{
       const active=f.id===activeFieldId;
       const el=document.createElement('div');
       el.dataset.id=f.id;
@@ -525,15 +565,14 @@
       }
       if(!active){
         el.className='ef-gform-card ef-gform-compact';
-        el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-compact-main"><div class="ef-compact-question">'+esc(f.label)+(f.required?'<em>*</em>':'')+'</div>'+compactAnswerPreview(f)+'</div>';
+        el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-compact-main"><div class="ef-compact-top">'+scopeBadge(f)+'</div><div class="ef-compact-question">'+esc(f.label)+(f.required?'<em>*</em>':'')+'</div>'+compactAnswerPreview(f)+'</div>';
         list.appendChild(el);bindDrag(el);return;
       }
-      const meta=[];
+      const meta=[scopeLabel(f)];
       if(f.limit)meta.push('Max '+displayLimit(f));
-      if(f.visibility==='selected'&&f.categories.length)meta.push(f.categories.length+' categor'+(f.categories.length===1?'y':'ies'));
       if(f.logic&&f.logic.enabled)meta.push('Conditional');
       el.className='ef-gform-card active';
-      el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-head"><div class="ef-card-question"><input class="ef-inline-question" data-inline-label value="'+esc(f.label)+'" aria-label="Question text"><small>'+esc(f.help||typeMeta[f.type]?.hint||'')+'</small></div><button type="button" class="ef-card-media-btn" data-action="question-image" title="Attach image">&#9638;</button><div class="ef-card-type"><span>'+esc(typeMeta[f.type]?.icon||'Aa')+'</span><select data-inline-type aria-label="Question type">'+typeSelectOptions(f.type)+'</select></div></div><div class="ef-card-answer">'+activeAnswerPreview(f)+'</div>'+(f.mediaUrl?'<div class="ef-question-media"><img src="'+esc(f.mediaUrl)+'" alt="Question image"></div>':'')+(meta.length?'<div class="ef-card-meta">'+meta.map(m=>'<span>'+esc(m)+'</span>').join('')+'</div>':'')+'<div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button><div class="ef-card-footer-divider"></div><button type="button" class="ef-required-inline '+(f.required?'active':'')+'" data-action="toggle-required"><b>Required</b><span class="ef-switch"><i></i></span></button><button type="button" class="ef-more-settings" data-action="edit" title="More settings">&#8942;</button></div>';
+      el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-head"><div class="ef-card-question"><input class="ef-inline-question" data-inline-label value="'+esc(f.label)+'" aria-label="Question text"><small>'+esc(f.help||typeMeta[f.type]?.hint||'')+'</small></div><button type="button" class="ef-card-media-btn" data-action="question-image" title="Attach image">&#9638;</button><div class="ef-card-type"><span>'+esc(typeMeta[f.type]?.icon||'Aa')+'</span><select data-inline-type aria-label="Question type">'+typeSelectOptions(f.type)+'</select></div></div><div class="ef-card-answer">'+activeAnswerPreview(f)+'</div>'+(f.mediaUrl?'<div class="ef-question-media"><img src="'+esc(f.mediaUrl)+'" alt="Question image"></div>':'')+(meta.length?'<div class="ef-card-meta">'+meta.map(m=>'<span>'+esc(m)+'</span>').join('')+'</div>':'')+'<div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button><button type="button" class="ef-card-scope-btn" data-action="scope" title="Choose categories">'+esc(scopeLabel(f))+'</button><div class="ef-card-footer-divider"></div><button type="button" class="ef-required-inline '+(f.required?'active':'')+'" data-action="toggle-required"><b>Required</b><span class="ef-switch"><i></i></span></button><button type="button" class="ef-more-settings" data-action="edit" title="More settings">&#8942;</button></div>';
       list.appendChild(el);bindDrag(el);
     });
     requestAnimationFrame(positionToolbar);
@@ -566,11 +605,13 @@
     if(scroll)requestAnimationFrame(()=>{const el=$('questionList').querySelector('[data-id="'+CSS.escape(id)+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'})});
   }
 
-  function newField(type,label){
+  function newField(type,label,scopeCategoryId){
     const question=!contentTypeKeys.includes(type);
+    const scopeId=scopeCategoryId===undefined?builderCategoryId:scopeCategoryId;
     const f=normalizeField({
       type:type||'short',label:label||(type==='section'?'Untitled section':type==='heading'?'Title and description':type==='image'?'Image':type==='video'?'Video':'Question'),
-      required:question&&type!=='file',limit:type==='long'?500:(['short','email','url'].includes(type)?160:0),limitUnit:type==='long'?'words':'chars'
+      required:question&&type!=='file',limit:type==='long'?500:(['short','email','url'].includes(type)?160:0),limitUnit:type==='long'?'words':'chars',
+      visibility:scopeId?'selected':'all',categories:scopeId?[scopeId]:[]
     });
     if(['single','multi','dropdown'].includes(type))f.options=['Option 1'];
     return f;
@@ -592,12 +633,13 @@
     $('miniIntro').textContent=$('formIntro').value||'';
     $('previewDomain').textContent=(award.website||((award.slug||'your-award')+'.etb2b_awards.app')).replace(/^https?:\/\//,'').slice(0,28);
     const box=$('miniFields');box.innerHTML='';
-    questionFields().slice(0,3).forEach(f=>{const d=document.createElement('div');d.className='ef-mini-field';d.innerHTML='<span>'+esc(f.label)+(f.required?' *':'')+'</span><i></i>';box.appendChild(d)});
-    if(questionFields().length>3){const more=document.createElement('small');more.className='ef-mini-more';more.textContent='+'+(questionFields().length-3)+' more questions';box.appendChild(more)}
+    const previewQs=builderQuestionFields();
+    previewQs.slice(0,3).forEach(f=>{const d=document.createElement('div');d.className='ef-mini-field';d.innerHTML='<span>'+esc(f.label)+(f.required?' *':'')+'</span><i></i>';box.appendChild(d)});
+    if(previewQs.length>3){const more=document.createElement('small');more.className='ef-mini-more';more.textContent='+'+(previewQs.length-3)+' more questions';box.appendChild(more)}
   }
 
   function renderHealth(){
-    const qs=questionFields();const req=qs.filter(f=>f.required).length;const specific=qs.filter(f=>f.visibility==='selected'&&f.categories.length).length;const logic=qs.filter(f=>f.logic&&f.logic.enabled).length;const mins=estimateMinutes();const score=health();
+    const qs=builderQuestionFields();const req=qs.filter(f=>f.required).length;const specific=qs.filter(f=>f.visibility==='selected'&&f.categories.length).length;const logic=qs.filter(f=>f.logic&&f.logic.enabled).length;let sec=0;qs.forEach(f=>{if(f.type==='long')sec+=Math.min(300,Math.max(45,Number(f.limit||300)*.45));else if(f.type==='file')sec+=75;else if(['single','multi','dropdown'].includes(f.type))sec+=25;else sec+=20});const mins=Math.max(2,Math.round(sec/60));let score=96;if(qs.length>12)score-=Math.min(25,(qs.length-12)*3);if(mins>12)score-=Math.min(25,(mins-12)*3);const longWords=qs.reduce((n,f)=>n+countWordsForField(f),0);if(longWords>1800)score-=8;score=Math.max(45,Math.round(score));
     $('estimatedTime').textContent=mins+' min';$('requiredCount').textContent=req;$('specificCount').textContent=specific;$('logicCount').textContent=logic;$('healthScore').textContent=score;
     const badge=$('healthBadge');
     if(score>=80){badge.textContent='Good';badge.className='badge green';$('healthTitle').textContent='Easy to complete';$('healthText').textContent='Balanced length for an awards entry.'}
@@ -611,7 +653,21 @@
     $('formProgressIcon').textContent=complete?'OK':'O';$('formProgressIcon').className=complete?'ok':'';$('formProgressText').textContent=complete?qs.length+' questions ready':'Add at least 4 questions';
     $('categoryProgressText').textContent=categories.length+' categor'+(categories.length===1?'y':'ies')+' ready';$('trackCategories').textContent=categories.length?'Complete':'No categories';
   }
-  function updateUI(){renderQuestions();renderMiniPreview();renderHealth();updateProgress()}
+  function renderCategoryFormManager(){
+    const select=$('builderCategorySelect');
+    if(!select)return;
+    const previous=builderCategoryId;
+    select.innerHTML='<option value="">All categories / Shared form</option>'+categories.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('');
+    select.value=categories.some(c=>c.id===previous)?previous:'';
+    builderCategoryId=select.value;
+    const common=form.fields.filter(f=>f.visibility!=='selected'||!f.categories.length);
+    const specific=builderCategoryId?form.fields.filter(f=>f.visibility==='selected'&&f.categories.includes(builderCategoryId)):[];
+    $('builderCommonCount').textContent=common.filter(isQuestion).length;
+    $('builderSpecificCount').textContent=specific.filter(isQuestion).length;
+    $('builderScopeText').textContent=builderCategoryId?'Showing shared fields + fields for '+(categoryName(builderCategoryId)||'this category')+'. New questions and sections will be added to this category only.':'Manage the shared questions and sections that appear in every category form.';
+    $('builderQuestionHelp').textContent=builderCategoryId?'You are editing '+(categoryName(builderCategoryId)||'this category')+'. Shared fields stay visible; new fields are category-specific by default.':'You are editing the shared form. New fields will appear in every category by default.';
+  }
+  function updateUI(){renderCategoryFormManager();renderQuestions();renderMiniPreview();renderHealth();updateProgress()}
 
   function makeTailoredForm(){
     const isFintech=/fintech|financial|bank|payment/i.test(award.name||'');
@@ -644,7 +700,7 @@
   }
   function setToggle(el,on){el.classList.toggle('active',on)}
   function renderDrawerSpecial(){
-    const t=$('fieldType').value;const content=contentTypeKeys.includes(t);$('requiredFieldWrap').hidden=content;$('limitSettings').hidden=!['short','long','number','email','url'].includes(t);$('choiceSettings').hidden=!['single','multi','dropdown'].includes(t);$('fileSettings').hidden=t!=='file';if($('mediaSettings'))$('mediaSettings').hidden=!['image','video'].includes(t);$('categorySettings').hidden=content;$('logicSettings').hidden=content;
+    const t=$('fieldType').value;const content=contentTypeKeys.includes(t);$('requiredFieldWrap').hidden=content;$('limitSettings').hidden=!['short','long','number','email','url'].includes(t);$('choiceSettings').hidden=!['single','multi','dropdown'].includes(t);$('fileSettings').hidden=t!=='file';if($('mediaSettings'))$('mediaSettings').hidden=!['image','video'].includes(t);$('categorySettings').hidden=false;$('logicSettings').hidden=content;
   }
   function renderOptions(){const box=$('optionEditor');box.innerHTML='';(draftField.options||[]).forEach((o,i)=>{const row=document.createElement('div');row.className='ef-option-row';row.innerHTML='<span>=</span><input value="'+esc(o)+'" data-option-index="'+i+'"><button data-remove-option="'+i+'">x</button>';box.appendChild(row)})}
   function renderCategoryPicker(){const box=$('categoryPicker');box.hidden=visibilityMode!=='selected';box.innerHTML='';categories.forEach(c=>{const checked=(draftField.categories||[]).includes(c.id);const label=document.createElement('label');label.innerHTML='<input type="checkbox" value="'+esc(c.id)+'" '+(checked?'checked':'')+'><span>'+esc(c.name)+'</span>';box.appendChild(label)})}
@@ -655,13 +711,12 @@
     draftField.categories=visibilityMode==='selected'?[...$('categoryPicker').querySelectorAll('input:checked')].map(x=>x.value):[];draftField.logic.enabled=$('logicToggle').classList.contains('active')&&!contentTypeKeys.includes(draftField.type);
     if(draftField.logic.enabled){draftField.logic.fieldId=$('logicField').value;draftField.logic.operator=$('logicOperator').value;draftField.logic.value=$('logicValue').value.trim()}
     if(['single','multi','dropdown'].includes(draftField.type)){draftField.options=[...$('optionEditor').querySelectorAll('input')].map(x=>x.value.trim()).filter(Boolean);if(!draftField.options.length)draftField.options=['Option 1']}
-    if(contentTypeKeys.includes(draftField.type)){draftField.required=false;draftField.visibility='all';draftField.categories=[];draftField.logic.enabled=false}
+    if(contentTypeKeys.includes(draftField.type)){draftField.required=false;draftField.logic.enabled=false}
   }
   function saveField(){collectDraft();$('fieldLabelError').textContent='';if(!draftField.label){$('fieldLabelError').textContent='Add a question or title.';$('fieldLabel').focus();return}const wasEditing=!!editingId;if(editingId){const idx=form.fields.findIndex(x=>x.id===editingId);form.fields[idx]=normalizeField(draftField);activeFieldId=draftField.id}else{insertFieldsAfterActive([normalizeField(draftField)],false)}closeField();save(true);toast(wasEditing?'Field updated':'Field added')}
   function duplicateField(id){const f=form.fields.find(x=>x.id===id);if(!f)return;const idx=form.fields.findIndex(x=>x.id===id);const copy=normalizeField(JSON.parse(JSON.stringify(f)));copy.id='q_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);copy.label=f.label+' copy';form.fields.splice(idx+1,0,copy);activeFieldId=copy.id;save(true);requestAnimationFrame(()=>document.querySelector('[data-id="'+CSS.escape(copy.id)+'"]')?.scrollIntoView({behavior:'smooth',block:'center'}));toast('Field duplicated')}
   function deleteField(id){const f=form.fields.find(x=>x.id===id);if(!f)return;if(!confirm('Delete "'+f.label+'"?'))return;const idx=form.fields.findIndex(x=>x.id===id);form.fields.splice(idx,1);activeFieldId=form.fields[Math.min(idx,form.fields.length-1)]?.id||null;save(true);toast('Field deleted')}
 
-  function fieldVisibleForCategory(f,catId){return f.visibility!=='selected'||!f.categories.length||f.categories.includes(catId)}
   function publicInput(f){
     const req=f.required?' <em>*</em>':'';const help=f.help?'<small>'+esc(f.help)+'</small>':'';
     if(f.type==='section')return '<div class="ef-public-section"><span>SECTION</span><h3>'+esc(f.label)+'</h3>'+help+'</div>';
@@ -677,17 +732,19 @@
     const limit=f.limit?'<span class="ef-public-limit">Max '+esc(displayLimit(f))+'</span>':'';
     return '<div class="ef-public-field"><label>'+esc(f.label)+req+'</label>'+help+control+limit+'</div>';
   }
-  function openPreview(){const select=$('previewCategory');select.innerHTML='<option value="">All / first category</option>'+categories.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('');renderPublicPreview();$('previewModal').classList.add('open');$('previewModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
+  function openPreview(){const select=$('previewCategory');select.innerHTML='<option value="">All / first category</option>'+categories.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('');if(builderCategoryId)select.value=builderCategoryId;renderPublicPreview();$('previewModal').classList.add('open');$('previewModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open')}
   function closePreview(){$('previewModal').classList.remove('open');$('previewModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
   function renderPublicPreview(){const cat=$('previewCategory').value||categories[0]?.id||'';$('publicAwardName').textContent=award.name||'Untitled Award';$('publicFormTitle').textContent=$('formTitle').value||'Nomination form';$('publicFormIntro').textContent=$('formIntro').value||'';const visible=form.fields.filter(f=>fieldVisibleForCategory(f,cat));$('publicFields').innerHTML=visible.map(publicInput).join('')||'<div class="empty">No questions for this category yet.</div>'}
 
-  function openImport(){$('importQuestionText').value='';$('importModal').classList.add('open');$('importModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$('importQuestionText').focus(),60)}
+  function openImport(){$('importQuestionText').value='';$('importScopeHint').textContent=builderCategoryId?'These questions will be added to '+(categoryName(builderCategoryId)||'the selected category')+' only.':'These questions will be shared across all categories.';$('importModal').classList.add('open');$('importModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$('importQuestionText').focus(),60)}
   function closeImport(){$('importModal').classList.remove('open');$('importModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
-  function importQuestions(){const lines=$('importQuestionText').value.split(/\n+/).map(x=>x.trim()).filter(Boolean);if(!lines.length){toast('Add at least one question');return}const type=$('importQuestionType').value;const fields=lines.map(line=>newField(type,line));insertFieldsAfterActive(fields,true);closeImport();toast(lines.length+' questions added')}
+  function importQuestions(){const lines=$('importQuestionText').value.split(/\n+/).map(x=>x.trim()).filter(Boolean);if(!lines.length){toast('Add at least one question');return}const type=$('importQuestionType').value;const fields=lines.map(line=>newField(type,line,builderCategoryId));insertFieldsAfterActive(fields,true);closeImport();toast(lines.length+' questions added')}
 
   $('sideAwardName').textContent=award.name||'Untitled Award';$('crumbAward').textContent=award.name||'Untitled Award';$('publicAwardName').textContent=award.name||'Untitled Award';$('miniAwardName').textContent=award.name||'Untitled Award';$('formTitle').value=form.title;$('formIntro').value=form.intro;$('formCategoryMode').value=form.categoryMode;
 
   $('saveBtn').addEventListener('click',()=>save(false));$('formTitle').addEventListener('input',renderMiniPreview);$('formIntro').addEventListener('input',renderMiniPreview);$('formCategoryMode').addEventListener('change',()=>save(true));
+  $('builderCategorySelect').addEventListener('change',e=>{builderCategoryId=e.target.value||'';try{localStorage.setItem(builderCategoryKey,builderCategoryId)}catch(err){}activeFieldId=builderFields()[0]?.id||null;updateUI();requestAnimationFrame(()=>$('questionWorkspace')?.scrollIntoView({behavior:'smooth',block:'start'}));});
+  $('builderCategoryPreviewBtn').addEventListener('click',openPreview);
   $('addQuestionBtn').addEventListener('click',()=>addFieldAfterActive('short'));$('emptyGenerateBtn').addEventListener('click',()=>{$('generateFormBtn').click()});
 
   $('questionList').addEventListener('click',e=>{
@@ -698,6 +755,7 @@
     if(action==='edit')openField(id);
     if(action==='duplicate')duplicateField(id);
     if(action==='delete')deleteField(id);
+    if(action==='scope')openField(id);
     if(action==='toggle-required'){f.required=!f.required;save(true);toast(f.required?'Question marked required':'Question made optional')}
     if(action==='add-option'){f.options=Array.isArray(f.options)?f.options:[];f.options.push('New option');save(true)}
     if(action==='remove-option'){const idx=Number(b.dataset.optionIndex);if(Array.isArray(f.options)&&f.options.length>1){f.options.splice(idx,1);save(true)}else toast('Keep at least one option')}
