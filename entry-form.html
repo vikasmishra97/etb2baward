@@ -128,7 +128,11 @@
                 <div class="section-title ef-title-inline"><h2>Form questions</h2><span class="cat-count-pill" id="questionCount">0</span></div>
                 <p class="ef-subcopy" id="builderQuestionHelp">Click any question to edit it. New fields are automatically added to the category selected above.</p>
               </div>
-              <button class="btn primary" id="addQuestionBtn">+ Add question</button>
+              <div class="ef-builder-head-actions">
+                <button class="ef-view-btn" type="button" id="collapseSectionsBtn">Collapse all</button>
+                <button class="ef-view-btn" type="button" id="expandSectionsBtn">Expand all</button>
+                <button class="btn primary" id="addQuestionBtn">+ Add question</button>
+              </div>
             </div>
 
             <div class="ef-builder-note"><span>Tip</span> Use <b>All categories / Shared form</b> for common fields. Select a category above to add only the questions or sections that category needs.</div>
@@ -471,6 +475,14 @@
   let builderCategoryId=(()=>{try{return localStorage.getItem(builderCategoryKey)||''}catch(e){return ''}})();
   if(builderCategoryId&&!categories.some(c=>c.id===builderCategoryId))builderCategoryId='';
   let activeFieldId=form.fields[0]?.id||null;
+  const collapsedSectionKey='etb2b_awards_entry_form_collapsed_sections_'+awardSlug;
+  let savedCollapsedSections=null;
+  try{savedCollapsedSections=JSON.parse(localStorage.getItem(collapsedSectionKey)||'null')}catch(e){savedCollapsedSections=null}
+  let collapsedSections=new Set(Array.isArray(savedCollapsedSections)?savedCollapsedSections:[]);
+  if(!Array.isArray(savedCollapsedSections)&&form.fields.filter(isQuestion).length>20){
+    const sectionIds=form.fields.filter(f=>f.type==='section').map(f=>f.id);
+    sectionIds.slice(1).forEach(id=>collapsedSections.add(id));
+  }
 
   function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1900)}
   function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
@@ -547,6 +559,121 @@
     return '<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-main"><div class="ef-section-kicker">'+esc(typeMeta[f.type].name.toUpperCase())+'</div><input class="ef-inline-question ef-inline-section-title" data-inline-label value="'+esc(f.label)+'" aria-label="Title"><textarea class="ef-inline-help-edit" data-inline-help placeholder="Description (optional)">'+esc(f.help||'')+'</textarea></div><div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button><button type="button" class="ef-card-scope-btn" data-action="scope" title="Choose categories">'+esc(scopeLabel(f))+'</button></div>';
   }
 
+  function sectionIdForField(fieldId){
+    let current='';
+    for(const f of form.fields){
+      if(f.type==='section')current=f.id;
+      if(f.id===fieldId)return f.type==='section'?f.id:current;
+    }
+    return '';
+  }
+
+  function persistCollapsedSections(){
+    try{localStorage.setItem(collapsedSectionKey,JSON.stringify([...collapsedSections]))}catch(e){}
+  }
+
+  function allSectionGroups(){
+    const groups=[];
+    let current={section:null,items:[]};
+    form.fields.forEach(f=>{
+      if(f.type==='section'){
+        if(current.section||current.items.length)groups.push(current);
+        current={section:f,items:[]};
+      }else current.items.push(f);
+    });
+    if(current.section||current.items.length)groups.push(current);
+    return groups;
+  }
+
+  function builderSectionGroups(){
+    return allSectionGroups().map((group,index)=>({
+      index,
+      section:group.section&&fieldVisibleInBuilder(group.section)?group.section:null,
+      sourceSection:group.section,
+      items:group.items.filter(fieldVisibleInBuilder)
+    })).filter(group=>group.section||group.items.length);
+  }
+
+  function compactFieldMeta(f){
+    const bits=[typeMeta[f.type]?.name||'Field'];
+    if(f.required)bits.push('Required');
+    if(f.limit)bits.push('Max '+displayLimit(f));
+    if(f.logic&&f.logic.enabled)bits.push('Conditional');
+    return bits.join('  -  ');
+  }
+
+  function compactRowMarkup(f){
+    return '<div class="ef-card-drag" title="Drag to reorder">...</div>'+
+      '<div class="ef-row-type" aria-hidden="true">'+esc(typeMeta[f.type]?.icon||'Aa')+'</div>'+
+      '<div class="ef-row-copy"><div class="ef-row-title">'+esc(f.label)+(f.required?'<em>*</em>':'')+'</div><div class="ef-row-meta">'+esc(compactFieldMeta(f))+'</div></div>'+
+      '<div class="ef-row-scope">'+scopeBadge(f)+'</div>'+
+      '<div class="ef-row-actions"><button type="button" class="ef-row-copy-btn" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" class="ef-row-delete-btn" data-action="delete" title="Delete">&#128465;</button></div>';
+  }
+
+  function compactContentMarkup(f){
+    return '<div class="ef-card-drag" title="Drag to reorder">...</div>'+
+      '<div class="ef-row-type content" aria-hidden="true">'+esc(typeMeta[f.type]?.icon||'Tt')+'</div>'+
+      '<div class="ef-row-copy"><div class="ef-row-title">'+esc(f.label||typeMeta[f.type]?.name)+'</div><div class="ef-row-meta">'+esc(typeMeta[f.type]?.name||'Content block')+(f.help?'  -  '+esc(f.help):'')+'</div></div>'+
+      '<div class="ef-row-scope">'+scopeBadge(f)+'</div>'+
+      '<div class="ef-row-actions"><button type="button" class="ef-row-copy-btn" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" class="ef-row-delete-btn" data-action="delete" title="Delete">&#128465;</button></div>';
+  }
+
+  function appendBuilderField(container,f){
+    const active=f.id===activeFieldId;
+    const el=document.createElement('div');
+    el.dataset.id=f.id;
+    if(contentTypeKeys.includes(f.type)){
+      el.className='ef-gform-card ef-gform-content ef-content-'+f.type+(active?' active':' ef-gform-compact ef-content-row');
+      el.innerHTML=active?renderContentCard(f,true):compactContentMarkup(f);
+      container.appendChild(el);bindDrag(el);return;
+    }
+    if(!active){
+      el.className='ef-gform-card ef-gform-compact ef-question-row';
+      el.innerHTML=compactRowMarkup(f);
+      container.appendChild(el);bindDrag(el);return;
+    }
+    const meta=[scopeLabel(f)];
+    if(f.limit)meta.push('Max '+displayLimit(f));
+    if(f.logic&&f.logic.enabled)meta.push('Conditional');
+    el.className='ef-gform-card active';
+    el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-head"><div class="ef-card-question"><input class="ef-inline-question" data-inline-label value="'+esc(f.label)+'" aria-label="Question text"><small>'+esc(f.help||typeMeta[f.type]?.hint||'')+'</small></div><button type="button" class="ef-card-media-btn" data-action="question-image" title="Attach image">&#9638;</button><div class="ef-card-type"><span>'+esc(typeMeta[f.type]?.icon||'Aa')+'</span><select data-inline-type aria-label="Question type">'+typeSelectOptions(f.type)+'</select></div></div><div class="ef-card-answer">'+activeAnswerPreview(f)+'</div>'+(f.mediaUrl?'<div class="ef-question-media"><img src="'+esc(f.mediaUrl)+'" alt="Question image"></div>':'')+(meta.length?'<div class="ef-card-meta">'+meta.map(m=>'<span>'+esc(m)+'</span>').join('')+'</div>':'')+'<div class="ef-card-footer"><button type="button" class="ef-card-copy" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button><button type="button" class="ef-card-scope-btn" data-action="scope" title="Choose categories">'+esc(scopeLabel(f))+'</button><div class="ef-card-footer-divider"></div><button type="button" class="ef-required-inline '+(f.required?'active':'')+'" data-action="toggle-required"><b>Required</b><span class="ef-switch"><i></i></span></button><button type="button" class="ef-more-settings" data-action="edit" title="More settings">&#8942;</button></div>';
+    container.appendChild(el);bindDrag(el);
+  }
+
+  function renderSectionGroup(list,group,displayIndex){
+    const section=group.section;
+    if(!section){
+      const shell=document.createElement('div');
+      shell.className='ef-section-group ef-section-ungrouped';
+      shell.innerHTML='<div class="ef-section-summary ef-general-summary"><div class="ef-section-heading"><span>GENERAL</span><h3>General fields</h3><p>Fields that are not currently inside a visible section.</p></div><div class="ef-section-stats"><span>'+group.items.filter(isQuestion).length+' questions</span></div></div><div class="ef-section-fields"></div>';
+      list.appendChild(shell);
+      const body=shell.querySelector('.ef-section-fields');
+      group.items.forEach(f=>appendBuilderField(body,f));
+      return;
+    }
+
+    const sectionId=section.id;
+    const collapsed=collapsedSections.has(sectionId);
+    const questionItems=group.items.filter(isQuestion);
+    const required=questionItems.filter(f=>f.required).length;
+    const activeInSection=activeFieldId===sectionId||group.items.some(f=>f.id===activeFieldId);
+    const shell=document.createElement('div');
+    shell.className='ef-section-group'+(collapsed?' collapsed':'')+(activeInSection?' has-active':'');
+    shell.dataset.sectionId=sectionId;
+    const summary=document.createElement('div');
+    summary.className='ef-section-summary'+(activeFieldId===sectionId?' active':'');
+    summary.dataset.id=sectionId;
+    summary.innerHTML='<div class="ef-card-drag ef-section-drag" title="Drag section">...</div><button type="button" class="ef-section-toggle" data-action="toggle-section" title="'+(collapsed?'Expand section':'Collapse section')+'"><span>'+ (collapsed?'&#8250;':'&#8964;') +'</span></button><div class="ef-section-heading"><span>SECTION '+displayIndex+'</span><h3>'+esc(section.label||'Untitled section')+'</h3><p>'+esc(section.help||'Click a field below to edit it.')+'</p></div><div class="ef-section-stats"><span>'+questionItems.length+' question'+(questionItems.length===1?'':'s')+'</span><span>'+required+' required</span>'+scopeBadge(section)+'</div><div class="ef-section-actions"><button type="button" data-action="edit">Edit section</button></div>';
+    shell.appendChild(summary);
+    const body=document.createElement('div');
+    body.className='ef-section-fields';
+    if(collapsed)body.hidden=true;
+    shell.appendChild(body);
+    list.appendChild(shell);
+    bindDrag(summary);
+    if(!collapsed)group.items.forEach(f=>appendBuilderField(body,f));
+  }
+
   function renderQuestions(){
     const list=$('questionList');
     list.innerHTML='';
@@ -554,26 +681,11 @@
     $('formEmpty').hidden=visibleFields.length>0;
     $('questionCount').textContent=builderQuestionFields().length;
     if(activeFieldId&&!visibleFields.some(f=>f.id===activeFieldId))activeFieldId=visibleFields[0]?.id||null;
-    visibleFields.forEach(f=>{
-      const active=f.id===activeFieldId;
-      const el=document.createElement('div');
-      el.dataset.id=f.id;
-      if(contentTypeKeys.includes(f.type)){
-        el.className='ef-gform-card ef-gform-content ef-content-'+f.type+(active?' active':' ef-gform-compact');
-        el.innerHTML=renderContentCard(f,active);
-        list.appendChild(el);bindDrag(el);return;
-      }
-      if(!active){
-        el.className='ef-gform-card ef-gform-compact';
-        el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-compact-main"><div class="ef-compact-top">'+scopeBadge(f)+'</div><div class="ef-compact-question">'+esc(f.label)+(f.required?'<em>*</em>':'')+'</div>'+compactAnswerPreview(f)+'</div>';
-        list.appendChild(el);bindDrag(el);return;
-      }
-      const meta=[scopeLabel(f)];
-      if(f.limit)meta.push('Max '+displayLimit(f));
-      if(f.logic&&f.logic.enabled)meta.push('Conditional');
-      el.className='ef-gform-card active';
-      el.innerHTML='<div class="ef-card-drag" title="Drag to reorder">...</div><div class="ef-card-head"><div class="ef-card-question"><input class="ef-inline-question" data-inline-label value="'+esc(f.label)+'" aria-label="Question text"><small>'+esc(f.help||typeMeta[f.type]?.hint||'')+'</small></div><button type="button" class="ef-card-media-btn" data-action="question-image" title="Attach image">&#9638;</button><div class="ef-card-type"><span>'+esc(typeMeta[f.type]?.icon||'Aa')+'</span><select data-inline-type aria-label="Question type">'+typeSelectOptions(f.type)+'</select></div></div><div class="ef-card-answer">'+activeAnswerPreview(f)+'</div>'+(f.mediaUrl?'<div class="ef-question-media"><img src="'+esc(f.mediaUrl)+'" alt="Question image"></div>':'')+(meta.length?'<div class="ef-card-meta">'+meta.map(m=>'<span>'+esc(m)+'</span>').join('')+'</div>':'')+'<div class="ef-card-footer"><button type="button" data-action="duplicate" title="Duplicate">&#10697;</button><button type="button" data-action="delete" class="ef-card-delete" title="Delete">&#128465;</button><button type="button" class="ef-card-scope-btn" data-action="scope" title="Choose categories">'+esc(scopeLabel(f))+'</button><div class="ef-card-footer-divider"></div><button type="button" class="ef-required-inline '+(f.required?'active':'')+'" data-action="toggle-required"><b>Required</b><span class="ef-switch"><i></i></span></button><button type="button" class="ef-more-settings" data-action="edit" title="More settings">&#8942;</button></div>';
-      list.appendChild(el);bindDrag(el);
+    const groups=builderSectionGroups();
+    let sectionNumber=0;
+    groups.forEach(group=>{
+      if(group.section)sectionNumber++;
+      renderSectionGroup(list,group,group.section?sectionNumber:0);
     });
     requestAnimationFrame(positionToolbar);
   }
@@ -581,11 +693,13 @@
   function positionToolbar(){
     const toolbar=$('questionToolbar');
     const workspace=$('questionWorkspace');
-    const active=workspace&&workspace.querySelector('.ef-gform-card.active');
+    const active=workspace&&workspace.querySelector('.ef-gform-card.active, .ef-section-summary.active');
     if(!toolbar||!workspace||!active){if(toolbar)toolbar.hidden=true;return}
     toolbar.hidden=false;
-    const top=active.offsetTop+Math.max(2,Math.min(16,active.offsetHeight/2-70));
-    toolbar.style.top=top+'px';
+    const workspaceRect=workspace.getBoundingClientRect();
+    const activeRect=active.getBoundingClientRect();
+    const top=(activeRect.top-workspaceRect.top)+Math.max(4,Math.min(18,activeRect.height/2-76));
+    toolbar.style.top=Math.max(0,top)+'px';
   }
 
   function bindDrag(el){
@@ -601,6 +715,8 @@
 
   function setActiveField(id,scroll){
     if(!form.fields.some(f=>f.id===id))return;
+    const sectionId=sectionIdForField(id);
+    if(sectionId&&collapsedSections.has(sectionId)){collapsedSections.delete(sectionId);persistCollapsedSections()}
     activeFieldId=id;renderQuestions();
     if(scroll)requestAnimationFrame(()=>{const el=$('questionList').querySelector('[data-id="'+CSS.escape(id)+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'})});
   }
@@ -622,6 +738,8 @@
     if(idx<0)idx=form.fields.length-1;
     form.fields.splice(idx+1,0,...fields);
     activeFieldId=fields[fields.length-1].id;
+    const sectionId=sectionIdForField(activeFieldId);
+    if(sectionId){collapsedSections.delete(sectionId);persistCollapsedSections()}
     save(true);
     if(scroll)requestAnimationFrame(()=>{const el=$('questionList').querySelector('[data-id="'+CSS.escape(activeFieldId)+'"]');if(el)el.scrollIntoView({behavior:'smooth',block:'center'})});
   }
@@ -745,6 +863,8 @@
   $('saveBtn').addEventListener('click',()=>save(false));$('formTitle').addEventListener('input',renderMiniPreview);$('formIntro').addEventListener('input',renderMiniPreview);$('formCategoryMode').addEventListener('change',()=>save(true));
   $('builderCategorySelect').addEventListener('change',e=>{builderCategoryId=e.target.value||'';try{localStorage.setItem(builderCategoryKey,builderCategoryId)}catch(err){}activeFieldId=builderFields()[0]?.id||null;updateUI();requestAnimationFrame(()=>$('questionWorkspace')?.scrollIntoView({behavior:'smooth',block:'start'}));});
   $('builderCategoryPreviewBtn').addEventListener('click',openPreview);
+  $('collapseSectionsBtn').addEventListener('click',()=>{builderSectionGroups().forEach(g=>{if(g.section)collapsedSections.add(g.section.id)});persistCollapsedSections();renderQuestions();toast('Sections collapsed')});
+  $('expandSectionsBtn').addEventListener('click',()=>{collapsedSections.clear();persistCollapsedSections();renderQuestions();toast('Sections expanded')});
   $('addQuestionBtn').addEventListener('click',()=>addFieldAfterActive('short'));$('emptyGenerateBtn').addEventListener('click',()=>{$('generateFormBtn').click()});
 
   $('questionList').addEventListener('click',e=>{
@@ -752,6 +872,10 @@
     const b=e.target.closest('[data-action]');
     if(!b){if(id!==activeFieldId)setActiveField(id,false);return}
     const action=b.dataset.action;
+    if(action==='toggle-section'){
+      if(collapsedSections.has(id))collapsedSections.delete(id);else collapsedSections.add(id);
+      persistCollapsedSections();renderQuestions();return;
+    }
     if(action==='edit')openField(id);
     if(action==='duplicate')duplicateField(id);
     if(action==='delete')deleteField(id);
