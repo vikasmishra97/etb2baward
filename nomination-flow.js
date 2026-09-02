@@ -14,6 +14,7 @@
   const sharedKey='etb2b_public_shared_answers_'+slug;
   const paymentKey='etb2b_public_payment_'+slug;
   const checkoutKey='etb2b_public_checkout_selection_'+slug;
+  const nominationReportKey='etb2b_public_nomination_reports_'+slug;
 
   const esc=s=>String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]));
   const symbols={INR:'₹',USD:'$',AED:'د.إ',GBP:'£',SGD:'S$'};
@@ -46,6 +47,20 @@
   function semantic(f){return String(f.label||f.id||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
   function visibleFields(catId){return (form.fields||[]).filter(f=>f.visibility!=='selected'||!(f.categories||[]).length||(f.categories||[]).map(String).includes(String(catId)))}
   function answerKey(catId){return 'etb2b_public_nomination_answers_'+slug+'_'+catId}
+
+  function reportValue(v){return Array.isArray(v)?v.join(', '):String(v??'')}
+  function upsertNominationReport(catId,answers,status,extra={}){
+    const c=cat(catId);let rows=read(nominationReportKey,[]);if(!Array.isArray(rows))rows=[];
+    const fields=visibleFields(catId).filter(f=>f.type!=='section').map(f=>({id:String(f.id||''),label:f.label||'',value:reportValue((answers||{})[semantic(f)])}));
+    const base={
+      id:'NREP-'+slug+'-'+String(catId),award:award.name||'ETB2B Awards',awardSlug:slug,categoryId:String(catId),category:c.name||'Category',categoryGroup:c.group||'',fee:catFee(c),
+      entrantName:profile.name||'',email:profile.email||'',mobile:profile.mobile||'',company:profile.company||'',designation:profile.designation||'',
+      registrationSource:profile.captureLabel||'Nominate Now',status:status||'Draft',answers:Object.assign({},answers||{}),fields,updatedAt:new Date().toISOString()
+    };
+    const ix=rows.findIndex(r=>r&&String(r.categoryId)===String(catId)&&String(r.email||'').toLowerCase()===String(profile.email||'').toLowerCase());
+    const row=Object.assign({},ix>=0?rows[ix]:{},base,extra);if(!row.createdAt)row.createdAt=new Date().toISOString();
+    if(ix>=0)rows[ix]=row;else rows.push(row);write(nominationReportKey,rows);return row;
+  }
 
   function syncBucket(){
     const prior=Array.isArray(bucket.items)?bucket.items:[];
@@ -245,6 +260,7 @@
       if(complete&&!validate(answers)){toast('Complete the required questions');return}
       saved={categoryId:String(catId),answers,completed:complete,updatedAt:new Date().toISOString()};
       write(answerKey(catId),saved);
+      upsertNominationReport(catId,answers,complete?'Form complete':'Draft saved',{formCompleted:!!complete,formCompletedAt:complete?new Date().toISOString():''});
       if(settings.autoImportAnswers!==false){
         fields.filter(f=>f.type!=='section'&&f.type!=='file'&&!isProfileField(f)).forEach(f=>{
           const key=semantic(f),v=answers[key];
@@ -298,7 +314,9 @@
       payable.forEach(x=>{
         const nominationId='ET-'+Date.now().toString().slice(-6)+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
         nominationIds[String(x.categoryId)]=nominationId;
-        if(!starters.some(s=>s.paymentId===payment.id&&s.category===x.name))starters.push({id:nominationId,award:award.name,category:x.name,name:profile.company||profile.name||'Entrant',email:profile.email||'',status:'Submitted',paymentId:payment.id,amount:x.fee,createdAt:new Date().toISOString()});
+        if(!starters.some(s=>s.paymentId===payment.id&&s.category===x.name))starters.push({id:nominationId,award:award.name,slug,categoryId:String(x.categoryId),category:x.name,name:profile.company||profile.name||'Entrant',entrantName:profile.name||'',company:profile.company||'',email:profile.email||'',mobile:profile.mobile||'',designation:profile.designation||'',status:'Submitted',paymentId:payment.id,amount:x.fee,createdAt:new Date().toISOString()});
+        const savedAnswers=read(answerKey(x.categoryId),{}).answers||{};
+        upsertNominationReport(x.categoryId,savedAnswers,'Submitted',{formCompleted:true,paid:true,paymentStatus:'Paid',paymentId:payment.id,paymentMethod:method,amount:x.fee,taxPercent,nominationId,submittedAt:new Date().toISOString()});
       });
       write('etb2b_public_nomination_starters',starters);
       bucket.items=bucket.items.map(x=>paidIds.has(String(x.categoryId))?Object.assign({},x,{status:'Submitted',submitted:true,completed:true,paymentId:payment.id,nominationId:nominationIds[String(x.categoryId)],submittedAt:new Date().toISOString()}):x);

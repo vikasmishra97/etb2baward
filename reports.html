@@ -194,22 +194,66 @@
       </section>
 
       <section class="rp-view" data-view="acquisition">
-        <div class="rp-kpis rp-kpis-inline rp-registration-kpis">
-          <article class="rp-kpi"><small>Website registrations</small><strong id="liveRegTotal">0</strong><em>captured from the public form</em></article>
-          <article class="rp-kpi"><small>Registered today</small><strong id="liveRegToday">0</strong><em>local browser prototype data</em></article>
-          <article class="rp-kpi"><small>Last 7 days</small><strong id="liveRegWeek">0</strong><em>recent interest captured</em></article>
-          <article class="rp-kpi"><small>Profiles with email</small><strong id="liveRegEmail">0%</strong><em>contactability of captured leads</em></article>
+        <div class="rp-report-console">
+          <div class="rp-report-console-copy">
+            <small>LIVE CAPTURE CENTRE</small>
+            <h2>Registration & nomination reports</h2>
+            <p>Track every lead captured before nominations open and every category form completed after the nomination journey begins.</p>
+          </div>
+          <div class="rp-report-type-switch" role="tablist" aria-label="Report type">
+            <button class="active" type="button" data-report-type="registrations">Registration leads</button>
+            <button type="button" data-report-type="nominations">Nomination entries</button>
+          </div>
         </div>
-        <article class="card rp-card rp-registration-card">
-          <div class="rp-card-head">
-            <div><small>LIVE WEBSITE REGISTRATIONS</small><h2>People captured from your registration form</h2><p>Every successful Express Interest submission on the public award website appears here automatically.</p></div>
+
+        <div class="rp-kpis rp-kpis-inline rp-registration-kpis" data-report-panel="registrations">
+          <article class="rp-kpi"><small>Total registrations</small><strong id="liveRegTotal">0</strong><em>all website capture buttons</em></article>
+          <article class="rp-kpi"><small>Express interest</small><strong id="liveRegInterest">0</strong><em>before / after nomination window</em></article>
+          <article class="rp-kpi"><small>Nominate Now</small><strong id="liveRegNominate">0</strong><em>nomination registrations</em></article>
+          <article class="rp-kpi"><small>Featured buttons</small><strong id="liveRegFeatured">0</strong><em>custom CTA registrations</em></article>
+        </div>
+        <article class="card rp-card rp-registration-card" data-report-panel="registrations">
+          <div class="rp-card-head rp-report-card-head">
+            <div><small>INITIAL REGISTRATION REPORT</small><h2>People captured from the public registration form</h2><p>Express Interest, Nominate Now and every active Featured Button using the registration form are captured here with their exact CTA source.</p></div>
             <button class="text-btn" id="exportRegistrations">Export registrations CSV</button>
+          </div>
+          <div class="rp-report-toolbar">
+            <div class="rp-filter-group" id="registrationSourceFilters" aria-label="Registration source filters"></div>
+            <label class="rp-report-search"><span>Search</span><input id="registrationSearch" type="search" placeholder="Name, email, company, mobile..."></label>
           </div>
           <div class="rp-registration-meta"><span><i class="good"></i><b id="regCaptureStatus">Capture is active</b></span><small id="regLastCaptured">No registrations captured yet</small></div>
           <div class="table-wrap">
             <table class="table rp-table rp-registration-table">
-              <thead><tr><th>Registered</th><th>Name</th><th>Work email</th><th>Mobile</th><th>Company</th><th>Designation</th><th>Source</th></tr></thead>
+              <thead><tr><th>Registered</th><th>CTA / Type</th><th>Name</th><th>Work email</th><th>Mobile</th><th>Company</th><th>Designation</th><th>Page</th></tr></thead>
               <tbody id="registrationTableBody"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <div class="rp-kpis rp-kpis-inline rp-registration-kpis" data-report-panel="nominations" hidden>
+          <article class="rp-kpi"><small>Total category forms</small><strong id="nomReportTotal">0</strong><em>draft + completed + submitted</em></article>
+          <article class="rp-kpi"><small>Form completed</small><strong id="nomReportComplete">0</strong><em>ready for payment</em></article>
+          <article class="rp-kpi"><small>Paid & submitted</small><strong id="nomReportPaid">0</strong><em>fully submitted nominations</em></article>
+          <article class="rp-kpi"><small>Revenue captured</small><strong id="nomReportRevenue">₹0</strong><em>paid nomination fees</em></article>
+        </div>
+        <article class="card rp-card rp-registration-card rp-nomination-report-card" data-report-panel="nominations" hidden>
+          <div class="rp-card-head rp-report-card-head">
+            <div><small>NOMINATION FORM REPORT</small><h2>Category-wise nomination submissions</h2><p>See entrant profile, category, form status, payment status, nomination ID and the complete answers captured from each category form.</p></div>
+            <button class="text-btn" id="exportNominations">Export nominations CSV</button>
+          </div>
+          <div class="rp-report-toolbar">
+            <div class="rp-filter-group" id="nominationStatusFilters">
+              <button class="active" type="button" data-nom-status="all">All</button>
+              <button type="button" data-nom-status="draft">Draft</button>
+              <button type="button" data-nom-status="complete">Form completed</button>
+              <button type="button" data-nom-status="submitted">Paid & submitted</button>
+            </div>
+            <label class="rp-report-search"><span>Search</span><input id="nominationSearch" type="search" placeholder="Entrant, company, category, nomination ID..."></label>
+          </div>
+          <div class="table-wrap">
+            <table class="table rp-table rp-registration-table rp-nomination-table">
+              <thead><tr><th>Updated</th><th>Entrant</th><th>Category</th><th>Form</th><th>Payment</th><th>Nomination ID</th><th>Fee</th><th>Answers</th></tr></thead>
+              <tbody id="nominationReportBody"></tbody>
             </table>
           </div>
         </article>

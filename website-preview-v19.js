@@ -30,13 +30,15 @@
   function toast(msg){const t=document.getElementById('publicToast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),2000)}
   function saveInterest(form,mode='interest'){
     const fd=new FormData(form);const lead=Object.fromEntries(fd.entries());
+    const captureLabel=String(form.dataset.captureSource||'').trim()||(mode==='nominate'?'Nominate Now':'Express Interest');
+    const isPrimaryNomination=mode==='nominate'&&captureLabel.toLowerCase()==='nominate now';
     lead.id='REG-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
-    lead.createdAt=new Date().toISOString();lead.award=award.name;lead.awardSlug=slug;lead.slug=slug;lead.source='Public award website';lead.page=location.pathname||'/';lead.status='registered';
+    lead.createdAt=new Date().toISOString();lead.award=award.name;lead.awardSlug=slug;lead.slug=slug;lead.source='Public award website';lead.captureLabel=captureLabel;lead.captureType=isPrimaryNomination?'nomination':(captureLabel.toLowerCase()==='express interest'?'express_interest':'featured_button');lead.page=location.pathname||'/';lead.status='registered';
     const key='etb2b_awards_interest_'+slug;let rows=[];try{rows=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}if(!Array.isArray(rows))rows=[];rows.push(lead);localStorage.setItem(key,JSON.stringify(rows));
     let all=[];try{all=JSON.parse(localStorage.getItem('etb2b_awards_registrations')||'[]')}catch(e){}if(!Array.isArray(all))all=[];all.push(lead);localStorage.setItem('etb2b_awards_registrations',JSON.stringify(all));
     localStorage.setItem('etb2b_awards_last_registration',JSON.stringify(lead));
-    if(mode==='nominate'){
-      const profile={name:lead.name||'',email:lead.email||'',mobile:lead.mobile||'',company:lead.company||'',designation:lead.designation||'',registeredAt:lead.createdAt,source:'public_nominate'};
+    if(isPrimaryNomination){
+      const profile={name:lead.name||'',email:lead.email||'',mobile:lead.mobile||'',company:lead.company||'',designation:lead.designation||'',registeredAt:lead.createdAt,source:'public_nominate',captureLabel:lead.captureLabel};
       Object.keys(lead).filter(k=>k.startsWith('custom_')).forEach(k=>profile[k]=lead[k]);
       localStorage.setItem('etb2b_public_nominee_profile_'+slug,JSON.stringify(profile));
       let regs=[];try{regs=JSON.parse(localStorage.getItem('etb2b_public_nomination_registrations')||'[]')}catch(e){}if(!Array.isArray(regs))regs=[];
@@ -56,8 +58,8 @@
   }));
   document.querySelectorAll('[data-public-interest-form]').forEach(form=>form.addEventListener('submit',e=>{
     e.preventDefault();const mode=form.dataset.ctaMode;if(mode==='closed'){toast('Nominations are closed');return}
-    if(!form.reportValidity())return;saveInterest(form,mode);
-    if(mode==='nominate'){location.href='nominate.html';return}
+    if(!form.reportValidity())return;const lead=saveInterest(form,mode);
+    if(lead.captureType==='nomination'){location.href='nominate.html';return}
     location.href='thank-you.html';
   }));
 })();
