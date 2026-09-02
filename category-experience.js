@@ -11,7 +11,9 @@
   const selectionKey='etb2b_public_category_selection_'+slug;
   const bucketKey='etb2b_public_nomination_bucket_'+slug;
   const profileKey='etb2b_public_nominee_profile_'+slug;
+  const pricingKey='etb2b_awards_pricing_'+slug;
   const settings=Object.assign({selectionMode:'multiple',maxSelections:5,autoImportAnswers:true,aiFinder:true},read(settingsKey,{}));
+  let pricing=read(pricingKey,{});
   let cats=read(categoryKey,[]);
   let masters=read(masterKey,[]);
 
@@ -38,9 +40,18 @@
   const visibleMasters=masters.filter(m=>m.status!=='inactive'&&openCats.some(c=>String(c.masterId)===String(m.id)));
   const symbols={INR:'₹',USD:'$',AED:'د.إ',GBP:'£',SGD:'S$'};
   const baseFee=award.entryType==='free'?0:Number(award.baseFee||0);
-  const fee=c=>c.categoryType==='free'?0:(c.feeMode==='custom'||typeof c.fee!=='undefined'?Number(c.fee||0):baseFee);
-  const moneyFor=c=>{const sym=symbols[c?.currency||award.currency]||'₹';const n=fee(c||{});return n===0?'Free':sym+n.toLocaleString('en-IN')};
-  const moneyTotal=n=>{const sym=symbols[award.currency]||'₹';return Number(n||0)===0?'Free':sym+Number(n||0).toLocaleString('en-IN')};
+  function currentPricing(){ pricing=read(pricingKey,pricing||{}); return pricing||{}; }
+  const fee=c=>{
+    if(c?.categoryType==='free'||award.entryType==='free')return 0;
+    const cfg=currentPricing();
+    const ov=cfg.categoryOverrides&&cfg.categoryOverrides[String(c?.id)];
+    if(ov&&ov.enabled)return Math.max(0,Number(ov.fee||0));
+    if(Number.isFinite(Number(cfg.baseFee)))return Math.max(0,Number(cfg.baseFee||0));
+    return c?.feeMode==='custom'||typeof c?.fee!=='undefined'?Math.max(0,Number(c?.fee||0)):baseFee;
+  };
+  const pricingCurrency=()=>currentPricing().currency||award.currency||'INR';
+  const moneyFor=c=>{const sym=symbols[pricingCurrency()]||symbols[c?.currency||award.currency]||'₹';const n=fee(c||{});return n===0?'Free':sym+n.toLocaleString('en-IN')};
+  const moneyTotal=n=>{const sym=symbols[pricingCurrency()]||'₹';return Number(n||0)===0?'Free':sym+Number(n||0).toLocaleString('en-IN')};
   const masterFor=c=>masters.find(m=>String(m.id)===String(c.masterId))||masters.find(m=>m.name===c.group)||{id:'general',name:c.group||'General Awards',description:''};
   const areaLabel=v=>v==='national'?'National only':v==='international'?'International only':'National + International';
 
@@ -204,5 +215,8 @@
   document.getElementById('detailSelectBtn').addEventListener('click',()=>{if(!detailCat)return;addOrToggle(detailCat.id);openDetail(detailCat.id)});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();pendingCategoryId='';closeEntrantDetails()}});
   if(settings.aiFinder===false)document.getElementById('categoryAiSection').hidden=true;
+  window.addEventListener('storage',e=>{
+    if(e.key===pricingKey){pricing=read(pricingKey,{});renderCatalog();renderDock();if(detailCat)openDetail(detailCat.id)}
+  });
   renderHero();renderRail();renderCatalog();renderDock();renderJourney();
 })();
