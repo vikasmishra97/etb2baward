@@ -58,7 +58,6 @@
         </div>
       </div>
 
-      <div class="stagebar"><div class="stage active">BUILD</div><div class="stage">GROW</div><div class="stage">DECIDE</div><div class="stage">CELEBRATE</div></div>
 
       <nav class="build-progress" aria-label="Award setup progress"><a class="build-progress-step done" href="create-award.html"><span class="build-progress-num">✓</span><span class="build-progress-copy"><b>Award basics</b><small>Complete</small></span></a><i class="build-progress-line" aria-hidden="true"></i><a class="build-progress-step done" href="website.html"><span class="build-progress-num">✓</span><span class="build-progress-copy"><b>Website</b><small>Complete</small></span></a><i class="build-progress-line" aria-hidden="true"></i><a class="build-progress-step done" href="categories.html"><span class="build-progress-num">✓</span><span class="build-progress-copy"><b>Categories</b><small>Complete</small></span></a><i class="build-progress-line" aria-hidden="true"></i><a class="build-progress-step done" href="entry-form.html"><span class="build-progress-num">✓</span><span class="build-progress-copy"><b>Entry Form</b><small>Complete</small></span></a><i class="build-progress-line" aria-hidden="true"></i><div class="build-progress-step active" aria-current="step"><span class="build-progress-num">5</span><span class="build-progress-copy"><b>Pricing</b><small>You're here</small></span></div></nav>
 
@@ -190,20 +189,24 @@
                 <div class="pr-bulk-top">
                   <div>
                     <span class="pr-bulk-kicker">BULK UPDATE</span>
-                    <b>Set one fee for multiple categories</b>
-                    <small>Select the categories you want to update, enter one amount, then apply it in one click.</small>
+                    <b>Update multiple category fees</b>
+                    <small>Search categories, select the ones you need, then apply one amount to all selected categories.</small>
                   </div>
                   <div class="pr-bulk-count" id="bulkSelectedCount">0 selected</div>
                 </div>
+                <div class="pr-category-search-wrap">
+                  <span aria-hidden="true">⌕</span>
+                  <input id="categoryPricingSearch" type="search" autocomplete="off" placeholder="Search categories by name…" aria-label="Search categories">
+                  <button type="button" id="clearCategorySearch" aria-label="Clear category search" hidden>×</button>
+                </div>
                 <div class="pr-bulk-actions">
-                  <label class="pr-select-all"><input type="checkbox" id="selectAllCategories"> <span>Select all categories</span></label>
+                  <label class="pr-select-all"><input type="checkbox" id="selectAllCategories"> <span>Select visible categories</span></label>
                   <div class="pr-bulk-money">
                     <span class="currencyMirror">₹</span>
                     <input id="bulkCategoryFee" type="number" min="0" step="1" placeholder="Enter amount">
                   </div>
-                  <button class="btn primary" id="applyBulkCategoryFee" type="button" disabled>Apply amount</button>
-                  <button class="btn secondary" id="applyBaseToSelected" type="button" disabled>Use base fee</button>
-                  <button class="pr-text-action" id="clearCategorySelection" type="button" disabled>Clear</button>
+                  <button class="btn primary" id="applyBulkCategoryFee" type="button" disabled>Apply to selected</button>
+                  <button class="pr-text-action" id="clearCategorySelection" type="button" disabled>Clear selection</button>
                 </div>
               </div>
               <div class="pr-category-list-tools">
@@ -387,6 +390,7 @@
   };
   let appliedPromoId=null,editingPromoId=null;
   const selectedCategoryIds=new Set();
+  let categoryPricingQuery='';
 
   const saved=(()=>{try{return JSON.parse(localStorage.getItem(storeKey)||'null')}catch(e){return null}})();
   if(saved)deepAssign(state,saved);
@@ -437,16 +441,28 @@
     const count=selectedCategoryIds.size;
     const countEl=$('bulkSelectedCount');
     if(countEl) countEl.textContent=count+' selected';
-    const all=categories.length>0&&count===categories.length;
-    const some=count>0&&count<categories.length;
+    const q=categoryPricingQuery.trim().toLowerCase();
+    const visibleCategories=q?categories.filter(c=>String(c.name||'').toLowerCase().includes(q)):categories;
+    const visibleIds=visibleCategories.map(c=>String(c.id));
+    const visibleSelected=visibleIds.filter(id=>selectedCategoryIds.has(id)).length;
+    const all=visibleIds.length>0&&visibleSelected===visibleIds.length;
+    const some=visibleSelected>0&&visibleSelected<visibleIds.length;
     const selectAll=$('selectAllCategories');
-    if(selectAll){selectAll.checked=all;selectAll.indeterminate=some;}
-    ['applyBulkCategoryFee','applyBaseToSelected','clearCategorySelection'].forEach(id=>{const el=$(id);if(el)el.disabled=count===0});
+    if(selectAll){selectAll.checked=all;selectAll.indeterminate=some;selectAll.disabled=visibleIds.length===0;}
+    ['applyBulkCategoryFee','clearCategorySelection'].forEach(id=>{const el=$(id);if(el)el.disabled=count===0});
   }
   function renderCategoryPricing(){
-    $('categoryCountLabel').textContent=categories.length+' categor'+(categories.length===1?'y':'ies');$('categoryEmpty').hidden=categories.length>0;$('categoryPricingList').hidden=!categories.length;
+    const q=categoryPricingQuery.trim().toLowerCase();
+    const visibleCategories=q?categories.filter(c=>String(c.name||'').toLowerCase().includes(q)):categories;
+    $('categoryCountLabel').textContent=(q?visibleCategories.length+' of ':'')+categories.length+' categor'+(categories.length===1?'y':'ies');
+    $('categoryEmpty').hidden=categories.length>0;
+    $('categoryPricingList').hidden=!categories.length;
     [...selectedCategoryIds].forEach(id=>{if(!categories.some(c=>String(c.id)===String(id)))selectedCategoryIds.delete(id)});
-    $('categoryPricingList').innerHTML=categories.map(c=>{const id=String(c.id);const cfg=state.categoryOverrides[id]||{enabled:false,fee:state.baseFee};const selected=selectedCategoryIds.has(id);return `<div class="pr-category-row ${selected?'selected':''}"><div class="pr-cat-name"><label class="pr-cat-check"><input type="checkbox" data-cat-select="${esc(c.id)}" ${selected?'checked':''}><span></span></label><div><b>${esc(c.name)}</b><small>${c.status==='draft'?'Draft category':'Open category'}</small></div></div><div><button class="pr-rule-btn ${cfg.enabled?'active':''}" data-cat-toggle="${esc(c.id)}">${cfg.enabled?'Custom fee':'Use base fee'}</button></div><div class="pr-cat-fee ${cfg.enabled?'active':''}"><span>${esc(symbol())}</span><input type="number" min="0" value="${Number(cfg.fee||0)}" data-cat-fee="${esc(c.id)}" ${cfg.enabled?'':'disabled'}></div></div>`}).join('');
+    if(categories.length&&visibleCategories.length===0){
+      $('categoryPricingList').innerHTML='<div class="pr-search-empty"><b>No matching categories</b><span>Try another category name.</span></div>';
+      updateBulkPricingControls();return;
+    }
+    $('categoryPricingList').innerHTML=visibleCategories.map(c=>{const id=String(c.id);const cfg=state.categoryOverrides[id]||{enabled:false,fee:state.baseFee};const selected=selectedCategoryIds.has(id);return `<div class="pr-category-row ${selected?'selected':''}"><div class="pr-cat-name"><label class="pr-cat-check"><input type="checkbox" data-cat-select="${esc(c.id)}" ${selected?'checked':''}><span></span></label><div><b>${esc(c.name)}</b><small>${c.status==='draft'?'Draft category':'Open category'}</small></div></div><div><button class="pr-rule-btn ${cfg.enabled?'active':''}" data-cat-toggle="${esc(c.id)}">${cfg.enabled?'Custom fee':'Use base fee'}</button></div><div class="pr-cat-fee ${cfg.enabled?'active':''}"><span>${esc(symbol())}</span><input type="number" min="0" value="${Number(cfg.fee||0)}" data-cat-fee="${esc(c.id)}" ${cfg.enabled?'':'disabled'}></div></div>`}).join('');
     document.querySelectorAll('[data-cat-select]').forEach(box=>box.addEventListener('change',()=>{const id=String(box.dataset.catSelect);box.checked?selectedCategoryIds.add(id):selectedCategoryIds.delete(id);renderCategoryPricing()}));
     document.querySelectorAll('[data-cat-toggle]').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.catToggle;state.categoryOverrides[id].enabled=!state.categoryOverrides[id].enabled;persist();renderAll()}));
     document.querySelectorAll('[data-cat-fee]').forEach(inp=>inp.addEventListener('input',()=>{state.categoryOverrides[inp.dataset.catFee].fee=Math.max(0,Number(inp.value||0));persist();renderCheckout();renderProjection()}));
@@ -495,10 +511,11 @@
   bindValue('latePremium',v=>state.phases.late.premium=Math.max(0,Number(v||0)));bindValue('lateStart',v=>state.phases.late.start=v,'change');bindValue('lateEnd',v=>state.phases.late.end=v,'change');
   document.querySelectorAll('[data-toggle-phase]').forEach(b=>b.addEventListener('click',()=>{const ph=b.dataset.togglePhase;state.phases[ph].enabled=!state.phases[ph].enabled;persist();renderAll()}));
   $('resetPhases').addEventListener('click',()=>{state.phases.early.enabled=true;state.phases.early.discount=20;state.phases.late.enabled=true;state.phases.late.premium=10;state.phases.regular.price=state.baseFee;state.phases.early.start=award.openDate||state.phases.early.start;state.phases.early.end=dateAdd(state.phases.early.start,30);state.phases.regular.start=dateAdd(state.phases.early.end,1);state.phases.regular.end=award.closeDate||state.phases.regular.end;state.phases.late.start=dateAdd(state.phases.regular.end,1);state.phases.late.end=dateAdd(state.phases.regular.end,14);persist();renderAll();toast('Pricing phases reset')});
-  $('selectAllCategories').addEventListener('change',()=>{selectedCategoryIds.clear();if($('selectAllCategories').checked)categories.forEach(c=>selectedCategoryIds.add(String(c.id)));renderCategoryPricing()});
+  $('selectAllCategories').addEventListener('change',()=>{const q=categoryPricingQuery.trim().toLowerCase();const visible=q?categories.filter(c=>String(c.name||'').toLowerCase().includes(q)):categories;if($('selectAllCategories').checked)visible.forEach(c=>selectedCategoryIds.add(String(c.id)));else visible.forEach(c=>selectedCategoryIds.delete(String(c.id)));renderCategoryPricing()});
   $('clearCategorySelection').addEventListener('click',()=>{selectedCategoryIds.clear();renderCategoryPricing()});
+  $('categoryPricingSearch').addEventListener('input',()=>{categoryPricingQuery=$('categoryPricingSearch').value||'';$('clearCategorySearch').hidden=!categoryPricingQuery;renderCategoryPricing()});
+  $('clearCategorySearch').addEventListener('click',()=>{categoryPricingQuery='';$('categoryPricingSearch').value='';$('clearCategorySearch').hidden=true;renderCategoryPricing();$('categoryPricingSearch').focus()});
   $('applyBulkCategoryFee').addEventListener('click',()=>{const raw=$('bulkCategoryFee').value;const fee=Number(raw);if(!selectedCategoryIds.size){toast('Select at least one category');return}if(raw===''||!Number.isFinite(fee)||fee<0){toast('Enter a valid amount');$('bulkCategoryFee').focus();return}selectedCategoryIds.forEach(id=>{if(state.categoryOverrides[id]){state.categoryOverrides[id].enabled=true;state.categoryOverrides[id].fee=fee}});persist();renderAll();toast('Applied '+money(fee)+' to '+selectedCategoryIds.size+' categor'+(selectedCategoryIds.size===1?'y':'ies'))});
-  $('applyBaseToSelected').addEventListener('click',()=>{if(!selectedCategoryIds.size){toast('Select at least one category');return}selectedCategoryIds.forEach(id=>{if(state.categoryOverrides[id]){state.categoryOverrides[id].enabled=false;state.categoryOverrides[id].fee=state.baseFee}});persist();renderAll();toast('Selected categories now use the base fee')});
 
   $('multiToggle').addEventListener('click',()=>{state.multi.enabled=!state.multi.enabled;persist();renderAll()});bindValue('multiThreshold',v=>state.multi.threshold=Math.max(2,Number(v||2)));bindValue('multiDiscount',v=>state.multi.discount=Math.max(0,Number(v||0)));
   $('taxToggle').addEventListener('click',()=>{state.tax.enabled=!state.tax.enabled;persist();renderAll()});bindValue('taxLabel',v=>state.tax.label=v);bindValue('taxRate',v=>state.tax.rate=Math.max(0,Number(v||0)));bindValue('taxMode',v=>state.tax.mode=v,'change');

@@ -1098,3 +1098,39 @@ body.entry-form-page .ef-next-btn span{font-size:14px!important}
 .pr-projection small{font-size:13px}.pr-projection b{font-size:27px}
 @media(max-width:1100px){.pr-bulk-actions{grid-template-columns:1fr 1fr}.pr-bulk-actions .btn,.pr-text-action{width:100%}.pr-category-row{grid-template-columns:minmax(220px,1.4fr) minmax(140px,.8fr) minmax(150px,.7fr)}}
 @media(max-width:760px){.pr-page-head h1{font-size:28px}.pr-section-title h2{font-size:19px}.pr-bulk-top{display:grid}.pr-bulk-actions{grid-template-columns:1fr}.pr-category-head{display:none}.pr-category-row{grid-template-columns:1fr;gap:12px}.pr-cat-fee{max-width:none}.pr-bulk-count{justify-self:start}}
+
+
+/* Pricing v25: compact premium workflow, searchable bulk pricing */
+.pr-main .stagebar{display:none!important}
+.pr-main .build-progress{margin-top:6px;margin-bottom:16px}
+.pr-main .pr-copilot-banner{margin-bottom:14px;padding:14px 16px}
+.pr-main .pr-card{margin-bottom:12px;padding:20px}
+.pr-main .pr-section-title{margin-bottom:12px}
+.pr-main .pr-section-title>div{padding-left:42px}
+.pr-main .pr-phase-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pr-main .pr-phase{border-radius:16px;min-width:0;overflow:visible}
+.pr-main .pr-phase-head{grid-template-columns:34px 1fr auto;gap:9px;padding:12px;border-bottom:1px solid #eee8e2}
+.pr-main .pr-phase-icon{display:none}
+.pr-main .pr-phase-title{min-width:0}
+.pr-main .pr-phase-title b{font-size:15px}
+.pr-main .pr-phase-title small{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-main .pr-phase-head>.badge{grid-column:1/-1;justify-self:start;margin-left:43px;margin-top:-2px;font-size:11px}
+.pr-main .pr-phase-fields{grid-template-columns:1fr 1fr;gap:9px;padding:12px}
+.pr-main .pr-phase-fields .field:first-child{grid-column:1/-1}
+.pr-main .pr-phase-price{grid-column:1/-1;min-height:50px;padding:9px 11px}
+.pr-main .pr-phase-price small{font-size:11px}
+.pr-main .pr-phase-price b{font-size:17px}
+.pr-category-search-wrap{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:9px;min-height:46px;border:1px solid #d7dbe3;background:#fff;border-radius:12px;padding:0 10px;margin-bottom:11px}
+.pr-category-search-wrap>span{font-size:20px;color:#8a91a0;line-height:1;transform:rotate(-15deg)}
+.pr-category-search-wrap input{min-height:42px!important;border:0!important;outline:0!important;box-shadow:none!important;padding:0!important;background:transparent!important}
+.pr-category-search-wrap button{width:31px;height:31px;border:0;border-radius:8px;background:#f4f3f1;color:#707784;font-size:20px;cursor:pointer}
+.pr-category-search-wrap button[hidden]{display:none!important}
+.pr-bulk-pricing{padding:16px;margin-bottom:14px}
+.pr-bulk-top{margin-bottom:10px}
+.pr-bulk-actions{grid-template-columns:minmax(180px,1fr) minmax(150px,.7fr) auto auto}
+.pr-bulk-actions .btn{white-space:nowrap}
+.pr-search-empty{padding:28px 16px;border:1px dashed #d7dbe3;border-radius:14px;text-align:center;background:#fbfbfc}
+.pr-search-empty b{display:block;font-size:15px;color:#20242d}.pr-search-empty span{display:block;margin-top:4px;font-size:13px;color:#7b8190}
+@media(max-width:1180px){.pr-main .pr-phase-list{grid-template-columns:1fr}.pr-main .pr-phase-fields{grid-template-columns:repeat(4,minmax(0,1fr))}.pr-main .pr-phase-fields .field:first-child,.pr-main .pr-phase-price{grid-column:auto}.pr-main .pr-phase-head>.badge{grid-column:auto;margin:0;justify-self:end}.pr-main .pr-phase-head{grid-template-columns:34px 1fr auto}}
+@media(max-width:900px){.pr-bulk-actions{grid-template-columns:1fr 1fr}.pr-main .pr-phase-fields{grid-template-columns:1fr 1fr}.pr-main .pr-phase-fields .field:first-child,.pr-main .pr-phase-price{grid-column:1/-1}}
+@media(max-width:720px){.pr-bulk-actions{grid-template-columns:1fr}.pr-main .pr-phase-fields{grid-template-columns:1fr}.pr-main .pr-phase-fields .field:first-child,.pr-main .pr-phase-price{grid-column:auto}.pr-main .pr-phase-head{grid-template-columns:34px 1fr}.pr-main .pr-phase-head>.badge{grid-column:2;justify-self:start}}
