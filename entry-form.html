@@ -470,7 +470,7 @@
   let visibilityMode='all';
   const builderCategoryKey='etb2b_awards_entry_form_builder_category_'+awardSlug;
   let builderCategoryId=(()=>{try{return localStorage.getItem(builderCategoryKey)||''}catch(e){return ''}})();
-  if(builderCategoryId&&!categories.some(c=>c.id===builderCategoryId))builderCategoryId='';
+  if(builderCategoryId&&!categories.some(c=>String(c.id)===String(builderCategoryId)))builderCategoryId='';
   let activeFieldId=form.fields[0]?.id||null;
   const collapsedSectionKey='etb2b_awards_entry_form_collapsed_sections_'+awardSlug;
   let savedCollapsedSections=null;
@@ -485,8 +485,8 @@
   function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
   function isQuestion(f){return f&&!contentTypeKeys.includes(f.type)}
   function questionFields(){return form.fields.filter(isQuestion)}
-  function categoryName(id){const c=categories.find(x=>x.id===id);return c?c.name:''}
-  function fieldVisibleForCategory(f,catId){return f.visibility!=='selected'||!f.categories.length||f.categories.includes(catId)}
+  function categoryName(id){const c=categories.find(x=>String(x.id)===String(id));return c?c.name:''}
+  function fieldVisibleForCategory(f,catId){return f.visibility!=='selected'||!f.categories.length||f.categories.map(String).includes(String(catId))}
   function fieldVisibleInBuilder(f){
     if(!builderCategoryId)return f.visibility!=='selected'||!f.categories.length;
     return fieldVisibleForCategory(f,builderCategoryId);
@@ -789,15 +789,38 @@
     if(!select)return;
     const previous=builderCategoryId;
     select.innerHTML='<option value="">All categories / Shared form</option>'+categories.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+'</option>').join('');
-    select.value=categories.some(c=>c.id===previous)?previous:'';
+    select.value=categories.some(c=>String(c.id)===String(previous))?String(previous):'';
     builderCategoryId=select.value;
     const common=form.fields.filter(f=>f.visibility!=='selected'||!f.categories.length);
-    const specific=builderCategoryId?form.fields.filter(f=>f.visibility==='selected'&&f.categories.includes(builderCategoryId)):[];
+    const specific=builderCategoryId?form.fields.filter(f=>f.visibility==='selected'&&f.categories.map(String).includes(String(builderCategoryId))):[];
     $('builderCommonCount').textContent=common.filter(isQuestion).length;
     $('builderSpecificCount').textContent=specific.filter(isQuestion).length;
     $('builderScopeText').textContent=builderCategoryId?'Showing shared fields + fields for '+(categoryName(builderCategoryId)||'this category')+'. New questions and sections will be added to this category only.':'Manage the shared questions and sections that appear in every category form.';
     if($('compactScopeText'))$('compactScopeText').textContent=builderCategoryId?'Editing '+(categoryName(builderCategoryId)||'selected category'):'Manage the shared form';
     $('builderQuestionHelp').textContent=builderCategoryId?'You are editing '+(categoryName(builderCategoryId)||'this category')+'. Shared fields stay visible; new fields are category-specific by default.':'You are editing the shared form. New fields will appear in every category by default.';
+
+    let notice=document.getElementById('categoryFormStateNotice');
+    if(!notice){
+      notice=document.createElement('div');
+      notice.id='categoryFormStateNotice';
+      notice.className='ef-category-form-state';
+      const workspace=$('questionWorkspace');
+      if(workspace)workspace.insertBefore(notice,workspace.firstChild);
+    }
+    if(builderCategoryId){
+      const cat=categoryName(builderCategoryId)||'Selected category';
+      const specificQuestions=specific.filter(isQuestion).length;
+      notice.hidden=false;
+      if(specificQuestions===0){
+        notice.innerHTML='<div><span class="ef-category-form-state-kicker">CATEGORY FORM</span><strong>'+esc(cat)+'</strong><p>No category-specific questions have been created yet. The shared questions are shown below and will be used automatically.</p></div><button type="button" id="createCategoryQuestionBtn">+ Add first category question</button>';
+      }else{
+        notice.innerHTML='<div><span class="ef-category-form-state-kicker">CATEGORY FORM</span><strong>'+esc(cat)+'</strong><p>Showing all shared questions plus '+specificQuestions+' category-specific question'+(specificQuestions===1?'':'s')+'.</p></div><button type="button" id="createCategoryQuestionBtn">+ Add category question</button>';
+      }
+      requestAnimationFrame(()=>{const btn=$('createCategoryQuestionBtn');if(btn)btn.onclick=()=>addFieldAfterActive('short')});
+    }else{
+      notice.hidden=true;
+      notice.innerHTML='';
+    }
   }
   function updateUI(){renderCategoryFormManager();renderQuestions();renderMiniPreview();renderHealth();updateProgress()}
 
@@ -835,7 +858,7 @@
     const t=$('fieldType').value;const content=contentTypeKeys.includes(t);$('requiredFieldWrap').hidden=content;$('limitSettings').hidden=!['short','long','number','email','url'].includes(t);$('choiceSettings').hidden=!['single','multi','dropdown'].includes(t);$('fileSettings').hidden=t!=='file';if($('mediaSettings'))$('mediaSettings').hidden=!['image','video'].includes(t);$('categorySettings').hidden=false;$('logicSettings').hidden=content;
   }
   function renderOptions(){const box=$('optionEditor');box.innerHTML='';(draftField.options||[]).forEach((o,i)=>{const row=document.createElement('div');row.className='ef-option-row';row.innerHTML='<span>=</span><input value="'+esc(o)+'" data-option-index="'+i+'"><button data-remove-option="'+i+'">x</button>';box.appendChild(row)})}
-  function renderCategoryPicker(){const box=$('categoryPicker');box.hidden=visibilityMode!=='selected';box.innerHTML='';categories.forEach(c=>{const checked=(draftField.categories||[]).includes(c.id);const label=document.createElement('label');label.innerHTML='<input type="checkbox" value="'+esc(c.id)+'" '+(checked?'checked':'')+'><span>'+esc(c.name)+'</span>';box.appendChild(label)})}
+  function renderCategoryPicker(){const box=$('categoryPicker');box.hidden=visibilityMode!=='selected';box.innerHTML='';categories.forEach(c=>{const checked=(draftField.categories||[]).map(String).includes(String(c.id));const label=document.createElement('label');label.innerHTML='<input type="checkbox" value="'+esc(c.id)+'" '+(checked?'checked':'')+'><span>'+esc(c.name)+'</span>';box.appendChild(label)})}
   function logicCandidates(){return form.fields.filter(f=>f.id!==editingId&&['single','multi','dropdown','short','number','email'].includes(f.type))}
   function renderLogicFields(){const grid=$('logicGrid');grid.hidden=!draftField.logic.enabled;const select=$('logicField');const candidates=logicCandidates();select.innerHTML='<option value="">Choose earlier question</option>'+candidates.map(f=>'<option value="'+esc(f.id)+'">'+esc(f.label)+'</option>').join('');select.value=draftField.logic.fieldId||'';$('logicOperator').value=draftField.logic.operator||'equals';$('logicValue').value=draftField.logic.value||'';const disabled=!candidates.length&&draftField.logic.enabled;if(disabled)select.innerHTML='<option value="">No eligible earlier questions yet</option>';select.disabled=disabled;$('logicOperator').disabled=disabled;$('logicValue').disabled=disabled}
   function collectDraft(){
