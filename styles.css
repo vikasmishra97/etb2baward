@@ -1641,3 +1641,141 @@ body.entry-form-page .ef-next-btn span{font-size:14px!important}
 .ef-clone-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 22px 18px;border-top:1px solid #ece8e3;background:#fcfcfd}
 .ef-clone-foot .btn{min-height:38px;padding:0 15px;font-size:11px}
 @media(max-width:720px){.ef-category-form-state-actions{width:100%;flex-direction:column}.ef-category-form-state-actions button{width:100%}.ef-clone-head{padding:17px}.ef-clone-body{padding:15px 17px}.ef-clone-foot{padding:12px 17px 16px}.ef-clone-target{align-items:flex-start;flex-direction:column}.ef-clone-target strong{text-align:left}}
+
+
+/* V19.30 - premium Entry Form command bar cleanup */
+body.entry-form-page .ef-command-card{
+  border:1px solid #e3e4ea!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.98)!important;
+  box-shadow:0 8px 24px rgba(24,27,49,.07)!important;
+  overflow:hidden!important;
+}
+body.entry-form-page .ef-commandbar{
+  display:grid!important;
+  grid-template-columns:minmax(230px,1fr) auto minmax(0,1.8fr)!important;
+  align-items:end!important;
+  gap:14px!important;
+  padding:12px 14px!important;
+}
+body.entry-form-page .ef-command-category{
+  min-width:0!important;
+  padding:0!important;
+}
+body.entry-form-page .ef-command-category label{
+  margin:0 0 6px!important;
+  color:#7a7f90!important;
+  font-size:8.5px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+body.entry-form-page .ef-command-category select{
+  height:40px!important;
+  border:1px solid #dfe1e8!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  padding:0 36px 0 12px!important;
+  color:#24283a!important;
+  font-size:11.5px!important;
+  font-weight:800!important;
+  box-shadow:0 1px 2px rgba(20,24,40,.02)!important;
+}
+body.entry-form-page .ef-command-category select:focus{
+  border-color:#d71920!important;
+  box-shadow:0 0 0 3px rgba(215,25,32,.08)!important;
+}
+body.entry-form-page .ef-command-counts{
+  align-self:center!important;
+  display:flex!important;
+  gap:6px!important;
+  padding-bottom:1px!important;
+}
+body.entry-form-page .ef-command-counts span{
+  min-height:28px!important;
+  padding:5px 9px!important;
+  border:1px solid #e5e6ec!important;
+  border-radius:999px!important;
+  background:#f8f9fb!important;
+  color:#767b8d!important;
+  font-size:8.5px!important;
+}
+body.entry-form-page .ef-command-counts b{font-size:9.5px!important;color:#2f3447!important}
+body.entry-form-page .ef-command-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:7px!important;
+  min-width:0!important;
+  white-space:normal!important;
+  flex-wrap:nowrap!important;
+}
+body.entry-form-page .ef-command-btn,
+body.entry-form-page .ef-command-add{
+  height:38px!important;
+  min-height:38px!important;
+  border-radius:10px!important;
+  padding:0 11px!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  white-space:nowrap!important;
+  flex:0 0 auto!important;
+}
+body.entry-form-page .ef-command-btn{
+  border:1px solid #e0e2e9!important;
+  background:#fff!important;
+  color:#555a6e!important;
+}
+body.entry-form-page .ef-command-btn:hover{
+  border-color:#efc7ca!important;
+  background:#fff6f6!important;
+  color:#c1161d!important;
+}
+body.entry-form-page .ef-command-clone{
+  border-color:#eadcc6!important;
+  background:#fffaf2!important;
+  color:#80501d!important;
+}
+body.entry-form-page .ef-command-save{
+  border-color:#d8eadf!important;
+  background:#f6fbf7!important;
+  color:#2b7652!important;
+}
+body.entry-form-page .ef-command-ai{
+  border-color:#e2ddff!important;
+  background:#faf9ff!important;
+  color:#6558d7!important;
+}
+body.entry-form-page .ef-command-add{
+  border:1px solid #d71920!important;
+  background:#d71920!important;
+  color:#fff!important;
+  box-shadow:0 5px 14px rgba(215,25,32,.16)!important;
+}
+body.entry-form-page .ef-command-add:hover{background:#bf1219!important;border-color:#bf1219!important}
+
+/* Keep the premium bar contained at normal laptop widths instead of clipping actions. */
+@media(max-width:1280px){
+  body.entry-form-page .ef-commandbar{
+    grid-template-columns:minmax(210px,1fr) auto!important;
+    align-items:center!important;
+  }
+  body.entry-form-page .ef-command-category{grid-column:1}
+  body.entry-form-page .ef-command-counts{grid-column:2;justify-self:end}
+  body.entry-form-page .ef-command-actions{
+    grid-column:1/-1!important;
+    justify-content:flex-start!important;
+    flex-wrap:wrap!important;
+    padding-top:2px!important;
+  }
+}
+@media(max-width:760px){
+  body.entry-form-page .ef-command-card{position:relative!important;top:auto!important}
+  body.entry-form-page .ef-commandbar{grid-template-columns:1fr!important;gap:9px!important;padding:11px!important}
+  body.entry-form-page .ef-command-category,
+  body.entry-form-page .ef-command-counts,
+  body.entry-form-page .ef-command-actions{grid-column:1!important;justify-self:stretch!important}
+  body.entry-form-page .ef-command-counts{justify-content:flex-start!important}
+  body.entry-form-page .ef-command-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+  body.entry-form-page .ef-command-btn,
+  body.entry-form-page .ef-command-add{width:100%!important;min-width:0!important}
+}
