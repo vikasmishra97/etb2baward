@@ -1137,3 +1137,287 @@ body.entry-form-page .ef-next-btn span{font-size:14px!important}
 
 /* Coupon builder v26 */
 .pr-coupon-panel{width:min(620px,100%)}.pr-drawer-head p{margin:5px 0 0;color:var(--muted);font-size:10px;line-height:1.45}.pr-drawer-body .field label em{color:var(--brand);font-style:normal}.pr-drawer-body .field small{display:block;margin-top:5px;color:var(--muted);font-size:9px;line-height:1.45}.pr-drawer-body textarea{width:100%;resize:vertical;min-height:82px;border:1px solid var(--line);border-radius:10px;padding:10px 11px;font:inherit;font-size:11px;outline:0}.pr-drawer-body textarea:focus{border-color:#c9c5ff;box-shadow:0 0 0 3px rgba(98,88,245,.08)}.pr-coupon-behaviour{align-self:end;min-height:58px;border:1px solid #e5e6ed;border-radius:10px;padding:10px 11px;background:#fafafd}.pr-coupon-behaviour span,.pr-coupon-behaviour small{display:block;font-size:8px;color:var(--muted)}.pr-coupon-behaviour b{display:block;margin:3px 0;font-size:10px}.pr-coupon-kind{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:8px;font-weight:900;white-space:nowrap}.pr-coupon-kind.amount{background:#eaf7ef;color:#17633f}.pr-coupon-kind.quantity{background:#f0efff;color:var(--brand)}.pr-eligibility{font-size:9px}.pr-promo-table{min-width:840px}.pr-promo-table th{font-size:8px}.pr-promo-table td{font-size:9px;vertical-align:middle}.pr-promo-table td:first-child{min-width:150px}
+
+/* ===== Pricing studio premium layout v26 ===== */
+.pr-main{
+  max-width:1420px;
+  padding:28px 28px 64px;
+}
+.pr-page-head{
+  align-items:flex-end;
+  margin-bottom:18px;
+  padding:0 2px;
+}
+.pr-page-head h1{
+  font-size:36px;
+  line-height:1.08;
+  letter-spacing:-.04em;
+  margin:4px 0 8px;
+}
+.pr-page-head p{
+  font-size:16px;
+  line-height:1.55;
+  max-width:720px;
+  margin:0;
+  color:#6f7485;
+}
+.pr-kicker{
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.16em;
+  color:#d31124;
+}
+
+/* Keep the setup path clear and compact */
+.pr-main .build-progress{
+  margin:0 0 20px;
+  padding:10px 14px;
+  border:1px solid #e8e4df;
+  border-radius:18px;
+  background:#fff;
+  box-shadow:0 8px 26px rgba(28,26,23,.04);
+  overflow:hidden;
+}
+.pr-main .build-progress-step{
+  min-width:0;
+  padding:8px 10px;
+  border-radius:12px;
+}
+.pr-main .build-progress-step.active{
+  background:#fff2f3;
+  border:1px solid #f3b6bc;
+}
+.pr-main .build-progress-copy b{font-size:12px}
+.pr-main .build-progress-copy small{font-size:10px}
+.pr-main .build-progress-line{min-width:28px}
+
+/* Copilot remains available from the top-right button; remove the large promo banner */
+.pr-main .pr-copilot-banner{display:none!important}
+
+/* Main workspace */
+.pr-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 360px;
+  gap:18px;
+  align-items:start;
+}
+.pr-content-col,.pr-side-col{min-width:0}
+.pr-side-col{
+  position:sticky;
+  top:82px;
+  display:block;
+}
+.pr-card,
+.pr-checkout-card,
+.pr-health-card,
+.pr-insight-card{
+  border:1px solid #e6e1dc;
+  border-radius:20px;
+  background:#fff;
+  box-shadow:0 10px 28px rgba(22,24,35,.045);
+}
+.pr-main .pr-card{
+  margin-bottom:14px;
+  padding:22px;
+}
+.pr-section-title{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:18px!important;
+}
+.pr-section-title>div{
+  position:relative;
+  padding-left:50px!important;
+  min-width:0;
+}
+.pr-step{
+  position:absolute;
+  left:0;
+  top:1px;
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:#fff0f1;
+  color:#bd1020;
+  font-size:12px;
+  font-weight:900;
+}
+.pr-section-title h2{
+  font-size:22px;
+  line-height:1.2;
+  letter-spacing:-.025em;
+  margin:0 0 5px;
+}
+.pr-section-title p{
+  font-size:14px;
+  line-height:1.5;
+  color:#74798a;
+  margin:0;
+}
+.pr-save-state,.pr-muted{font-size:12px}
+
+/* Base price: stable three-column layout, no overflow */
+.pr-base-grid{
+  display:grid;
+  grid-template-columns:minmax(180px,.9fr) minmax(220px,1fr) minmax(220px,1fr);
+  gap:14px;
+  align-items:end;
+}
+.pr-main .field{min-width:0}
+.pr-main .field label{
+  font-size:13px;
+  line-height:1.3;
+  font-weight:850;
+  margin-bottom:8px;
+}
+.pr-main input,.pr-main select,.pr-main textarea{
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  min-height:48px;
+  box-sizing:border-box;
+  font-size:15px;
+  border-radius:12px;
+}
+.pr-money-input,.pr-affix-input{min-width:0}
+.pr-money-input input,.pr-affix-input input{min-width:0}
+
+/* Entry model */
+.pr-choice-grid{gap:12px}
+.pr-choice{
+  min-height:92px;
+  padding:16px;
+  border-radius:16px;
+}
+.pr-choice b{font-size:15px}
+.pr-choice small{font-size:12px;line-height:1.45}
+.pr-choice em{font-size:11px}
+
+/* Promo codes */
+.pr-promo-table-wrap{
+  border:1px solid #ece7e2;
+  border-radius:14px;
+  overflow:auto;
+}
+.pr-promo-table{min-width:760px}
+.pr-promo-table th{font-size:11px;letter-spacing:.04em}
+.pr-promo-table td{font-size:13px}
+
+/* Category pricing */
+.pr-bulk-pricing{
+  border:1px solid #f0d5d8;
+  background:#fffafa;
+  border-radius:16px;
+  padding:16px;
+}
+.pr-bulk-top{margin-bottom:12px}
+.pr-bulk-top h3{font-size:17px;margin:2px 0 4px}
+.pr-bulk-top p{font-size:13px;line-height:1.45}
+.pr-category-search-wrap input{font-size:14px}
+.pr-bulk-actions{
+  display:grid;
+  grid-template-columns:minmax(180px,1fr) minmax(150px,190px) auto auto;
+  gap:10px;
+  align-items:center;
+}
+.pr-select-all{font-size:13px}
+.pr-category-head,.pr-category-row{
+  grid-template-columns:minmax(0,1fr) 150px 150px;
+}
+.pr-category-head{font-size:11px}
+.pr-category-row{padding:14px 10px}
+.pr-category-row b{font-size:14px}
+.pr-category-row small{font-size:11px}
+
+/* Invoice and payment setup */
+.pr-inline-config{gap:12px}
+.pr-payment-grid{gap:10px}
+.pr-gateway{min-width:0;padding:14px;border-radius:14px}
+.pr-gateway b{font-size:14px}
+.pr-gateway small{font-size:11px;line-height:1.4}
+.pr-payment-options{gap:10px}
+
+/* Premium live checkout preview */
+.pr-checkout-card{padding:18px!important}
+.pr-checkout-card .section-title{margin-bottom:14px!important}
+.pr-checkout-card .section-title h2{font-size:20px;margin:0}
+.pr-checkout-card .section-title span{font-size:12px;color:#767b8c}
+.pr-live-dot{font-size:11px!important;color:#159b67!important;font-weight:900}
+.pr-checkout-shell{
+  border:1px solid #e7e3df;
+  border-radius:16px;
+  padding:16px;
+  background:linear-gradient(180deg,#fff 0%,#fcfbfa 100%);
+}
+.pr-checkout-brand{gap:10px;margin-bottom:16px}
+.pr-checkout-brand b{font-size:13px!important}
+.pr-checkout-brand small{font-size:10px!important;color:#858999}
+.pr-checkout-shell .field{margin-bottom:12px}
+.pr-checkout-shell .field label{font-size:12px!important;margin-bottom:6px}
+.pr-checkout-shell .field select{font-size:13px!important;padding:10px 11px!important;min-height:44px}
+.pr-promo-apply{border-radius:11px}
+.pr-promo-apply input{font-size:13px!important;padding:11px!important}
+.pr-promo-apply button{font-size:12px!important;padding:0 13px!important}
+.pr-applied-code{font-size:11px!important;padding:9px 11px!important}
+.pr-price-lines>div{font-size:12px!important;padding:7px 0!important}
+.pr-total span{font-size:14px!important}
+.pr-total b{font-size:26px!important}
+.pr-savings{font-size:11px!important;padding:9px!important}
+.pr-pay-btn{font-size:14px!important;min-height:46px}
+.pr-checkout-note{font-size:10px!important;line-height:1.4!important}
+
+/* Secondary insight cards: readable but visually quieter */
+.pr-health-card,.pr-insight-card{padding:16px!important}
+.pr-health-card .section-title b{font-size:14px!important}
+.pr-health-list b{font-size:12px!important}
+.pr-health-list small{font-size:10px!important;line-height:1.4}
+.pr-insight-head b{font-size:12px!important}
+.pr-insight-head small{font-size:10px!important}
+.pr-projection small,.pr-projection span{font-size:10px!important}
+.pr-projection b{font-size:24px!important}
+
+.pr-bottom-actions{
+  position:sticky;
+  bottom:14px;
+  z-index:8;
+  margin-top:16px;
+  padding:12px 14px;
+  border:1px solid #e6e1dc;
+  border-radius:16px;
+  background:rgba(255,255,255,.96);
+  box-shadow:0 14px 35px rgba(24,26,35,.10);
+  backdrop-filter:blur(10px);
+}
+
+@media(max-width:1180px){
+  .pr-layout{grid-template-columns:1fr}
+  .pr-side-col{position:static;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:14px}
+  .pr-checkout-card{grid-row:span 2}
+  .pr-base-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:900px){
+  .pr-main{padding:22px 18px 54px}
+  .pr-page-head{align-items:flex-start}
+  .pr-base-grid{grid-template-columns:1fr 1fr}
+  .pr-base-grid .field:last-child{grid-column:1/-1}
+  .pr-bulk-actions{grid-template-columns:1fr 1fr}
+  .pr-side-col{grid-template-columns:1fr}
+  .pr-checkout-card{grid-row:auto}
+}
+@media(max-width:720px){
+  .pr-main{padding:18px 12px 48px}
+  .pr-page-head h1{font-size:30px}
+  .pr-main .build-progress{overflow-x:auto;display:flex;flex-wrap:nowrap}
+  .pr-main .build-progress-step{min-width:126px}
+  .pr-base-grid,.pr-bulk-actions{grid-template-columns:1fr}
+  .pr-base-grid .field:last-child{grid-column:auto}
+  .pr-section-title{display:block}
+  .pr-section-title>button,.pr-section-title>span{margin-top:12px}
+  .pr-main .pr-card{padding:18px 15px}
+  .pr-category-row{grid-template-columns:1fr!important}
+  .pr-bottom-actions{position:static}
+}
