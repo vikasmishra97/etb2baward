@@ -1421,3 +1421,160 @@ body.entry-form-page .ef-next-btn span{font-size:14px!important}
   .pr-category-row{grid-template-columns:1fr!important}
   .pr-bottom-actions{position:static}
 }
+
+/* ===== Pricing studio compact layout v27 ===== */
+/* Reduce density and prevent the live checkout panel from colliding with pricing cards. */
+.pr-main{
+  max-width:1360px;
+  padding:20px 20px 52px;
+}
+.pr-layout{
+  grid-template-columns:minmax(0,1fr) 310px;
+  gap:16px;
+}
+.pr-main .pr-card{
+  padding:18px;
+  margin-bottom:12px;
+  border-radius:17px;
+}
+.pr-section-title{
+  gap:12px;
+  margin-bottom:14px!important;
+}
+.pr-section-title>div{padding-left:44px!important}
+.pr-step{
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  font-size:11px;
+}
+.pr-section-title h2{font-size:20px;line-height:1.2;margin-bottom:4px}
+.pr-section-title p{font-size:12.5px;line-height:1.45}
+.pr-save-state,.pr-muted{font-size:11px}
+
+/* Base price must always stay inside the left column. */
+.pr-base-grid{
+  grid-template-columns:minmax(0,.9fr) minmax(0,1fr) minmax(0,1fr);
+  gap:10px;
+}
+.pr-main .field label{font-size:12px;margin-bottom:6px}
+.pr-main input,.pr-main select,.pr-main textarea{
+  min-height:42px;
+  font-size:13px;
+  border-radius:10px;
+}
+
+/* Entry model cards */
+.pr-choice-grid{gap:10px}
+.pr-choice{min-height:82px;padding:13px;border-radius:14px}
+.pr-choice b{font-size:14px}
+.pr-choice small{font-size:11px;line-height:1.4}
+.pr-choice em{font-size:10px}
+
+/* Bulk category pricing: compact controls and correctly-sized checkbox. */
+.pr-bulk-pricing{padding:14px;border-radius:14px}
+.pr-bulk-top{margin-bottom:9px;gap:10px}
+.pr-bulk-top h3{font-size:16px;margin:1px 0 3px}
+.pr-bulk-top p{font-size:11.5px;line-height:1.4}
+.pr-bulk-count{font-size:11px;padding:6px 9px}
+.pr-category-search-wrap{min-height:42px;border-radius:10px;margin-bottom:9px}
+.pr-category-search-wrap input{font-size:12.5px!important;min-height:38px!important}
+.pr-bulk-actions{
+  grid-template-columns:minmax(145px,1fr) minmax(130px,160px) auto auto;
+  gap:8px;
+}
+.pr-select-all{font-size:12px;min-height:38px;gap:8px}
+.pr-select-all input,
+.pr-cat-check input{
+  width:17px!important;
+  height:17px!important;
+  min-width:17px!important;
+  min-height:17px!important;
+  padding:0!important;
+  margin:0!important;
+  border-radius:4px!important;
+}
+.pr-bulk-money{min-height:40px;border-radius:9px}
+.pr-bulk-money span{font-size:13px;padding-left:11px}
+.pr-bulk-money input{min-height:38px!important;font-size:13px!important}
+.pr-bulk-actions .btn{
+  min-height:38px!important;
+  padding:7px 12px!important;
+  border-radius:9px!important;
+  font-size:12px!important;
+  line-height:1.15!important;
+}
+.pr-text-action{
+  min-height:36px;
+  font-size:11.5px;
+  padding:0 5px;
+}
+.pr-category-head,.pr-category-row{
+  grid-template-columns:minmax(0,1.25fr) 130px 150px;
+}
+.pr-category-head{font-size:10px;padding:0 10px 8px}
+.pr-category-row{padding:11px 10px;gap:10px;border-radius:12px}
+.pr-category-row b{font-size:12.5px}
+.pr-category-row small{font-size:10px}
+.pr-rule-btn{min-height:34px;padding:6px 9px;font-size:11.5px}
+.pr-cat-fee input{font-size:13px!important;min-height:40px!important}
+
+/* Compact live checkout so it never pushes into the pricing form. */
+.pr-side-col{top:72px}
+.pr-checkout-card{padding:14px!important;border-radius:17px}
+.pr-checkout-card .section-title{margin-bottom:10px!important}
+.pr-checkout-card .section-title h2{font-size:17px}
+.pr-checkout-card .section-title span{font-size:10.5px}
+.pr-checkout-shell{padding:12px;border-radius:13px}
+.pr-checkout-brand{margin-bottom:11px}
+.pr-checkout-brand b{font-size:11.5px!important}
+.pr-checkout-brand small{font-size:9px!important}
+.pr-checkout-shell .field{margin-bottom:9px}
+.pr-checkout-shell .field label{font-size:10.5px!important;margin-bottom:5px}
+.pr-checkout-shell .field select{font-size:11.5px!important;min-height:38px!important;padding:8px 9px!important}
+.pr-promo-apply input{font-size:11.5px!important;padding:9px!important;min-height:38px!important}
+.pr-promo-apply button{font-size:10.5px!important;padding:0 10px!important}
+.pr-price-lines>div{font-size:11px!important;padding:5px 0!important}
+.pr-total span{font-size:12px!important}.pr-total b{font-size:22px!important}
+.pr-pay-btn{font-size:12px!important;min-height:40px!important}
+
+/* Smaller, cleaner sticky footer actions. */
+.pr-bottom-actions{
+  bottom:10px;
+  padding:9px 11px;
+  border-radius:14px;
+  gap:8px;
+}
+.pr-bottom-actions .btn,
+.pr-bottom-actions button,
+.pr-bottom-actions a{
+  min-height:38px!important;
+  padding:8px 13px!important;
+  border-radius:10px!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+}
+.pr-bottom-actions .btn.primary{min-width:132px!important}
+
+@media(max-width:1280px){
+  .pr-layout{grid-template-columns:minmax(0,1fr) 280px}
+  .pr-base-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:1120px){
+  .pr-layout{grid-template-columns:1fr}
+  .pr-side-col{position:static;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pr-checkout-card{grid-row:auto}
+}
+@media(max-width:820px){
+  .pr-main{padding:16px 12px 44px}
+  .pr-base-grid{grid-template-columns:1fr 1fr}
+  .pr-base-grid .field:last-child{grid-column:1/-1}
+  .pr-bulk-actions{grid-template-columns:1fr 1fr}
+  .pr-side-col{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .pr-base-grid,.pr-bulk-actions{grid-template-columns:1fr}
+  .pr-base-grid .field:last-child{grid-column:auto}
+  .pr-category-row{grid-template-columns:1fr!important}
+  .pr-bottom-actions{position:static}
+}
