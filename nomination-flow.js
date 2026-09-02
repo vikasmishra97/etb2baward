@@ -210,6 +210,16 @@
     const sections=buildSections(entryFields);
     let activeStep=0;
     const touched=new Set();
+    let reportTimer=null;
+    function syncDraftReport(){
+      clearTimeout(reportTimer);
+      reportTimer=setTimeout(()=>{
+        captureCurrent();
+        const snapshot=collect();
+        const allDone=sections.every(sectionComplete);
+        upsertNominationReport(catId,snapshot,allDone?'Form complete':'Draft in progress',{formCompleted:allDone,paymentStatus:'Not paid',pendingAction:allDone?'Payment pending':'Form pending',activeSection:(sections[activeStep]&&sections[activeStep].title)||'',activeSectionIndex:activeStep+1,totalSections:sections.length,lastEditedAt:new Date().toISOString()});
+      },220);
+    }
 
     document.getElementById('sideImportedCount').textContent=imported;
     if(imported){
@@ -231,19 +241,19 @@
       captureCurrent();
       const fieldEl=e.target.closest('[data-field-id]');
       if(fieldEl){const f=findField(fieldEl.dataset.fieldId);if(f){updateCounter(f);if(touched.has(String(f.id)))validateField(f,true)}}
-      updateConditional();updateProgressUI();
+      updateConditional();updateProgressUI();syncDraftReport();
     });
     document.getElementById('nominationFields').addEventListener('change',e=>{
       captureCurrent();
       const fieldEl=e.target.closest('[data-field-id]');
       if(fieldEl){const f=findField(fieldEl.dataset.fieldId);if(f){touched.add(String(f.id));validateField(f,true)}}
-      updateConditional();updateProgressUI();
+      updateConditional();updateProgressUI();syncDraftReport();
     });
     document.getElementById('nominationFields').addEventListener('focusout',e=>{
       const fieldEl=e.target.closest('[data-field-id]');
       if(!fieldEl)return;
       const f=findField(fieldEl.dataset.fieldId);if(!f)return;
-      captureCurrent();touched.add(String(f.id));validateField(f,true);updateCounter(f);
+      captureCurrent();touched.add(String(f.id));validateField(f,true);updateCounter(f);syncDraftReport();
     });
 
     function buildSections(fs){
@@ -356,12 +366,25 @@
     }
     function sectionComplete(sec){return sec.fields.filter(shouldShow).every(f=>!valueError(f))}
     function updateProgressUI(){
-      const total=Math.max(1,sections.length),pct=Math.round(((activeStep+1)/total)*100);
-      document.getElementById('formStepPercent').textContent=pct+'%';document.getElementById('formStepProgressBar').style.width=pct+'%';renderSectionNav();
+      const total=Math.max(1,sections.length);
+      const completed=sections.filter(sectionComplete).length;
+      const currentBase=Math.min(total,Math.max(1,activeStep+1));
+      const pct=Math.max(Math.round((completed/total)*100),Math.round(((currentBase-1)/total)*100));
+      document.getElementById('formStepPercent').textContent=pct+'%';
+      document.getElementById('formStepProgressBar').style.width=pct+'%';
+      renderSectionNav();renderTopTracker();
+    }
+    function renderTopTracker(){
+      const tracker=document.getElementById('formTopTracker');if(!tracker)return;
+      tracker.innerHTML=sections.map((sec,i)=>{
+        const done=sectionComplete(sec),active=i===activeStep,locked=i>activeStep&&!sections.slice(0,i).every(sectionComplete);
+        return `<button type="button" data-top-step="${i}" class="${active?'active':''} ${done?'complete':''} ${locked?'locked':''}" ${locked?'disabled':''}><span>${done?'✓':i+1}</span><b>${esc(sec.title)}</b><small>${done?'Complete':active?'You are here':'Next'}</small></button>`;
+      }).join('<i aria-hidden="true"></i>')+`<i aria-hidden="true"></i><div class="nom-final-step ${sections.every(sectionComplete)?'ready':''}"><span>✓</span><b>Final submission</b><small>${sections.every(sectionComplete)?'Ready for payment':'After all sections'}</small></div>`;
+      tracker.querySelectorAll('[data-top-step]').forEach(btn=>btn.addEventListener('click',()=>{const target=Number(btn.dataset.topStep);if(btn.disabled)return;captureCurrent();activeStep=target;renderStep();scrollToForm()}));
     }
     function renderSectionNav(){
       const nav=document.getElementById('sectionNav');if(!nav)return;
-      nav.innerHTML=sections.map((sec,i)=>`<button type="button" data-step-index="${i}" class="${i===activeStep?'active':''} ${sectionComplete(sec)?'complete':''}"><span>${sectionComplete(sec)?'✓':i+1}</span><b>${esc(sec.title)}</b></button>`).join('');
+      nav.innerHTML=sections.map((sec,i)=>{const locked=i>activeStep&&!sections.slice(0,i).every(sectionComplete);return `<button type="button" data-step-index="${i}" class="${i===activeStep?'active':''} ${sectionComplete(sec)?'complete':''} ${locked?'locked':''}" ${locked?'disabled':''}><span>${sectionComplete(sec)?'✓':i+1}</span><b>${esc(sec.title)}</b><small>${sectionComplete(sec)?'Complete':i===activeStep?'In progress':locked?'Complete previous section':'Ready'}</small></button>`}).join('');
       nav.querySelectorAll('[data-step-index]').forEach(btn=>btn.addEventListener('click',()=>{
         const target=Number(btn.dataset.stepIndex);captureCurrent();
         if(target>activeStep&&!validateSection(activeStep,true)){toast('Please complete this section first');return}
@@ -373,7 +396,7 @@
       if(complete&&!validateAll()){toast('Please fix the highlighted fields');return}
       saved={categoryId:String(catId),answers,completed:complete,updatedAt:new Date().toISOString()};
       write(answerKey(catId),saved);
-      upsertNominationReport(catId,answers,complete?'Form complete':'Draft saved',{formCompleted:!!complete,formCompletedAt:complete?new Date().toISOString():''});
+      upsertNominationReport(catId,answers,complete?'Form complete':'Draft saved',{formCompleted:!!complete,formCompletedAt:complete?new Date().toISOString():'',paymentStatus:'Not paid',pendingAction:complete?'Payment pending':'Form pending',activeSection:(sections[activeStep]&&sections[activeStep].title)||'',activeSectionIndex:activeStep+1,totalSections:sections.length,lastEditedAt:new Date().toISOString()});
       if(settings.autoImportAnswers!==false){
         fields.filter(f=>f.type!=='section'&&f.type!=='file'&&!isProfileField(f)).forEach(f=>{
           const key=semantic(f),v=answers[key];
@@ -406,6 +429,8 @@
     const btn=document.getElementById('paySubmitBtn');
     if(grand===0)btn.textContent='Submit selected nominations';
     btn.addEventListener('click',()=>{
+      const ok=window.confirm('Final submission: once payment is completed, these nomination forms will be locked and cannot be edited. Please confirm that you have reviewed your answers.');
+      if(!ok)return;
       btn.disabled=true;btn.textContent=grand?'Processing demo payment…':'Submitting…';
       const payment={id:'ETPAY-'+Date.now().toString().slice(-8),award:award.name,slug,amount:grand,subtotal,tax,method,status:'Paid',createdAt:new Date().toISOString(),categoryIds:payable.map(x=>String(x.categoryId)),categories:payable.map(x=>x.name)};
       write(paymentKey,payment);
