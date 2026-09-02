@@ -297,7 +297,7 @@
         <div class="field"><label>Status</label><select id="promoStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
         <div class="pr-coupon-behaviour" id="couponBehaviour"><span>Checkout behaviour</span><b>Automatic discount</b><small>No code entry required for the user.</small></div>
       </div>
-      <div class="pr-drawer-preview"><span>Checkout preview</span><b id="promoPreviewText">20% off</b><small id="promoPreviewCode">Automatic · SAVE20</small></div>
+      <div class="pr-drawer-preview"><span>Checkout preview</span><b id="promoPreviewText">20% off</b><small id="promoPreviewCode">Automatic · SAVE20</small></div><div id="promoSaveError" role="alert" style="display:none;margin-top:12px;padding:11px 13px;border:1px solid #fecaca;background:#fff7f7;border-radius:10px;color:#b42318;font-size:13px;font-weight:700;line-height:1.45"></div>
     </div>
     <div class="pr-drawer-foot"><button class="btn secondary" id="deletePromo" type="button" hidden>Delete</button><span></span><button class="btn secondary" type="button" data-close-drawer>Cancel</button><button class="btn primary" id="savePromo" type="button">Save coupon</button></div>
   </div>
@@ -377,7 +377,7 @@
     });
     if(changed)localStorage.setItem(categoryStoreKey,JSON.stringify(current));
   }
-  function persist(silent=true){localStorage.setItem(storeKey,JSON.stringify(state));syncCategoryRecordsFromPricing();if(!silent)toast('Pricing saved in this browser')}
+  function persist(silent=true){localStorage.setItem(storeKey,JSON.stringify(state));try{syncCategoryRecordsFromPricing()}catch(err){console.warn('Category pricing sync skipped:',err)}if(!silent)toast('Pricing saved in this browser');return true}
   function dateAdd(value,days){if(!value)return'';const d=new Date(value+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
   function seedDates(){
     const open=award.openDate||'2027-06-01',close=award.closeDate||'2027-09-30';
@@ -512,8 +512,13 @@
 
   function openPromo(id){
     editingPromoId=id||null;
-    const p=id?state.promos.find(x=>x.id===id):{code:'',couponType:'amount',type:'percent',value:20,min:0,max:0,email:'',description:'',limit:100,used:0,status:'active',start:'',end:''};
-    $('promoDrawerTitle').textContent=id?'Edit coupon':'Add coupon';$('promoCode').value=p.code||'';$('couponType').value=p.couponType||'quantity';$('promoType').value=p.type||'percent';$('promoValue').value=p.value??20;$('couponMin').value=Number(p.min||0);$('couponMax').value=Number(p.max||0);$('promoEmail').value=p.email||'';$('promoDescription').value=p.description||'';$('promoLimit').value=Number(p.limit||0);$('promoStatus').value=p.status||'active';$('promoStart').value=p.start||'';$('promoEnd').value=p.end||'';$('deletePromo').hidden=!id;updatePromoPreview();$('promoDrawer').classList.add('open');$('promoDrawer').setAttribute('aria-hidden','false');setTimeout(()=>$('promoCode').focus(),120)
+    if(!Array.isArray(state.promos))state.promos=[];
+    const defaultStart=award.openDate||'';
+    const defaultEnd=award.closeDate||'';
+    const p=id?state.promos.find(x=>String(x.id)===String(id)):{code:'',couponType:'amount',type:'percent',value:20,min:0,max:0,email:'',description:'',limit:100,used:0,status:'active',start:defaultStart,end:defaultEnd};
+    $('promoDrawerTitle').textContent=id?'Edit coupon':'Add coupon';$('promoCode').value=p.code||'';$('couponType').value=p.couponType||'quantity';$('promoType').value=p.type||'percent';$('promoValue').value=p.value??20;$('couponMin').value=Number(p.min||0);$('couponMax').value=Number(p.max||0);$('promoEmail').value=p.email||'';$('promoDescription').value=p.description||'';$('promoLimit').value=Number(p.limit||0);$('promoStatus').value=p.status||'active';$('promoStart').value=p.start||defaultStart;$('promoEnd').value=p.end||defaultEnd;$('deletePromo').hidden=!id;
+    if($('promoSaveError')){$('promoSaveError').style.display='none';$('promoSaveError').textContent=''}
+    updatePromoPreview();$('promoDrawer').classList.add('open');$('promoDrawer').setAttribute('aria-hidden','false');setTimeout(()=>$('promoCode').focus(),120)
   }
   function closePromo(){$('promoDrawer').classList.remove('open');$('promoDrawer').setAttribute('aria-hidden','true');editingPromoId=null}
   function updatePromoPreview(){
@@ -527,30 +532,33 @@
   $('newPromo').addEventListener('click',()=>openPromo());document.querySelectorAll('[data-close-drawer]').forEach(b=>b.addEventListener('click',closePromo));['promoCode','couponType','promoType','promoValue','couponMin','couponMax'].forEach(id=>$(id).addEventListener((id==='couponType'||id==='promoType')?'change':'input',updatePromoPreview));
   $('promoCode').addEventListener('input',()=>{$('promoCode').value=$('promoCode').value.toUpperCase().replace(/[^A-Z0-9_-]/g,'')});
   $('savePromo').addEventListener('click',()=>{
-    const btn=$('savePromo');
+    const btn=$('savePromo'), errorBox=$('promoSaveError');
+    const fail=(message,field)=>{if(errorBox){errorBox.textContent=message;errorBox.style.display='block'}toast(message);if(field&&$(field)){$(field).focus();$(field).scrollIntoView({block:'center',behavior:'smooth'})}};
+    if(errorBox){errorBox.style.display='none';errorBox.textContent=''}
+    if(!Array.isArray(state.promos))state.promos=[];
     const code=$('promoCode').value.trim().toUpperCase(),couponType=$('couponType').value,type=$('promoType').value,start=$('promoStart').value,end=$('promoEnd').value,description=$('promoDescription').value.trim();
     const min=Math.max(0,Number($('couponMin').value||0)),max=Math.max(0,Number($('couponMax').value||0));
-    const rawValue=Number($('promoValue').value||0), limit=Math.max(0,Number($('promoLimit').value||0));
+    const rawValue=Number($('promoValue').value||0),limit=Math.max(0,Number($('promoLimit').value||0));
     const email=$('promoEmail').value.trim().toLowerCase();
-    if(!code){toast('Enter a coupon code');$('promoCode').focus();return}
-    if(state.promos.some(p=>String(p.code||'').toUpperCase()===code&&p.id!==editingPromoId)){toast('That coupon code already exists');$('promoCode').focus();return}
-    if(!start||!end){toast('Select Valid from and Valid to dates');(!start?$('promoStart'):$('promoEnd')).focus();return}
-    if(end<start){toast('Valid to must be after Valid from');$('promoEnd').focus();return}
-    if(type!=='free'&&(!Number.isFinite(rawValue)||rawValue<=0)){toast('Enter a valid discount value');$('promoValue').focus();return}
-    if(type==='percent'&&rawValue>100){toast('Percentage discount cannot be more than 100%');$('promoValue').focus();return}
-    if(max>0&&max<min){toast('Maximum range must be greater than minimum');$('couponMax').focus();return}
-    if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('Enter a valid user email or leave it blank');$('promoEmail').focus();return}
-    if(!description){toast('Add a coupon description');$('promoDescription').focus();return}
+    if(!code){fail('Enter a coupon code','promoCode');return}
+    if(state.promos.some(p=>String(p.code||'').toUpperCase()===code&&String(p.id)!==String(editingPromoId||''))){fail('That coupon code already exists','promoCode');return}
+    if(!start||!end){fail('Select Valid from and Valid to dates',!start?'promoStart':'promoEnd');return}
+    if(end<start){fail('Valid to must be after Valid from','promoEnd');return}
+    if(type!=='free'&&(!Number.isFinite(rawValue)||rawValue<=0)){fail('Enter a valid discount value','promoValue');return}
+    if(type==='percent'&&rawValue>100){fail('Percentage discount cannot be more than 100%','promoValue');return}
+    if(max>0&&max<min){fail('Maximum range must be greater than minimum','couponMax');return}
+    if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){fail('Enter a valid user email or leave it blank','promoEmail');return}
     const wasEditing=!!editingPromoId;
-    const data={id:editingPromoId||'p'+Date.now(),code,couponType,type,value:type==='free'?100:rawValue,min,max,email,description,limit,used:editingPromoId?(state.promos.find(p=>p.id===editingPromoId)?.used||0):0,status:$('promoStatus').value,start,end};
+    const data={id:editingPromoId||('p'+Date.now()),code,couponType,type,value:type==='free'?100:rawValue,min,max,email,description:description||code,limit,used:editingPromoId?(state.promos.find(p=>String(p.id)===String(editingPromoId))?.used||0):0,status:$('promoStatus').value,start,end};
     btn.disabled=true;btn.textContent='Saving…';
     try{
-      if(editingPromoId){const i=state.promos.findIndex(p=>p.id===editingPromoId);if(i>=0)state.promos[i]=data;else state.promos.push(data)}else state.promos.push(data);
-      persist();
+      if(editingPromoId){const i=state.promos.findIndex(p=>String(p.id)===String(editingPromoId));if(i>=0)state.promos[i]=data;else state.promos.push(data)}else state.promos.push(data);
+      localStorage.setItem(storeKey,JSON.stringify(state));
+      try{syncCategoryRecordsFromPricing()}catch(syncErr){console.warn('Category sync after coupon save skipped:',syncErr)}
       const verify=JSON.parse(localStorage.getItem(storeKey)||'{}');
-      if(!(verify.promos||[]).some(p=>p.id===data.id))throw new Error('Coupon was not persisted');
+      if(!(verify.promos||[]).some(p=>String(p.id)===String(data.id)&&String(p.code||'').toUpperCase()===code))throw new Error('Coupon verification failed');
       closePromo();renderAll();toast(wasEditing?'Coupon updated successfully':'Coupon saved successfully');
-    }catch(err){console.error(err);toast('Could not save coupon. Please try again.')}finally{btn.disabled=false;btn.textContent='Save coupon'}
+    }catch(err){console.error('Coupon save failed:',err);if(!wasEditing)state.promos=state.promos.filter(p=>String(p.id)!==String(data.id));fail('Could not save coupon. Please try again.')}finally{btn.disabled=false;btn.textContent='Save coupon'}
   });
   $('deletePromo').addEventListener('click',()=>{if(!editingPromoId)return;state.promos=state.promos.filter(p=>p.id!==editingPromoId);if(appliedPromoId===editingPromoId){appliedPromoId=null;$('appliedCode').hidden=true}persist();closePromo();renderAll();toast('Coupon deleted')});
 
