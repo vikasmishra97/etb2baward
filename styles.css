@@ -1605,3 +1605,39 @@ body.entry-form-page .ef-next-btn span{font-size:14px!important}
 .pr-payment-options input[type="checkbox"]:checked{background:#d71322!important;border-color:#d71322!important}
 .pr-payment-options input[type="checkbox"]:checked:after{content:"✓";color:#fff;font-size:11px;font-weight:900;line-height:1}
 @media(max-width:900px){.pr-payment-grid{grid-template-columns:1fr!important}.pr-payment-options{display:grid!important;gap:8px!important}.pr-category-view-controls{align-items:flex-start}.pr-category-limit{margin-left:auto}}
+
+/* Entry Form - category form clone workflow */
+.ef-command-clone{border-color:#ddd4c9!important;background:#fffaf4!important;color:#6d3d00!important}
+.ef-command-clone:hover:not(:disabled){border-color:#d8a85f!important;background:#fff6e8!important}
+.ef-command-clone:disabled{opacity:.45;cursor:not-allowed}
+.ef-category-form-state-actions{display:flex;gap:8px;align-items:center;flex:0 0 auto}
+.ef-category-form-state-actions button.secondary{background:#fff;color:#8b3f00;border-color:#e6c7a7}
+.ef-clone-modal{position:fixed;inset:0;z-index:52;pointer-events:none;opacity:0;transition:.16s}
+.ef-clone-modal.open{pointer-events:auto;opacity:1}
+.ef-clone-backdrop{position:absolute;inset:0;background:rgba(12,14,24,.55);backdrop-filter:blur(3px)}
+.ef-clone-dialog{position:absolute;left:50%;top:50%;width:min(620px,calc(100% - 28px));max-height:calc(100% - 32px);transform:translate(-50%,-47%) scale(.985);background:#fff;border:1px solid #e6e0d8;border-radius:20px;box-shadow:0 28px 80px rgba(19,21,33,.28);overflow:auto;transition:.18s}
+.ef-clone-modal.open .ef-clone-dialog{transform:translate(-50%,-50%) scale(1)}
+.ef-clone-head{display:flex;justify-content:space-between;gap:18px;padding:20px 22px 16px;border-bottom:1px solid #ece8e3}
+.ef-clone-head h2{margin:3px 0 5px;font-size:20px;line-height:1.25}
+.ef-clone-head p{margin:0;color:var(--muted);font-size:12px;line-height:1.5;max-width:500px}
+.ef-clone-body{display:grid;gap:15px;padding:18px 22px}
+.ef-clone-target{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 13px;border:1px solid #f0d9b6;border-radius:12px;background:#fff9ef}
+.ef-clone-target span{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#9b661e}
+.ef-clone-target strong{font-size:13px;text-align:right}
+.ef-clone-body .field label{font-size:11px;font-weight:800;margin-bottom:6px}
+.ef-clone-body .field select{width:100%;min-height:42px;border:1px solid var(--line);border-radius:11px;padding:0 12px;background:#fff;font:inherit;font-size:12px}
+.ef-clone-body .field small{display:block;margin-top:5px;color:var(--muted);font-size:9px;line-height:1.45}
+.ef-clone-choice-group{display:grid;gap:7px;margin:0;padding:0;border:0}
+.ef-clone-choice-group[hidden]{display:none}
+.ef-clone-choice-group legend{margin-bottom:3px;font-size:10px;font-weight:850;color:#555b6f}
+.ef-clone-choice{display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:start;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer}
+.ef-clone-choice.active{border-color:#ddbbb0;background:#fff9f7;box-shadow:0 0 0 2px rgba(215,25,32,.04)}
+.ef-clone-choice input{width:16px;height:16px;margin:2px 0 0;accent-color:#d71920}
+.ef-clone-choice b{display:block;font-size:11px}
+.ef-clone-choice small{display:block;margin-top:2px;color:var(--muted);font-size:9px;line-height:1.45}
+.ef-clone-preview{padding:12px 13px;border-radius:12px;background:#f7f8fb;border:1px solid #e4e6ee;color:#656b7e;font-size:10px;line-height:1.5}
+.ef-clone-preview strong{display:block;color:#171923;font-size:12px;margin-bottom:2px}
+.ef-clone-preview span{display:block}.ef-clone-preview b{color:#171923}
+.ef-clone-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 22px 18px;border-top:1px solid #ece8e3;background:#fcfcfd}
+.ef-clone-foot .btn{min-height:38px;padding:0 15px;font-size:11px}
+@media(max-width:720px){.ef-category-form-state-actions{width:100%;flex-direction:column}.ef-category-form-state-actions button{width:100%}.ef-clone-head{padding:17px}.ef-clone-body{padding:15px 17px}.ef-clone-foot{padding:12px 17px 16px}.ef-clone-target{align-items:flex-start;flex-direction:column}.ef-clone-target strong{text-align:left}}

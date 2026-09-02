@@ -81,6 +81,7 @@
                 <button class="ef-command-btn" type="button" id="introToggleBtn" aria-expanded="false" aria-controls="formIntroPanel"><span>✎</span> Form intro</button>
                 <button class="ef-command-btn" type="button" id="builderCategoryPreviewBtn"><span>◉</span> Preview</button>
                 <button class="ef-command-btn ef-command-ai" type="button" id="copilotBtn"><span>✦</span> AI</button>
+                <button class="ef-command-btn ef-command-clone" type="button" id="cloneFormBtn"><span>⧉</span> Clone form</button>
                 <button class="ef-command-btn ef-command-save" type="button" id="saveBtn"><span>✓</span> Save</button>
                 <button class="btn primary ef-command-add" type="button" id="addQuestionBtn">+ Add question</button>
               </div>
@@ -352,6 +353,40 @@
     <div class="ef-import-foot">
       <button class="btn secondary" type="button" data-close-import>Cancel</button>
       <button class="btn primary" type="button" id="importAddBtn">Add questions</button>
+    </div>
+  </div>
+</div>
+
+<div class="ef-clone-modal" id="cloneFormModal" aria-hidden="true">
+  <div class="ef-clone-backdrop" data-close-clone></div>
+  <div class="ef-clone-dialog" role="dialog" aria-modal="true" aria-labelledby="cloneFormTitle">
+    <div class="ef-clone-head">
+      <div><span class="eyebrow">CLONE CATEGORY FORM</span><h2 id="cloneFormTitle">Reuse an existing category form</h2><p>Copy only category-specific content. Shared questions stay connected and are never duplicated.</p></div>
+      <button class="cat-close" type="button" data-close-clone>&times;</button>
+    </div>
+    <div class="ef-clone-body">
+      <div class="ef-clone-target"><span>Clone into</span><strong id="cloneTargetName">Selected category</strong></div>
+      <div class="field">
+        <label for="cloneSourceCategory">Clone from category</label>
+        <select id="cloneSourceCategory"></select>
+        <small id="cloneSourceHint">Choose a category that already has category-specific fields.</small>
+      </div>
+      <fieldset class="ef-clone-choice-group">
+        <legend>What to clone</legend>
+        <label class="ef-clone-choice active"><input type="radio" name="cloneMode" value="entire" checked><span><b>Entire category-specific form</b><small>Sections, questions and content blocks.</small></span></label>
+        <label class="ef-clone-choice"><input type="radio" name="cloneMode" value="sections"><span><b>Sections only</b><small>Copy category-specific section headings only.</small></span></label>
+        <label class="ef-clone-choice"><input type="radio" name="cloneMode" value="questions"><span><b>Questions only</b><small>Copy category-specific questions without sections.</small></span></label>
+      </fieldset>
+      <fieldset class="ef-clone-choice-group" id="cloneExistingGroup">
+        <legend>If this category already has specific fields</legend>
+        <label class="ef-clone-choice active"><input type="radio" name="cloneExisting" value="append" checked><span><b>Append</b><small>Keep existing fields and add the cloned fields after them.</small></span></label>
+        <label class="ef-clone-choice"><input type="radio" name="cloneExisting" value="replace"><span><b>Replace</b><small>Replace only this category's specific fields. Shared fields remain untouched.</small></span></label>
+      </fieldset>
+      <div class="ef-clone-preview" id="clonePreviewSummary">Select a source category to preview what will be copied.</div>
+    </div>
+    <div class="ef-clone-foot">
+      <button class="btn secondary" type="button" data-close-clone>Cancel</button>
+      <button class="btn primary" type="button" id="confirmCloneBtn">Clone form</button>
     </div>
   </div>
 </div>
@@ -795,6 +830,7 @@
     const specific=builderCategoryId?form.fields.filter(f=>f.visibility==='selected'&&f.categories.map(String).includes(String(builderCategoryId))):[];
     $('builderCommonCount').textContent=common.filter(isQuestion).length;
     $('builderSpecificCount').textContent=specific.filter(isQuestion).length;
+    if($('cloneFormBtn')){$('cloneFormBtn').disabled=!builderCategoryId;$('cloneFormBtn').title=builderCategoryId?'Clone another category form into this category':'Select a category to use Clone form'}
     $('builderScopeText').textContent=builderCategoryId?'Showing shared fields + fields for '+(categoryName(builderCategoryId)||'this category')+'. New questions and sections will be added to this category only.':'Manage the shared questions and sections that appear in every category form.';
     if($('compactScopeText'))$('compactScopeText').textContent=builderCategoryId?'Editing '+(categoryName(builderCategoryId)||'selected category'):'Manage the shared form';
     $('builderQuestionHelp').textContent=builderCategoryId?'You are editing '+(categoryName(builderCategoryId)||'this category')+'. Shared fields stay visible; new fields are category-specific by default.':'You are editing the shared form. New fields will appear in every category by default.';
@@ -812,11 +848,11 @@
       const specificQuestions=specific.filter(isQuestion).length;
       notice.hidden=false;
       if(specificQuestions===0){
-        notice.innerHTML='<div><span class="ef-category-form-state-kicker">CATEGORY FORM</span><strong>'+esc(cat)+'</strong><p>No category-specific questions have been created yet. The shared questions are shown below and will be used automatically.</p></div><button type="button" id="createCategoryQuestionBtn">+ Add first category question</button>';
+        notice.innerHTML='<div><span class="ef-category-form-state-kicker">CATEGORY FORM</span><strong>'+esc(cat)+'</strong><p>No category-specific questions have been created yet. Start fresh or reuse an existing category form.</p></div><div class="ef-category-form-state-actions"><button type="button" class="secondary" id="cloneEmptyCategoryBtn">⧉ Clone existing form</button><button type="button" id="createCategoryQuestionBtn">+ Create from scratch</button></div>';
       }else{
         notice.innerHTML='<div><span class="ef-category-form-state-kicker">CATEGORY FORM</span><strong>'+esc(cat)+'</strong><p>Showing all shared questions plus '+specificQuestions+' category-specific question'+(specificQuestions===1?'':'s')+'.</p></div><button type="button" id="createCategoryQuestionBtn">+ Add category question</button>';
       }
-      requestAnimationFrame(()=>{const btn=$('createCategoryQuestionBtn');if(btn)btn.onclick=()=>addFieldAfterActive('short')});
+      requestAnimationFrame(()=>{const btn=$('createCategoryQuestionBtn');if(btn)btn.onclick=()=>addFieldAfterActive('short');const cloneBtn=$('cloneEmptyCategoryBtn');if(cloneBtn)cloneBtn.onclick=openCloneForm});
     }else{
       notice.hidden=true;
       notice.innerHTML='';
@@ -891,6 +927,87 @@
   function closePreview(){$('previewModal').classList.remove('open');$('previewModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
   function renderPublicPreview(){const cat=$('previewCategory').value||categories[0]?.id||'';$('publicAwardName').textContent=award.name||'Untitled Award';$('publicFormTitle').textContent=$('formTitle').value||'Nomination form';$('publicFormIntro').textContent=$('formIntro').value||'';const visible=form.fields.filter(f=>fieldVisibleForCategory(f,cat));$('publicFields').innerHTML=visible.map(publicInput).join('')||'<div class="empty">No questions for this category yet.</div>'}
 
+  function specificFieldsForCategory(categoryId){
+    return form.fields.filter(f=>f.visibility==='selected'&&Array.isArray(f.categories)&&f.categories.map(String).includes(String(categoryId)));
+  }
+  function cloneableSourceCategories(){
+    return categories.filter(c=>String(c.id)!==String(builderCategoryId)&&specificFieldsForCategory(c.id).length>0);
+  }
+  function openCloneForm(){
+    if(!builderCategoryId){toast('Select a category first, then clone a category-specific form');return}
+    const sources=cloneableSourceCategories();
+    const sel=$('cloneSourceCategory');
+    $('cloneTargetName').textContent=categoryName(builderCategoryId)||'Selected category';
+    if(!sources.length){
+      sel.innerHTML='<option value="">No category-specific forms available</option>';
+      sel.disabled=true;$('confirmCloneBtn').disabled=true;
+      $('cloneSourceHint').textContent='Create a category-specific form in another category first.';
+    }else{
+      sel.disabled=false;$('confirmCloneBtn').disabled=false;
+      sel.innerHTML=sources.map(c=>{const count=specificFieldsForCategory(c.id).filter(isQuestion).length;return '<option value="'+esc(c.id)+'">'+esc(c.name)+' ('+count+' question'+(count===1?'':'s')+')</option>'}).join('');
+      $('cloneSourceHint').textContent='Only category-specific content is copied. Shared questions are not duplicated.';
+    }
+    const existing=specificFieldsForCategory(builderCategoryId).length;
+    $('cloneExistingGroup').hidden=!existing;
+    if(!existing){const a=document.querySelector('input[name="cloneExisting"][value="append"]');if(a)a.checked=true}
+    updateClonePreview();
+    $('cloneFormModal').classList.add('open');$('cloneFormModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+    setTimeout(()=>{if(!sel.disabled)sel.focus()},60);
+  }
+  function closeCloneForm(){$('cloneFormModal').classList.remove('open');$('cloneFormModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
+  function selectedCloneMode(){return (document.querySelector('input[name="cloneMode"]:checked')||{}).value||'entire'}
+  function selectedCloneExisting(){return (document.querySelector('input[name="cloneExisting"]:checked')||{}).value||'append'}
+  function cloneSourceFields(sourceId,mode){
+    const all=specificFieldsForCategory(sourceId);
+    if(mode==='sections')return all.filter(f=>f.type==='section');
+    if(mode==='questions')return all.filter(isQuestion);
+    return all;
+  }
+  function updateClonePreview(){
+    const sourceId=$('cloneSourceCategory').value;
+    if(!sourceId){$('clonePreviewSummary').textContent='No category-specific form is available to clone yet.';return}
+    const mode=selectedCloneMode();const fields=cloneSourceFields(sourceId,mode);
+    const sections=fields.filter(f=>f.type==='section').length;const questions=fields.filter(isQuestion).length;const content=fields.filter(f=>!isQuestion(f)&&f.type!=='section').length;
+    const sourceName=categoryName(sourceId)||'Source category';
+    $('clonePreviewSummary').innerHTML='<strong>'+esc(sourceName)+'</strong><span>'+questions+' question'+(questions===1?'':'s')+(sections?' · '+sections+' section'+(sections===1?'':'s'):'')+(content?' · '+content+' content block'+(content===1?'':'s'):'')+' will be copied into <b>'+esc(categoryName(builderCategoryId)||'this category')+'</b>.</span>';
+  }
+  function removeSpecificScopeForCategory(targetId){
+    form.fields=form.fields.reduce((out,f)=>{
+      if(f.visibility!=='selected'||!Array.isArray(f.categories)||!f.categories.map(String).includes(String(targetId))){out.push(f);return out}
+      const remaining=f.categories.filter(id=>String(id)!==String(targetId));
+      if(remaining.length){f.categories=remaining;out.push(f)}
+      return out;
+    },[]);
+  }
+  function performClone(){
+    const sourceId=$('cloneSourceCategory').value;if(!sourceId||!builderCategoryId)return;
+    const mode=selectedCloneMode();const sourceFields=cloneSourceFields(sourceId,mode);
+    if(!sourceFields.length){toast('There is nothing to clone for this option');return}
+    const existing=specificFieldsForCategory(builderCategoryId);
+    const replace=existing.length&&selectedCloneExisting()==='replace';
+    if(replace&&!confirm('Replace the existing category-specific fields for '+(categoryName(builderCategoryId)||'this category')+'? Shared questions will stay unchanged.'))return;
+    if(replace)removeSpecificScopeForCategory(builderCategoryId);
+    const sourceSpecificIds=new Set(specificFieldsForCategory(sourceId).map(f=>String(f.id)));
+    const idMap={};
+    sourceFields.forEach(f=>{idMap[String(f.id)]='q_'+Date.now()+'_'+Math.random().toString(36).slice(2,8)});
+    const clones=sourceFields.map(f=>{
+      const copy=normalizeField(JSON.parse(JSON.stringify(f)));
+      const oldId=String(f.id);copy.id=idMap[oldId];copy.visibility='selected';copy.categories=[String(builderCategoryId)];
+      copy.logic=Object.assign({enabled:false,fieldId:'',operator:'equals',value:''},copy.logic||{});
+      if(copy.logic.fieldId){
+        const ref=String(copy.logic.fieldId);
+        if(idMap[ref])copy.logic.fieldId=idMap[ref];
+        else if(sourceSpecificIds.has(ref)){copy.logic.enabled=false;copy.logic.fieldId='';copy.logic.value=''}
+      }
+      return copy;
+    });
+    let insertAt=form.fields.length;
+    for(let i=form.fields.length-1;i>=0;i--){const f=form.fields[i];if(f.visibility==='selected'&&Array.isArray(f.categories)&&f.categories.map(String).includes(String(builderCategoryId))){insertAt=i+1;break}}
+    form.fields.splice(insertAt,0,...clones);activeFieldId=clones[0]?.id||activeFieldId;save(true);closeCloneForm();
+    toast('Cloned '+clones.length+' field'+(clones.length===1?'':'s')+' from '+(categoryName(sourceId)||'category'));
+    requestAnimationFrame(()=>$('questionWorkspace')?.scrollIntoView({behavior:'smooth',block:'start'}));
+  }
+
   function openImport(){$('importQuestionText').value='';$('importScopeHint').textContent=builderCategoryId?'These questions will be added to '+(categoryName(builderCategoryId)||'the selected category')+' only.':'These questions will be shared across all categories.';$('importModal').classList.add('open');$('importModal').setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$('importQuestionText').focus(),60)}
   function closeImport(){$('importModal').classList.remove('open');$('importModal').setAttribute('aria-hidden','true');document.body.classList.remove('modal-open')}
   function importQuestions(){const lines=$('importQuestionText').value.split(/\n+/).map(x=>x.trim()).filter(Boolean);if(!lines.length){toast('Add at least one question');return}const type=$('importQuestionType').value;const fields=lines.map(line=>newField(type,line,builderCategoryId));insertFieldsAfterActive(fields,true);closeImport();toast(lines.length+' questions added')}
@@ -901,6 +1018,7 @@
   $('introToggleBtn').addEventListener('click',()=>{const panel=$('formIntroPanel');const willOpen=panel.hidden;panel.hidden=!willOpen;$('introToggleBtn').classList.toggle('active',willOpen);$('introToggleBtn').setAttribute('aria-expanded',String(willOpen));if(willOpen)requestAnimationFrame(()=>$('formTitle').focus({preventScroll:true}))});
   $('builderCategorySelect').addEventListener('change',e=>{builderCategoryId=e.target.value||'';try{localStorage.setItem(builderCategoryKey,builderCategoryId)}catch(err){}activeFieldId=builderFields()[0]?.id||null;updateUI();requestAnimationFrame(()=>$('questionWorkspace')?.scrollIntoView({behavior:'smooth',block:'start'}));});
   $('builderCategoryPreviewBtn').addEventListener('click',openPreview);
+  $('cloneFormBtn').addEventListener('click',openCloneForm);
   $('collapseSectionsBtn').addEventListener('click',()=>{builderSectionGroups().forEach(g=>{if(g.section)collapsedSections.add(g.section.id)});persistCollapsedSections();renderQuestions();toast('Sections collapsed')});
   $('expandSectionsBtn').addEventListener('click',()=>{collapsedSections.clear();persistCollapsedSections();renderQuestions();toast('Sections expanded')});
   $('addQuestionBtn').addEventListener('click',()=>addFieldAfterActive('short'));$('emptyGenerateBtn').addEventListener('click',()=>{$('generateFormBtn').click()});
@@ -937,6 +1055,10 @@
   $('questionToolbar').addEventListener('click',e=>{const b=e.target.closest('[data-toolbar-action]');if(!b)return;const action=b.dataset.toolbarAction;if(action==='add-question')addFieldAfterActive('short');if(action==='import')openImport();if(action==='add-title')addFieldAfterActive('heading');if(action==='add-image')addFieldAfterActive('image');if(action==='add-video')addFieldAfterActive('video');if(action==='add-section')addFieldAfterActive('section')});
 
   document.querySelectorAll('[data-close-import]').forEach(x=>x.addEventListener('click',closeImport));$('importAddBtn').addEventListener('click',importQuestions);
+  document.querySelectorAll('[data-close-clone]').forEach(x=>x.addEventListener('click',closeCloneForm));
+  $('cloneSourceCategory').addEventListener('change',updateClonePreview);
+  document.querySelectorAll('input[name="cloneMode"],input[name="cloneExisting"]').forEach(x=>x.addEventListener('change',()=>{document.querySelectorAll('.ef-clone-choice').forEach(label=>{const input=label.querySelector('input');label.classList.toggle('active',!!(input&&input.checked))});updateClonePreview()}));
+  $('confirmCloneBtn').addEventListener('click',performClone);
   document.querySelectorAll('[data-close-field]').forEach(x=>x.addEventListener('click',closeField));$('fieldType').addEventListener('change',()=>{draftField.type=$('fieldType').value;renderDrawerSpecial()});
   $('requiredToggle').addEventListener('click',()=>setToggle($('requiredToggle'),!$('requiredToggle').classList.contains('active')));$('logicToggle').addEventListener('click',()=>{draftField.logic.enabled=!$('logicToggle').classList.contains('active');setToggle($('logicToggle'),draftField.logic.enabled);renderLogicFields()});
   document.querySelectorAll('.ef-visibility-option').forEach(b=>b.addEventListener('click',()=>{visibilityMode=b.dataset.visibility;document.querySelectorAll('.ef-visibility-option').forEach(x=>x.classList.toggle('active',x===b));renderCategoryPicker()}));
@@ -952,7 +1074,7 @@
   document.querySelectorAll('[data-copilot-action]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.copilotAction;let msg='';if(a==='judge')msg='Your strongest judging-ready questions are Executive summary, Innovation & differentiation, and Impact & measurable results. Keep those required and mirror them in the scoring criteria.';if(a==='shorter')msg='The form is about '+estimateMinutes()+' minutes. Keep 3 core narrative questions, make supporting links optional, and avoid asking company information twice.';if(a==='evidence')msg='Ask for measurable outcomes inside the Impact question, then provide one optional supporting upload.';if(a==='category')msg=categories.length?'You have '+categories.length+' categories. Keep the core form universal and add only category-specific questions where judging genuinely differs.':'Add categories first, then I can suggest category-specific questions.';$('copilotAnswer').textContent=msg}));
 
   window.addEventListener('resize',positionToolbar);
-  window.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('importModal').classList.contains('open'))closeImport();else if($('fieldModal').classList.contains('open'))closeField();else if($('previewModal').classList.contains('open'))closePreview();else $('copilotPanel').classList.remove('open')}});
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('cloneFormModal').classList.contains('open'))closeCloneForm();else if($('importModal').classList.contains('open'))closeImport();else if($('fieldModal').classList.contains('open'))closeField();else if($('previewModal').classList.contains('open'))closePreview();else $('copilotPanel').classList.remove('open')}});
   updateUI();
 })();
 </script>
