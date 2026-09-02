@@ -10,6 +10,7 @@
   const settingsKey='etb2b_awards_category_settings_'+slug;
   const selectionKey='etb2b_public_category_selection_'+slug;
   const bucketKey='etb2b_public_nomination_bucket_'+slug;
+  const profileKey='etb2b_public_nominee_profile_'+slug;
   const settings=Object.assign({selectionMode:'multiple',maxSelections:5,autoImportAnswers:true,aiFinder:true},read(settingsKey,{}));
   let cats=read(categoryKey,[]);
   let masters=read(masterKey,[]);
@@ -43,7 +44,9 @@
   const masterFor=c=>masters.find(m=>String(m.id)===String(c.masterId))||masters.find(m=>m.name===c.group)||{id:'general',name:c.group||'General Awards',description:''};
   const areaLabel=v=>v==='national'?'National only':v==='international'?'International only':'National + International';
 
-  let selected=read(selectionKey,[]).map(String).filter(id=>openCats.some(c=>String(c.id)===id));
+  const existingBucket=read(bucketKey,{items:[]});
+  const submittedIds=new Set((Array.isArray(existingBucket.items)?existingBucket.items:[]).filter(x=>x&&x.submitted).map(x=>String(x.categoryId)));
+  let selected=read(selectionKey,[]).map(String).filter(id=>openCats.some(c=>String(c.id)===id)&&!submittedIds.has(id));
   if(settings.selectionMode==='single'&&selected.length>1)selected=selected.slice(0,1);
   if(settings.selectionMode==='multiple'&&Number(settings.maxSelections||0)>0&&selected.length>Number(settings.maxSelections))selected=selected.slice(0,Number(settings.maxSelections));
   localStorage.setItem(selectionKey,JSON.stringify(selected));
@@ -57,9 +60,10 @@
   function persist(){if(selectedOnly&&!selected.length)selectedOnly=false;localStorage.setItem(selectionKey,JSON.stringify(selected));renderDock();renderCatalog();renderRail();renderJourney()}
   function addOrToggle(id){
     id=String(id);
+    if(submittedIds.has(id)){toast('This category has already been submitted');return}
     if(settings.selectionMode==='single'){selected=[id];persist();toast('Category selected');return}
     if(selected.includes(id)){selected=selected.filter(x=>x!==id);persist();return}
-    const max=maxAllowed();if(max&&selected.length>=max){toast('You can select up to '+max+' categories');return}
+    const max=maxAllowed();if(max&&selected.length>=max){toast('You can select up to '+max+' new categories');return}
     selected.push(id);persist();toast('Added to nomination list');
   }
 
@@ -97,13 +101,13 @@
   }
 
   function cardHTML(c,index){
-    const m=masterFor(c),isSelected=selected.includes(String(c.id));
+    const m=masterFor(c),isSubmitted=submittedIds.has(String(c.id)),isSelected=selected.includes(String(c.id));
     return `<article class="subcategory-public-card ${isSelected?'selected':''}" data-card-id="${esc(c.id)}">
-      <div class="subcategory-card-top"><span>SUB CATEGORY ${String(index+1).padStart(2,'0')}</span><button type="button" class="subcategory-check ${isSelected?'checked':''}" data-select="${esc(c.id)}" aria-label="${isSelected?'Remove':'Select'} ${esc(c.name)}">${isSelected?'✓':''}</button></div>
+      <div class="subcategory-card-top"><span>SUB CATEGORY ${String(index+1).padStart(2,'0')}</span><button type="button" class="subcategory-check ${isSelected||isSubmitted?'checked':''}" ${isSubmitted?'disabled data-submitted-cat="1"':`data-select="${esc(c.id)}"`} aria-label="${isSubmitted?'Submitted':isSelected?'Remove':'Select'} ${esc(c.name)}">${isSubmitted?'✓':isSelected?'✓':''}</button></div>
       <h3>${esc(c.name)}</h3>
       <p>${esc(c.description||'Recognising excellence and measurable impact in this category.')}</p>
       <div class="subcategory-card-meta"><span>${esc(c.categoryType==='free'?'Free entry':moneyFor(c))}</span><span>${esc(areaLabel(c.allowedArea))}</span></div>
-      <div class="subcategory-card-footer"><button type="button" class="view-category" data-view="${esc(c.id)}">View details</button><button type="button" class="select-category ${isSelected?'selected':''}" data-select="${esc(c.id)}">${isSelected?'Selected':'Add category'} →</button></div>
+      <div class="subcategory-card-footer"><button type="button" class="view-category" data-view="${esc(c.id)}">View details</button><button type="button" class="select-category ${isSelected||isSubmitted?'selected':''}" ${isSubmitted?'disabled data-submitted-cat="1"':`data-select="${esc(c.id)}"`}>${isSubmitted?'Submitted ✓':isSelected?'Selected':'Add category'}${isSubmitted?'':' →'}</button></div>
     </article>`;
   }
 
@@ -133,14 +137,40 @@
 
   function openDetail(id){
     detailCat=categoryById(id);if(!detailCat)return;const m=masterFor(detailCat);
-    document.getElementById('detailGroup').textContent=(m.name||'AWARD CATEGORY').toUpperCase();document.getElementById('detailTitle').textContent=detailCat.name;document.getElementById('detailDescription').textContent=detailCat.description||'Recognising excellence and measurable impact in this category.';document.getElementById('detailEligibility').textContent=detailCat.eligibility||'Open eligibility. Review the award terms before submitting.';document.getElementById('detailFee').textContent=moneyFor(detailCat);document.getElementById('detailArea').textContent=areaLabel(detailCat.allowedArea);document.getElementById('detailLimit').textContent=String(detailCat.maxEntries||'0')==='0'?'No limit':'Max '+detailCat.maxEntries+' per entrant';const selectedNow=selected.includes(String(detailCat.id));document.getElementById('detailSelectBtn').textContent=selectedNow?'Remove from nomination list':'Add to nomination list';document.getElementById('categoryDetailModal').classList.add('open');document.getElementById('categoryDetailModal').setAttribute('aria-hidden','false');
+    document.getElementById('detailGroup').textContent=(m.name||'AWARD CATEGORY').toUpperCase();document.getElementById('detailTitle').textContent=detailCat.name;document.getElementById('detailDescription').textContent=detailCat.description||'Recognising excellence and measurable impact in this category.';document.getElementById('detailEligibility').textContent=detailCat.eligibility||'Open eligibility. Review the award terms before submitting.';document.getElementById('detailFee').textContent=moneyFor(detailCat);document.getElementById('detailArea').textContent=areaLabel(detailCat.allowedArea);document.getElementById('detailLimit').textContent=String(detailCat.maxEntries||'0')==='0'?'No limit':'Max '+detailCat.maxEntries+' per entrant';const selectedNow=selected.includes(String(detailCat.id)),submittedNow=submittedIds.has(String(detailCat.id));const detailBtn=document.getElementById('detailSelectBtn');detailBtn.disabled=submittedNow;detailBtn.textContent=submittedNow?'Already submitted ✓':selectedNow?'Remove from nomination list':'Add to nomination list';document.getElementById('categoryDetailModal').classList.add('open');document.getElementById('categoryDetailModal').setAttribute('aria-hidden','false');
   }
   function closeDetail(){document.getElementById('categoryDetailModal').classList.remove('open');document.getElementById('categoryDetailModal').setAttribute('aria-hidden','true')}
 
-  function syncBucketAndGo(){
-    if(!selected.length)return;let bucket=read(bucketKey,{});const prior=Array.isArray(bucket.items)?bucket.items:[];
-    bucket={award:award.name,slug,updatedAt:new Date().toISOString(),items:selected.map(id=>{const c=categoryById(id);const p=prior.find(x=>String(x.categoryId)===String(id))||{};return {categoryId:id,name:c?.name||p.name||'Category',group:masterFor(c||{}).name||c?.group||'',masterId:c?.masterId||'',fee:fee(c||{}),status:p.status||'Form not started',completed:!!p.completed}})};
+  function saveBucketAndGo(){
+    if(!selected.length)return;const current=read(bucketKey,{});const prior=Array.isArray(current.items)?current.items:[];
+    const submitted=prior.filter(x=>x&&x.submitted);
+    const working=selected.map(id=>{const c=categoryById(id),p=prior.find(x=>String(x.categoryId)===String(id))||{};return {categoryId:id,name:c?.name||p.name||'Category',group:masterFor(c||{}).name||c?.group||'',masterId:c?.masterId||'',fee:fee(c||{}),status:p.status||'Form not started',completed:!!p.completed,submitted:false,paymentId:p.paymentId||''}});
+    const items=[...submitted,...working.filter(x=>!submitted.some(s=>String(s.categoryId)===String(x.categoryId)))];
+    const bucket={award:award.name,slug,updatedAt:new Date().toISOString(),items};
     localStorage.setItem(bucketKey,JSON.stringify(bucket));location.href='nomination-bucket.html';
+  }
+  function profileComplete(profile){return ['name','email','company','designation','mobile'].every(k=>String(profile?.[k]||'').trim())}
+  function openEntrantDetails(force){
+    const profile=read(profileKey,{name:'',email:'',company:'',designation:'',mobile:''});
+    if(profileComplete(profile)&&!force)return false;
+    const modal=document.getElementById('entrantDetailsModal');
+    document.getElementById('entrantName').value=profile.name||'';document.getElementById('entrantEmail').value=profile.email||'';document.getElementById('entrantCompany').value=profile.company||'';document.getElementById('entrantDesignation').value=profile.designation||'';document.getElementById('entrantMobile').value=profile.mobile||'';
+    modal.classList.add('open');modal.setAttribute('aria-hidden','false');setTimeout(()=>document.getElementById('entrantName').focus(),40);return true;
+  }
+  function closeEntrantDetails(){const modal=document.getElementById('entrantDetailsModal');if(!modal)return;modal.classList.remove('open');modal.setAttribute('aria-hidden','true')}
+  function saveEntrantDetails(){
+    const els={name:document.getElementById('entrantName'),email:document.getElementById('entrantEmail'),company:document.getElementById('entrantCompany'),designation:document.getElementById('entrantDesignation'),mobile:document.getElementById('entrantMobile')};
+    const profile=Object.fromEntries(Object.entries(els).map(([k,el])=>[k,el.value.trim()]));let ok=true;
+    Object.values(els).forEach(el=>el.classList.remove('entrant-error'));Object.entries(els).forEach(([k,el])=>{if(!profile[k]){el.classList.add('entrant-error');ok=false}});
+    if(profile.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profile.email)){els.email.classList.add('entrant-error');ok=false}
+    if(!ok){toast('Please complete your registration details');return}
+    localStorage.setItem(profileKey,JSON.stringify(profile));
+    const registrations=read('etb2b_public_nomination_registrations',[]);
+    const existing=registrations.findIndex(r=>r.slug===slug&&String(r.email||'').toLowerCase()===profile.email.toLowerCase());
+    const registration=Object.assign({},profile,{award:award.name||'ETB2B Awards',slug,registeredAt:new Date().toISOString()});
+    if(existing>=0)registrations[existing]=registration;else registrations.push(registration);
+    localStorage.setItem('etb2b_public_nomination_registrations',JSON.stringify(registrations));
+    closeEntrantDetails();toast('Registration saved. Choose your categories.');
   }
 
   function aiTokens(text){const stop=new Set(['the','and','for','with','that','this','our','your','from','into','about','have','has','was','are','were','to','of','in','a','an','we','i','it','on','by']);return [...new Set(String(text||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(x=>x.length>2&&!stop.has(x)))]}
@@ -159,10 +189,11 @@
   if(aiToggle)aiToggle.addEventListener('click',()=>setAiOpen(aiToggle.getAttribute('aria-expanded')!=='true'));
   document.getElementById('aiRecommendBtn').addEventListener('click',()=>{setAiOpen(true);runAI()});
   document.querySelectorAll('[data-ai-example]').forEach(b=>b.addEventListener('click',()=>{setAiOpen(true);document.getElementById('aiCategoryInput').value=b.dataset.aiExample;runAI()}));
-  document.getElementById('reviewSelectionBtn').addEventListener('click',syncBucketAndGo);document.getElementById('heroReviewBtn').addEventListener('click',syncBucketAndGo);
+  document.getElementById('reviewSelectionBtn').addEventListener('click',saveBucketAndGo);document.getElementById('heroReviewBtn').addEventListener('click',saveBucketAndGo);
+  document.getElementById('entrantContinueBtn')?.addEventListener('click',saveEntrantDetails);
   document.querySelectorAll('[data-close-category-detail]').forEach(b=>b.addEventListener('click',closeDetail));
   document.getElementById('detailSelectBtn').addEventListener('click',()=>{if(!detailCat)return;addOrToggle(detailCat.id);openDetail(detailCat.id)});
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail()});
   if(settings.aiFinder===false)document.getElementById('categoryAiSection').hidden=true;
-  renderHero();renderRail();renderCatalog();renderDock();renderJourney();
+  renderHero();renderRail();renderCatalog();renderDock();renderJourney();openEntrantDetails(false);
 })();

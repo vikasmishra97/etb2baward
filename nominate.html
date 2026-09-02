@@ -114,6 +114,26 @@
   </article>
 </div>
 
+<div class="entrant-details-modal" id="entrantDetailsModal" aria-hidden="true">
+  <div class="entrant-details-backdrop"></div>
+  <section class="entrant-details-panel" role="dialog" aria-modal="true" aria-labelledby="entrantDetailsTitle">
+    <span class="pp-kicker">QUICK REGISTRATION</span>
+    <h2 id="entrantDetailsTitle">Start your nomination</h2>
+    <p>Share your basic details once to create your nomination profile. These details stay attached to every category you submit, so you never have to enter them again.</p>
+    <div class="entrant-details-grid">
+      <label><span>Name <em>*</em></span><input id="entrantName" autocomplete="name" placeholder="Your full name"></label>
+      <label><span>Work email <em>*</em></span><input id="entrantEmail" type="email" autocomplete="email" placeholder="name@company.com"></label>
+      <label><span>Company <em>*</em></span><input id="entrantCompany" autocomplete="organization" placeholder="Company name"></label>
+      <label><span>Designation <em>*</em></span><input id="entrantDesignation" autocomplete="organization-title" placeholder="Your designation"></label>
+      <label class="entrant-details-full"><span>Mobile <em>*</em></span><input id="entrantMobile" inputmode="tel" autocomplete="tel" placeholder="+91 98765 43210"></label>
+    </div>
+    <div class="entrant-details-note"><span>✓</span><div><b>One registration. Every nomination.</b><small>Your profile details will be automatically linked to all category forms and payments.</small></div></div>
+    <div class="entrant-details-actions entrant-details-actions-single">
+      <button type="button" class="category-primary" id="entrantContinueBtn">Continue to categories →</button>
+    </div>
+  </section>
+</div>
+
 <div class="category-selection-dock" id="categorySelectionDock" hidden>
   <div class="category-selection-dock-inner">
     <div class="category-dock-summary"><span class="category-dock-icon">✓</span><div><b><span id="dockCount">0</span> selected</b><small id="dockTotal">₹0 total entry fee</small></div></div>
