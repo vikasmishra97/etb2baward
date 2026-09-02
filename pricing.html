@@ -50,7 +50,7 @@
         <div>
           <div class="pr-kicker">BUILD · STEP 4 OF 5</div>
           <h1>Pricing & payments</h1>
-          <p>Set entry fees, time-based pricing, category overrides, discounts and taxes in one place.</p>
+          <p>Set entry fees, category pricing, promo codes, discounts and taxes in one place.</p>
         </div>
         <div class="top-actions">
           <button class="btn secondary" id="previewCheckoutTop">Preview checkout</button>
@@ -89,7 +89,7 @@
               </button>
               <button class="pr-choice active" data-entry-mode="paid">
                 <span class="pr-radio"></span>
-                <div><b>Paid entries</b><small>Charge a base fee and optionally add phases, discounts and promo codes.</small></div>
+                <div><b>Paid entries</b><small>Charge a base fee and optionally add category pricing, discounts and promo codes.</small></div>
                 <em id="paidChoiceAmount">₹2,000</em>
               </button>
             </div>
@@ -128,56 +128,16 @@
 
             <section class="card pad pr-card">
               <div class="section-title pr-section-title">
-                <div><span class="pr-step">03</span><h2>Pricing timeline</h2><p>Create early-bird, regular and late-entry windows. Turn off any phase you do not need.</p></div>
-                <button class="btn secondary pr-small-btn" id="resetPhases">Reset phases</button>
+                <div><span class="pr-step">03</span><h2>Promo codes</h2><p>Create discount or complimentary codes here. Active codes can be entered directly on the entrant payment page.</p></div>
+                <button class="btn secondary pr-small-btn" id="newPromo">+ New promo code</button>
               </div>
-
-              <div class="pr-phase-list">
-                <article class="pr-phase" data-phase="early">
-                  <div class="pr-phase-head">
-                    <button class="pr-toggle active" data-toggle-phase="early" aria-label="Toggle early bird"><i></i></button>
-                    <div class="pr-phase-icon">↘</div>
-                    <div class="pr-phase-title"><b>Early bird</b><small>Reward entrants who submit early</small></div>
-                    <span class="badge green" id="earlyBadge">20% off</span>
-                  </div>
-                  <div class="pr-phase-fields" id="earlyFields">
-                    <div class="field"><label>Discount</label><div class="pr-affix-input"><input id="earlyDiscount" type="number" min="0" max="90" value="20"><span>% off</span></div></div>
-                    <div class="field"><label>Starts</label><input id="earlyStart" type="date"></div>
-                    <div class="field"><label>Ends</label><input id="earlyEnd" type="date"></div>
-                    <div class="pr-phase-price"><small>Effective fee</small><b id="earlyPrice">₹1,600</b></div>
-                  </div>
-                </article>
-
-                <article class="pr-phase" data-phase="regular">
-                  <div class="pr-phase-head">
-                    <button class="pr-toggle active locked" aria-label="Regular pricing is always on"><i></i></button>
-                    <div class="pr-phase-icon">—</div>
-                    <div class="pr-phase-title"><b>Regular</b><small>Your standard entry fee</small></div>
-                    <span class="badge" id="regularBadge">Base price</span>
-                  </div>
-                  <div class="pr-phase-fields">
-                    <div class="field"><label>Price</label><div class="pr-money-input"><span class="currencyMirror">₹</span><input id="regularPrice" type="number" min="0" value="2000"></div></div>
-                    <div class="field"><label>Starts</label><input id="regularStart" type="date"></div>
-                    <div class="field"><label>Ends</label><input id="regularEnd" type="date"></div>
-                    <div class="pr-phase-price"><small>Effective fee</small><b id="regularPriceLabel">₹2,000</b></div>
-                  </div>
-                </article>
-
-                <article class="pr-phase" data-phase="late">
-                  <div class="pr-phase-head">
-                    <button class="pr-toggle active" data-toggle-phase="late" aria-label="Toggle late entry"><i></i></button>
-                    <div class="pr-phase-icon">↗</div>
-                    <div class="pr-phase-title"><b>Late entry</b><small>Add a premium after the main deadline</small></div>
-                    <span class="badge orange" id="lateBadge">10% premium</span>
-                  </div>
-                  <div class="pr-phase-fields" id="lateFields">
-                    <div class="field"><label>Premium</label><div class="pr-affix-input"><input id="latePremium" type="number" min="0" max="90" value="10"><span>% extra</span></div></div>
-                    <div class="field"><label>Starts</label><input id="lateStart" type="date"></div>
-                    <div class="field"><label>Ends</label><input id="lateEnd" type="date"></div>
-                    <div class="pr-phase-price"><small>Effective fee</small><b id="latePrice">₹2,200</b></div>
-                  </div>
-                </article>
+              <div class="pr-promo-table-wrap">
+                <table class="table pr-promo-table">
+                  <thead><tr><th>Code</th><th>Offer</th><th>Usage</th><th>Status</th><th></th></tr></thead>
+                  <tbody id="promoRows"></tbody>
+                </table>
               </div>
+              <div class="pr-empty-state compact" id="promoEmpty" hidden><b>No promo codes yet</b><p>Create a code for partners, jury members or special campaigns.</p></div>
             </section>
 
             <section class="card pad pr-card">
@@ -244,21 +204,7 @@
 
             <section class="card pad pr-card">
               <div class="section-title pr-section-title">
-                <div><span class="pr-step">07</span><h2>Promo codes</h2><p>Create partner, sponsor or campaign codes without changing your public fee.</p></div>
-                <button class="btn secondary pr-small-btn" id="newPromo">+ New promo code</button>
-              </div>
-              <div class="pr-promo-table-wrap">
-                <table class="table pr-promo-table">
-                  <thead><tr><th>Code</th><th>Offer</th><th>Usage</th><th>Status</th><th></th></tr></thead>
-                  <tbody id="promoRows"></tbody>
-                </table>
-              </div>
-              <div class="pr-empty-state compact" id="promoEmpty" hidden><b>No promo codes yet</b><p>Create a code for partners, jury members or special campaigns.</p></div>
-            </section>
-
-            <section class="card pad pr-card">
-              <div class="section-title pr-section-title">
-                <div><span class="pr-step">08</span><h2>Payment setup</h2><p>Choose how payment should work after an entrant submits. Gateway buttons are demo-only.</p></div>
+                <div><span class="pr-step">07</span><h2>Payment setup</h2><p>Choose how payment should work after an entrant submits. Gateway buttons are demo-only.</p></div>
                 <span class="badge orange">Connect later</span>
               </div>
               <div class="pr-payment-grid">
@@ -287,7 +233,7 @@
               <div class="pr-checkout-brand"><div class="brandmark">A</div><div><b id="checkoutAwardName">India FinTech Awards 2027</b><small>Secure award entry</small></div></div>
               <div class="field"><label>Category</label><select id="checkoutCategory"></select></div>
               <div class="field"><label>Number of entries</label><select id="checkoutQty"><option value="1">1 entry</option><option value="2">2 entries</option><option value="3">3 entries</option><option value="4">4 entries</option><option value="5">5 entries</option></select></div>
-              <div class="field"><label>Pricing window</label><select id="checkoutPhase"><option value="early">Early bird</option><option value="regular" selected>Regular</option><option value="late">Late entry</option></select></div>
+              <select id="checkoutPhase" aria-hidden="true" tabindex="-1" style="display:none"><option value="regular" selected>Regular</option></select>
               <div class="pr-promo-apply"><input id="checkoutPromo" placeholder="Promo code"><button id="applyPromo">Apply</button></div>
               <div class="pr-applied-code" id="appliedCode" hidden><span id="appliedCodeText">PARTNER20 applied</span><button id="removePromo">×</button></div>
               <div class="pr-price-lines">
@@ -309,7 +255,7 @@
             <div class="progress"><span id="pricingHealthBar" style="width:92%"></span></div>
             <div class="pr-health-list">
               <div><span id="healthBaseIcon">✓</span><p><b>Base fee configured</b><small id="healthBaseText">₹2,000 per entry</small></p></div>
-              <div><span id="healthPhasesIcon">✓</span><p><b>Pricing windows</b><small id="healthPhasesText">3 active phases</small></p></div>
+              <div><span id="healthPhasesIcon">✓</span><p><b>Promo codes</b><small id="healthPhasesText">2 active promo codes</small></p></div>
               <div><span id="healthTaxIcon">✓</span><p><b>Tax configured</b><small id="healthTaxText">18% GST at checkout</small></p></div>
               <div><span id="healthGatewayIcon">○</span><p><b>Payment gateway</b><small>Connect before launch</small></p></div>
             </div>
@@ -394,6 +340,7 @@
 
   const saved=(()=>{try{return JSON.parse(localStorage.getItem(storeKey)||'null')}catch(e){return null}})();
   if(saved)deepAssign(state,saved);
+  state.phases.early.enabled=false; state.phases.late.enabled=false;
   seedDates();
   seedCategoryOverrides();
 
@@ -423,9 +370,9 @@
   }
   function syncInputs(){
     $('currency').value=state.currency;$('baseFee').value=state.baseFee;$('priceDisplay').value=state.priceDisplay;
-    $('earlyDiscount').value=state.phases.early.discount;$('earlyStart').value=state.phases.early.start;$('earlyEnd').value=state.phases.early.end;
-    $('regularPrice').value=state.baseFee;$('regularStart').value=state.phases.regular.start;$('regularEnd').value=state.phases.regular.end;
-    $('latePremium').value=state.phases.late.premium;$('lateStart').value=state.phases.late.start;$('lateEnd').value=state.phases.late.end;
+    if($('earlyDiscount')){$('earlyDiscount').value=state.phases.early.discount;$('earlyStart').value=state.phases.early.start;$('earlyEnd').value=state.phases.early.end;}
+    if($('regularPrice')){$('regularPrice').value=state.baseFee;$('regularStart').value=state.phases.regular.start;$('regularEnd').value=state.phases.regular.end;}
+    if($('latePremium')){$('latePremium').value=state.phases.late.premium;$('lateStart').value=state.phases.late.start;$('lateEnd').value=state.phases.late.end;}
     $('multiThreshold').value=state.multi.threshold;$('multiDiscount').value=state.multi.discount;
     $('taxLabel').value=state.tax.label;$('taxRate').value=state.tax.rate;$('taxMode').value=state.tax.mode;
     $('invoiceToggle').checked=!!state.invoice;$('partialToggle').checked=!!state.partial;$('receiptToggle').checked=!!state.receipt;$('projectedEntries').value=state.projectedEntries;
@@ -474,7 +421,7 @@
   }
   function renderCheckoutOptions(){
     const current=$('checkoutCategory').value;const opts=categories.length?categories:[{id:'base',name:'Standard entry'}];$('checkoutCategory').innerHTML=opts.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join('');if(opts.some(c=>String(c.id)===String(current)))$('checkoutCategory').value=current;
-    ['early','late'].forEach(ph=>{$('checkoutPhase').querySelector(`option[value="${ph}"]`).disabled=!state.phases[ph].enabled});if($('checkoutPhase').selectedOptions[0]?.disabled)$('checkoutPhase').value='regular';
+    const phaseEl=$('checkoutPhase'); if(phaseEl) phaseEl.value='regular';
   }
   function renderCheckout(){
     if(state.entryMode==='free'){
@@ -492,25 +439,25 @@
   }
   function renderSummary(){
     const base=Number(state.baseFee||0),early=base*(1-Number(state.phases.early.discount||0)/100),late=base*(1+Number(state.phases.late.premium||0)/100);
-    $('baseCurrencySymbol').textContent=symbol();document.querySelectorAll('.currencyMirror').forEach(e=>e.textContent=symbol());$('paidChoiceAmount').textContent=money(base);$('regularPrice').value=state.baseFee;$('earlyPrice').textContent=money(early);$('regularPriceLabel').textContent=money(state.baseFee);$('latePrice').textContent=money(late);$('earlyBadge').textContent=Number(state.phases.early.discount||0)+'% off';$('lateBadge').textContent=Number(state.phases.late.premium||0)+'% premium';
+    $('baseCurrencySymbol').textContent=symbol();document.querySelectorAll('.currencyMirror').forEach(e=>e.textContent=symbol());$('paidChoiceAmount').textContent=money(base);if($('regularPrice'))$('regularPrice').value=state.baseFee;if($('earlyPrice'))$('earlyPrice').textContent=money(early);if($('regularPriceLabel'))$('regularPriceLabel').textContent=money(state.baseFee);if($('latePrice'))$('latePrice').textContent=money(late);if($('earlyBadge'))$('earlyBadge').textContent=Number(state.phases.early.discount||0)+'% off';if($('lateBadge'))$('lateBadge').textContent=Number(state.phases.late.premium||0)+'% premium';
     $('multiExample').textContent=Number(state.multi.threshold||3)+' entries save '+money(base*Number(state.multi.threshold||3)*Number(state.multi.discount||0)/100);
-    $('copilotSummary').textContent=`Try ${Number(state.phases.early.discount||20)}% early-bird savings, ${money(base)} during the main window, then a ${Number(state.phases.late.premium||10)}% late-entry premium.`;
+    $('copilotSummary').textContent=`Keep the public fee simple at ${money(base)} and use targeted promo codes when you need partner, sponsor or campaign discounts.`;
   }
   function renderHealth(){
     let score=state.entryMode==='free'?100:35;if(state.entryMode==='paid'){if(state.baseFee>0)score+=20;if(state.phases.early.enabled||state.phases.late.enabled)score+=15;if(state.tax.enabled)score+=10;if(state.gateway)score+=10;if(state.promos.length)score+=5;if(state.multi.enabled)score+=5;}score=Math.min(100,score);$('pricingHealth').textContent=score+'%';$('pricingHealthBar').style.width=score+'%';
-    $('healthBaseText').textContent=state.entryMode==='free'?'Free entries':money(state.baseFee)+' per entry';$('healthPhasesText').textContent=state.entryMode==='free'?'Not required':[state.phases.early.enabled,true,state.phases.late.enabled].filter(Boolean).length+' active phases';$('healthTaxText').textContent=state.tax.enabled?Number(state.tax.rate||0)+'% '+(state.tax.label||'Tax')+(state.tax.mode==='exclusive'?' at checkout':' included'):'Tax disabled';
+    $('healthBaseText').textContent=state.entryMode==='free'?'Free entries':money(state.baseFee)+' per entry';$('healthPhasesText').textContent=(state.promos||[]).filter(p=>p.status==='active').length+' active promo code'+((state.promos||[]).filter(p=>p.status==='active').length===1?'':'s');$('healthTaxText').textContent=state.tax.enabled?Number(state.tax.rate||0)+'% '+(state.tax.label||'Tax')+(state.tax.mode==='exclusive'?' at checkout':' included'):'Tax disabled';
   }
   function renderProjection(){const entries=Math.max(0,Number(state.projectedEntries||0));const gross=state.entryMode==='free'?0:entries*Number(state.baseFee||0);$('projectedRevenue').textContent=money(gross);$('projectionNote').textContent=state.entryMode==='free'?'free-entry award':'before discounts and tax'}
   function renderAll(){syncInputs();renderSummary();renderCategoryPricing();renderPromos();renderCheckoutOptions();renderCheckout();renderHealth();renderProjection()}
 
-  function bindValue(id,fn,event='input'){const el=$(id);el.addEventListener(event,()=>{fn(el.value);persist();renderAll()})}
+  function bindValue(id,fn,event='input'){const el=$(id);if(!el)return;el.addEventListener(event,()=>{fn(el.value);persist();renderAll()})}
   document.querySelectorAll('[data-entry-mode]').forEach(b=>b.addEventListener('click',()=>{state.entryMode=b.dataset.entryMode;persist();renderAll();toast(state.entryMode==='free'?'Free entry model selected':'Paid entry model selected')}));
   bindValue('currency',v=>state.currency=v,'change');bindValue('baseFee',v=>{state.baseFee=Math.max(0,Number(v||0));if(!saved||Number(state.phases.regular.price)===Number(award.baseFee||2000))state.phases.regular.price=state.baseFee});bindValue('priceDisplay',v=>state.priceDisplay=v,'change');
   bindValue('earlyDiscount',v=>state.phases.early.discount=Math.max(0,Number(v||0)));bindValue('earlyStart',v=>state.phases.early.start=v,'change');bindValue('earlyEnd',v=>state.phases.early.end=v,'change');
   bindValue('regularPrice',v=>{state.baseFee=Math.max(0,Number(v||0));state.phases.regular.price=state.baseFee});bindValue('regularStart',v=>state.phases.regular.start=v,'change');bindValue('regularEnd',v=>state.phases.regular.end=v,'change');
   bindValue('latePremium',v=>state.phases.late.premium=Math.max(0,Number(v||0)));bindValue('lateStart',v=>state.phases.late.start=v,'change');bindValue('lateEnd',v=>state.phases.late.end=v,'change');
   document.querySelectorAll('[data-toggle-phase]').forEach(b=>b.addEventListener('click',()=>{const ph=b.dataset.togglePhase;state.phases[ph].enabled=!state.phases[ph].enabled;persist();renderAll()}));
-  $('resetPhases').addEventListener('click',()=>{state.phases.early.enabled=true;state.phases.early.discount=20;state.phases.late.enabled=true;state.phases.late.premium=10;state.phases.regular.price=state.baseFee;state.phases.early.start=award.openDate||state.phases.early.start;state.phases.early.end=dateAdd(state.phases.early.start,30);state.phases.regular.start=dateAdd(state.phases.early.end,1);state.phases.regular.end=award.closeDate||state.phases.regular.end;state.phases.late.start=dateAdd(state.phases.regular.end,1);state.phases.late.end=dateAdd(state.phases.regular.end,14);persist();renderAll();toast('Pricing phases reset')});
+  if($('resetPhases'))$('resetPhases').addEventListener('click',()=>{state.phases.early.enabled=true;state.phases.early.discount=20;state.phases.late.enabled=true;state.phases.late.premium=10;state.phases.regular.price=state.baseFee;state.phases.early.start=award.openDate||state.phases.early.start;state.phases.early.end=dateAdd(state.phases.early.start,30);state.phases.regular.start=dateAdd(state.phases.early.end,1);state.phases.regular.end=award.closeDate||state.phases.regular.end;state.phases.late.start=dateAdd(state.phases.regular.end,1);state.phases.late.end=dateAdd(state.phases.regular.end,14);persist();renderAll();toast('Pricing phases reset')});
   $('selectAllCategories').addEventListener('change',()=>{const q=categoryPricingQuery.trim().toLowerCase();const visible=q?categories.filter(c=>String(c.name||'').toLowerCase().includes(q)):categories;if($('selectAllCategories').checked)visible.forEach(c=>selectedCategoryIds.add(String(c.id)));else visible.forEach(c=>selectedCategoryIds.delete(String(c.id)));renderCategoryPricing()});
   $('clearCategorySelection').addEventListener('click',()=>{selectedCategoryIds.clear();renderCategoryPricing()});
   $('categoryPricingSearch').addEventListener('input',()=>{categoryPricingQuery=$('categoryPricingSearch').value||'';$('clearCategorySearch').hidden=!categoryPricingQuery;renderCategoryPricing()});
@@ -522,7 +469,7 @@
   document.querySelectorAll('.pr-gateway').forEach(b=>b.addEventListener('click',()=>{state.gateway=b.dataset.gateway;persist();renderAll();toast(b.querySelector('b').textContent+' selected for demo')}));
   [['invoiceToggle','invoice'],['partialToggle','partial'],['receiptToggle','receipt']].forEach(([id,key])=>$(id).addEventListener('change',()=>{state[key]=$(id).checked;persist()}));
   $('projectedEntries').addEventListener('input',()=>{state.projectedEntries=Math.max(0,Number($('projectedEntries').value||0));persist();renderProjection()});
-  ['checkoutCategory','checkoutQty','checkoutPhase'].forEach(id=>$(id).addEventListener('change',renderCheckout));
+  ['checkoutCategory','checkoutQty','checkoutPhase'].forEach(id=>{const el=$(id);if(el)el.addEventListener('change',renderCheckout)});
   $('applyPromo').addEventListener('click',()=>{const code=$('checkoutPromo').value.trim().toUpperCase();const promo=activePromos().find(p=>p.code.toUpperCase()===code);if(!promo){toast('Promo code not found or inactive');return}appliedPromoId=promo.id;$('appliedCode').hidden=false;$('appliedCodeText').textContent=promo.code+' · '+promoOffer(promo);$('checkoutPromo').value='';renderCheckout();toast('Promo code applied')});
   $('removePromo').addEventListener('click',()=>{appliedPromoId=null;$('appliedCode').hidden=true;renderCheckout()});
   $('testCheckout').addEventListener('click',()=>toast('Demo checkout only — payment gateway not connected'));

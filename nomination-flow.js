@@ -15,6 +15,7 @@
   const paymentKey='etb2b_public_payment_'+slug;
   const checkoutKey='etb2b_public_checkout_selection_'+slug;
   const nominationReportKey='etb2b_public_nomination_reports_'+slug;
+  const pricingKey='etb2b_awards_pricing_'+slug;
 
   const esc=s=>String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]));
   const symbols={INR:'₹',USD:'$',AED:'د.إ',GBP:'£',SGD:'S$'};
@@ -22,6 +23,7 @@
   const baseFee=award.entryType==='free'?0:Number(award.baseFee||0);
   const money=n=>Number(n||0)===0?'Free':sym+Number(n||0).toLocaleString('en-IN');
   const settings=read(settingsKey,{selectionMode:'multiple',maxSelections:5,autoImportAnswers:true,aiFinder:true});
+  let pricing=read(pricingKey,{});
   const cats=read(catKey,[]);
   const form=read(formKey,{title:'Nomination form',intro:'Tell us what makes your work exceptional.',fields:[]});
   let selected=read(selectionKey,[]).map(String);
@@ -43,7 +45,7 @@
   function write(k,v){localStorage.setItem(k,JSON.stringify(v))}
   function toast(msg){const t=document.getElementById('publicToast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
   function cat(id){return cats.find(c=>String(c.id)===String(id))||bucket.items?.find(x=>String(x.categoryId)===String(id))||{id,name:'Category',fee:baseFee}}
-  function catFee(c){return c.feeMode==='custom'?Number(c.fee||0):Number(c.fee??baseFee)}
+  function catFee(c){const ov=pricing&&pricing.categoryOverrides&&pricing.categoryOverrides[String(c.id)];if(ov&&ov.enabled)return Number(ov.fee||0);if(pricing&&Number.isFinite(Number(pricing.baseFee)))return Number(pricing.baseFee||0);return c.feeMode==='custom'?Number(c.fee||0):Number(c.fee??baseFee)}
   function semantic(f){return String(f.label||f.id||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}
   function visibleFields(catId){return (form.fields||[]).filter(f=>f.visibility!=='selected'||!(f.categories||[]).length||(f.categories||[]).map(String).includes(String(catId)))}
   function answerKey(catId){return 'etb2b_public_nomination_answers_'+slug+'_'+catId}
@@ -434,34 +436,97 @@
 
   function initCheckout(){
     bucket=syncBucket();
+    pricing=read(pricingKey,pricing||{});
     const ids=read(checkoutKey,[]).map(String);
     const payable=bucket.items.filter(x=>ids.includes(String(x.categoryId))&&x.completed&&!x.submitted);
     if(!payable.length){location.href='nomination-bucket.html';return}
     document.getElementById('checkoutCount').textContent=payable.length+' nomination'+(payable.length===1?'':'s');
-    document.getElementById('checkoutList').innerHTML=payable.map(x=>`<div class="checkout-item"><div><b>${esc(x.name)}</b><small>Form complete · ready to submit</small></div><span>${money(x.fee)}</span></div>`).join('');
-    const subtotal=payable.reduce((n,x)=>n+Number(x.fee||0),0),taxPercent=Number(award.taxPercent??18),tax=subtotal>0?Math.round(subtotal*taxPercent/100):0,grand=subtotal+tax;
-    document.getElementById('checkoutSubtotal').textContent=money(subtotal);
-    document.getElementById('checkoutTax').textContent=subtotal?money(tax)+' ('+taxPercent+'%)':money(0);
-    document.getElementById('checkoutGrand').textContent=money(grand);
+    document.getElementById('checkoutList').innerHTML=payable.map(x=>`<div class="checkout-item"><div><b>${esc(x.name)}</b><small>Form complete · ready to submit</small></div><span>${money(catFee(cat(x.categoryId)))}</span></div>`).join('');
+
+    const rawSubtotal=payable.reduce((n,x)=>n+Number(catFee(cat(x.categoryId))||0),0);
+    const multiCfg=pricing.multi||{};
+    const multiEligible=!!multiCfg.enabled&&payable.length>=Number(multiCfg.threshold||3);
+    const multiDiscount=multiEligible?rawSubtotal*Number(multiCfg.discount||0)/100:0;
+    let appliedPromo=null;
+    let totals={subtotal:rawSubtotal,multiDiscount,promoDiscount:0,tax:0,grand:0,taxPercent:0};
+
+    const nowDate=()=>{const d=new Date();return d.toISOString().slice(0,10)};
+    function promoIsUsable(p){
+      if(!p||p.status!=='active')return false;
+      const today=nowDate();
+      if(p.start&&today<p.start)return false;
+      if(p.end&&today>p.end)return false;
+      const limit=Number(p.limit||0);if(limit>0&&Number(p.used||0)>=limit)return false;
+      return true;
+    }
+    function promoOffer(p){if(!p)return'';if(p.type==='free')return'100% off';if(p.type==='percent')return Number(p.value||0)+'% off';return money(Number(p.value||0))+' off'}
+    function calculate(){
+      const afterMulti=Math.max(0,rawSubtotal-multiDiscount);
+      let promoDiscount=0;
+      if(appliedPromo){
+        if(appliedPromo.type==='free')promoDiscount=afterMulti;
+        else if(appliedPromo.type==='percent')promoDiscount=afterMulti*Number(appliedPromo.value||0)/100;
+        else promoDiscount=Math.min(afterMulti,Number(appliedPromo.value||0));
+      }
+      const taxable=Math.max(0,afterMulti-promoDiscount);
+      const taxCfg=pricing.tax||{};
+      const taxPercent=taxCfg.enabled===false?0:Number(taxCfg.rate??award.taxPercent??18);
+      let tax=0,grand=taxable;
+      if(taxPercent>0){
+        if(taxCfg.mode==='inclusive'){tax=taxable*(taxPercent/(100+taxPercent));grand=taxable}
+        else{tax=taxable*taxPercent/100;grand=taxable+tax}
+      }
+      totals={subtotal:rawSubtotal,multiDiscount,promoDiscount,tax:Math.round(tax),grand:Math.round(grand),taxPercent};
+      document.getElementById('checkoutSubtotal').textContent=money(rawSubtotal);
+      const mr=document.getElementById('checkoutMultiRow');mr.hidden=!multiEligible;document.getElementById('checkoutMultiDiscount').textContent='−'+money(multiDiscount);
+      const pr=document.getElementById('checkoutPromoRow');pr.hidden=!appliedPromo;document.getElementById('checkoutPromoDiscount').textContent='−'+money(promoDiscount);
+      document.getElementById('checkoutTaxLabel').textContent=(taxCfg.label||'GST')+(taxPercent?' ('+taxPercent+'%)':'');
+      document.getElementById('checkoutTax').textContent=money(totals.tax);
+      document.getElementById('checkoutGrand').textContent=money(totals.grand);
+      const btn=document.getElementById('paySubmitBtn');
+      btn.textContent=totals.grand===0?'Submit selected nominations':'Pay & submit nominations';
+    }
+    function setPromoMessage(msg,isError){
+      const err=document.getElementById('paymentPromoError');const ok=document.getElementById('paymentPromoStatus');
+      err.hidden=!isError;ok.hidden=!!isError||!msg;if(isError)err.textContent=msg;else if(msg)document.getElementById('paymentPromoStatusText').textContent=msg;
+    }
+    const promoInput=document.getElementById('paymentPromoCode');
+    promoInput.addEventListener('input',()=>{promoInput.value=promoInput.value.toUpperCase().replace(/[^A-Z0-9_-]/g,'');document.getElementById('paymentPromoError').hidden=true});
+    document.getElementById('paymentApplyPromo').addEventListener('click',()=>{
+      const code=promoInput.value.trim().toUpperCase();
+      if(!code){setPromoMessage('Enter a promo code first.',true);promoInput.focus();return}
+      const p=(pricing.promos||[]).find(x=>String(x.code||'').toUpperCase()===code);
+      if(!p){setPromoMessage('This promo code does not exist.',true);return}
+      if(!promoIsUsable(p)){
+        let msg='This promo code is not currently available.';const today=nowDate();
+        if(p.status!=='active')msg='This promo code is inactive.';else if(p.start&&today<p.start)msg='This promo code is not active yet.';else if(p.end&&today>p.end)msg='This promo code has expired.';else if(Number(p.limit||0)>0&&Number(p.used||0)>=Number(p.limit||0))msg='This promo code has reached its usage limit.';
+        setPromoMessage(msg,true);return;
+      }
+      appliedPromo=p;promoInput.value='';setPromoMessage('✓ '+p.code+' applied · '+promoOffer(p),false);calculate();
+    });
+    document.getElementById('paymentRemovePromo').addEventListener('click',()=>{appliedPromo=null;document.getElementById('paymentPromoStatus').hidden=true;document.getElementById('paymentPromoError').hidden=true;calculate()});
+    calculate();
+
     let method='Card';
     document.querySelectorAll('[data-method]').forEach(b=>b.addEventListener('click',()=>{method=b.dataset.method;document.querySelectorAll('[data-method]').forEach(x=>x.classList.toggle('active',x===b))}));
     const btn=document.getElementById('paySubmitBtn');
-    if(grand===0)btn.textContent='Submit selected nominations';
     btn.addEventListener('click',()=>{
       const ok=window.confirm('Final submission: once payment is completed, these nomination forms will be locked and cannot be edited. Please confirm that you have reviewed your answers.');
       if(!ok)return;
-      btn.disabled=true;btn.textContent=grand?'Processing demo payment…':'Submitting…';
-      const payment={id:'ETPAY-'+Date.now().toString().slice(-8),award:award.name,slug,amount:grand,subtotal,tax,method,status:'Paid',createdAt:new Date().toISOString(),categoryIds:payable.map(x=>String(x.categoryId)),categories:payable.map(x=>x.name)};
+      btn.disabled=true;btn.textContent=totals.grand?'Processing demo payment…':'Submitting…';
+      const payment={id:'ETPAY-'+Date.now().toString().slice(-8),award:award.name,slug,amount:totals.grand,subtotal:totals.subtotal,multiDiscount:totals.multiDiscount,promoDiscount:totals.promoDiscount,promoCode:appliedPromo?appliedPromo.code:'',tax:totals.tax,taxPercent:totals.taxPercent,method,status:'Paid',createdAt:new Date().toISOString(),categoryIds:payable.map(x=>String(x.categoryId)),categories:payable.map(x=>x.name)};
       write(paymentKey,payment);
+      if(appliedPromo){const fresh=read(pricingKey,pricing||{});const ix=(fresh.promos||[]).findIndex(p=>p.id===appliedPromo.id);if(ix>=0){fresh.promos[ix].used=Number(fresh.promos[ix].used||0)+1;write(pricingKey,fresh)}}
       const starters=read('etb2b_public_nomination_starters',[]);
       const paidIds=new Set(payable.map(x=>String(x.categoryId)));
       const nominationIds={};
       payable.forEach(x=>{
         const nominationId='ET-'+Date.now().toString().slice(-6)+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
         nominationIds[String(x.categoryId)]=nominationId;
-        if(!starters.some(s=>s.paymentId===payment.id&&s.category===x.name))starters.push({id:nominationId,award:award.name,slug,categoryId:String(x.categoryId),category:x.name,name:profile.company||profile.name||'Entrant',entrantName:profile.name||'',company:profile.company||'',email:profile.email||'',mobile:profile.mobile||'',designation:profile.designation||'',status:'Submitted',paymentId:payment.id,amount:x.fee,createdAt:new Date().toISOString()});
+        const finalFee=catFee(cat(x.categoryId));
+        if(!starters.some(s=>s.paymentId===payment.id&&s.category===x.name))starters.push({id:nominationId,award:award.name,slug,categoryId:String(x.categoryId),category:x.name,name:profile.company||profile.name||'Entrant',entrantName:profile.name||'',company:profile.company||'',email:profile.email||'',mobile:profile.mobile||'',designation:profile.designation||'',status:'Submitted',paymentId:payment.id,amount:finalFee,promoCode:payment.promoCode,promoDiscount:payment.promoDiscount,createdAt:new Date().toISOString()});
         const savedAnswers=read(answerKey(x.categoryId),{}).answers||{};
-        upsertNominationReport(x.categoryId,savedAnswers,'Submitted',{formCompleted:true,paid:true,paymentStatus:'Paid',paymentId:payment.id,paymentMethod:method,amount:x.fee,taxPercent,nominationId,submittedAt:new Date().toISOString()});
+        upsertNominationReport(x.categoryId,savedAnswers,'Submitted',{formCompleted:true,paid:true,paymentStatus:'Paid',paymentId:payment.id,paymentMethod:method,amount:finalFee,taxPercent:totals.taxPercent,promoCode:payment.promoCode,promoDiscount:payment.promoDiscount,nominationId,submittedAt:new Date().toISOString()});
       });
       write('etb2b_public_nomination_starters',starters);
       bucket.items=bucket.items.map(x=>paidIds.has(String(x.categoryId))?Object.assign({},x,{status:'Submitted',submitted:true,completed:true,paymentId:payment.id,nominationId:nominationIds[String(x.categoryId)],submittedAt:new Date().toISOString()}):x);

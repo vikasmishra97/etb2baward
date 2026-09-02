@@ -13,7 +13,13 @@
     </section>
     <aside class="nom-card checkout-order-card">
       <div class="checkout-order-head"><span class="checkout-eyebrow">ORDER SUMMARY</span><h3>Amount payable</h3></div>
-      <div class="checkout-total-row"><span>Entry fees</span><b id="checkoutSubtotal">₹0</b></div><div class="checkout-total-row"><span>GST</span><b id="checkoutTax">₹0</b></div><div class="checkout-total-row grand"><span>Total</span><b id="checkoutGrand">₹0</b></div>
+      <div class="checkout-promo-box">
+        <div class="checkout-promo-copy"><b>Have a promo code?</b><small>Enter an active code created in Pricing.</small></div>
+        <div class="checkout-promo-controls"><input id="paymentPromoCode" type="text" autocomplete="off" maxlength="24" placeholder="Enter promo code"><button type="button" id="paymentApplyPromo">Apply</button></div>
+        <div class="checkout-promo-status" id="paymentPromoStatus" hidden><span id="paymentPromoStatusText"></span><button type="button" id="paymentRemovePromo">Remove</button></div>
+        <div class="checkout-promo-error" id="paymentPromoError" hidden></div>
+      </div>
+      <div class="checkout-total-row"><span>Entry fees</span><b id="checkoutSubtotal">₹0</b></div><div class="checkout-total-row" id="checkoutMultiRow" hidden><span>Multi-entry discount</span><b id="checkoutMultiDiscount">−₹0</b></div><div class="checkout-total-row checkout-discount-row" id="checkoutPromoRow" hidden><span>Promo discount</span><b id="checkoutPromoDiscount">−₹0</b></div><div class="checkout-total-row"><span id="checkoutTaxLabel">GST</span><b id="checkoutTax">₹0</b></div><div class="checkout-total-row grand"><span>Total</span><b id="checkoutGrand">₹0</b></div>
       <div class="checkout-lock-warning"><span>🔒</span><div><b>Review before you pay</b><small>Payment permanently locks these nomination forms. You can view them later, but you cannot edit them.</small></div></div>
       <button class="checkout-pay" id="paySubmitBtn">Pay & submit nominations</button>
       <div class="checkout-note">Secure demo checkout · No real charge is made.</div>
