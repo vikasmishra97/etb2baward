@@ -1047,3 +1047,54 @@ body.entry-form-page .ef-next-btn span{font-size:14px!important}
 .ef-category-form-state p{margin:4px 0 0;font-size:14px;line-height:1.45;color:#697085}
 .ef-category-form-state button{flex:0 0 auto;min-height:42px;padding:0 16px;border:1px solid #d71920;border-radius:11px;background:#d71920;color:#fff;font-size:14px;font-weight:800;cursor:pointer}
 @media(max-width:720px){.ef-category-form-state{align-items:stretch;flex-direction:column}.ef-category-form-state button{width:100%}}
+
+/* Pricing v24: premium readability + bulk category pricing */
+.pr-main{max-width:1480px;padding-bottom:56px}
+.pr-page-head h1{font-size:34px;line-height:1.1;letter-spacing:-.035em}
+.pr-page-head p{font-size:16px;line-height:1.6;max-width:760px}
+.pr-kicker{font-size:12px;font-weight:900;letter-spacing:.12em}
+.pr-card{border-radius:20px}
+.pr-section-title h2{font-size:21px;line-height:1.2;letter-spacing:-.018em}
+.pr-section-title p,.pr-section-title span{font-size:14px;line-height:1.5}
+.pr-step{font-size:12px!important;min-width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;background:#fff4f4;color:#d70d1d;font-weight:900;margin-right:10px}
+.pr-choice b,.pr-phase-title b,.pr-checkout-card h2,.pr-health-card h2,.pr-insight-card b{font-size:16px}
+.pr-choice small,.pr-phase-title small,.pr-health-list small,.pr-checkout-note{font-size:13px;line-height:1.45}
+.pr-choice em{font-size:18px;font-weight:900}
+.pr-main .field label{font-size:13px;font-weight:800;margin-bottom:8px}
+.pr-main input,.pr-main select,.pr-main textarea{font-size:15px;min-height:46px}
+.pr-main .btn{font-size:14px;min-height:44px;font-weight:800}
+.pr-category-head{font-size:12px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#71798a;padding:0 16px 10px}
+.pr-category-row{grid-template-columns:minmax(260px,1.6fr) minmax(150px,.75fr) minmax(170px,.7fr);gap:18px;padding:17px 16px;border-radius:14px;transition:.18s ease}
+.pr-category-row.selected{background:#fff8f7;border-color:#efb4b8;box-shadow:inset 3px 0 0 #d70d1d}
+.pr-cat-name{display:flex;align-items:center;gap:12px;min-width:0}
+.pr-cat-name b{font-size:15px;line-height:1.35}
+.pr-cat-name small{font-size:12px;margin-top:3px}
+.pr-cat-check{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:pointer}
+.pr-cat-check input{position:absolute;opacity:0;pointer-events:none}
+.pr-cat-check span{width:20px;height:20px;border:1.5px solid #c9ced8;border-radius:6px;background:#fff;display:block;position:relative}
+.pr-cat-check input:checked+span{background:#d70d1d;border-color:#d70d1d}
+.pr-cat-check input:checked+span:after{content:'✓';position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:900}
+.pr-rule-btn{font-size:13px;min-height:38px;padding:8px 12px}
+.pr-cat-fee input{font-size:15px;font-weight:800}
+.pr-bulk-pricing{margin:4px 0 20px;padding:18px;border:1px solid #f0d2d4;background:linear-gradient(135deg,#fffafa 0%,#fff 70%);border-radius:16px}
+.pr-bulk-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:14px}
+.pr-bulk-top>div:first-child{display:grid;gap:3px}
+.pr-bulk-kicker{font-size:11px;color:#d70d1d;font-weight:900;letter-spacing:.11em}
+.pr-bulk-top b{font-size:17px;line-height:1.3}
+.pr-bulk-top small{font-size:13px;color:#737b8c;line-height:1.45}
+.pr-bulk-count{font-size:13px;font-weight:900;color:#a50f1c;background:#fff0f1;border:1px solid #f3ced1;padding:8px 11px;border-radius:999px;white-space:nowrap}
+.pr-bulk-actions{display:grid;grid-template-columns:minmax(190px,1fr) minmax(150px,.7fr) auto auto auto;align-items:center;gap:10px}
+.pr-select-all{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:800;cursor:pointer;min-height:44px}
+.pr-select-all input{width:18px;height:18px;min-height:0;accent-color:#d70d1d}
+.pr-bulk-money{display:flex;align-items:center;border:1px solid #d7dbe3;border-radius:11px;background:#fff;min-height:44px;overflow:hidden}
+.pr-bulk-money span{padding:0 0 0 14px;font-size:15px;font-weight:900;color:#5d6472}
+.pr-bulk-money input{border:0!important;outline:0!important;box-shadow:none!important;min-height:42px;width:100%;font-weight:900}
+.pr-text-action{border:0;background:transparent;color:#8c1520;font-size:13px;font-weight:800;min-height:42px;padding:0 8px;cursor:pointer}
+.pr-text-action:disabled,.pr-bulk-actions .btn:disabled{opacity:.42;cursor:not-allowed}
+.pr-checkout-card .section-title span,.pr-checkout-shell label{font-size:13px}
+.pr-price-lines>div{font-size:14px}
+.pr-total span{font-size:16px}.pr-total b{font-size:25px}
+.pr-health-list b{font-size:14px}
+.pr-projection small{font-size:13px}.pr-projection b{font-size:27px}
+@media(max-width:1100px){.pr-bulk-actions{grid-template-columns:1fr 1fr}.pr-bulk-actions .btn,.pr-text-action{width:100%}.pr-category-row{grid-template-columns:minmax(220px,1.4fr) minmax(140px,.8fr) minmax(150px,.7fr)}}
+@media(max-width:760px){.pr-page-head h1{font-size:28px}.pr-section-title h2{font-size:19px}.pr-bulk-top{display:grid}.pr-bulk-actions{grid-template-columns:1fr}.pr-category-head{display:none}.pr-category-row{grid-template-columns:1fr;gap:12px}.pr-cat-fee{max-width:none}.pr-bulk-count{justify-self:start}}

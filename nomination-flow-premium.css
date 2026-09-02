@@ -123,3 +123,23 @@ body[data-nomination-page="checkout"] .checkout-lock-warning>span{font-size:18px
 .nom-view-only .nom-field-options input:disabled+span{opacity:1;color:#1a1e27}
 .nom-view-only .nom-imported{display:none}
 .nom-view-only .nom-wizard-actions{justify-content:space-between}
+
+/* Payment checkout readability v24 */
+body[data-nomination-page="checkout"] .nom-flow-head h1{font-size:34px;line-height:1.12;letter-spacing:-.035em}
+body[data-nomination-page="checkout"] .nom-flow-head p{font-size:16px;line-height:1.6;max-width:760px}
+body[data-nomination-page="checkout"] .nom-flow-head .nom-outline{font-size:14px!important;min-height:44px;display:inline-flex;align-items:center}
+body[data-nomination-page="checkout"] .nom-progress span{font-size:14px;font-weight:850;min-height:46px}
+body[data-nomination-page="checkout"] .nom-card{border-radius:20px;padding:24px}
+body[data-nomination-page="checkout"] .nom-card h2{font-size:21px;letter-spacing:-.02em}
+body[data-nomination-page="checkout"] .nom-card h3{font-size:20px}
+body[data-nomination-page="checkout"] .section-title>span{font-size:13px;font-weight:800}
+body[data-nomination-page="checkout"] .checkout-list{font-size:15px}
+body[data-nomination-page="checkout"] .checkout-method{font-size:15px;font-weight:800;min-height:48px}
+body[data-nomination-page="checkout"] .checkout-total-row{font-size:15px;padding:12px 0}
+body[data-nomination-page="checkout"] .checkout-total-row.grand{font-size:18px}
+body[data-nomination-page="checkout"] .checkout-total-row.grand b{font-size:25px}
+body[data-nomination-page="checkout"] .checkout-pay{font-size:16px;font-weight:900;min-height:52px;border-radius:13px}
+body[data-nomination-page="checkout"] .checkout-lock-warning b{font-size:14px}
+body[data-nomination-page="checkout"] .checkout-lock-warning small{font-size:13px;line-height:1.5}
+body[data-nomination-page="checkout"] .checkout-note{font-size:12px;line-height:1.5}
+@media(max-width:760px){body[data-nomination-page="checkout"] .nom-flow-head h1{font-size:28px}body[data-nomination-page="checkout"] .nom-card{padding:18px}}
