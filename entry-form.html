@@ -405,7 +405,7 @@
   const awardSlug=award.slug||'demo';
   const categoryKey=savedAward&&savedAward.slug?'etb2b_awards_categories_'+savedAward.slug:'etb2b_awards_categories_demo';
   const formKey='etb2b_awards_entry_form_'+awardSlug;
-  let categories=(()=>{try{return JSON.parse(localStorage.getItem(categoryKey)||'[]')}catch(e){return []}})();
+  let categories=(()=>{try{return (JSON.parse(localStorage.getItem(categoryKey)||'[]')||[]).filter(c=>!c.deletedAt)}catch(e){return []}})();
   if(!Array.isArray(categories)||!categories.length){categories=[
     {id:'cat1',name:'Best FinTech Startup'},
     {id:'cat2',name:'Best Digital Banking Innovation'},

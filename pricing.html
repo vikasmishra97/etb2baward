@@ -323,7 +323,7 @@
   const savedAward=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'null')}catch(e){return null}})();
   const award=savedAward||{name:'India FinTech Awards 2027',currency:'INR',baseFee:2000,entryType:'paid',slug:'india-fintech-awards-2027',openDate:'2027-06-01',closeDate:'2027-09-30'};
   const categoryKey=savedAward&&savedAward.slug?'etb2b_awards_categories_'+savedAward.slug:'etb2b_awards_categories_demo';
-  let categories=(()=>{try{return JSON.parse(localStorage.getItem(categoryKey)||'[]')}catch(e){return []}})();
+  let categories=(()=>{try{return (JSON.parse(localStorage.getItem(categoryKey)||'[]')||[]).filter(c=>!c.deletedAt)}catch(e){return []}})();
   if(!categories.length&&!savedAward){categories=[
     {id:1,name:'Best Startup',feeMode:'base',fee:2000,status:'open'},
     {id:2,name:'Best CEO',feeMode:'base',fee:2000,status:'open'},

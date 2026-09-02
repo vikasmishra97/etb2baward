@@ -16,6 +16,9 @@
   let pricing=read(pricingKey,{});
   let cats=read(categoryKey,[]);
   let masters=read(masterKey,[]);
+  const isDeleted=item=>!!(item&&item.deletedAt);
+  cats=Array.isArray(cats)?cats.filter(c=>!isDeleted(c)):cats;
+  masters=Array.isArray(masters)?masters.filter(m=>!isDeleted(m)):masters;
 
   if(!Array.isArray(cats)||!cats.length){
     cats=(award.suggestedCategories||award.generatedCategories||['Award of the Year','Innovation Award','Leadership Award','Rising Star Award','Campaign of the Year']).map((name,i)=>({id:'suggested-'+i,name,description:'Recognising standout work, measurable impact and category leadership.',status:'open',group:i<2?'Innovation & Technology':'Excellence',feeMode:'custom',fee:Number(award.baseFee||0),currency:award.currency||'INR',categoryType:award.entryType==='free'?'free':'paid',allowedArea:'global',eligibility:'Open to eligible organisations and individuals.'}));

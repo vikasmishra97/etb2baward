@@ -55,6 +55,7 @@
         <button class="active" data-admin-tab="masters"><span>01</span><div><strong>Master Categories</strong><small>Create award tracks</small></div><b id="masterTabCount">0</b></button>
         <button data-admin-tab="subs"><span>02</span><div><strong>Sub Categories</strong><small>Add selectable categories</small></div><b id="subTabCount">0</b></button>
         <button data-admin-tab="experience"><span>03</span><div><strong>Selection Rules</strong><small>Single / multiple entry</small></div><b class="step-ready-mark">✓</b></button>
+        <button data-admin-tab="deleted" class="deleted-tab"><span>04</span><div><strong>Deleted</strong><small>Restore removed categories</small></div><b id="deletedTabCount">0</b></button>
       </div>
 
       <section class="category-tab-panel active" data-admin-panel="masters">
@@ -77,6 +78,20 @@
         </div>
         <div class="category-empty-state" id="subEmpty" hidden><span>02</span><h3>No Sub Categories yet</h3><p>Create a Master Category first, then add the actual categories entrants will select.</p><button class="btn primary" id="subEmptyBtn">+ Add Sub Category</button></div>
         <div class="category-step-actions"><div><span>STEP 2</span><b>Sub Category setup</b><small>Add the categories entrants will actually choose.</small></div><div class="category-step-buttons"><button class="btn secondary" data-go-step="masters">← Master Categories</button><button class="btn secondary" data-save-step="subs">Save step</button><button class="btn primary" data-next-step="experience">Save & continue to Selection Rules →</button></div></div>
+      </section>
+
+      <section class="category-tab-panel" data-admin-panel="deleted">
+        <div class="category-panel-head category-panel-head-stacked">
+          <div><span class="cat-kicker">RECOVERY</span><h2>Deleted categories</h2><p>Deleted Master Categories and Sub Categories are kept here so you can restore them anytime. They are hidden from the public website, pricing, entry-form setup and new nominations while deleted.</p></div>
+          <label class="cat-search deleted-search"><span>⌕</span><input id="deletedSearch" placeholder="Search deleted categories"></label>
+        </div>
+        <div class="deleted-category-summary">
+          <div><strong id="deletedMasterCount">0</strong><span>Master Categories</span></div>
+          <div><strong id="deletedSubCount">0</strong><span>Sub Categories</span></div>
+          <div class="deleted-help"><b>Safe delete</b><span>Restore items without rebuilding their setup or pricing.</span></div>
+        </div>
+        <div class="deleted-category-list" id="deletedCategoryList"></div>
+        <div class="category-empty-state" id="deletedEmpty" hidden><span>✓</span><h3>Nothing deleted</h3><p>Deleted categories will appear here and can be restored later.</p></div>
       </section>
 
       <section class="category-tab-panel" data-admin-panel="experience">
@@ -184,7 +199,10 @@
     write(pricingKey,cfg);
   }
   function masterById(masterId){return masters.find(m=>String(m.id)===String(masterId))}
-  function subCount(masterId){return subs.filter(c=>String(c.masterId)===String(masterId)).length}
+  function isDeleted(item){return !!(item&&item.deletedAt)}
+  function activeMasters(){return masters.filter(m=>!isDeleted(m))}
+  function activeSubs(){return subs.filter(c=>!isDeleted(c))}
+  function subCount(masterId){return activeSubs().filter(c=>String(c.masterId)===String(masterId)).length}
 
   function migrate(){
     if(!Array.isArray(subs))subs=[];
@@ -193,7 +211,7 @@
       subs=defaults;
     }
     if(!Array.isArray(masters)||!masters.length){
-      const groupNames=[...new Set(subs.map(c=>String(c.group||'').trim()).filter(Boolean))];
+      const groupNames=[...new Set(activeSubs().map(c=>String(c.group||'').trim()).filter(Boolean))];
       const names=groupNames.length?groupNames:['General Awards'];
       masters=names.map((name,i)=>({id:'m-'+id(),name,description:i===0?'Primary award track for related categories.':'Grouped award track.',status:'active',code:codeFrom(name)}));
     }
@@ -203,7 +221,7 @@
       if(!c.allowedArea)c.allowedArea='global';
       let m=masterById(c.masterId);
       if(!m&&c.group)m=masters.find(x=>x.name.toLowerCase()===String(c.group).toLowerCase());
-      if(!m)m=masters[0];
+      if(!m)m=activeMasters()[0]||masters[0];
       c.masterId=m?m.id:'';c.group=m?m.name:(c.group||'General Awards');
       if(c.feeMode!=='custom')c.fee=Number(c.fee??award.baseFee??0);
       c.feeMode='custom';
@@ -217,20 +235,20 @@
   function scrollToCategorySteps(){const el=document.querySelector('.category-admin-tabs');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
   function saveCurrentStep(label){persist();toast(label+' saved')}
   function saveAndContinue(next){
-    if(next==='subs'&&!masters.length){toast('Add at least one Master Category before continuing');return}
-    if(next==='experience'&&!subs.length){toast('Add at least one Sub Category before continuing');return}
+    if(next==='subs'&&!activeMasters().length){toast('Add at least one Master Category before continuing');return}
+    if(next==='experience'&&!activeSubs().length){toast('Add at least one Sub Category before continuing');return}
     persist();setTab(next);scrollToCategorySteps();toast('Step saved');
   }
   function finishCategorySetup(){
-    if(!masters.length){toast('Add at least one Master Category first');setTab('masters');scrollToCategorySteps();return}
-    if(!subs.length){toast('Add at least one Sub Category first');setTab('subs');scrollToCategorySteps();return}
+    if(!activeMasters().length){toast('Add at least one Master Category first');setTab('masters');scrollToCategorySteps();return}
+    if(!activeSubs().length){toast('Add at least one Sub Category first');setTab('subs');scrollToCategorySteps();return}
     persist();toast('Category setup saved');setTimeout(()=>{location.href='entry-form.html'},180);
   }
 
   function renderMasters(){
-    const grid=$('masterCategoryGrid');
-    $('masterEmpty').hidden=masters.length>0;
-    grid.innerHTML=masters.map((m,i)=>`<article class="master-category-card ${m.status==='inactive'?'is-inactive':''}" draggable="true" data-master-id="${esc(m.id)}"><div class="master-order">${String(i+1).padStart(2,'0')}</div><div class="master-card-main"><div class="master-card-top"><span class="master-code">${esc(m.code||codeFrom(m.name))}</span><span class="master-status ${m.status}">${m.status==='active'?'Active':'Inactive'}</span></div><h3>${esc(m.name)}</h3><p>${esc(m.description||'Use this Master Category to group related Sub Categories.')}</p><div class="master-card-meta"><span><b>${subCount(m.id)}</b> Sub Categories</span><span>${subCount(m.id)?'Public grouping ready':'Needs Sub Categories'}</span></div></div><div class="master-card-actions"><button data-master-move="up" data-id="${esc(m.id)}" ${i===0?'disabled':''}>↑</button><button data-master-move="down" data-id="${esc(m.id)}" ${i===masters.length-1?'disabled':''}>↓</button><button data-edit-master="${esc(m.id)}">Edit</button><button class="danger-link" data-delete-master="${esc(m.id)}">Delete</button></div></article>`).join('');
+    const grid=$('masterCategoryGrid'),list=activeMasters();
+    $('masterEmpty').hidden=list.length>0;
+    grid.innerHTML=list.map((m,i)=>`<article class="master-category-card ${m.status==='inactive'?'is-inactive':''}" draggable="true" data-master-id="${esc(m.id)}"><div class="master-order">${String(i+1).padStart(2,'0')}</div><div class="master-card-main"><div class="master-card-top"><span class="master-code">${esc(m.code||codeFrom(m.name))}</span><span class="master-status ${m.status}">${m.status==='active'?'Active':'Inactive'}</span></div><h3>${esc(m.name)}</h3><p>${esc(m.description||'Use this Master Category to group related Sub Categories.')}</p><div class="master-card-meta"><span><b>${subCount(m.id)}</b> Sub Categories</span><span>${subCount(m.id)?'Public grouping ready':'Needs Sub Categories'}</span></div></div><div class="master-card-actions"><button data-master-move="up" data-id="${esc(m.id)}" ${i===0?'disabled':''}>↑</button><button data-master-move="down" data-id="${esc(m.id)}" ${i===list.length-1?'disabled':''}>↓</button><button data-edit-master="${esc(m.id)}">Edit</button><button class="danger-link" data-delete-master="${esc(m.id)}">Delete</button></div></article>`).join('');
     grid.querySelectorAll('[data-edit-master]').forEach(b=>b.onclick=()=>openMaster(b.dataset.editMaster));
     grid.querySelectorAll('[data-delete-master]').forEach(b=>b.onclick=()=>deleteMaster(b.dataset.deleteMaster));
     grid.querySelectorAll('[data-master-move]').forEach(b=>b.onclick=()=>moveMaster(b.dataset.id,b.dataset.masterMove));
@@ -239,11 +257,11 @@
 
   function renderSubs(){
     const masterFilter=$('masterFilter'),current=masterFilter.value||'all';
-    masterFilter.innerHTML='<option value="all">All Master Categories</option>'+masters.map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');
+    masterFilter.innerHTML='<option value="all">All Master Categories</option>'+activeMasters().map(m=>`<option value="${esc(m.id)}">${esc(m.name)}</option>`).join('');
     if([...masterFilter.options].some(o=>o.value===current))masterFilter.value=current;
     const q=$('subSearch').value.trim().toLowerCase(),filter=masterFilter.value;
-    const list=subs.filter(c=>(filter==='all'||String(c.masterId)===filter)&&(`${c.name} ${c.group} ${c.description||''}`).toLowerCase().includes(q));
-    $('subEmpty').hidden=subs.length>0;
+    const list=activeSubs().filter(c=>(filter==='all'||String(c.masterId)===filter)&&(`${c.name} ${c.group} ${c.description||''}`).toLowerCase().includes(q));
+    $('subEmpty').hidden=activeSubs().length>0;
     $('subCategoryBody').innerHTML=list.length?list.map((c,i)=>{const m=masterById(c.masterId);return `<tr draggable="true" data-sub-id="${esc(c.id)}"><td><div class="subcategory-name-cell"><span class="sub-drag">⋮⋮</span><div><b>${esc(c.name)}</b><small>${esc(c.code||codeFrom(c.name))}${c.description?' · '+esc(c.description.slice(0,72))+(c.description.length>72?'…':''):''}</small></div></div></td><td><span class="master-pill">${esc(m?.name||c.group||'Unassigned')}</span></td><td><b>${money(c)}</b><small class="table-note">${c.categoryType==='free'?'Free entry':'Paid entry'}</small></td><td>${areaLabel(c.allowedArea)}</td><td><span class="sub-status ${esc(c.status||'open')}">${esc((c.status||'open').toUpperCase())}</span></td><td><div class="table-actions"><button data-sub-move="up" data-id="${esc(c.id)}" title="Move up">↑</button><button data-sub-move="down" data-id="${esc(c.id)}" title="Move down">↓</button><button data-edit-sub="${esc(c.id)}">Edit</button><button class="danger-link" data-delete-sub="${esc(c.id)}">Delete</button></div></td></tr>`}).join(''):'<tr><td colspan="6"><div class="table-no-results">No matching Sub Categories.</div></td></tr>';
     $('subCategoryBody').querySelectorAll('[data-edit-sub]').forEach(b=>b.onclick=()=>openSub(b.dataset.editSub));
     $('subCategoryBody').querySelectorAll('[data-delete-sub]').forEach(b=>b.onclick=()=>deleteSub(b.dataset.deleteSub));
@@ -256,25 +274,39 @@
     document.querySelectorAll('[data-selection-mode]').forEach(btn=>{const on=btn.dataset.selectionMode===settings.selectionMode;btn.classList.toggle('active',on);btn.querySelector('.cat-policy-radio').textContent=on?'●':'○'});
     $('maxCategorySelections').value=String(settings.maxSelections??5);$('maxSelectionWrap').style.opacity=settings.selectionMode==='single'?'.45':'1';$('maxCategorySelections').disabled=settings.selectionMode==='single';$('autoImportAnswers').checked=settings.autoImportAnswers!==false;$('aiCategoryFinder').checked=settings.aiFinder!==false;
     const max=Number(settings.maxSelections||0);$('selectionPolicySummary').textContent=settings.selectionMode==='single'?'Single category only':'Multiple categories · '+(max?'up to '+max:'no limit');
-    const activeMasters=masters.filter(m=>m.status!=='inactive');$('publicStructurePreview').innerHTML=activeMasters.length?activeMasters.map(m=>`<div class="public-structure-row"><span>${esc(m.name)}</span><b>${subs.filter(c=>String(c.masterId)===String(m.id)&&c.status!=='draft').length} categories</b></div>`).join(''):'<div class="public-structure-empty">Add an active Master Category to preview the structure.</div>';
+    const liveMasters=activeMasters().filter(m=>m.status!=='inactive');$('publicStructurePreview').innerHTML=liveMasters.length?liveMasters.map(m=>`<div class="public-structure-row"><span>${esc(m.name)}</span><b>${activeSubs().filter(c=>String(c.masterId)===String(m.id)&&c.status!=='draft').length} categories</b></div>`).join(''):'<div class="public-structure-empty">Add an active Master Category to preview the structure.</div>';
   }
-  function renderStats(){$('masterStat').textContent=masters.length;$('subStat').textContent=subs.length;$('openStat').textContent=subs.filter(c=>c.status==='open').length;$('masterTabCount').textContent=masters.length;$('subTabCount').textContent=subs.length}
-  function renderAll(){renderStats();renderMasters();renderSubs();renderExperience()}
+  function renderStats(){const am=activeMasters(),as=activeSubs(),dm=masters.filter(isDeleted),ds=subs.filter(isDeleted);$('masterStat').textContent=am.length;$('subStat').textContent=as.length;$('openStat').textContent=as.filter(c=>c.status==='open').length;$('masterTabCount').textContent=am.length;$('subTabCount').textContent=as.length;$('deletedTabCount').textContent=dm.length+ds.length;$('deletedMasterCount').textContent=dm.length;$('deletedSubCount').textContent=ds.length}
+  function renderDeleted(){
+    const q=String($('deletedSearch')?.value||'').trim().toLowerCase();
+    const deletedMasters=masters.filter(isDeleted);
+    const deletedSubs=subs.filter(isDeleted);
+    const rows=[
+      ...deletedMasters.map(m=>({type:'Master Category',kind:'master',id:m.id,name:m.name,meta:(m.code||codeFrom(m.name))+' · '+deletedSubs.filter(c=>String(c.masterId)===String(m.id)).length+' linked deleted sub categories',deletedAt:m.deletedAt})),
+      ...deletedSubs.map(c=>({type:'Sub Category',kind:'sub',id:c.id,name:c.name,meta:(c.code||codeFrom(c.name))+' · '+(masterById(c.masterId)?.name||c.group||'Unassigned'),deletedAt:c.deletedAt}))
+    ].filter(x=>(x.name+' '+x.type+' '+x.meta).toLowerCase().includes(q)).sort((a,b)=>String(b.deletedAt||'').localeCompare(String(a.deletedAt||'')));
+    $('deletedEmpty').hidden=rows.length>0;
+    $('deletedCategoryList').innerHTML=rows.map(x=>`<article class="deleted-category-card"><div class="deleted-category-icon">${x.kind==='master'?'M':'S'}</div><div class="deleted-category-copy"><div><span class="deleted-kind">${esc(x.type)}</span><h3>${esc(x.name)}</h3></div><p>${esc(x.meta)}</p><small>Deleted ${x.deletedAt?new Date(x.deletedAt).toLocaleString('en-IN'):'recently'}</small></div><div class="deleted-category-actions"><button class="btn secondary" data-restore-${x.kind}="${esc(x.id)}">↶ Restore</button></div></article>`).join('');
+    $('deletedCategoryList').querySelectorAll('[data-restore-master]').forEach(b=>b.onclick=()=>restoreMaster(b.dataset.restoreMaster));
+    $('deletedCategoryList').querySelectorAll('[data-restore-sub]').forEach(b=>b.onclick=()=>restoreSub(b.dataset.restoreSub));
+  }
+  function renderAll(){renderStats();renderMasters();renderSubs();renderExperience();renderDeleted()}
 
   function openMaster(idValue){
     editingMaster=idValue||null;const m=idValue?masterById(idValue):null;$('masterDrawerEyebrow').textContent=m?'EDIT MASTER CATEGORY':'NEW MASTER CATEGORY';$('masterDrawerTitle').textContent=m?m.name:'Add Master Category';$('masterName').value=m?.name||'';$('masterDescription').value=m?.description||'';$('masterCode').value=m?.code||'';$('masterStatus').value=m?.status||'active';$('masterNameError').textContent='';openModal('masterModal','masterName')
   }
-  function saveMaster(){const name=$('masterName').value.trim();if(!name){$('masterNameError').textContent='Enter a Master Category name';return}if(masters.some(m=>m.name.toLowerCase()===name.toLowerCase()&&String(m.id)!==String(editingMaster))){$('masterNameError').textContent='This Master Category already exists';return}const data={name,description:$('masterDescription').value.trim(),code:$('masterCode').value.trim()||codeFrom(name),status:$('masterStatus').value};if(editingMaster){Object.assign(masterById(editingMaster),data);toast('Master Category updated')}else{masters.push({id:'m-'+id(),...data});toast('Master Category added')}persist();closeModal('masterModal')}
-  function deleteMaster(masterId){const m=masterById(masterId),count=subCount(masterId);if(count){toast('Move or delete '+count+' Sub Categor'+(count===1?'y':'ies')+' first');return}if(!confirm('Delete '+m.name+'?'))return;masters=masters.filter(x=>String(x.id)!==String(masterId));persist();toast('Master Category deleted')}
+  function saveMaster(){const name=$('masterName').value.trim();if(!name){$('masterNameError').textContent='Enter a Master Category name';return}if(activeMasters().some(m=>m.name.toLowerCase()===name.toLowerCase()&&String(m.id)!==String(editingMaster))){$('masterNameError').textContent='This Master Category already exists';return}const data={name,description:$('masterDescription').value.trim(),code:$('masterCode').value.trim()||codeFrom(name),status:$('masterStatus').value};if(editingMaster){Object.assign(masterById(editingMaster),data);toast('Master Category updated')}else{masters.push({id:'m-'+id(),...data});toast('Master Category added')}persist();closeModal('masterModal')}
+  function deleteMaster(masterId){const m=masterById(masterId);if(!m)return;const linked=activeSubs().filter(c=>String(c.masterId)===String(masterId));const msg=linked.length?'Delete '+m.name+'? Its '+linked.length+' Sub Categor'+(linked.length===1?'y will':'ies will')+' also move to Deleted and can be restored later.':'Delete '+m.name+'? You can restore it later from Deleted.';if(!confirm(msg))return;const stamp=new Date().toISOString();m.deletedAt=stamp;m.deletedReason='manual';linked.forEach(c=>{c.deletedAt=stamp;c.deletedReason='master';c.deletedWithMasterId=String(masterId)});persist();toast('Moved to Deleted')}
+  function restoreMaster(masterId){const m=masterById(masterId);if(!m)return;delete m.deletedAt;delete m.deletedReason;subs.filter(c=>isDeleted(c)&&String(c.deletedWithMasterId||'')===String(masterId)).forEach(c=>{delete c.deletedAt;delete c.deletedReason;delete c.deletedWithMasterId});persist();toast('Master Category restored')}
   function moveMaster(masterId,dir){const i=masters.findIndex(m=>String(m.id)===String(masterId)),j=dir==='up'?i-1:i+1;if(i<0||j<0||j>=masters.length)return;[masters[i],masters[j]]=[masters[j],masters[i]];persist()}
 
   function renderInlineMasterList(selected){
     const list=$('inlineMasterList');if(!list)return;const current=String(selected||$('subMaster')?.value||'');
-    list.innerHTML=masters.length?masters.map(m=>`<button type="button" class="inline-master-choice ${String(m.id)===current?'active':''}" data-inline-master-id="${esc(m.id)}">${esc(m.name)}${m.status==='inactive'?' · Inactive':''}</button>`).join(''):'<span class="inline-master-empty">No Master Categories added yet.</span>';
+    const availableMasters=activeMasters();list.innerHTML=availableMasters.length?availableMasters.map(m=>`<button type="button" class="inline-master-choice ${String(m.id)===current?'active':''}" data-inline-master-id="${esc(m.id)}">${esc(m.name)}${m.status==='inactive'?' · Inactive':''}</button>`).join(''):'<span class="inline-master-empty">No Master Categories added yet.</span>';
     list.querySelectorAll('[data-inline-master-id]').forEach(btn=>btn.onclick=()=>{const select=$('subMaster');if(select&&[...select.options].some(o=>String(o.value)===String(btn.dataset.inlineMasterId))){select.value=btn.dataset.inlineMasterId;renderInlineMasterList(select.value)}})
   }
   function fillMasterSelect(selected){
-    const select=$('subMaster'),current=String(selected||'');const available=masters.filter(m=>m.status!=='inactive'||String(m.id)===current);
+    const select=$('subMaster'),current=String(selected||'');const available=activeMasters().filter(m=>m.status!=='inactive'||String(m.id)===current);
     select.innerHTML='<option value="">Select Master Category</option>'+available.map(m=>`<option value="${esc(m.id)}">${esc(m.name)}${m.status==='inactive'?' (Inactive)':''}</option>`).join('');
     if(current&&[...select.options].some(o=>String(o.value)===current))select.value=current;else if(!current&&available.length)select.value=String(available[0].id);
     renderInlineMasterList(select.value)
@@ -286,11 +318,12 @@
     fillMasterSelect(master.id);if(input)input.value='';toast(created?'Master Category added and selected':'Master Category already exists - selected')
   }
   function openSub(idValue){
-    editingSub=idValue||null;const c=idValue?subs.find(x=>String(x.id)===String(idValue)):null,defaultMaster=c?.masterId||masters.find(m=>m.status!=='inactive')?.id||masters[0]?.id||'';$('subDrawerEyebrow').textContent=c?'EDIT SUB CATEGORY':'NEW SUB CATEGORY';$('subDrawerTitle').textContent=c?c.name:'Add Sub Category';fillMasterSelect(defaultMaster);$('inlineMasterName').value='';$('subType').value=c?.categoryType||'paid';$('subName').value=c?.name||'';$('subDescription').value=c?.description||'';$('subCurrency').value=c?.currency||award.currency||'INR';$('subPrice').value=c?effectiveCategoryFee(c):Number(pricingConfig().baseFee??award.baseFee??0);$('subArea').value=c?.allowedArea||'global';$('subStatus').value=c?.status||'open';$('subEligibility').value=c?.eligibility||'';$('subCode').value=c?.code||'';$('subMaxEntries').value=String(c?.maxEntries||0);$('subNameError').textContent='';toggleSubPrice();openModal('subModal','subName')
+    editingSub=idValue||null;const c=idValue?subs.find(x=>String(x.id)===String(idValue)):null,defaultMaster=c?.masterId||activeMasters().find(m=>m.status!=='inactive')?.id||activeMasters()[0]?.id||'';$('subDrawerEyebrow').textContent=c?'EDIT SUB CATEGORY':'NEW SUB CATEGORY';$('subDrawerTitle').textContent=c?c.name:'Add Sub Category';fillMasterSelect(defaultMaster);$('inlineMasterName').value='';$('subType').value=c?.categoryType||'paid';$('subName').value=c?.name||'';$('subDescription').value=c?.description||'';$('subCurrency').value=c?.currency||award.currency||'INR';$('subPrice').value=c?effectiveCategoryFee(c):Number(pricingConfig().baseFee??award.baseFee??0);$('subArea').value=c?.allowedArea||'global';$('subStatus').value=c?.status||'open';$('subEligibility').value=c?.eligibility||'';$('subCode').value=c?.code||'';$('subMaxEntries').value=String(c?.maxEntries||0);$('subNameError').textContent='';toggleSubPrice();openModal('subModal','subName')
   }
   function toggleSubPrice(){$('subPriceField').hidden=$('subType').value==='free'}
-  function saveSub(){const name=$('subName').value.trim(),masterId=$('subMaster').value;if(!name){$('subNameError').textContent='Enter a Sub Category name';return}if(!masterId){toast('Choose or add a Master Category');$('inlineMasterName')?.focus();return}if(subs.some(c=>c.name.toLowerCase()===name.toLowerCase()&&String(c.id)!==String(editingSub))){$('subNameError').textContent='This Sub Category already exists';return}const m=masterById(masterId),type=$('subType').value;const data={name,masterId,group:m?.name||'',description:$('subDescription').value.trim(),categoryType:type,currency:$('subCurrency').value,feeMode:'custom',fee:type==='free'?0:Number($('subPrice').value||0),allowedArea:$('subArea').value,status:$('subStatus').value,eligibility:$('subEligibility').value.trim(),code:$('subCode').value.trim()||codeFrom(name),maxEntries:String($('subMaxEntries').value||0)};let savedCategory;if(editingSub){savedCategory=subs.find(x=>String(x.id)===String(editingSub));Object.assign(savedCategory,data);toast('Sub Category updated')}else{savedCategory={id:id(),...data};subs.push(savedCategory);toast('Sub Category added')}syncCategoryToPricing(savedCategory);persist();closeModal('subModal')}
-  function deleteSub(subId){const c=subs.find(x=>String(x.id)===String(subId));if(!c||!confirm('Delete '+c.name+'?'))return;subs=subs.filter(x=>String(x.id)!==String(subId));const cfg=pricingConfig();if(cfg.categoryOverrides){delete cfg.categoryOverrides[String(subId)];write(pricingKey,cfg)}persist();toast('Sub Category deleted')}
+  function saveSub(){const name=$('subName').value.trim(),masterId=$('subMaster').value;if(!name){$('subNameError').textContent='Enter a Sub Category name';return}if(!masterId){toast('Choose or add a Master Category');$('inlineMasterName')?.focus();return}if(activeSubs().some(c=>c.name.toLowerCase()===name.toLowerCase()&&String(c.id)!==String(editingSub))){$('subNameError').textContent='This Sub Category already exists';return}const m=masterById(masterId),type=$('subType').value;const data={name,masterId,group:m?.name||'',description:$('subDescription').value.trim(),categoryType:type,currency:$('subCurrency').value,feeMode:'custom',fee:type==='free'?0:Number($('subPrice').value||0),allowedArea:$('subArea').value,status:$('subStatus').value,eligibility:$('subEligibility').value.trim(),code:$('subCode').value.trim()||codeFrom(name),maxEntries:String($('subMaxEntries').value||0)};let savedCategory;if(editingSub){savedCategory=subs.find(x=>String(x.id)===String(editingSub));Object.assign(savedCategory,data);toast('Sub Category updated')}else{savedCategory={id:id(),...data};subs.push(savedCategory);toast('Sub Category added')}syncCategoryToPricing(savedCategory);persist();closeModal('subModal')}
+  function deleteSub(subId){const c=subs.find(x=>String(x.id)===String(subId));if(!c||!confirm('Delete '+c.name+'? It will move to Deleted and can be restored later.'))return;c.deletedAt=new Date().toISOString();c.deletedReason='manual';delete c.deletedWithMasterId;persist();toast('Moved to Deleted')}
+  function restoreSub(subId){const c=subs.find(x=>String(x.id)===String(subId));if(!c)return;const parent=masterById(c.masterId);if(parent&&isDeleted(parent)){toast('Restore the Master Category first');setTab('deleted');return}delete c.deletedAt;delete c.deletedReason;delete c.deletedWithMasterId;persist();toast('Sub Category restored')}
   function moveSub(subId,dir){const i=subs.findIndex(c=>String(c.id)===String(subId)),j=dir==='up'?i-1:i+1;if(i<0||j<0||j>=subs.length)return;[subs[i],subs[j]]=[subs[j],subs[i]];persist()}
 
   function openModal(idValue,focusId){$(idValue).classList.add('open');$(idValue).setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$(focusId)?.focus(),70)}
@@ -302,7 +335,7 @@
   document.querySelectorAll('[data-next-step]').forEach(b=>b.addEventListener('click',()=>saveAndContinue(b.dataset.nextStep)));
   $('finishCategoriesBtn').onclick=finishCategorySetup;
   $('addMasterBtn').onclick=()=>openMaster();$('masterEmptyBtn').onclick=()=>openMaster();$('saveMasterBtn').onclick=saveMaster;document.querySelectorAll('[data-close-master]').forEach(b=>b.onclick=()=>closeModal('masterModal'));
-  $('addSubBtn').onclick=()=>openSub();$('subEmptyBtn').onclick=()=>openSub();$('saveSubBtn').onclick=saveSub;document.querySelectorAll('[data-close-sub]').forEach(b=>b.onclick=()=>closeModal('subModal'));$('subType').onchange=toggleSubPrice;$('subMaster').onchange=()=>renderInlineMasterList($('subMaster').value);$('addInlineMasterBtn').onclick=addInlineMaster;$('inlineMasterName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addInlineMaster()}});$('subSearch').oninput=renderSubs;$('masterFilter').onchange=renderSubs;
+  $('addSubBtn').onclick=()=>openSub();$('subEmptyBtn').onclick=()=>openSub();$('saveSubBtn').onclick=saveSub;document.querySelectorAll('[data-close-sub]').forEach(b=>b.onclick=()=>closeModal('subModal'));$('subType').onchange=toggleSubPrice;$('subMaster').onchange=()=>renderInlineMasterList($('subMaster').value);$('addInlineMasterBtn').onclick=addInlineMaster;$('inlineMasterName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addInlineMaster()}});$('subSearch').oninput=renderSubs;$('masterFilter').onchange=renderSubs;$('deletedSearch').oninput=renderDeleted;
   $('saveBtn').onclick=()=>{persist();toast('Category architecture saved')};
   document.querySelectorAll('[data-selection-mode]').forEach(b=>b.onclick=()=>{settings.selectionMode=b.dataset.selectionMode;persist();renderExperience();toast(settings.selectionMode==='single'?'Single-category mode enabled':'Multi-category mode enabled')});
   $('maxCategorySelections').onchange=()=>{settings.maxSelections=Number($('maxCategorySelections').value||0);persist();renderExperience()};$('autoImportAnswers').onchange=()=>{settings.autoImportAnswers=$('autoImportAnswers').checked;persist()};$('aiCategoryFinder').onchange=()=>{settings.aiFinder=$('aiCategoryFinder').checked;persist()};
