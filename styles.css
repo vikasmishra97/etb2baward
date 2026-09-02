@@ -1779,3 +1779,167 @@ body.entry-form-page .ef-command-add:hover{background:#bf1219!important;border-c
   body.entry-form-page .ef-command-btn,
   body.entry-form-page .ef-command-add{width:100%!important;min-width:0!important}
 }
+
+/* Entry Form premium command bar - larger readable text and icons */
+body.entry-form-page .ef-command-category label{
+  font-size:10px!important;
+  line-height:1.25!important;
+  letter-spacing:.075em!important;
+}
+body.entry-form-page .ef-command-category select{
+  height:44px!important;
+  font-size:13px!important;
+  padding-left:14px!important;
+}
+body.entry-form-page .ef-command-counts span{
+  min-height:31px!important;
+  padding:6px 10px!important;
+  font-size:10px!important;
+  line-height:1.1!important;
+}
+body.entry-form-page .ef-command-counts b{
+  font-size:11px!important;
+}
+body.entry-form-page .ef-command-btn,
+body.entry-form-page .ef-command-add{
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 13px!important;
+  font-size:12px!important;
+  line-height:1!important;
+  gap:6px!important;
+}
+body.entry-form-page .ef-command-btn span{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:17px!important;
+  font-size:16px!important;
+  line-height:1!important;
+  font-weight:900!important;
+}
+body.entry-form-page .ef-command-add{
+  font-size:12.5px!important;
+  font-weight:900!important;
+}
+
+/* V19.32 - centered premium Entry Form action bar */
+body.entry-form-page .ef-command-counts{
+  display:none!important;
+}
+body.entry-form-page .ef-commandbar{
+  grid-template-columns:minmax(280px,340px) auto!important;
+  align-items:center!important;
+  justify-content:center!important;
+  column-gap:18px!important;
+  row-gap:10px!important;
+  padding:14px 18px!important;
+}
+body.entry-form-page .ef-command-category{
+  width:100%!important;
+  max-width:340px!important;
+  justify-self:center!important;
+}
+body.entry-form-page .ef-command-actions{
+  justify-self:center!important;
+  justify-content:center!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+}
+body.entry-form-page .ef-command-category label{
+  display:block!important;
+  margin-bottom:5px!important;
+}
+body.entry-form-page .ef-command-category select{
+  width:100%!important;
+}
+@media(max-width:1180px){
+  body.entry-form-page .ef-commandbar{
+    grid-template-columns:minmax(260px,330px) 1fr!important;
+    justify-content:stretch!important;
+  }
+  body.entry-form-page .ef-command-category{
+    grid-column:1!important;
+  }
+  body.entry-form-page .ef-command-actions{
+    grid-column:2!important;
+    justify-self:end!important;
+    justify-content:flex-end!important;
+  }
+}
+@media(max-width:900px){
+  body.entry-form-page .ef-commandbar{
+    grid-template-columns:1fr!important;
+    justify-items:center!important;
+  }
+  body.entry-form-page .ef-command-category,
+  body.entry-form-page .ef-command-actions{
+    grid-column:1!important;
+    width:100%!important;
+    max-width:none!important;
+    justify-self:stretch!important;
+  }
+  body.entry-form-page .ef-command-actions{
+    justify-content:center!important;
+  }
+}
+@media(max-width:620px){
+  body.entry-form-page .ef-command-actions{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body.entry-form-page .ef-command-btn,
+  body.entry-form-page .ef-command-add{
+    width:100%!important;
+  }
+}
+
+
+/* V19.33 - final compact Entry Form toolbar without count pills */
+body.entry-form-page .ef-commandbar{
+  grid-template-columns:minmax(300px,360px) minmax(0,1fr)!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  column-gap:22px!important;
+  padding:15px 18px!important;
+}
+body.entry-form-page .ef-command-category{
+  max-width:360px!important;
+  justify-self:start!important;
+}
+body.entry-form-page .ef-command-category label{
+  font-size:10.5px!important;
+  font-weight:900!important;
+  margin-bottom:6px!important;
+}
+body.entry-form-page .ef-command-category select{
+  height:46px!important;
+  font-size:14px!important;
+  font-weight:850!important;
+}
+body.entry-form-page .ef-command-actions{
+  justify-self:end!important;
+  justify-content:flex-end!important;
+  gap:9px!important;
+  flex-wrap:nowrap!important;
+}
+body.entry-form-page .ef-command-btn,
+body.entry-form-page .ef-command-add{
+  height:43px!important;
+  min-height:43px!important;
+  padding:0 14px!important;
+  font-size:12.7px!important;
+}
+body.entry-form-page .ef-command-btn span{
+  font-size:17px!important;
+  min-width:18px!important;
+}
+@media(max-width:1100px){
+  body.entry-form-page .ef-commandbar{grid-template-columns:1fr!important;gap:12px!important}
+  body.entry-form-page .ef-command-category{max-width:none!important;width:100%!important}
+  body.entry-form-page .ef-command-actions{justify-self:stretch!important;justify-content:flex-start!important;flex-wrap:wrap!important}
+}
+@media(max-width:620px){
+  body.entry-form-page .ef-command-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
