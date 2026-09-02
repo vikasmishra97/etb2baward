@@ -174,13 +174,21 @@
                 <div class="pr-category-view-controls">
                   <div>
                     <b>Category fees</b>
-                    <span id="categoryVisibleLabel">Showing first 8 categories</span>
+                    <span id="categoryVisibleLabel">Showing first 2 categories</span>
                   </div>
                   <label class="pr-category-limit">Show
                     <select id="categoryDisplayLimit" aria-label="Number of categories to show">
-                      <option value="8" selected>8</option>
-                      <option value="12">12</option>
+                      <option value="2" selected>2</option>
+                      <option value="5">5</option>
+                      <option value="10">10</option>
+                      <option value="15">15</option>
                       <option value="20">20</option>
+                      <option value="25">25</option>
+                      <option value="30">30</option>
+                      <option value="35">35</option>
+                      <option value="40">40</option>
+                      <option value="45">45</option>
+                      <option value="50">50</option>
                     </select>
                   </label>
                 </div>
@@ -362,7 +370,7 @@
   let appliedPromoId=null,editingPromoId=null;
   const selectedCategoryIds=new Set();
   let categoryPricingQuery='';
-  let categoryDisplayLimit=8;
+  let categoryDisplayLimit=2;
   let categoryExpanded=false;
 
   const saved=(()=>{try{return JSON.parse(localStorage.getItem(storeKey)||'null')}catch(e){return null}})();
@@ -526,7 +534,7 @@
   $('clearCategorySelection').addEventListener('click',()=>{selectedCategoryIds.clear();renderCategoryPricing()});
   $('categoryPricingSearch').addEventListener('input',()=>{categoryPricingQuery=$('categoryPricingSearch').value||'';$('clearCategorySearch').hidden=!categoryPricingQuery;renderCategoryPricing()});
   $('clearCategorySearch').addEventListener('click',()=>{categoryPricingQuery='';$('categoryPricingSearch').value='';$('clearCategorySearch').hidden=true;renderCategoryPricing();$('categoryPricingSearch').focus()});
-  if($('categoryDisplayLimit'))$('categoryDisplayLimit').addEventListener('change',()=>{categoryDisplayLimit=Math.max(1,Number($('categoryDisplayLimit').value||8));categoryExpanded=false;renderCategoryPricing()});
+  if($('categoryDisplayLimit'))$('categoryDisplayLimit').addEventListener('change',()=>{categoryDisplayLimit=Math.max(1,Number($('categoryDisplayLimit').value||2));categoryExpanded=false;renderCategoryPricing()});
   if($('toggleAllCategories'))$('toggleAllCategories').addEventListener('click',()=>{categoryExpanded=!categoryExpanded;renderCategoryPricing()});
   $('applyBulkCategoryFee').addEventListener('click',()=>{const raw=$('bulkCategoryFee').value;const fee=Number(raw);if(!selectedCategoryIds.size){toast('Select at least one category');return}if(raw===''||!Number.isFinite(fee)||fee<0){toast('Enter a valid amount');$('bulkCategoryFee').focus();return}selectedCategoryIds.forEach(id=>{if(state.categoryOverrides[id]){state.categoryOverrides[id].enabled=true;state.categoryOverrides[id].fee=fee}});persist();renderAll();toast('Applied '+money(fee)+' to '+selectedCategoryIds.size+' categor'+(selectedCategoryIds.size===1?'y':'ies'))});
 
