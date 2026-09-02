@@ -71,14 +71,14 @@
       <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage done">DECIDE</div><div class="stage done">CELEBRATE</div></div>
 
       <section class="rp-tabs" aria-label="Report views">
-        <button class="active" data-tab="executive">Executive</button>
-        <button data-tab="acquisition">Acquisition</button>
+        <button class="active" data-tab="executive">Overview</button>
+        <button data-tab="acquisition">Leads &amp; Entries</button>
         <button data-tab="revenue">Revenue</button>
         <button data-tab="judging">Judging</button>
-        <button data-tab="celebration">Celebration</button>
+        <button data-tab="celebration">Ceremony</button>
       </section>
 
-      <section class="rp-kpis">
+      <section class="rp-kpis" data-executive-only> 
         <article class="rp-kpi">
           <div class="rp-kpi-top"><span class="rp-kpi-icon">⇩</span><span class="rp-change up">↑ 12.4%</span></div>
           <small>Completed entries</small><strong id="kpiEntries">1,284</strong><em>of 1,620 started</em>
@@ -97,7 +97,7 @@
         </article>
       </section>
 
-      <section class="rp-insight" id="executiveInsight">
+      <section class="rp-insight" id="executiveInsight" data-executive-only>
         <div class="rp-insight-icon">✦</div>
         <div>
           <small>AWARD COPILOT · EXECUTIVE SUMMARY</small>
@@ -198,7 +198,7 @@
           <div class="rp-report-console-copy">
             <small>LIVE CAPTURE CENTRE</small>
             <h2>Registration & nomination reports</h2>
-            <p>Track every lead captured before nominations open and every category form completed after the nomination journey begins.</p>
+            <p>A clean two-part report: registration leads first, then category-wise nomination submissions. Every field captured on the public form and nomination form remains available here.</p>
           </div>
           <div class="rp-report-type-switch" role="tablist" aria-label="Report type">
             <button class="active" type="button" data-report-type="registrations">Registration leads</button>
@@ -224,7 +224,7 @@
           <div class="rp-registration-meta"><span><i class="good"></i><b id="regCaptureStatus">Capture is active</b></span><small id="regLastCaptured">No registrations captured yet</small></div>
           <div class="table-wrap">
             <table class="table rp-table rp-registration-table">
-              <thead><tr><th>Registered</th><th>CTA / Type</th><th>Name</th><th>Work email</th><th>Mobile</th><th>Company</th><th>Designation</th><th>Page</th></tr></thead>
+              <thead><tr><th>Registered</th><th>CTA / Type</th><th>Name</th><th>Work email</th><th>Mobile</th><th>Company</th><th>Designation</th><th>Page</th><th>All captured details</th></tr></thead>
               <tbody id="registrationTableBody"></tbody>
             </table>
           </div>

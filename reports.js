@@ -34,6 +34,12 @@
     el.querySelectorAll('[data-reg-source]').forEach(function(b){b.addEventListener('click',function(){regSourceFilter=b.dataset.regSource;renderRegistrations()})});
   }
   function filteredRegistrations(rows){var q=regSearch.toLowerCase();return rows.filter(function(r){if(regSourceFilter!=='all'&&captureLabel(r)!==regSourceFilter)return false;if(!q)return true;return [r.name,r.email,r.mobile,r.company,r.designation,captureLabel(r),r.page].some(function(v){return String(v||'').toLowerCase().includes(q)})})}
+  function registrationDetails(r){
+    var skip={id:1,award:1,awardSlug:1,slug:1,createdAt:1,captureLabel:1,captureType:1,name:1,email:1,mobile:1,company:1,designation:1,page:1,source:1,status:1};
+    var items=[];Object.keys(r||{}).forEach(function(k){if(skip[k])return;var v=r[k];if(v==null||String(v).trim()==='')return;var label=k.replace(/^custom_/,'').replace(/[_-]+/g,' ').replace(/\b\w/g,function(m){return m.toUpperCase()});items.push([label,Array.isArray(v)?v.join(', '):String(v)])});
+    if(!items.length)return '<span class="rp-answer-empty">No additional fields</span>';
+    return '<details class="rp-all-details"><summary>View '+items.length+' more field'+(items.length===1?'':'s')+'</summary><div class="rp-all-details-grid">'+items.map(function(x){return '<div><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div>'}).join('')+'</div></details>';
+  }
   function renderRegistrations(){
     var rows=registrationRows(),now=new Date(),startToday=new Date(now.getFullYear(),now.getMonth(),now.getDate()),weekAgo=new Date(now.getTime()-7*86400000);
     var interest=rows.filter(function(r){return captureType(r)==='express_interest'}).length,nominate=rows.filter(function(r){return captureType(r)==='nomination'}).length,featured=rows.filter(function(r){return captureType(r)==='featured_button'}).length;
@@ -41,8 +47,8 @@
     if($('#liveRegToday'))$('#liveRegToday').textContent=fmt(rows.filter(function(r){return new Date(r.createdAt||0)>=startToday}).length);if($('#liveRegWeek'))$('#liveRegWeek').textContent=fmt(rows.filter(function(r){return new Date(r.createdAt||0)>=weekAgo}).length);
     if($('#regLastCaptured'))$('#regLastCaptured').textContent=rows.length?'Last captured '+regDate(rows[0].createdAt).date+' · '+regDate(rows[0].createdAt).time:'No registrations captured yet';
     renderRegistrationFilters(rows);var shown=filteredRegistrations(rows),body=$('#registrationTableBody');if(!body)return;
-    if(!shown.length){body.innerHTML='<tr><td class="rp-registration-empty" colspan="8">No registrations match this filter yet.</td></tr>';return}
-    body.innerHTML=shown.slice(0,200).map(function(r){var d=regDate(r.createdAt),type=captureType(r),label=captureLabel(r);return '<tr><td class="reg-date"><b>'+esc(d.date)+'</b><small>'+esc(d.time)+'</small></td><td><span class="rp-capture-pill '+esc(type)+'">'+esc(label)+'</span></td><td><b>'+esc(r.name||'—')+'</b></td><td>'+esc(r.email||'—')+'</td><td>'+esc(r.mobile||'—')+'</td><td>'+esc(r.company||'—')+'</td><td>'+esc(r.designation||'—')+'</td><td>'+esc(r.page||'Public website')+'</td></tr>'}).join('');
+    if(!shown.length){body.innerHTML='<tr><td class="rp-registration-empty" colspan="9">No registrations match this filter yet.</td></tr>';return}
+    body.innerHTML=shown.slice(0,200).map(function(r){var d=regDate(r.createdAt),type=captureType(r),label=captureLabel(r);return '<tr><td class="reg-date"><b>'+esc(d.date)+'</b><small>'+esc(d.time)+'</small></td><td><span class="rp-capture-pill '+esc(type)+'">'+esc(label)+'</span></td><td><b>'+esc(r.name||'—')+'</b></td><td>'+esc(r.email||'—')+'</td><td>'+esc(r.mobile||'—')+'</td><td>'+esc(r.company||'—')+'</td><td>'+esc(r.designation||'—')+'</td><td>'+esc(r.page||'Public website')+'</td><td>'+registrationDetails(r)+'</td></tr>'}).join('');
   }
   function downloadRegistrationsCsv(){var rows=filteredRegistrations(registrationRows()),fixed=['createdAt','captureLabel','captureType','name','email','mobile','company','designation','page','source'],extra=[];rows.forEach(function(r){Object.keys(r||{}).forEach(function(k){if(fixed.indexOf(k)<0&&['id','award','awardSlug','slug','status'].indexOf(k)<0&&extra.indexOf(k)<0)extra.push(k)})});var cols=fixed.concat(extra),csv=[cols].concat(rows.map(function(r){var x=Object.assign({},r,{captureLabel:captureLabel(r),captureType:captureType(r)});return cols.map(function(k){return x[k]==null?'':x[k]})})).map(function(r){return r.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"'}).join(',')}).join('\r\n'),blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=slug+'-registration-leads.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);toast('Registration report CSV downloaded')}
 
@@ -117,7 +123,12 @@
   function updateTopKpis(){var d=activeFunnel(),factor=periodFactor(),entries=d[3].value,paid=d[4].value,revenue=Math.round(2568000*factor);if($('#kpiEntries'))$('#kpiEntries').textContent=fmt(entries);if($('#kpiRevenue'))$('#kpiRevenue').textContent=inr(revenue);if($('#kpiConversion'))$('#kpiConversion').textContent=(paid/d[0].value*100).toFixed(1)+'%';if($('#revenueTotalMeta'))$('#revenueTotalMeta').textContent=inr(revenue)+' total';if($('#revenueSub'))$('#revenueSub').textContent=inr(revenue/Math.max(1,paid))+' avg. per paid entry'}
   function renderAll(){renderFunnel();renderAcquisitionFunnel();renderSources('#sourceList');renderSources('#sourceListAcq');renderCategories();renderCampaigns();renderRevenueChart('#revenueChart','#revenueAxis');renderRevenueChart('#revenueChartRevenue','#revenueAxisRevenue');renderCeremony();renderHealth();updateTopKpis();renderRegistrations();renderNominations()}
 
-  function activateTab(name){$$('.rp-tabs button').forEach(function(b){b.classList.toggle('active',b.dataset.tab===name)});$$('.rp-view').forEach(function(v){v.classList.toggle('active',v.dataset.view===name)});window.scrollTo({top:0,behavior:'smooth'})}
+  function activateTab(name){
+    $$('.rp-tabs button').forEach(function(b){b.classList.toggle('active',b.dataset.tab===name)});
+    $$('.rp-view').forEach(function(v){v.classList.toggle('active',v.dataset.view===name)});
+    $$('[data-executive-only]').forEach(function(el){el.hidden=name!=='executive'});
+    window.scrollTo({top:0,behavior:'smooth'})
+  }
   $$('.rp-tabs button').forEach(function(b){b.addEventListener('click',function(){activateTab(b.dataset.tab)})});$$('[data-tab-jump]').forEach(function(b){b.addEventListener('click',function(){activateTab(b.dataset.tabJump)})});
   if($('#periodSelect'))$('#periodSelect').addEventListener('change',function(){renderFunnel();renderAcquisitionFunnel();updateTopKpis();toast('Report period updated')});
   if($('#exportRegistrations'))$('#exportRegistrations').addEventListener('click',downloadRegistrationsCsv);
