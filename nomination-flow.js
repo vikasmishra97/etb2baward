@@ -152,7 +152,7 @@
         <div class="nom-pay-select-wrap">${canPay?`<label class="nom-pay-check" title="Select for payment"><input type="checkbox" data-pay-select value="${esc(x.categoryId)}"><span>✓</span></label>`:`<span class="nom-bucket-num">${String(i+1).padStart(2,'0')}</span>`}</div>
         <div class="nom-bucket-copy"><div class="nom-bucket-title-row"><h3>${esc(x.name)}</h3><span class="nom-status ${statusClass}">${esc(status.toUpperCase())}</span></div><p>${esc(x.group||'Award category')}</p>${x.submitted?`<div class="nom-submission-meta"><span>✓ Form submitted</span><span>✓ Payment completed</span>${x.paymentId?`<span>Payment: ${esc(x.paymentId)}</span>`:''}${nominationId?`<span>Nomination ID: ${esc(nominationId)}</span>`:''}</div>`:(settings.autoImportAnswers!==false?'<small class="nom-reuse-note">Smart answer reuse enabled</small>':'')}</div>
         <div class="nom-bucket-fee">${money(x.fee)}</div>
-        <div class="nom-row-action">${x.submitted?'<span class="nom-submitted-lock">Completed ✓</span>':`<a href="nomination-form.html?category=${encodeURIComponent(x.categoryId)}">${x.completed?'Review form':'Fill form'} →</a>${bucket.items.filter(y=>!y.submitted).length>1?`<button type="button" data-remove-cat="${esc(x.categoryId)}">Remove</button>`:''}`}</div>
+        <div class="nom-row-action">${x.submitted?`<span class="nom-submitted-lock">Completed ✓</span><a class="nom-view-form" href="nomination-form.html?category=${encodeURIComponent(x.categoryId)}&view=1">View form →</a>`:`<a href="nomination-form.html?category=${encodeURIComponent(x.categoryId)}">${x.completed?'Review form':'Fill form'} →</a>${bucket.items.filter(y=>!y.submitted).length>1?`<button type="button" data-remove-cat="${esc(x.categoryId)}">Remove</button>`:''}`}</div>
       </article>`;
     }).join('');
 
@@ -177,9 +177,12 @@
 
   function initForm(){
     bucket=syncBucket();
-    const catId=new URLSearchParams(location.search).get('category')||selected[0];
+    const params=new URLSearchParams(location.search);
+    const catId=params.get('category')||selected[0];
+    const viewOnly=params.get('view')==='1';
     const item=bucket.items.find(x=>String(x.categoryId)===String(catId));
-    if(!catId||!item||item.submitted){location.href='nomination-bucket.html';return}
+    if(!catId||!item||(!viewOnly&&item.submitted)){location.href='nomination-bucket.html';return}
+    if(viewOnly&&!item.submitted){location.href='nomination-form.html?category='+encodeURIComponent(catId);return}
     const c=cat(catId),fields=visibleFields(catId);
     document.title=(c.name||'Nomination')+' · ETB2B Awards';
     document.getElementById('formCategoryGroup').textContent=(c.group||'NOMINATION FORM').toUpperCase();
@@ -229,12 +232,23 @@
     }
 
     renderStep();
-    document.getElementById('saveDraftBtn').addEventListener('click',()=>saveForm(false));
-    document.getElementById('saveNextBtn').addEventListener('click',()=>saveForm(true));
+    if(viewOnly){
+      document.body.classList.add('nom-view-only');
+      const intro=document.getElementById('formCategoryIntro');
+      if(intro)intro.textContent='This nomination has been submitted and paid. You can review every section, but changes are locked.';
+      const profileStrip=document.querySelector('.profile-attached-strip');
+      if(profileStrip)profileStrip.insertAdjacentHTML('afterend','<div class="nom-readonly-banner"><span>🔒</span><div><b>Submitted nomination · View only</b><small>Payment is complete, so this form can no longer be edited.</small></div></div>');
+      document.getElementById('saveDraftBtn').hidden=true;
+      document.getElementById('saveNextBtn').hidden=true;
+      document.getElementById('nextStepBtn').textContent='Next section →';
+    }else{
+      document.getElementById('saveDraftBtn').addEventListener('click',()=>saveForm(false));
+      document.getElementById('saveNextBtn').addEventListener('click',()=>saveForm(true));
+    }
     document.getElementById('prevStepBtn').addEventListener('click',()=>{captureCurrent();if(activeStep>0){activeStep--;renderStep();scrollToForm()}});
     document.getElementById('nextStepBtn').addEventListener('click',()=>{
       captureCurrent();
-      if(!validateSection(activeStep,true)){toast('Please fix the highlighted fields');return}
+      if(!viewOnly&&!validateSection(activeStep,true)){toast('Please fix the highlighted fields');return}
       if(activeStep<sections.length-1){activeStep++;renderStep();scrollToForm()}
     });
     document.getElementById('nominationFields').addEventListener('input',e=>{
@@ -282,9 +296,14 @@
       document.getElementById('formStepHelp').textContent=sec.help||'Complete this section to continue.';
       const box=document.getElementById('nominationFields');
       box.innerHTML=sec.fields.map(f=>fieldHtml(f,stateAnswers[semantic(f)],!!(stateAnswers[semantic(f)]&&saved.answers[semantic(f)]==null))).join('');
+      if(viewOnly)box.querySelectorAll('input, textarea, select, button').forEach(el=>{el.disabled=true;el.setAttribute('aria-disabled','true')});
       document.getElementById('prevStepBtn').hidden=activeStep===0;
       document.getElementById('nextStepBtn').hidden=activeStep===sections.length-1;
-      document.getElementById('saveNextBtn').hidden=activeStep!==sections.length-1;
+      if(viewOnly){
+        document.getElementById('saveNextBtn').hidden=true;
+      }else{
+        document.getElementById('saveNextBtn').hidden=activeStep!==sections.length-1;
+      }
       sec.fields.forEach(updateCounter);
       updateConditional();updateProgressUI();renderSectionNav();
     }
@@ -384,10 +403,10 @@
     }
     function renderSectionNav(){
       const nav=document.getElementById('sectionNav');if(!nav)return;
-      nav.innerHTML=sections.map((sec,i)=>{const locked=i>activeStep&&!sections.slice(0,i).every(sectionComplete);return `<button type="button" data-step-index="${i}" class="${i===activeStep?'active':''} ${sectionComplete(sec)?'complete':''} ${locked?'locked':''}" ${locked?'disabled':''}><span>${sectionComplete(sec)?'✓':i+1}</span><b>${esc(sec.title)}</b><small>${sectionComplete(sec)?'Complete':i===activeStep?'In progress':locked?'Complete previous section':'Ready'}</small></button>`}).join('');
+      nav.innerHTML=sections.map((sec,i)=>{const locked=!viewOnly&&i>activeStep&&!sections.slice(0,i).every(sectionComplete);return `<button type="button" data-step-index="${i}" class="${i===activeStep?'active':''} ${sectionComplete(sec)?'complete':''} ${locked?'locked':''}" ${locked?'disabled':''}><span>${sectionComplete(sec)?'✓':i+1}</span><b>${esc(sec.title)}</b><small>${sectionComplete(sec)?'Complete':i===activeStep?'In progress':locked?'Complete previous section':'Ready'}</small></button>`}).join('');
       nav.querySelectorAll('[data-step-index]').forEach(btn=>btn.addEventListener('click',()=>{
         const target=Number(btn.dataset.stepIndex);captureCurrent();
-        if(target>activeStep&&!validateSection(activeStep,true)){toast('Please complete this section first');return}
+        if(!viewOnly&&target>activeStep&&!validateSection(activeStep,true)){toast('Please complete this section first');return}
         activeStep=target;renderStep();scrollToForm();
       }));
     }

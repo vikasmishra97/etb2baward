@@ -432,3 +432,23 @@ body[data-nomination-page="bucket"] .nom-payment-success{display:flex;align-item
 body[data-nomination-page="bucket"] .nom-payment-success[hidden]{display:none}
 body[data-nomination-page="bucket"] .nom-payment-success>span{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:50%;background:#d9f0e1;color:#17663f;font-size:17px;font-weight:900}
 body[data-nomination-page="bucket"] .nom-payment-success b{display:block;font-size:14px;line-height:1.4}.nom-payment-success small{display:block;margin-top:3px;font-size:12px;line-height:1.45;color:#5d7768}
+
+/* Submitted nomination view-only action */
+.nom-row-action .nom-view-form{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:0 18px;
+  border:1px solid #d7c9b7;
+  border-radius:12px;
+  background:#fff;
+  color:#151922;
+  font-size:14px;
+  font-weight:800;
+  text-decoration:none;
+  white-space:nowrap;
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.nom-row-action .nom-view-form:hover{border-color:#b9925e;box-shadow:0 8px 20px rgba(55,35,12,.08);transform:translateY(-1px)}
+.nom-row-action .nom-submitted-lock{margin-bottom:8px}

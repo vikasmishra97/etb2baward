@@ -112,3 +112,14 @@ body[data-nomination-page="checkout"] .checkout-lock-warning>span{font-size:18px
 @media(max-width:1050px){body[data-nomination-page="form"] .nom-form-wrap{grid-template-columns:minmax(0,1fr) 250px!important}.nom-google-tracker b{max-width:95px!important}}
 @media(max-width:900px){body[data-nomination-page="form"] .nom-form-wrap{grid-template-columns:1fr!important}body[data-nomination-page="form"] .nom-side-summary{position:static!important;max-height:none!important;overflow:visible!important;order:-1!important}body[data-nomination-page="form"] .nom-google-tracker{margin-top:14px}}
 @media(max-width:620px){body[data-nomination-page="form"] .nom-google-tracker{padding:12px}.nom-google-tracker b{max-width:100px!important}.nom-google-tracker>i{min-width:12px!important}}
+
+/* Paid/submitted nomination: view-only state */
+.nom-readonly-banner{display:flex;gap:12px;align-items:flex-start;margin:14px 0 8px;padding:14px 16px;border:1px solid #d8e8dd;border-radius:14px;background:#f2faf5;color:#173d29}
+.nom-readonly-banner>span{font-size:18px;line-height:1.2}
+.nom-readonly-banner b{display:block;font-size:14px;font-weight:900;margin-bottom:3px}
+.nom-readonly-banner small{display:block;font-size:12px;line-height:1.55;color:#4e6a59}
+.nom-view-only .nom-field{background:#fbfbfa}
+.nom-view-only .nom-field input:disabled,.nom-view-only .nom-field textarea:disabled,.nom-view-only .nom-field select:disabled{opacity:1;color:#1a1e27;-webkit-text-fill-color:#1a1e27;background:#f7f6f3;cursor:default}
+.nom-view-only .nom-field-options input:disabled+span{opacity:1;color:#1a1e27}
+.nom-view-only .nom-imported{display:none}
+.nom-view-only .nom-wizard-actions{justify-content:space-between}
