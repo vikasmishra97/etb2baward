@@ -1578,3 +1578,30 @@ body.entry-form-page .ef-next-btn span{font-size:14px!important}
   .pr-category-row{grid-template-columns:1fr!important}
   .pr-bottom-actions{position:static}
 }
+
+/* Pricing v28: compact payment setup + controlled category list */
+.pr-category-view-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 8px 10px}
+.pr-category-view-controls>div{display:grid;gap:2px}
+.pr-category-view-controls b{font-size:12px;color:#23283a}
+.pr-category-view-controls span{font-size:10px;color:#7c8393}
+.pr-category-limit{display:flex;align-items:center;gap:7px;font-size:10px;font-weight:800;color:#687083}
+.pr-category-limit select{height:32px;min-width:68px;padding:0 26px 0 9px;border:1px solid #dfe3ea;border-radius:9px;background:#fff;font-size:11px;font-weight:800;color:#242a3b}
+.pr-category-expand-wrap{display:flex;justify-content:center;padding:12px 0 2px}
+.pr-expand-categories{min-height:34px!important;padding:7px 13px!important;font-size:10.5px!important;border-radius:9px!important}
+.pr-card:has(.pr-payment-grid){padding:16px 18px!important}
+.pr-card:has(.pr-payment-grid) .pr-section-title{margin-bottom:10px!important}
+.pr-card:has(.pr-payment-grid) .pr-section-title h2{font-size:17px!important;margin:0!important}
+.pr-card:has(.pr-payment-grid) .pr-section-title p{font-size:10.5px!important;margin-top:3px!important}
+.pr-card:has(.pr-payment-grid) .pr-step{width:30px!important;height:30px!important;font-size:10px!important}
+.pr-payment-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+.pr-gateway{min-height:74px!important;padding:10px 11px!important;border-radius:12px!important;gap:8px!important}
+.pr-gateway>span{width:28px!important;height:28px!important;font-size:9px!important;border-radius:9px!important}
+.pr-gateway b{font-size:12px!important}
+.pr-gateway small{font-size:9px!important;line-height:1.25!important;margin-top:2px!important}
+.pr-gateway em{font-size:7px!important}
+.pr-payment-options{display:flex!important;gap:18px!important;align-items:center!important;padding-top:10px!important;margin-top:10px!important;border-top:1px solid #eceef2!important}
+.pr-payment-options label{display:flex!important;align-items:center!important;gap:7px!important;font-size:9px!important;line-height:1.25!important;color:#646b7d!important;max-width:none!important}
+.pr-payment-options input[type="checkbox"]{appearance:none!important;-webkit-appearance:none!important;width:17px!important;height:17px!important;min-width:17px!important;border:1.5px solid #cfd5df!important;border-radius:5px!important;background:#fff!important;display:grid!important;place-items:center!important;margin:0!important}
+.pr-payment-options input[type="checkbox"]:checked{background:#d71322!important;border-color:#d71322!important}
+.pr-payment-options input[type="checkbox"]:checked:after{content:"✓";color:#fff;font-size:11px;font-weight:900;line-height:1}
+@media(max-width:900px){.pr-payment-grid{grid-template-columns:1fr!important}.pr-payment-options{display:grid!important;gap:8px!important}.pr-category-view-controls{align-items:flex-start}.pr-category-limit{margin-left:auto}}
