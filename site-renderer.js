@@ -21,7 +21,7 @@
     return{
       theme:{preset:'awards-night',primary:'#a90e17',accent:'#d8ad59',surface:'#fffaf2',font:'editorial',radius:'soft',bodyFont:'inter',bodyHeadingSize:50,bodySubheadingSize:16,bodyParagraphSize:16,bodyTextAlign:'left',bodyBg:'#ffffff',bodyText:'#22252e',bodySectionSpacing:70,bodyBackgroundImage:''},
       header:{desktopImage:'',mobileImage:'',illustrationImage:'',brandingBanner:'',sponsorLogo:'',bottomSponsor:'',seoImage:'',thumbnailImage:'',seoTitle:'',seoDescription:'',design:'stage',overlay:58,heroPosition:'center',illustrationSize:48,brandingWidth:84,heroHeight:690},
-      form:{showOnBanner:true,displayMode:'banner',layout:'card',title:'Register your interest',subtitle:'Stay informed about nominations',fields:{name:true,email:true,mobile:true,company:true,designation:false},customFields:[]},
+      form:{showOnBanner:true,displayMode:'banner',displayModeUserSet:false,layout:'card',title:'Register your interest',subtitle:'Stay informed about nominations',fields:{name:true,email:true,mobile:true,company:true,designation:false},customFields:[]},
       nav:{sticky:true,homeVisible:true,style:'transparent',background:'#4b0d13',opacity:88,textColor:'#ffffff',twoRow:true,order:['home','page:categories','page:jury','page:guidelines','page:criteria','page:terms','section:overview','section:why','section:speakers','section:agenda','section:faqSection','section:aboutVertical','section:contact','page:faq','page:contact','page:previous','page:rewards'],pages:{home:true,categories:true,jury:true,guidelines:true,criteria:true,terms:true,faq:true,contact:true,previous:true},visible:{overview:true,keypoints:false,who:false,why:true,eventDescription:false,speakers:true,agenda:true,resources:false,glimpse:false,contact:true}},
       pages:{landing:{title:name,enabled:true},thankyou:{enabled:true,title:'Thank you for your interest',body:'We have received your details. Our awards team will keep you updated with nomination news and important dates.'},rewards:{enabled:true,title:'Recognition that travels beyond the trophy',body:'Winners receive a digital certificate, winner badge, editorial visibility and a place in the official ETB2B Awards winner gallery.'}},
       publicPages:[
@@ -89,7 +89,7 @@
   }
   function normalizeState(raw,a){
     const d=defaultState(a);if(!raw||typeof raw!=='object')raw={};
-    d.theme=Object.assign(d.theme,raw.theme||{});d.header=Object.assign(d.header,raw.header||{});if(raw.header&&raw.header.brandingWidth==null)d.header.brandingWidth=84;if(raw.header&&raw.header.heroHeight==null)d.header.heroHeight=690;if(raw.header&&raw.header.illustrationImage&&raw.header.brandingWidth==null&&raw.header.design==='immersive')d.header.design='stage';d.form=Object.assign(d.form,raw.form||{});d.form.fields=Object.assign(d.form.fields,raw.form?.fields||{});if(!d.form.displayMode)d.form.displayMode=d.form.showOnBanner===false?'cta':'banner';d.form.showOnBanner=d.form.displayMode==='banner';d.form.layout=['card','stacked','compact','glass'].includes(d.form.layout)?d.form.layout:'card';d.form.customFields=(Array.isArray(raw.form?.customFields)?raw.form.customFields:[]).map((x,i)=>Object.assign({id:x.id||`rf${i+1}`,label:`Custom field ${i+1}`,name:`custom_${i+1}`,type:'text',placeholder:'',required:false,active:true,options:''},x,{id:x.id||`rf${i+1}`}));d.nav=Object.assign(d.nav,raw.nav||{});d.nav.visible=Object.assign(d.nav.visible,raw.nav?.visible||{});d.nav.pages=Object.assign(defaultState(a).nav.pages,raw.nav?.pages||{});
+    d.theme=Object.assign(d.theme,raw.theme||{});d.header=Object.assign(d.header,raw.header||{});if(raw.header&&raw.header.brandingWidth==null)d.header.brandingWidth=84;if(raw.header&&raw.header.heroHeight==null)d.header.heroHeight=690;if(raw.header&&raw.header.illustrationImage&&raw.header.brandingWidth==null&&raw.header.design==='immersive')d.header.design='stage';d.form=Object.assign(d.form,raw.form||{});d.form.fields=Object.assign(d.form.fields,raw.form?.fields||{});if(!d.form.displayMode)d.form.displayMode=d.form.showOnBanner===false?'cta':'banner';d.form.displayModeUserSet=raw.form?.displayModeUserSet===true;d.form.showOnBanner=d.form.displayMode==='banner';d.form.layout=['card','stacked','compact','glass'].includes(d.form.layout)?d.form.layout:'card';d.form.customFields=(Array.isArray(raw.form?.customFields)?raw.form.customFields:[]).map((x,i)=>Object.assign({id:x.id||`rf${i+1}`,label:`Custom field ${i+1}`,name:`custom_${i+1}`,type:'text',placeholder:'',required:false,active:true,options:''},x,{id:x.id||`rf${i+1}`}));d.nav=Object.assign(d.nav,raw.nav||{});d.nav.visible=Object.assign(d.nav.visible,raw.nav?.visible||{});d.nav.pages=Object.assign(defaultState(a).nav.pages,raw.nav?.pages||{});
     d.pages={landing:Object.assign(d.pages.landing,raw.pages?.landing||{}),thankyou:Object.assign(d.pages.thankyou,raw.pages?.thankyou||{}),rewards:Object.assign(d.pages.rewards,raw.pages?.rewards||{})};
     const defPublic=defaultState(a).publicPages||[];const rawPublic=Array.isArray(raw.publicPages)?raw.publicPages:[];const rawPublicMap=Object.fromEntries(rawPublic.map(x=>[x.id,x]));
     d.publicPages=defPublic.map(pg=>Object.assign({},pg,rawPublicMap[pg.id]||{}));
@@ -225,17 +225,23 @@
     const fields=registrationFields(state).map(registrationFieldMarkup).join('');
     return `<form class="hero-register form-layout-${esc(state.form.layout||'card')} ${extraClass}" data-public-interest-form data-cta-mode="${cta.mode}"><div class="hero-register-title"><small>${cta.mode==='nominate'?'NOMINATIONS ARE OPEN':'STAY IN THE LOOP'}</small><b>${esc(cta.mode==='nominate'?'Start your nomination':state.form.title)}</b><span>${esc(state.form.subtitle||cta.sub)}</span></div><div class="hero-register-fields">${fields}</div><button type="submit" ${cta.mode==='closed'?'disabled':''}>${esc(cta.label)} <span>→</span></button><small class="hero-consent">By continuing, you agree to receive award-related updates.</small></form>`;
   }
+  function effectiveFormMode(state,cta){
+    if(cta?.mode==='nominate'&&state.form.displayModeUserSet!==true)return 'popup';
+    return state.form.displayMode||((state.form.showOnBanner===false)?'cta':'banner');
+  }
   function heroForm(state,cta){
-    const mode=state.form.displayMode||((state.form.showOnBanner===false)?'cta':'banner');
-    if(cta.mode==='nominate')return `<div class="hero-cta-only"><a class="public-primary-cta" href="#nomination-registration" data-hero-cta data-open-interest-popup>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
+    const mode=effectiveFormMode(state,cta);
+    if(cta.mode==='nominate'&&mode==='banner')return registrationFormMarkup(state,cta);
+    if(cta.mode==='nominate'&&mode==='popup')return `<div class="hero-popup-trigger"><small>NOMINATIONS ARE OPEN</small><b>Start your nomination</b><p>${esc(state.form.subtitle||cta.sub)}</p><button type="button" data-open-interest-popup>${esc(cta.label)} <span>→</span></button></div>`;
+    if(cta.mode==='nominate'&&mode==='cta')return `<div class="hero-cta-only"><a class="public-primary-cta" href="#nomination-registration" data-hero-cta data-open-interest-popup>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
     if(cta.mode==='closed')return `<div class="hero-cta-only"><a class="public-primary-cta disabled" href="#" data-hero-cta>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
     if(mode==='popup')return `<div class="hero-popup-trigger"><small>READY WHEN YOU ARE</small><b>${esc(state.form.title||'Register your interest')}</b><p>${esc(state.form.subtitle||cta.sub)}</p><button type="button" data-open-interest-popup>${esc(cta.label)} <span>→</span></button></div>`;
     if(mode==='cta')return `<div class="hero-cta-only"><a class="public-primary-cta" href="#interest-popup" data-open-interest-popup>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
     return registrationFormMarkup(state,cta);
   }
   function registrationPopup(state,cta){
-    const mode=state.form.displayMode||'banner';
-    const shouldRender=cta.mode==='nominate'||(cta.mode==='interest'&&['popup','cta'].includes(mode));
+    const mode=effectiveFormMode(state,cta);
+    const shouldRender=['popup','cta'].includes(mode)&&(cta.mode==='nominate'||cta.mode==='interest');
     if(!shouldRender)return'';
     return `<div class="public-form-modal" data-interest-popup aria-hidden="true"><div class="public-form-backdrop" data-close-interest-popup></div><section class="public-form-dialog"><button type="button" class="public-form-close" data-close-interest-popup aria-label="Close registration form">×</button>${registrationFormMarkup(state,cta,'popup-registration-form')}</section></div>`;
   }
