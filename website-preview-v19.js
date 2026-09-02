@@ -28,17 +28,36 @@
 
   function setMeta(attr,key,value){let m=document.head.querySelector(`meta[${attr}="${key}"]`);if(!m){m=document.createElement('meta');m.setAttribute(attr,key);document.head.appendChild(m)}m.setAttribute('content',value||'')}
   function toast(msg){const t=document.getElementById('publicToast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),2000)}
-  function saveInterest(form){
+  function saveInterest(form,mode='interest'){
     const fd=new FormData(form);const lead=Object.fromEntries(fd.entries());
     lead.id='REG-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
-    lead.createdAt=new Date().toISOString();lead.award=award.name;lead.awardSlug=slug;lead.source='Public award website';lead.page=location.pathname||'/';lead.status='registered';
+    lead.createdAt=new Date().toISOString();lead.award=award.name;lead.awardSlug=slug;lead.slug=slug;lead.source='Public award website';lead.page=location.pathname||'/';lead.status='registered';
     const key='etb2b_awards_interest_'+slug;let rows=[];try{rows=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}if(!Array.isArray(rows))rows=[];rows.push(lead);localStorage.setItem(key,JSON.stringify(rows));
     let all=[];try{all=JSON.parse(localStorage.getItem('etb2b_awards_registrations')||'[]')}catch(e){}if(!Array.isArray(all))all=[];all.push(lead);localStorage.setItem('etb2b_awards_registrations',JSON.stringify(all));
     localStorage.setItem('etb2b_awards_last_registration',JSON.stringify(lead));
+    if(mode==='nominate'){
+      const profile={name:lead.name||'',email:lead.email||'',mobile:lead.mobile||'',company:lead.company||'',designation:lead.designation||'',registeredAt:lead.createdAt,source:'public_nominate'};
+      Object.keys(lead).filter(k=>k.startsWith('custom_')).forEach(k=>profile[k]=lead[k]);
+      localStorage.setItem('etb2b_public_nominee_profile_'+slug,JSON.stringify(profile));
+      let regs=[];try{regs=JSON.parse(localStorage.getItem('etb2b_public_nomination_registrations')||'[]')}catch(e){}if(!Array.isArray(regs))regs=[];
+      const ix=regs.findIndex(r=>r.slug===slug&&String(r.email||'').toLowerCase()===String(profile.email||'').toLowerCase());
+      const reg=Object.assign({},profile,{award:award.name||'ETB2B Awards',slug,registeredAt:profile.registeredAt});if(ix>=0)regs[ix]=reg;else regs.push(reg);
+      localStorage.setItem('etb2b_public_nomination_registrations',JSON.stringify(regs));
+    }
+    return lead;
   }
+  function nomineeProfile(){try{return JSON.parse(localStorage.getItem('etb2b_public_nominee_profile_'+slug)||'null')}catch(e){return null}}
+  function isNomineeRegistered(){const p=nomineeProfile();return !!(p&&p.registeredAt&&String(p.email||'').trim())}
 
   document.querySelectorAll('[data-hero-cta]').forEach(el=>el.addEventListener('click',e=>{
-    const cta=ETB2BSite.ctaFor(award);if(cta.mode==='nominate'){e.preventDefault();location.href='nominate.html'}else if(cta.mode==='closed'){e.preventDefault();toast('Nominations are currently closed')}else if(el.getAttribute('href')==='#interest'){e.preventDefault();document.getElementById('interest')?.scrollIntoView({behavior:'smooth',block:'center'})}
+    const cta=ETB2BSite.ctaFor(award);
+    if(cta.mode==='nominate'){if(isNomineeRegistered()){e.preventDefault();location.href='nominate.html'}return}
+    if(cta.mode==='closed'){e.preventDefault();toast('Nominations are currently closed')}else if(el.getAttribute('href')==='#interest'){e.preventDefault();document.getElementById('interest')?.scrollIntoView({behavior:'smooth',block:'center'})}
   }));
-  document.querySelectorAll('[data-public-interest-form]').forEach(form=>form.addEventListener('submit',e=>{e.preventDefault();const mode=form.dataset.ctaMode;if(mode==='nominate'){location.href='nominate.html';return}if(mode==='closed'){toast('Nominations are closed');return}saveInterest(form);location.href='thank-you.html'}));
+  document.querySelectorAll('[data-public-interest-form]').forEach(form=>form.addEventListener('submit',e=>{
+    e.preventDefault();const mode=form.dataset.ctaMode;if(mode==='closed'){toast('Nominations are closed');return}
+    if(!form.reportValidity())return;saveInterest(form,mode);
+    if(mode==='nominate'){location.href='nominate.html';return}
+    location.href='thank-you.html';
+  }));
 })();

@@ -595,3 +595,14 @@ body[data-nomination-page="bucket"] .nom-row-action button:focus-visible{
 .category-experience-shell .subcategory-card-top>span{font-size:9.5px!important}.category-experience-shell .subcategory-public-card h3{font-size:20px!important;line-height:1.25!important}.category-experience-shell .subcategory-public-card>p{font-size:13px!important;line-height:1.55!important}.category-experience-shell .subcategory-card-meta span{font-size:10.5px!important}.category-experience-shell .subcategory-card-footer button{font-size:11.5px!important;min-height:39px}
 .category-experience-shell .category-search-pro input{font-size:15px!important}.category-experience-shell .category-selected-filter,.category-experience-shell .category-view-note{font-size:12px!important}
 @media(max-width:650px){.category-experience-shell .category-journey-copy{display:none}.category-experience-shell .category-journey-step b{font-size:10.5px!important}.category-experience-shell .category-journey-step small{display:none}.category-experience-shell .category-hero p{font-size:14.5px!important}.category-experience-shell .master-public-head h2{font-size:25px!important}.category-experience-shell .subcategory-public-card h3{font-size:19px!important}.category-experience-shell .subcategory-public-card>p{font-size:12.5px!important}}
+
+
+/* Registration gate: visitors may browse categories, but nomination actions unlock after one-time registration. */
+.entrant-details-panel{position:relative}
+.entrant-details-close{position:absolute;top:18px;right:18px;width:40px;height:40px;border-radius:50%;border:1px solid #e5ddd0;background:#fff;color:#1b1e27;font-size:24px;line-height:1;cursor:pointer;display:grid;place-items:center;box-shadow:0 8px 24px rgba(20,24,35,.08);z-index:2}
+.entrant-details-close:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(20,24,35,.13)}
+.subcategory-public-card.registration-locked{border-color:#e7dfd3}
+.subcategory-check.locked{font-size:12px;background:#f6f3ee;color:#766f66;border-color:#ddd4c7}
+.select-category.locked,.category-primary.locked{background:#fff8ed!important;color:#8c4b00!important;border-color:#e8c98f!important;box-shadow:none!important}
+.select-category.locked:hover,.category-primary.locked:hover{background:#fff1d8!important}
+@media(max-width:700px){.entrant-details-close{top:12px;right:12px;width:36px;height:36px;font-size:21px}}

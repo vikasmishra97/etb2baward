@@ -50,8 +50,10 @@
   if(settings.selectionMode==='single'&&selected.length>1)selected=selected.slice(0,1);
   if(settings.selectionMode==='multiple'&&Number(settings.maxSelections||0)>0&&selected.length>Number(settings.maxSelections))selected=selected.slice(0,Number(settings.maxSelections));
   localStorage.setItem(selectionKey,JSON.stringify(selected));
-  let activeMaster='all',detailCat=null,selectedOnly=false;
+  let activeMaster='all',detailCat=null,selectedOnly=false,pendingCategoryId='';
   const toast=msg=>{const t=document.getElementById('publicToast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1700)};
+  const nomineeProfile=()=>read(profileKey,{});
+  const isRegistered=()=>{const p=nomineeProfile();return !!(p&&p.registeredAt&&String(p.email||'').trim())};
   const categoryById=id=>openCats.find(c=>String(c.id)===String(id));
   const maxAllowed=()=>settings.selectionMode==='single'?1:Number(settings.maxSelections||0);
   const pageConfig=()=> (state.publicPages||[]).find(p=>p.id==='categories')||{};
@@ -60,6 +62,7 @@
   function persist(){if(selectedOnly&&!selected.length)selectedOnly=false;localStorage.setItem(selectionKey,JSON.stringify(selected));renderDock();renderCatalog();renderRail();renderJourney()}
   function addOrToggle(id){
     id=String(id);
+    if(!isRegistered()){pendingCategoryId=id;openEntrantDetails(true);toast('Register once to select categories and start your nomination');return}
     if(submittedIds.has(id)){toast('This category has already been submitted');return}
     if(settings.selectionMode==='single'){selected=[id];persist();toast('Category selected');return}
     if(selected.includes(id)){selected=selected.filter(x=>x!==id);persist();return}
@@ -101,13 +104,13 @@
   }
 
   function cardHTML(c,index){
-    const m=masterFor(c),isSubmitted=submittedIds.has(String(c.id)),isSelected=selected.includes(String(c.id));
-    return `<article class="subcategory-public-card ${isSelected?'selected':''}" data-card-id="${esc(c.id)}">
-      <div class="subcategory-card-top"><span>SUB CATEGORY ${String(index+1).padStart(2,'0')}</span><button type="button" class="subcategory-check ${isSelected||isSubmitted?'checked':''}" ${isSubmitted?'disabled data-submitted-cat="1"':`data-select="${esc(c.id)}"`} aria-label="${isSubmitted?'Submitted':isSelected?'Remove':'Select'} ${esc(c.name)}">${isSubmitted?'✓':isSelected?'✓':''}</button></div>
+    const m=masterFor(c),isSubmitted=submittedIds.has(String(c.id)),isSelected=selected.includes(String(c.id)),locked=!isRegistered();
+    return `<article class="subcategory-public-card ${isSelected?'selected':''} ${locked?'registration-locked':''}" data-card-id="${esc(c.id)}">
+      <div class="subcategory-card-top"><span>SUB CATEGORY ${String(index+1).padStart(2,'0')}</span><button type="button" class="subcategory-check ${isSelected||isSubmitted?'checked':''} ${locked&&!isSubmitted?'locked':''}" ${isSubmitted?'disabled data-submitted-cat="1"':`data-select="${esc(c.id)}"`} aria-label="${isSubmitted?'Submitted':locked?'Register to select':isSelected?'Remove':'Select'} ${esc(c.name)}">${isSubmitted?'✓':isSelected?'✓':locked?'🔒':''}</button></div>
       <h3>${esc(c.name)}</h3>
       <p>${esc(c.description||'Recognising excellence and measurable impact in this category.')}</p>
       <div class="subcategory-card-meta"><span>${esc(c.categoryType==='free'?'Free entry':moneyFor(c))}</span><span>${esc(areaLabel(c.allowedArea))}</span></div>
-      <div class="subcategory-card-footer"><button type="button" class="view-category" data-view="${esc(c.id)}">View details</button><button type="button" class="select-category ${isSelected||isSubmitted?'selected':''}" ${isSubmitted?'disabled data-submitted-cat="1"':`data-select="${esc(c.id)}"`}>${isSubmitted?'Submitted ✓':isSelected?'Selected':'Add category'}${isSubmitted?'':' →'}</button></div>
+      <div class="subcategory-card-footer"><button type="button" class="view-category" data-view="${esc(c.id)}">View details</button><button type="button" class="select-category ${isSelected||isSubmitted?'selected':''} ${locked&&!isSubmitted?'locked':''}" ${isSubmitted?'disabled data-submitted-cat="1"':`data-select="${esc(c.id)}"`}>${isSubmitted?'Submitted ✓':locked?'Register to select':isSelected?'Selected':'Add category'}${isSubmitted?'':' →'}</button></div>
     </article>`;
   }
 
@@ -137,11 +140,12 @@
 
   function openDetail(id){
     detailCat=categoryById(id);if(!detailCat)return;const m=masterFor(detailCat);
-    document.getElementById('detailGroup').textContent=(m.name||'AWARD CATEGORY').toUpperCase();document.getElementById('detailTitle').textContent=detailCat.name;document.getElementById('detailDescription').textContent=detailCat.description||'Recognising excellence and measurable impact in this category.';document.getElementById('detailEligibility').textContent=detailCat.eligibility||'Open eligibility. Review the award terms before submitting.';document.getElementById('detailFee').textContent=moneyFor(detailCat);document.getElementById('detailArea').textContent=areaLabel(detailCat.allowedArea);document.getElementById('detailLimit').textContent=String(detailCat.maxEntries||'0')==='0'?'No limit':'Max '+detailCat.maxEntries+' per entrant';const selectedNow=selected.includes(String(detailCat.id)),submittedNow=submittedIds.has(String(detailCat.id));const detailBtn=document.getElementById('detailSelectBtn');detailBtn.disabled=submittedNow;detailBtn.textContent=submittedNow?'Already submitted ✓':selectedNow?'Remove from nomination list':'Add to nomination list';document.getElementById('categoryDetailModal').classList.add('open');document.getElementById('categoryDetailModal').setAttribute('aria-hidden','false');
+    document.getElementById('detailGroup').textContent=(m.name||'AWARD CATEGORY').toUpperCase();document.getElementById('detailTitle').textContent=detailCat.name;document.getElementById('detailDescription').textContent=detailCat.description||'Recognising excellence and measurable impact in this category.';document.getElementById('detailEligibility').textContent=detailCat.eligibility||'Open eligibility. Review the award terms before submitting.';document.getElementById('detailFee').textContent=moneyFor(detailCat);document.getElementById('detailArea').textContent=areaLabel(detailCat.allowedArea);document.getElementById('detailLimit').textContent=String(detailCat.maxEntries||'0')==='0'?'No limit':'Max '+detailCat.maxEntries+' per entrant';const selectedNow=selected.includes(String(detailCat.id)),submittedNow=submittedIds.has(String(detailCat.id)),locked=!isRegistered();const detailBtn=document.getElementById('detailSelectBtn');detailBtn.disabled=submittedNow;detailBtn.classList.toggle('locked',locked&&!submittedNow);detailBtn.textContent=submittedNow?'Already submitted ✓':locked?'Register to select this category':selectedNow?'Remove from nomination list':'Add to nomination list';document.getElementById('categoryDetailModal').classList.add('open');document.getElementById('categoryDetailModal').setAttribute('aria-hidden','false');
   }
   function closeDetail(){document.getElementById('categoryDetailModal').classList.remove('open');document.getElementById('categoryDetailModal').setAttribute('aria-hidden','true')}
 
   function saveBucketAndGo(){
+    if(!isRegistered()){openEntrantDetails(true);toast('Complete quick registration to continue');return}
     if(!selected.length)return;const current=read(bucketKey,{});const prior=Array.isArray(current.items)?current.items:[];
     const submitted=prior.filter(x=>x&&x.submitted);
     const working=selected.map(id=>{const c=categoryById(id),p=prior.find(x=>String(x.categoryId)===String(id))||{};return {categoryId:id,name:c?.name||p.name||'Category',group:masterFor(c||{}).name||c?.group||'',masterId:c?.masterId||'',fee:fee(c||{}),status:p.status||'Form not started',completed:!!p.completed,submitted:false,paymentId:p.paymentId||''}});
@@ -149,7 +153,7 @@
     const bucket={award:award.name,slug,updatedAt:new Date().toISOString(),items};
     localStorage.setItem(bucketKey,JSON.stringify(bucket));location.href='nomination-bucket.html';
   }
-  function profileComplete(profile){return ['name','email','company','designation','mobile'].every(k=>String(profile?.[k]||'').trim())}
+  function profileComplete(profile){return !!(profile?.registeredAt&&String(profile?.email||'').trim())||['name','email','company','designation','mobile'].every(k=>String(profile?.[k]||'').trim())}
   function openEntrantDetails(force){
     const profile=read(profileKey,{name:'',email:'',company:'',designation:'',mobile:''});
     if(profileComplete(profile)&&!force)return false;
@@ -164,13 +168,17 @@
     Object.values(els).forEach(el=>el.classList.remove('entrant-error'));Object.entries(els).forEach(([k,el])=>{if(!profile[k]){el.classList.add('entrant-error');ok=false}});
     if(profile.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(profile.email)){els.email.classList.add('entrant-error');ok=false}
     if(!ok){toast('Please complete your registration details');return}
+    profile.registeredAt=profile.registeredAt||new Date().toISOString();profile.source='category_gate';
     localStorage.setItem(profileKey,JSON.stringify(profile));
     const registrations=read('etb2b_public_nomination_registrations',[]);
     const existing=registrations.findIndex(r=>r.slug===slug&&String(r.email||'').toLowerCase()===profile.email.toLowerCase());
     const registration=Object.assign({},profile,{award:award.name||'ETB2B Awards',slug,registeredAt:new Date().toISOString()});
     if(existing>=0)registrations[existing]=registration;else registrations.push(registration);
     localStorage.setItem('etb2b_public_nomination_registrations',JSON.stringify(registrations));
-    closeEntrantDetails();toast('Registration saved. Choose your categories.');
+    closeEntrantDetails();renderCatalog();renderDock();renderJourney();
+    const pending=pendingCategoryId;pendingCategoryId='';
+    if(pending){addOrToggle(pending);if(detailCat&&String(detailCat.id)===String(pending))openDetail(pending)}
+    else toast('Registration saved. You can now select categories.');
   }
 
   function aiTokens(text){const stop=new Set(['the','and','for','with','that','this','our','your','from','into','about','have','has','was','are','were','to','of','in','a','an','we','i','it','on','by']);return [...new Set(String(text||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(x=>x.length>2&&!stop.has(x)))]}
@@ -191,9 +199,10 @@
   document.querySelectorAll('[data-ai-example]').forEach(b=>b.addEventListener('click',()=>{setAiOpen(true);document.getElementById('aiCategoryInput').value=b.dataset.aiExample;runAI()}));
   document.getElementById('reviewSelectionBtn').addEventListener('click',saveBucketAndGo);document.getElementById('heroReviewBtn').addEventListener('click',saveBucketAndGo);
   document.getElementById('entrantContinueBtn')?.addEventListener('click',saveEntrantDetails);
+  document.querySelectorAll('[data-close-entrant-details]').forEach(b=>b.addEventListener('click',()=>{pendingCategoryId='';closeEntrantDetails()}));
   document.querySelectorAll('[data-close-category-detail]').forEach(b=>b.addEventListener('click',closeDetail));
   document.getElementById('detailSelectBtn').addEventListener('click',()=>{if(!detailCat)return;addOrToggle(detailCat.id);openDetail(detailCat.id)});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetail()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDetail();pendingCategoryId='';closeEntrantDetails()}});
   if(settings.aiFinder===false)document.getElementById('categoryAiSection').hidden=true;
-  renderHero();renderRail();renderCatalog();renderDock();renderJourney();openEntrantDetails(false);
+  renderHero();renderRail();renderCatalog();renderDock();renderJourney();
 })();

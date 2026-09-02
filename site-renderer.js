@@ -6,7 +6,14 @@
   function niceTime(v,fallback=''){if(!v)return fallback;const d=new Date(v);if(Number.isNaN(d.getTime()))return v;return d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}
   function ctaFor(a){
     const now=new Date();
-    if(a&&a.hasNominationDates&&a.nominationStart&&a.nominationEnd){const s=new Date(a.nominationStart),e=new Date(a.nominationEnd);if(now<s)return{label:'Express Interest',mode:'interest',sub:'Get notified when nominations open'};if(now<=e)return{label:'Nominate Now',mode:'nominate',sub:'Choose a category and start your entry'};return{label:'Nominations Closed',mode:'closed',sub:'This nomination window has ended'}}
+    const hasStart=!!(a&&a.nominationStart);
+    const hasEnd=!!(a&&a.nominationEnd);
+    if(hasStart){
+      const s=new Date(a.nominationStart),e=hasEnd?new Date(a.nominationEnd):null;
+      if(!Number.isNaN(s.getTime())&&now<s)return{label:'Express Interest',mode:'interest',sub:'Get notified when nominations open'};
+      if(e&&!Number.isNaN(e.getTime())&&now>e)return{label:'Nominations Closed',mode:'closed',sub:'This nomination window has ended'};
+      return{label:'Nominate Now',mode:'nominate',sub:'Choose a category and start your entry'};
+    }
     return{label:'Express Interest',mode:'interest',sub:'Stay informed about nominations'};
   }
   function defaultState(a){
@@ -220,13 +227,16 @@
   }
   function heroForm(state,cta){
     const mode=state.form.displayMode||((state.form.showOnBanner===false)?'cta':'banner');
-    if(cta.mode!=='interest')return `<div class="hero-cta-only"><a class="public-primary-cta ${cta.mode==='closed'?'disabled':''}" href="${cta.mode==='nominate'?'nominate.html':'#'}" data-hero-cta>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
+    if(cta.mode==='nominate')return `<div class="hero-cta-only"><a class="public-primary-cta" href="#nomination-registration" data-hero-cta data-open-interest-popup>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
+    if(cta.mode==='closed')return `<div class="hero-cta-only"><a class="public-primary-cta disabled" href="#" data-hero-cta>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
     if(mode==='popup')return `<div class="hero-popup-trigger"><small>READY WHEN YOU ARE</small><b>${esc(state.form.title||'Register your interest')}</b><p>${esc(state.form.subtitle||cta.sub)}</p><button type="button" data-open-interest-popup>${esc(cta.label)} <span>→</span></button></div>`;
     if(mode==='cta')return `<div class="hero-cta-only"><a class="public-primary-cta" href="#interest-popup" data-open-interest-popup>${esc(cta.label)}</a><small>${esc(cta.sub)}</small></div>`;
     return registrationFormMarkup(state,cta);
   }
   function registrationPopup(state,cta){
-    const mode=state.form.displayMode||'banner';if(cta.mode!=='interest'||!['popup','cta'].includes(mode))return'';
+    const mode=state.form.displayMode||'banner';
+    const shouldRender=cta.mode==='nominate'||(cta.mode==='interest'&&['popup','cta'].includes(mode));
+    if(!shouldRender)return'';
     return `<div class="public-form-modal" data-interest-popup aria-hidden="true"><div class="public-form-backdrop" data-close-interest-popup></div><section class="public-form-dialog"><button type="button" class="public-form-close" data-close-interest-popup aria-label="Close registration form">×</button>${registrationFormMarkup(state,cta,'popup-registration-form')}</section></div>`;
   }
   function iconSvg(type){
