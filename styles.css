@@ -1779,3 +1779,46 @@ body.entry-form-page .ef-command-add:hover{background:#bf1219!important;border-c
   body.entry-form-page .ef-command-btn,
   body.entry-form-page .ef-command-add{width:100%!important;min-width:0!important}
 }
+
+/* Entry Form premium command bar - larger readable text and icons */
+body.entry-form-page .ef-command-category label{
+  font-size:10px!important;
+  line-height:1.25!important;
+  letter-spacing:.075em!important;
+}
+body.entry-form-page .ef-command-category select{
+  height:44px!important;
+  font-size:13px!important;
+  padding-left:14px!important;
+}
+body.entry-form-page .ef-command-counts span{
+  min-height:31px!important;
+  padding:6px 10px!important;
+  font-size:10px!important;
+  line-height:1.1!important;
+}
+body.entry-form-page .ef-command-counts b{
+  font-size:11px!important;
+}
+body.entry-form-page .ef-command-btn,
+body.entry-form-page .ef-command-add{
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 13px!important;
+  font-size:12px!important;
+  line-height:1!important;
+  gap:6px!important;
+}
+body.entry-form-page .ef-command-btn span{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:17px!important;
+  font-size:16px!important;
+  line-height:1!important;
+  font-weight:900!important;
+}
+body.entry-form-page .ef-command-add{
+  font-size:12.5px!important;
+  font-weight:900!important;
+}
