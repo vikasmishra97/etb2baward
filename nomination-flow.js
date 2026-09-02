@@ -437,6 +437,7 @@
   function initCheckout(){
     bucket=syncBucket();
     pricing=read(pricingKey,pricing||{});
+    pricing.promos=(pricing.promos||[]).map(p=>Object.assign({couponType:'quantity',min:0,max:0,email:'',description:''},p));
     const ids=read(checkoutKey,[]).map(String);
     const payable=bucket.items.filter(x=>ids.includes(String(x.categoryId))&&x.completed&&!x.submitted);
     if(!payable.length){location.href='nomination-bucket.html';return}
@@ -451,57 +452,40 @@
     let totals={subtotal:rawSubtotal,multiDiscount,promoDiscount:0,tax:0,grand:0,taxPercent:0};
 
     const nowDate=()=>{const d=new Date();return d.toISOString().slice(0,10)};
-    function promoIsUsable(p){
-      if(!p||p.status!=='active')return false;
-      const today=nowDate();
-      if(p.start&&today<p.start)return false;
-      if(p.end&&today>p.end)return false;
-      const limit=Number(p.limit||0);if(limit>0&&Number(p.used||0)>=limit)return false;
-      return true;
+    function couponInRange(p,baseAmount,qty){
+      const min=Number(p.min||0),max=Number(p.max||0),metric=(p.couponType||'quantity')==='amount'?baseAmount:qty;
+      return metric>=min&&(max<=0||metric<=max);
+    }
+    function couponForEmail(p){const target=String(p.email||'').trim().toLowerCase();return !target||target===String(profile.email||'').trim().toLowerCase()}
+    function promoIsUsable(p,baseAmount,qty){
+      if(!p||p.status!=='active')return false;const today=nowDate();if(p.start&&today<p.start)return false;if(p.end&&today>p.end)return false;const limit=Number(p.limit||0);if(limit>0&&Number(p.used||0)>=limit)return false;if(!couponForEmail(p))return false;if(!couponInRange(p,baseAmount,qty))return false;return true;
     }
     function promoOffer(p){if(!p)return'';if(p.type==='free')return'100% off';if(p.type==='percent')return Number(p.value||0)+'% off';return money(Number(p.value||0))+' off'}
+    function promoDiscountFor(p,amount){if(!p)return 0;if(p.type==='free')return amount;if(p.type==='percent')return amount*Number(p.value||0)/100;return Math.min(amount,Number(p.value||0))}
+    function eligibleAutomaticCoupon(baseAmount,qty){
+      const candidates=(pricing.promos||[]).filter(p=>(p.couponType||'quantity')==='amount'&&promoIsUsable(p,baseAmount,qty));
+      if(!candidates.length)return null;return candidates.sort((a,b)=>promoDiscountFor(b,baseAmount)-promoDiscountFor(a,baseAmount))[0];
+    }
+    let autoPromo=null;
     function calculate(){
-      const afterMulti=Math.max(0,rawSubtotal-multiDiscount);
-      let promoDiscount=0;
-      if(appliedPromo){
-        if(appliedPromo.type==='free')promoDiscount=afterMulti;
-        else if(appliedPromo.type==='percent')promoDiscount=afterMulti*Number(appliedPromo.value||0)/100;
-        else promoDiscount=Math.min(afterMulti,Number(appliedPromo.value||0));
-      }
-      const taxable=Math.max(0,afterMulti-promoDiscount);
-      const taxCfg=pricing.tax||{};
-      const taxPercent=taxCfg.enabled===false?0:Number(taxCfg.rate??award.taxPercent??18);
-      let tax=0,grand=taxable;
-      if(taxPercent>0){
-        if(taxCfg.mode==='inclusive'){tax=taxable*(taxPercent/(100+taxPercent));grand=taxable}
-        else{tax=taxable*taxPercent/100;grand=taxable+tax}
-      }
-      totals={subtotal:rawSubtotal,multiDiscount,promoDiscount,tax:Math.round(tax),grand:Math.round(grand),taxPercent};
-      document.getElementById('checkoutSubtotal').textContent=money(rawSubtotal);
-      const mr=document.getElementById('checkoutMultiRow');mr.hidden=!multiEligible;document.getElementById('checkoutMultiDiscount').textContent='−'+money(multiDiscount);
-      const pr=document.getElementById('checkoutPromoRow');pr.hidden=!appliedPromo;document.getElementById('checkoutPromoDiscount').textContent='−'+money(promoDiscount);
-      document.getElementById('checkoutTaxLabel').textContent=(taxCfg.label||'GST')+(taxPercent?' ('+taxPercent+'%)':'');
-      document.getElementById('checkoutTax').textContent=money(totals.tax);
-      document.getElementById('checkoutGrand').textContent=money(totals.grand);
-      const btn=document.getElementById('paySubmitBtn');
-      btn.textContent=totals.grand===0?'Submit selected nominations':'Pay & submit nominations';
+      const afterMulti=Math.max(0,rawSubtotal-multiDiscount);autoPromo=eligibleAutomaticCoupon(afterMulti,payable.length);
+      const autoDiscount=promoDiscountFor(autoPromo,afterMulti);const afterAuto=Math.max(0,afterMulti-autoDiscount);
+      let promoDiscount=0;if(appliedPromo&&promoIsUsable(appliedPromo,afterAuto,payable.length))promoDiscount=promoDiscountFor(appliedPromo,afterAuto);else if(appliedPromo){appliedPromo=null;document.getElementById('paymentPromoStatus').hidden=true}
+      const taxable=Math.max(0,afterAuto-promoDiscount);const taxCfg=pricing.tax||{};const taxPercent=taxCfg.enabled===false?0:Number(taxCfg.rate??award.taxPercent??18);let tax=0,grand=taxable;if(taxPercent>0){if(taxCfg.mode==='inclusive'){tax=taxable*(taxPercent/(100+taxPercent));grand=taxable}else{tax=taxable*taxPercent/100;grand=taxable+tax}}
+      totals={subtotal:rawSubtotal,multiDiscount,autoDiscount,promoDiscount,tax:Math.round(tax),grand:Math.round(grand),taxPercent};
+      document.getElementById('checkoutSubtotal').textContent=money(rawSubtotal);const mr=document.getElementById('checkoutMultiRow');mr.hidden=!multiEligible;document.getElementById('checkoutMultiDiscount').textContent='−'+money(multiDiscount);
+      const ar=document.getElementById('checkoutAutoRow');ar.hidden=!autoPromo;document.getElementById('checkoutAutoDiscount').textContent='−'+money(autoDiscount);const autoBox=document.getElementById('checkoutAutoOffer');autoBox.hidden=!autoPromo;if(autoPromo){document.getElementById('checkoutAutoOfferTitle').textContent='Automatic offer applied · '+autoPromo.code;document.getElementById('checkoutAutoOfferText').textContent=promoOffer(autoPromo)+(autoPromo.description?' · '+autoPromo.description:'')}
+      const pr=document.getElementById('checkoutPromoRow');pr.hidden=!appliedPromo;document.getElementById('checkoutPromoDiscount').textContent='−'+money(promoDiscount);document.getElementById('checkoutTaxLabel').textContent=(taxCfg.label||'GST')+(taxPercent?' ('+taxPercent+'%)':'');document.getElementById('checkoutTax').textContent=money(totals.tax);document.getElementById('checkoutGrand').textContent=money(totals.grand);const btn=document.getElementById('paySubmitBtn');btn.textContent=totals.grand===0?'Submit selected nominations':'Pay & submit nominations';
     }
-    function setPromoMessage(msg,isError){
-      const err=document.getElementById('paymentPromoError');const ok=document.getElementById('paymentPromoStatus');
-      err.hidden=!isError;ok.hidden=!!isError||!msg;if(isError)err.textContent=msg;else if(msg)document.getElementById('paymentPromoStatusText').textContent=msg;
-    }
-    const promoInput=document.getElementById('paymentPromoCode');
-    promoInput.addEventListener('input',()=>{promoInput.value=promoInput.value.toUpperCase().replace(/[^A-Z0-9_-]/g,'');document.getElementById('paymentPromoError').hidden=true});
+    function setPromoMessage(msg,isError){const err=document.getElementById('paymentPromoError');const ok=document.getElementById('paymentPromoStatus');err.hidden=!isError;ok.hidden=!!isError||!msg;if(isError)err.textContent=msg;else if(msg)document.getElementById('paymentPromoStatusText').textContent=msg}
+    const quantityCouponAvailable=(pricing.promos||[]).some(p=>(p.couponType||'quantity')==='quantity'&&p.status==='active'&&(!p.start||nowDate()>=p.start)&&(!p.end||nowDate()<=p.end)&&(Number(p.limit||0)<=0||Number(p.used||0)<Number(p.limit||0)));
+    const promoBox=document.getElementById('checkoutPromoBox');if(promoBox)promoBox.hidden=!quantityCouponAvailable;
+    const promoInput=document.getElementById('paymentPromoCode');promoInput.addEventListener('input',()=>{promoInput.value=promoInput.value.toUpperCase().replace(/[^A-Z0-9_-]/g,'');document.getElementById('paymentPromoError').hidden=true});
     document.getElementById('paymentApplyPromo').addEventListener('click',()=>{
-      const code=promoInput.value.trim().toUpperCase();
-      if(!code){setPromoMessage('Enter a promo code first.',true);promoInput.focus();return}
-      const p=(pricing.promos||[]).find(x=>String(x.code||'').toUpperCase()===code);
-      if(!p){setPromoMessage('This promo code does not exist.',true);return}
-      if(!promoIsUsable(p)){
-        let msg='This promo code is not currently available.';const today=nowDate();
-        if(p.status!=='active')msg='This promo code is inactive.';else if(p.start&&today<p.start)msg='This promo code is not active yet.';else if(p.end&&today>p.end)msg='This promo code has expired.';else if(Number(p.limit||0)>0&&Number(p.used||0)>=Number(p.limit||0))msg='This promo code has reached its usage limit.';
-        setPromoMessage(msg,true);return;
-      }
+      const code=promoInput.value.trim().toUpperCase();if(!code){setPromoMessage('Enter a coupon code first.',true);promoInput.focus();return}
+      const p=(pricing.promos||[]).find(x=>String(x.code||'').toUpperCase()===code);if(!p){setPromoMessage('This coupon code does not exist.',true);return}if((p.couponType||'quantity')!=='quantity'){setPromoMessage('This is an automatic amount offer. You do not need to enter it.',true);return}
+      const baseForCoupon=Math.max(0,rawSubtotal-multiDiscount-(autoPromo?promoDiscountFor(autoPromo,Math.max(0,rawSubtotal-multiDiscount)):0));
+      if(!promoIsUsable(p,baseForCoupon,payable.length)){let msg='This coupon is not eligible for this order.';const today=nowDate();if(p.status!=='active')msg='This coupon is inactive.';else if(p.start&&today<p.start)msg='This coupon is not active yet.';else if(p.end&&today>p.end)msg='This coupon has expired.';else if(Number(p.limit||0)>0&&Number(p.used||0)>=Number(p.limit||0))msg='This coupon has reached its usage limit.';else if(!couponForEmail(p))msg='This coupon is not available for your registered email.';else{const min=Number(p.min||0),max=Number(p.max||0);msg='This coupon is valid for '+(min||1)+(max>0?'–'+max:'+')+' nomination'+((max||min)===1?'':'s')+'.'}setPromoMessage(msg,true);return}
       appliedPromo=p;promoInput.value='';setPromoMessage('✓ '+p.code+' applied · '+promoOffer(p),false);calculate();
     });
     document.getElementById('paymentRemovePromo').addEventListener('click',()=>{appliedPromo=null;document.getElementById('paymentPromoStatus').hidden=true;document.getElementById('paymentPromoError').hidden=true;calculate()});
@@ -514,9 +498,9 @@
       const ok=window.confirm('Final submission: once payment is completed, these nomination forms will be locked and cannot be edited. Please confirm that you have reviewed your answers.');
       if(!ok)return;
       btn.disabled=true;btn.textContent=totals.grand?'Processing demo payment…':'Submitting…';
-      const payment={id:'ETPAY-'+Date.now().toString().slice(-8),award:award.name,slug,amount:totals.grand,subtotal:totals.subtotal,multiDiscount:totals.multiDiscount,promoDiscount:totals.promoDiscount,promoCode:appliedPromo?appliedPromo.code:'',tax:totals.tax,taxPercent:totals.taxPercent,method,status:'Paid',createdAt:new Date().toISOString(),categoryIds:payable.map(x=>String(x.categoryId)),categories:payable.map(x=>x.name)};
+      const payment={id:'ETPAY-'+Date.now().toString().slice(-8),award:award.name,slug,amount:totals.grand,subtotal:totals.subtotal,multiDiscount:totals.multiDiscount,promoDiscount:totals.promoDiscount,autoDiscount:totals.autoDiscount||0,promoCode:appliedPromo?appliedPromo.code:'',autoPromoCode:autoPromo?autoPromo.code:'',tax:totals.tax,taxPercent:totals.taxPercent,method,status:'Paid',createdAt:new Date().toISOString(),categoryIds:payable.map(x=>String(x.categoryId)),categories:payable.map(x=>x.name)};
       write(paymentKey,payment);
-      if(appliedPromo){const fresh=read(pricingKey,pricing||{});const ix=(fresh.promos||[]).findIndex(p=>p.id===appliedPromo.id);if(ix>=0){fresh.promos[ix].used=Number(fresh.promos[ix].used||0)+1;write(pricingKey,fresh)}}
+      if(appliedPromo||autoPromo){const fresh=read(pricingKey,pricing||{});[appliedPromo,autoPromo].filter(Boolean).forEach(cp=>{const ix=(fresh.promos||[]).findIndex(p=>p.id===cp.id);if(ix>=0)fresh.promos[ix].used=Number(fresh.promos[ix].used||0)+1});write(pricingKey,fresh)}
       const starters=read('etb2b_public_nomination_starters',[]);
       const paidIds=new Set(payable.map(x=>String(x.categoryId)));
       const nominationIds={};
@@ -524,9 +508,9 @@
         const nominationId='ET-'+Date.now().toString().slice(-6)+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
         nominationIds[String(x.categoryId)]=nominationId;
         const finalFee=catFee(cat(x.categoryId));
-        if(!starters.some(s=>s.paymentId===payment.id&&s.category===x.name))starters.push({id:nominationId,award:award.name,slug,categoryId:String(x.categoryId),category:x.name,name:profile.company||profile.name||'Entrant',entrantName:profile.name||'',company:profile.company||'',email:profile.email||'',mobile:profile.mobile||'',designation:profile.designation||'',status:'Submitted',paymentId:payment.id,amount:finalFee,promoCode:payment.promoCode,promoDiscount:payment.promoDiscount,createdAt:new Date().toISOString()});
+        if(!starters.some(s=>s.paymentId===payment.id&&s.category===x.name))starters.push({id:nominationId,award:award.name,slug,categoryId:String(x.categoryId),category:x.name,name:profile.company||profile.name||'Entrant',entrantName:profile.name||'',company:profile.company||'',email:profile.email||'',mobile:profile.mobile||'',designation:profile.designation||'',status:'Submitted',paymentId:payment.id,amount:finalFee,promoCode:payment.promoCode,autoPromoCode:payment.autoPromoCode||'',promoDiscount:Number(payment.promoDiscount||0)+Number(payment.autoDiscount||0),createdAt:new Date().toISOString()});
         const savedAnswers=read(answerKey(x.categoryId),{}).answers||{};
-        upsertNominationReport(x.categoryId,savedAnswers,'Submitted',{formCompleted:true,paid:true,paymentStatus:'Paid',paymentId:payment.id,paymentMethod:method,amount:finalFee,taxPercent:totals.taxPercent,promoCode:payment.promoCode,promoDiscount:payment.promoDiscount,nominationId,submittedAt:new Date().toISOString()});
+        upsertNominationReport(x.categoryId,savedAnswers,'Submitted',{formCompleted:true,paid:true,paymentStatus:'Paid',paymentId:payment.id,paymentMethod:method,amount:finalFee,taxPercent:totals.taxPercent,promoCode:payment.promoCode,autoPromoCode:payment.autoPromoCode||'',promoDiscount:Number(payment.promoDiscount||0)+Number(payment.autoDiscount||0),nominationId,submittedAt:new Date().toISOString()});
       });
       write('etb2b_public_nomination_starters',starters);
       bucket.items=bucket.items.map(x=>paidIds.has(String(x.categoryId))?Object.assign({},x,{status:'Submitted',submitted:true,completed:true,paymentId:payment.id,nominationId:nominationIds[String(x.categoryId)],submittedAt:new Date().toISOString()}):x);

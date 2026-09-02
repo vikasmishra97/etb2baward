@@ -133,7 +133,7 @@
               </div>
               <div class="pr-promo-table-wrap">
                 <table class="table pr-promo-table">
-                  <thead><tr><th>Code</th><th>Offer</th><th>Usage</th><th>Status</th><th></th></tr></thead>
+                  <thead><tr><th>Coupon</th><th>Type</th><th>Discount</th><th>Eligibility</th><th>Usage</th><th>Status</th><th></th></tr></thead>
                   <tbody id="promoRows"></tbody>
                 </table>
               </div>
@@ -276,22 +276,35 @@
 
 <div class="pr-drawer" id="promoDrawer" aria-hidden="true">
   <div class="pr-drawer-backdrop" data-close-drawer></div>
-  <div class="pr-drawer-panel">
-    <div class="pr-drawer-head"><div><span class="pr-kicker">PROMO CODE</span><h2 id="promoDrawerTitle">Create promo code</h2></div><button data-close-drawer>×</button></div>
+  <div class="pr-drawer-panel pr-coupon-panel">
+    <div class="pr-drawer-head"><div><span class="pr-kicker">COUPON</span><h2 id="promoDrawerTitle">Add coupon</h2><p>Create an automatic amount-based offer or a shareable quantity coupon.</p></div><button data-close-drawer>×</button></div>
     <div class="pr-drawer-body">
-      <div class="field"><label>Code</label><input id="promoCode" placeholder="PARTNER20" maxlength="24"></div>
+      <div class="field"><label>Coupon code <em>*</em></label><input id="promoCode" placeholder="SAVE20" maxlength="24"><small>Used as the coupon reference. Quantity coupons are entered by users at checkout.</small></div>
+      <div class="field"><label>Coupon type <em>*</em></label><select id="couponType"><option value="amount">Amount</option><option value="quantity">Quantity</option></select><small id="couponTypeHelp">Amount coupons are applied automatically when the cart total is within the configured range.</small></div>
       <div class="form-grid pr-two-col">
-        <div class="field"><label>Discount type</label><select id="promoType"><option value="percent">Percentage off</option><option value="fixed">Fixed amount off</option><option value="free">100% free entry</option></select></div>
-        <div class="field" id="promoValueField"><label>Value</label><div class="pr-affix-input"><input id="promoValue" type="number" min="0" value="20"><span id="promoValueSuffix">%</span></div></div>
+        <div class="field"><label>Valid from <em>*</em></label><input id="promoStart" type="date"></div>
+        <div class="field"><label>Valid to <em>*</em></label><input id="promoEnd" type="date"></div>
       </div>
       <div class="form-grid pr-two-col">
-        <div class="field"><label>Usage limit</label><input id="promoLimit" type="number" min="0" value="100"></div>
+        <div class="field"><label>Discount type <em>*</em></label><select id="promoType"><option value="percent">Percentage</option><option value="fixed">Fixed amount</option><option value="free">100% complimentary</option></select></div>
+        <div class="field" id="promoValueField"><label>Discount value <em>*</em></label><div class="pr-affix-input"><input id="promoValue" type="number" min="0" value="20"><span id="promoValueSuffix">%</span></div></div>
+      </div>
+      <div class="form-grid pr-two-col">
+        <div class="field"><label id="couponMinLabel">Minimum order amount <em>*</em></label><input id="couponMin" type="number" min="0" value="0" placeholder="Range start"></div>
+        <div class="field"><label id="couponMaxLabel">Maximum order amount <em>*</em></label><input id="couponMax" type="number" min="0" value="0" placeholder="Range end"><small>Enter 0 for no maximum.</small></div>
+      </div>
+      <div class="form-grid pr-two-col">
+        <div class="field"><label>User email</label><input id="promoEmail" type="email" placeholder="Optional email restriction"><small>Leave blank to allow all users.</small></div>
+        <div class="field"><label>Max usage <em>*</em></label><input id="promoLimit" type="number" min="0" value="100"><small>Enter 0 for unlimited uses.</small></div>
+      </div>
+      <div class="field"><label>Coupon description <em>*</em></label><textarea id="promoDescription" rows="3" placeholder="Describe who this coupon is for and how it should be used."></textarea></div>
+      <div class="form-grid pr-two-col">
         <div class="field"><label>Status</label><select id="promoStatus"><option value="active">Active</option><option value="inactive">Inactive</option></select></div>
+        <div class="pr-coupon-behaviour" id="couponBehaviour"><span>Checkout behaviour</span><b>Automatic discount</b><small>No code entry required for the user.</small></div>
       </div>
-      <div class="form-grid pr-two-col"><div class="field"><label>Starts</label><input id="promoStart" type="date"></div><div class="field"><label>Ends</label><input id="promoEnd" type="date"></div></div>
-      <div class="pr-drawer-preview"><span>Checkout preview</span><b id="promoPreviewText">20% off</b><small id="promoPreviewCode">PARTNER20</small></div>
+      <div class="pr-drawer-preview"><span>Checkout preview</span><b id="promoPreviewText">20% off</b><small id="promoPreviewCode">Automatic · SAVE20</small></div>
     </div>
-    <div class="pr-drawer-foot"><button class="btn secondary" id="deletePromo" hidden>Delete</button><span></span><button class="btn secondary" data-close-drawer>Cancel</button><button class="btn primary" id="savePromo">Save promo code</button></div>
+    <div class="pr-drawer-foot"><button class="btn secondary" id="deletePromo" hidden>Delete</button><span></span><button class="btn secondary" data-close-drawer>Cancel</button><button class="btn primary" id="savePromo">Save coupon</button></div>
   </div>
 </div>
 
@@ -330,8 +343,8 @@
     phases:{early:{enabled:true,discount:20,start:'',end:''},regular:{enabled:true,price:Number(award.baseFee||2000),start:'',end:''},late:{enabled:true,premium:10,start:'',end:''}},
     multi:{enabled:true,threshold:3,discount:10},tax:{enabled:true,label:'GST',rate:18,mode:'exclusive'},gateway:'razorpay',invoice:true,partial:false,receipt:true,
     categoryOverrides:{},promos:[
-      {id:'p1',code:'PARTNER20',type:'percent',value:20,limit:100,used:24,status:'active',start:'',end:''},
-      {id:'p2',code:'JURYVIP',type:'free',value:100,limit:25,used:7,status:'active',start:'',end:''}
+      {id:'p1',code:'PARTNER20',couponType:'quantity',type:'percent',value:20,min:2,max:0,email:'',description:'Partner multi-entry coupon',limit:100,used:24,status:'active',start:'',end:''},
+      {id:'p2',code:'AUTO500',couponType:'amount',type:'fixed',value:500,min:5000,max:0,email:'',description:'Automatic saving for larger orders',limit:0,used:0,status:'active',start:'',end:''}
     ],projectedEntries:250
   };
   let appliedPromoId=null,editingPromoId=null;
@@ -340,6 +353,7 @@
 
   const saved=(()=>{try{return JSON.parse(localStorage.getItem(storeKey)||'null')}catch(e){return null}})();
   if(saved)deepAssign(state,saved);
+  state.promos=(state.promos||[]).map(p=>Object.assign({couponType:'quantity',min:0,max:0,email:'',description:''},p));
   state.phases.early.enabled=false; state.phases.late.enabled=false;
   seedDates();
   seedCategoryOverrides();
@@ -365,6 +379,11 @@
   function phaseUnitPrice(base,phase){if(phase==='early'&&state.phases.early.enabled)return base*(1-Number(state.phases.early.discount||0)/100);if(phase==='late'&&state.phases.late.enabled)return base*(1+Number(state.phases.late.premium||0)/100);if(phase==='regular')return base;return base}
   function activePromos(){return (state.promos||[]).filter(p=>p.status==='active')}
   function currentPromo(){return state.promos.find(p=>p.id===appliedPromoId&&p.status==='active')||null}
+  function couponEligibility(p){
+    const min=Number(p.min||0),max=Number(p.max||0);
+    if((p.couponType||'quantity')==='amount')return (min?money(min):money(0))+' – '+(max?money(max):'No maximum');
+    return (min||1)+' – '+(max||'Any')+' entr'+((max||min)===1?'y':'ies');
+  }
   function setText(){
     $('sideAwardName').textContent=award.name||'Untitled Award';$('crumbAward').textContent=award.name||'Untitled Award';$('checkoutAwardName').textContent=award.name||'Untitled Award';
   }
@@ -416,7 +435,7 @@
     updateBulkPricingControls();
   }
   function renderPromos(){
-    const rows=state.promos||[];$('promoEmpty').hidden=rows.length>0;$('promoRows').innerHTML=rows.map(p=>`<tr><td><b>${esc(p.code)}</b><small class="pr-table-sub">${p.start||p.end?'Scheduled':'Always available'}</small></td><td>${esc(promoOffer(p))}</td><td>${Number(p.used||0)} / ${Number(p.limit||0)||'∞'}</td><td><span class="badge ${p.status==='active'?'green':''}">${p.status==='active'?'Active':'Inactive'}</span></td><td><button class="pr-row-menu" data-edit-promo="${esc(p.id)}">Edit</button></td></tr>`).join('');
+    const rows=state.promos||[];$('promoEmpty').hidden=rows.length>0;$('promoRows').innerHTML=rows.map(p=>{const ct=p.couponType||'quantity';return `<tr><td><b>${esc(p.code)}</b><small class="pr-table-sub">${esc(p.description||'No description')}</small></td><td><span class="pr-coupon-kind ${ct}">${ct==='amount'?'Automatic · Amount':'Code · Quantity'}</span></td><td>${esc(promoOffer(p))}</td><td><b class="pr-eligibility">${esc(couponEligibility(p))}</b><small class="pr-table-sub">${p.email?'Email: '+esc(p.email):'All users'}</small></td><td>${Number(p.used||0)} / ${Number(p.limit||0)||'∞'}</td><td><span class="badge ${p.status==='active'?'green':''}">${p.status==='active'?'Active':'Inactive'}</span></td><td><button class="pr-row-menu" data-edit-promo="${esc(p.id)}">Edit</button></td></tr>`}).join('');
     document.querySelectorAll('[data-edit-promo]').forEach(b=>b.addEventListener('click',()=>openPromo(b.dataset.editPromo)));
   }
   function renderCheckoutOptions(){
@@ -479,13 +498,32 @@
   $('applyRecommendation').addEventListener('click',()=>{state.entryMode='paid';state.phases.early.enabled=true;state.phases.early.discount=20;state.phases.regular.price=state.baseFee;state.phases.late.enabled=true;state.phases.late.premium=10;state.multi.enabled=true;state.multi.threshold=3;state.multi.discount=10;persist();renderAll();toast('Recommended pricing applied')});
   $('dismissRecommendation').addEventListener('click',()=>{$('.pr-copilot-banner').style.display='none'});
 
-  function openPromo(id){editingPromoId=id||null;const p=id?state.promos.find(x=>x.id===id):{code:'',type:'percent',value:20,limit:100,used:0,status:'active',start:'',end:''};$('promoDrawerTitle').textContent=id?'Edit promo code':'Create promo code';$('promoCode').value=p.code;$('promoType').value=p.type;$('promoValue').value=p.value;$('promoLimit').value=p.limit||0;$('promoStatus').value=p.status||'active';$('promoStart').value=p.start||'';$('promoEnd').value=p.end||'';$('deletePromo').hidden=!id;updatePromoPreview();$('promoDrawer').classList.add('open');$('promoDrawer').setAttribute('aria-hidden','false');setTimeout(()=>$('promoCode').focus(),120)}
+  function openPromo(id){
+    editingPromoId=id||null;
+    const p=id?state.promos.find(x=>x.id===id):{code:'',couponType:'amount',type:'percent',value:20,min:0,max:0,email:'',description:'',limit:100,used:0,status:'active',start:'',end:''};
+    $('promoDrawerTitle').textContent=id?'Edit coupon':'Add coupon';$('promoCode').value=p.code||'';$('couponType').value=p.couponType||'quantity';$('promoType').value=p.type||'percent';$('promoValue').value=p.value??20;$('couponMin').value=Number(p.min||0);$('couponMax').value=Number(p.max||0);$('promoEmail').value=p.email||'';$('promoDescription').value=p.description||'';$('promoLimit').value=Number(p.limit||0);$('promoStatus').value=p.status||'active';$('promoStart').value=p.start||'';$('promoEnd').value=p.end||'';$('deletePromo').hidden=!id;updatePromoPreview();$('promoDrawer').classList.add('open');$('promoDrawer').setAttribute('aria-hidden','false');setTimeout(()=>$('promoCode').focus(),120)
+  }
   function closePromo(){$('promoDrawer').classList.remove('open');$('promoDrawer').setAttribute('aria-hidden','true');editingPromoId=null}
-  function updatePromoPreview(){const type=$('promoType').value,val=Number($('promoValue').value||0),code=$('promoCode').value.trim().toUpperCase()||'YOURCODE';$('promoValueField').hidden=type==='free';$('promoValueSuffix').textContent=type==='percent'?'%':symbol();$('promoPreviewCode').textContent=code;$('promoPreviewText').textContent=type==='free'?'100% free entry':type==='percent'?val+'% off':money(val)+' off'}
-  $('newPromo').addEventListener('click',()=>openPromo());document.querySelectorAll('[data-close-drawer]').forEach(b=>b.addEventListener('click',closePromo));['promoCode','promoType','promoValue'].forEach(id=>$(id).addEventListener(id==='promoType'?'change':'input',updatePromoPreview));
+  function updatePromoPreview(){
+    const couponType=$('couponType').value,type=$('promoType').value,val=Number($('promoValue').value||0),code=$('promoCode').value.trim().toUpperCase()||'YOURCODE';
+    $('promoValueField').hidden=type==='free';$('promoValueSuffix').textContent=type==='percent'?'%':symbol();
+    const quantity=couponType==='quantity';$('couponMinLabel').innerHTML=quantity?'Minimum quantity <em>*</em>':'Minimum order amount <em>*</em>';$('couponMaxLabel').innerHTML=quantity?'Maximum quantity <em>*</em>':'Maximum order amount <em>*</em>';
+    $('couponTypeHelp').textContent=quantity?'Quantity coupons are entered by the user on the payment page and are validated against the number of selected nominations.':'Amount coupons apply automatically for eligible users when the payable order value is within the configured range.';
+    $('couponBehaviour').innerHTML=quantity?'<span>Checkout behaviour</span><b>Coupon code required</b><small>User enters '+esc(code)+' on the payment page.</small>':'<span>Checkout behaviour</span><b>Automatic discount</b><small>Applied automatically when the order is eligible.</small>';
+    $('promoPreviewCode').textContent=(quantity?'Enter code · ':'Automatic · ')+code;$('promoPreviewText').textContent=type==='free'?'100% complimentary':type==='percent'?val+'% off':money(val)+' off';
+  }
+  $('newPromo').addEventListener('click',()=>openPromo());document.querySelectorAll('[data-close-drawer]').forEach(b=>b.addEventListener('click',closePromo));['promoCode','couponType','promoType','promoValue','couponMin','couponMax'].forEach(id=>$(id).addEventListener((id==='couponType'||id==='promoType')?'change':'input',updatePromoPreview));
   $('promoCode').addEventListener('input',()=>{$('promoCode').value=$('promoCode').value.toUpperCase().replace(/[^A-Z0-9_-]/g,'')});
-  $('savePromo').addEventListener('click',()=>{const code=$('promoCode').value.trim().toUpperCase();if(!code){toast('Enter a promo code');$('promoCode').focus();return}if(state.promos.some(p=>p.code.toUpperCase()===code&&p.id!==editingPromoId)){toast('That promo code already exists');return}const wasEditing=!!editingPromoId;const data={id:editingPromoId||'p'+Date.now(),code,type:$('promoType').value,value:$('promoType').value==='free'?100:Math.max(0,Number($('promoValue').value||0)),limit:Math.max(0,Number($('promoLimit').value||0)),used:editingPromoId?(state.promos.find(p=>p.id===editingPromoId)?.used||0):0,status:$('promoStatus').value,start:$('promoStart').value,end:$('promoEnd').value};if(editingPromoId){const i=state.promos.findIndex(p=>p.id===editingPromoId);state.promos[i]=data}else state.promos.push(data);persist();closePromo();renderAll();toast(wasEditing?'Promo code updated':'Promo code created')});
-  $('deletePromo').addEventListener('click',()=>{if(!editingPromoId)return;state.promos=state.promos.filter(p=>p.id!==editingPromoId);if(appliedPromoId===editingPromoId){appliedPromoId=null;$('appliedCode').hidden=true}persist();closePromo();renderAll();toast('Promo code deleted')});
+  $('savePromo').addEventListener('click',()=>{
+    const code=$('promoCode').value.trim().toUpperCase(),couponType=$('couponType').value,type=$('promoType').value,start=$('promoStart').value,end=$('promoEnd').value,description=$('promoDescription').value.trim();
+    const min=Math.max(0,Number($('couponMin').value||0)),max=Math.max(0,Number($('couponMax').value||0));
+    if(!code){toast('Enter a coupon code');$('promoCode').focus();return}if(state.promos.some(p=>String(p.code||'').toUpperCase()===code&&p.id!==editingPromoId)){toast('That coupon code already exists');return}
+    if(!start||!end){toast('Select Valid from and Valid to dates');(!start?$('promoStart'):$('promoEnd')).focus();return}if(end<start){toast('Valid to must be after Valid from');$('promoEnd').focus();return}
+    if(max>0&&max<min){toast('Maximum range must be greater than minimum');$('couponMax').focus();return}if(!description){toast('Add a coupon description');$('promoDescription').focus();return}
+    const wasEditing=!!editingPromoId;const data={id:editingPromoId||'p'+Date.now(),code,couponType,type,value:type==='free'?100:Math.max(0,Number($('promoValue').value||0)),min,max,email:$('promoEmail').value.trim().toLowerCase(),description,limit:Math.max(0,Number($('promoLimit').value||0)),used:editingPromoId?(state.promos.find(p=>p.id===editingPromoId)?.used||0):0,status:$('promoStatus').value,start,end};
+    if(editingPromoId){const i=state.promos.findIndex(p=>p.id===editingPromoId);state.promos[i]=data}else state.promos.push(data);persist();closePromo();renderAll();toast(wasEditing?'Coupon updated':'Coupon created')
+  });
+  $('deletePromo').addEventListener('click',()=>{if(!editingPromoId)return;state.promos=state.promos.filter(p=>p.id!==editingPromoId);if(appliedPromoId===editingPromoId){appliedPromoId=null;$('appliedCode').hidden=true}persist();closePromo();renderAll();toast('Coupon deleted')});
 
   $('openCopilot').addEventListener('click',()=>{$('copilotPanel').classList.add('open');$('copilotPanel').setAttribute('aria-hidden','false')});$('closeCopilot').addEventListener('click',()=>{$('copilotPanel').classList.remove('open');$('copilotPanel').setAttribute('aria-hidden','true')});
   document.querySelectorAll('[data-copilot]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.copilot;const answers={simple:`Keep one base fee of ${money(state.baseFee)}, a ${state.phases.early.discount}% early-bird offer and no more than one late-entry premium. Avoid category overrides unless a category has materially higher review costs.`,conversion:`Your strongest conversion lever is urgency. Keep early bird around ${state.phases.early.discount}% and end it clearly before the main deadline. Pair it with an automated reminder campaign.`,revenue:`Use a modest late-entry premium and a multi-entry discount. The premium protects deadline discipline, while the multi-entry offer can increase average order value.`,promos:`Create PARTNER20 for strategic partners, SPONSOR100 for complimentary sponsor entries and a time-limited campaign code for low-performing categories.`};$('copilotAnswer').textContent=answers[a]}));
