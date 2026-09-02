@@ -331,6 +331,7 @@
     {id:4,name:'Best Campaign',feeMode:'custom',fee:1500,status:'draft'}
   ]}
   const storeKey='etb2b_awards_pricing_'+(award.slug||'demo');
+  const promoStoreKey='etb2b_awards_promos_'+(award.slug||'demo');
   const categoryStoreKey='etb2b_awards_categories_'+(award.slug||'demo');
   const symbols={INR:'₹',USD:'$',GBP:'£',AED:'د.إ',SGD:'S$'};
   const localeMap={INR:'en-IN',USD:'en-US',GBP:'en-GB',AED:'en-US',SGD:'en-SG'};
@@ -349,6 +350,8 @@
 
   const saved=(()=>{try{return JSON.parse(localStorage.getItem(storeKey)||'null')}catch(e){return null}})();
   if(saved)deepAssign(state,saved);
+  const savedPromos=(()=>{try{const v=JSON.parse(localStorage.getItem(promoStoreKey)||'null');return Array.isArray(v)?v:null}catch(e){return null}})();
+  if(savedPromos) state.promos=savedPromos;
   state.promos=(state.promos||[]).map(p=>Object.assign({couponType:'quantity',min:0,max:0,email:'',description:''},p));
   if(!state.invoiceType) state.invoiceType=(state.tax&&state.tax.enabled)?'tax_invoice':'invoice';
   state.tax=Object.assign({enabled:false,label:'GST',rate:18,mode:'exclusive'},state.tax||{});
@@ -377,7 +380,8 @@
     });
     if(changed)localStorage.setItem(categoryStoreKey,JSON.stringify(current));
   }
-  function persist(silent=true){localStorage.setItem(storeKey,JSON.stringify(state));try{syncCategoryRecordsFromPricing()}catch(err){console.warn('Category pricing sync skipped:',err)}if(!silent)toast('Pricing saved in this browser');return true}
+  function persistPromos(){localStorage.setItem(promoStoreKey,JSON.stringify(state.promos||[]));}
+  function persist(silent=true){localStorage.setItem(storeKey,JSON.stringify(state));persistPromos();try{syncCategoryRecordsFromPricing()}catch(err){console.warn('Category pricing sync skipped:',err)}if(!silent)toast('Pricing saved in this browser');return true}
   function dateAdd(value,days){if(!value)return'';const d=new Date(value+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
   function seedDates(){
     const open=award.openDate||'2027-06-01',close=award.closeDate||'2027-09-30';
@@ -542,25 +546,28 @@
     const email=$('promoEmail').value.trim().toLowerCase();
     if(!code){fail('Enter a coupon code','promoCode');return}
     if(state.promos.some(p=>String(p.code||'').toUpperCase()===code&&String(p.id)!==String(editingPromoId||''))){fail('That coupon code already exists','promoCode');return}
-    if(!start||!end){fail('Select Valid from and Valid to dates',!start?'promoStart':'promoEnd');return}
-    if(end<start){fail('Valid to must be after Valid from','promoEnd');return}
+    let effectiveStart=start,effectiveEnd=end;
+    if(!effectiveStart){effectiveStart=new Date().toISOString().slice(0,10);$('promoStart').value=effectiveStart}
+    if(!effectiveEnd){const d=new Date(effectiveStart+'T00:00:00');d.setFullYear(d.getFullYear()+1);effectiveEnd=d.toISOString().slice(0,10);$('promoEnd').value=effectiveEnd}
+    if(effectiveEnd<effectiveStart){fail('Valid to must be after Valid from','promoEnd');return}
     if(type!=='free'&&(!Number.isFinite(rawValue)||rawValue<=0)){fail('Enter a valid discount value','promoValue');return}
     if(type==='percent'&&rawValue>100){fail('Percentage discount cannot be more than 100%','promoValue');return}
     if(max>0&&max<min){fail('Maximum range must be greater than minimum','couponMax');return}
     if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){fail('Enter a valid user email or leave it blank','promoEmail');return}
     const wasEditing=!!editingPromoId;
-    const data={id:editingPromoId||('p'+Date.now()),code,couponType,type,value:type==='free'?100:rawValue,min,max,email,description:description||code,limit,used:editingPromoId?(state.promos.find(p=>String(p.id)===String(editingPromoId))?.used||0):0,status:$('promoStatus').value,start,end};
+    const data={id:editingPromoId||('p'+Date.now()),code,couponType,type,value:type==='free'?100:rawValue,min,max,email,description:description||code,limit,used:editingPromoId?(state.promos.find(p=>String(p.id)===String(editingPromoId))?.used||0):0,status:$('promoStatus').value,start:effectiveStart,end:effectiveEnd};
     btn.disabled=true;btn.textContent='Saving…';
     try{
       if(editingPromoId){const i=state.promos.findIndex(p=>String(p.id)===String(editingPromoId));if(i>=0)state.promos[i]=data;else state.promos.push(data)}else state.promos.push(data);
+      persistPromos();
       localStorage.setItem(storeKey,JSON.stringify(state));
       try{syncCategoryRecordsFromPricing()}catch(syncErr){console.warn('Category sync after coupon save skipped:',syncErr)}
-      const verify=JSON.parse(localStorage.getItem(storeKey)||'{}');
-      if(!(verify.promos||[]).some(p=>String(p.id)===String(data.id)&&String(p.code||'').toUpperCase()===code))throw new Error('Coupon verification failed');
+      const verifyPromos=JSON.parse(localStorage.getItem(promoStoreKey)||'[]');
+      if(!Array.isArray(verifyPromos)||!verifyPromos.some(p=>String(p.id)===String(data.id)&&String(p.code||'').toUpperCase()===code))throw new Error('Coupon verification failed');
       closePromo();renderAll();toast(wasEditing?'Coupon updated successfully':'Coupon saved successfully');
     }catch(err){console.error('Coupon save failed:',err);if(!wasEditing)state.promos=state.promos.filter(p=>String(p.id)!==String(data.id));fail('Could not save coupon. Please try again.')}finally{btn.disabled=false;btn.textContent='Save coupon'}
   });
-  $('deletePromo').addEventListener('click',()=>{if(!editingPromoId)return;state.promos=state.promos.filter(p=>p.id!==editingPromoId);if(appliedPromoId===editingPromoId){appliedPromoId=null;$('appliedCode').hidden=true}persist();closePromo();renderAll();toast('Coupon deleted')});
+  $('deletePromo').addEventListener('click',()=>{if(!editingPromoId)return;state.promos=state.promos.filter(p=>p.id!==editingPromoId);if(appliedPromoId===editingPromoId){appliedPromoId=null;$('appliedCode').hidden=true}persistPromos();persist();closePromo();renderAll();toast('Coupon deleted')});
 
   $('openCopilot').addEventListener('click',()=>{$('copilotPanel').classList.add('open');$('copilotPanel').setAttribute('aria-hidden','false')});$('closeCopilot').addEventListener('click',()=>{$('copilotPanel').classList.remove('open');$('copilotPanel').setAttribute('aria-hidden','true')});
   document.querySelectorAll('[data-copilot]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.copilot;const answers={simple:`Keep one base fee of ${money(state.baseFee)}, a ${state.phases.early.discount}% early-bird offer and no more than one late-entry premium. Avoid category overrides unless a category has materially higher review costs.`,conversion:`Your strongest conversion lever is urgency. Keep early bird around ${state.phases.early.discount}% and end it clearly before the main deadline. Pair it with an automated reminder campaign.`,revenue:`Use clear category pricing and targeted promo codes to improve conversion without making the checkout confusing.`,promos:`Create PARTNER20 for strategic partners, SPONSOR100 for complimentary sponsor entries and a time-limited campaign code for low-performing categories.`};$('copilotAnswer').textContent=answers[a]}));
