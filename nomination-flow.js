@@ -192,7 +192,7 @@
     document.getElementById('sideOtherCount').textContent=Math.max(0,bucket.items.filter(x=>!x.submitted).length-1);
     document.getElementById('formQuestionCount').textContent=fields.filter(f=>f.type!=='section'&&!isProfileField(f)).length+' questions';
     const profileLine=document.getElementById('profileAttachedText');
-    if(profileLine)profileLine.textContent=(profile.name||'Entrant')+' · '+(profile.company||'Company')+' · details attached automatically';
+    if(profileLine)profileLine.textContent=(profile.name||'Entrant')+' · '+(profile.company||'Company')+' · registration details attached';
 
     let saved=read(answerKey(catId),{answers:{}});
     saved.answers=saved.answers||{};
@@ -206,58 +206,171 @@
       if(saved.answers[key]!=null&&saved.answers[key]!=="")values[key]=saved.answers[key];
       else if(settings.autoImportAnswers!==false&&shared[key]?.value!=null&&shared[key].value!==""){values[key]=shared[key].value;imported++}
     });
-    renderFields(entryFields,values);
+    let stateAnswers=Object.assign({},values);
+    const sections=buildSections(entryFields);
+    let activeStep=0;
+    const touched=new Set();
+
     document.getElementById('sideImportedCount').textContent=imported;
     if(imported){
       const banner=document.getElementById('importBanner');banner.hidden=false;
       document.getElementById('importBannerTitle').textContent=imported+' shared answer'+(imported===1?'':'s')+' imported';
-      document.getElementById('importBannerText').textContent='Matching answers were reused from another nomination. Review them before submitting this category.';
+      document.getElementById('importBannerText').textContent='Matching answers were reused from another nomination. Review them before completing this category.';
     }
+
+    renderStep();
     document.getElementById('saveDraftBtn').addEventListener('click',()=>saveForm(false));
     document.getElementById('saveNextBtn').addEventListener('click',()=>saveForm(true));
-    document.getElementById('nominationFields').addEventListener('input',updateConditional);
-    document.getElementById('nominationFields').addEventListener('change',updateConditional);
-    updateConditional();
+    document.getElementById('prevStepBtn').addEventListener('click',()=>{captureCurrent();if(activeStep>0){activeStep--;renderStep();scrollToForm()}});
+    document.getElementById('nextStepBtn').addEventListener('click',()=>{
+      captureCurrent();
+      if(!validateSection(activeStep,true)){toast('Please fix the highlighted fields');return}
+      if(activeStep<sections.length-1){activeStep++;renderStep();scrollToForm()}
+    });
+    document.getElementById('nominationFields').addEventListener('input',e=>{
+      captureCurrent();
+      const fieldEl=e.target.closest('[data-field-id]');
+      if(fieldEl){const f=findField(fieldEl.dataset.fieldId);if(f){updateCounter(f);if(touched.has(String(f.id)))validateField(f,true)}}
+      updateConditional();updateProgressUI();
+    });
+    document.getElementById('nominationFields').addEventListener('change',e=>{
+      captureCurrent();
+      const fieldEl=e.target.closest('[data-field-id]');
+      if(fieldEl){const f=findField(fieldEl.dataset.fieldId);if(f){touched.add(String(f.id));validateField(f,true)}}
+      updateConditional();updateProgressUI();
+    });
+    document.getElementById('nominationFields').addEventListener('focusout',e=>{
+      const fieldEl=e.target.closest('[data-field-id]');
+      if(!fieldEl)return;
+      const f=findField(fieldEl.dataset.fieldId);if(!f)return;
+      captureCurrent();touched.add(String(f.id));validateField(f,true);updateCounter(f);
+    });
 
-    function renderFields(fs,vals){const box=document.getElementById('nominationFields');box.innerHTML=fs.map(f=>fieldHtml(f,vals[semantic(f)],!!(vals[semantic(f)]&&saved.answers[semantic(f)]==null))).join('')}
+    function buildSections(fs){
+      const hasSections=fs.some(f=>f.type==='section');
+      if(!hasSections){
+        const qs=fs.filter(f=>f.type!=='section');
+        const size=4,out=[];
+        for(let i=0;i<qs.length;i+=size)out.push({id:'auto-'+(out.length+1),title:out.length===0?'Your nomination':'More about your entry',help:out.length===0?'Start with the key details.':'Continue with the next set of questions.',fields:qs.slice(i,i+size)});
+        return out.length?out:[{id:'auto-1',title:'Your nomination',help:'Complete the questions below.',fields:[]}];
+      }
+      const out=[];let current=null;let pre=[];
+      fs.forEach(f=>{
+        if(f.type==='section'){
+          if(current)out.push(current);
+          else if(pre.length)out.push({id:'intro',title:'Getting started',help:'Complete these details first.',fields:pre});
+          pre=[];current={id:String(f.id||'section-'+(out.length+1)),title:f.label||('Section '+(out.length+1)),help:f.help||'Complete this section to continue.',fields:[]};
+        }else if(current)current.fields.push(f);else pre.push(f);
+      });
+      if(current)out.push(current);else if(pre.length)out.push({id:'intro',title:'Your nomination',help:'Complete the questions below.',fields:pre});
+      return out.filter(x=>x.fields.length);
+    }
+    function renderStep(){
+      const sec=sections[activeStep]||sections[0];
+      document.getElementById('formStepLabel').textContent='SECTION '+(activeStep+1)+' OF '+sections.length;
+      document.getElementById('formStepTitle').textContent=sec.title;
+      document.getElementById('formStepHelp').textContent=sec.help||'Complete this section to continue.';
+      const box=document.getElementById('nominationFields');
+      box.innerHTML=sec.fields.map(f=>fieldHtml(f,stateAnswers[semantic(f)],!!(stateAnswers[semantic(f)]&&saved.answers[semantic(f)]==null))).join('');
+      document.getElementById('prevStepBtn').hidden=activeStep===0;
+      document.getElementById('nextStepBtn').hidden=activeStep===sections.length-1;
+      document.getElementById('saveNextBtn').hidden=activeStep!==sections.length-1;
+      sec.fields.forEach(updateCounter);
+      updateConditional();updateProgressUI();renderSectionNav();
+    }
     function fieldHtml(f,val,wasImported){
-      if(f.type==='section')return `<div class="nom-form-section"><h3>${esc(f.label)}</h3><p>${esc(f.help||'')}</p></div>`;
-      const key=semantic(f),req=f.required?'<span class="nom-required"> *</span>':'',badge=wasImported?'<span class="nom-imported">✓ imported</span>':'';
+      const key=semantic(f),req=f.required?'<span class="nom-required"> *</span>':'',badge=wasImported?'<span class="nom-imported">✓ reused</span>':'';
       let control='';
-      if(f.type==='long')control=`<textarea data-field-key="${esc(key)}" data-field-id="${esc(f.id)}" placeholder="Type your answer...">${esc(val||'')}</textarea>`;
-      else if(f.type==='single')control=`<div class="nom-field-options">${(f.options||[]).map(o=>`<label><input type="radio" data-field-key="${esc(key)}" data-field-id="${esc(f.id)}" name="${esc(key)}" value="${esc(o)}" ${String(val)===String(o)?'checked':''}> ${esc(o)}</label>`).join('')}</div>`;
-      else if(f.type==='multi'){const arr=Array.isArray(val)?val:[];control=`<div class="nom-field-options">${(f.options||[]).map(o=>`<label><input type="checkbox" data-field-key="${esc(key)}" data-field-id="${esc(f.id)}" value="${esc(o)}" ${arr.includes(o)?'checked':''}> ${esc(o)}</label>`).join('')}</div>`}
-      else if(f.type==='file')control=`<div class="nom-file-fake"><input type="file" data-field-key="${esc(key)}" data-field-id="${esc(f.id)}"><small>${esc(val?('Previously selected: '+val):(f.fileTypes||'Upload supporting file'))}</small></div>`;
-      else if(f.type==='number')control=`<input type="number" data-field-key="${esc(key)}" data-field-id="${esc(f.id)}" value="${esc(val||'')}" placeholder="0">`;
-      else control=`<input type="${f.type==='url'?'url':'text'}" data-field-key="${esc(key)}" data-field-id="${esc(f.id)}" value="${esc(val||'')}" placeholder="${f.type==='url'?'https://':'Type your answer...'}">`;
-      return `<div class="nom-field" data-wrap-field-id="${esc(f.id)}"><label>${esc(f.label)}${req}${badge}</label>${f.help?`<small>${esc(f.help)}</small>`:''}${control}${f.limit?`<small>Maximum ${esc(f.limit)} ${esc(f.limitUnit||'characters')}</small>`:''}</div>`;
+      if(f.type==='long')control=`<textarea data-field-key="${esc(key)}" data-field-id="${esc(f.id)}" placeholder="Type your answer..." aria-describedby="err-${esc(f.id)}">${esc(val||'')}</textarea>`;
+      else if(f.type==='single')control=`<div class="nom-field-options" data-field-id="${esc(f.id)}">${(f.options||[]).map(o=>`<label><input type="radio" data-field-key="${esc(key)}" data-field-id="${esc(f.id)}" name="${esc(key)}" value="${esc(o)}" ${String(val)===String(o)?'checked':''}> <span>${esc(o)}</span></label>`).join('')}</div>`;
+      else if(f.type==='multi'){const arr=Array.isArray(val)?val:[];control=`<div class="nom-field-options" data-field-id="${esc(f.id)}">${(f.options||[]).map(o=>`<label><input type="checkbox" data-field-key="${esc(key)}" data-field-id="${esc(f.id)}" value="${esc(o)}" ${arr.includes(o)?'checked':''}> <span>${esc(o)}</span></label>`).join('')}</div>`}
+      else if(f.type==='file')control=`<div class="nom-file-fake" data-field-id="${esc(f.id)}"><input type="file" data-field-key="${esc(key)}" data-field-id="${esc(f.id)}"><small>${esc(val?('Previously selected: '+val):(f.fileTypes||'Upload supporting file'))}</small></div>`;
+      else if(f.type==='number')control=`<input type="number" data-field-key="${esc(key)}" data-field-id="${esc(f.id)}" value="${esc(val||'')}" placeholder="0" aria-describedby="err-${esc(f.id)}">`;
+      else {const isEmail=/email/.test(key),type=f.type==='url'?'url':isEmail?'email':'text';control=`<input type="${type}" data-field-key="${esc(key)}" data-field-id="${esc(f.id)}" value="${esc(val||'')}" placeholder="${f.type==='url'?'https://':isEmail?'name@company.com':'Type your answer...'}" aria-describedby="err-${esc(f.id)}">`}
+      return `<div class="nom-field" data-wrap-field-id="${esc(f.id)}"><div class="nom-field-label-row"><label>${esc(f.label)}${req}</label>${badge}</div>${f.help?`<small class="nom-help">${esc(f.help)}</small>`:''}${control}<div class="nom-field-meta">${f.limit?`<small>Maximum ${esc(f.limit)} ${esc(f.limitUnit||'characters')}</small><small class="nom-counter" id="count-${esc(f.id)}"></small>`:'<span></span>'}</div><div class="nom-field-error" id="err-${esc(f.id)}" role="alert"></div></div>`;
+    }
+    function captureCurrent(){
+      const sec=sections[activeStep];if(!sec)return;
+      sec.fields.forEach(f=>{
+        const key=semantic(f),profileValue=profileValueForField(f);
+        if(profileValue!==null){stateAnswers[key]=profileValue;return}
+        const els=[...document.querySelectorAll(`[data-field-key="${CSS.escape(key)}"]`)];if(!els.length)return;
+        if(f.type==='multi')stateAnswers[key]=els.filter(x=>x.checked).map(x=>x.value);
+        else if(f.type==='single')stateAnswers[key]=(els.find(x=>x.checked)||{}).value||'';
+        else if(f.type==='file')stateAnswers[key]=els[0]?.files?.[0]?.name||stateAnswers[key]||'';
+        else stateAnswers[key]=els[0]?.value??'';
+      });
     }
     function collect(){
-      const answers={};
-      fields.filter(f=>f.type!=='section').forEach(f=>{
-        const key=semantic(f),profileValue=profileValueForField(f);
-        if(profileValue!==null){answers[key]=profileValue;return}
-        const els=[...document.querySelectorAll(`[data-field-key="${CSS.escape(key)}"]`)];
-        if(f.type==='multi')answers[key]=els.filter(x=>x.checked).map(x=>x.value);
-        else if(f.type==='single')answers[key]=(els.find(x=>x.checked)||{}).value||'';
-        else if(f.type==='file')answers[key]=els[0]?.files?.[0]?.name||saved.answers[key]||'';
-        else answers[key]=els[0]?.value?.trim?.()??'';
-      });
+      captureCurrent();const answers={};
+      fields.filter(f=>f.type!=='section').forEach(f=>{const pv=profileValueForField(f);answers[semantic(f)]=pv!==null?pv:(stateAnswers[semantic(f)]??'')});
       return answers;
     }
-    function validate(answers){
-      let ok=true;
-      fields.filter(f=>f.type!=='section'&&!isProfileField(f)&&f.required).forEach(f=>{
-        const key=semantic(f),v=answers[key],empty=Array.isArray(v)?!v.length:!String(v||'').trim();
-        const wrap=document.querySelector(`[data-wrap-field-id="${CSS.escape(String(f.id))}"]`);
-        if(wrap)wrap.querySelectorAll('input,textarea,select,.nom-field-options').forEach(x=>x.classList.toggle('nom-error',empty));
-        if(empty)ok=false;
-      });
+    function findField(id){return fields.find(f=>f.type!=='section'&&String(f.id)===String(id))}
+    function shouldShow(f){
+      if(!f.logic||!f.logic.enabled||!f.logic.fieldId)return true;
+      const source=fields.find(x=>String(x.id)===String(f.logic.fieldId));if(!source)return true;
+      const sv=stateAnswers[semantic(source)],wanted=String(f.logic.value||''),actual=Array.isArray(sv)?sv.join(','):String(sv||'');
+      if(f.logic.operator==='equals')return actual===wanted;
+      if(f.logic.operator==='contains')return actual.toLowerCase().includes(wanted.toLowerCase());
+      if(f.logic.operator==='not_equals')return actual!==wanted;
+      return true;
+    }
+    function valueError(f){
+      if(!shouldShow(f))return '';
+      const v=stateAnswers[semantic(f)],text=Array.isArray(v)?v.join(','):String(v||'').trim();
+      if(f.required&&(!text||(Array.isArray(v)&&!v.length)))return 'This field is required.';
+      if(!text)return '';
+      const key=semantic(f);
+      if(/email/.test(key)&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text))return 'Enter a valid email address.';
+      if(/mobile|phone/.test(key)){const digits=text.replace(/\D/g,'');if(digits.length<8||digits.length>15)return 'Enter a valid mobile number.'}
+      if(f.type==='url'){try{const u=new URL(text);if(!/^https?:$/.test(u.protocol))throw new Error()}catch(e){return 'Enter a valid URL beginning with http:// or https://.'}}
+      if(f.type==='number'&&!Number.isFinite(Number(text)))return 'Enter a valid number.';
+      if(f.limit){const unit=String(f.limitUnit||'characters').toLowerCase(),count=unit.includes('word')?(text.match(/\S+/g)||[]).length:text.length;if(count>Number(f.limit))return `Keep this answer within ${f.limit} ${f.limitUnit||'characters'}.`}
+      return '';
+    }
+    function validateField(f,show){
+      const err=valueError(f),wrap=document.querySelector(`[data-wrap-field-id="${CSS.escape(String(f.id))}"]`);if(!wrap)return !err;
+      wrap.classList.toggle('has-error',!!err);wrap.classList.toggle('is-valid',!err&&!!String(stateAnswers[semantic(f)]||'').trim());
+      const msg=wrap.querySelector('.nom-field-error');if(msg)msg.textContent=show?err:'';
+      wrap.querySelectorAll('input,textarea,.nom-field-options,.nom-file-fake').forEach(x=>x.classList.toggle('nom-error',!!err));
+      return !err;
+    }
+    function validateSection(index,show){
+      const sec=sections[index];if(!sec)return true;let ok=true;
+      sec.fields.forEach(f=>{if(shouldShow(f)&&!validateField(f,show))ok=false;if(show)touched.add(String(f.id))});
       return ok;
+    }
+    function validateAll(){
+      captureCurrent();let firstBad=-1;
+      sections.forEach((sec,i)=>{if(sec.fields.some(f=>shouldShow(f)&&!!valueError(f))&&firstBad<0)firstBad=i});
+      if(firstBad>=0){activeStep=firstBad;renderStep();validateSection(firstBad,true);scrollToForm();return false}
+      return true;
+    }
+    function updateCounter(f){
+      if(!f.limit)return;const el=document.getElementById('count-'+f.id);if(!el)return;const text=String(stateAnswers[semantic(f)]||''),unit=String(f.limitUnit||'characters').toLowerCase(),count=unit.includes('word')?(text.trim().match(/\S+/g)||[]).length:text.length;el.textContent=count+' / '+f.limit+' '+(unit.includes('word')?'words':'characters');el.classList.toggle('is-over',count>Number(f.limit));
+    }
+    function updateConditional(){
+      const sec=sections[activeStep];if(!sec)return;
+      sec.fields.forEach(f=>{const target=document.querySelector(`[data-wrap-field-id="${CSS.escape(String(f.id))}"]`);if(target)target.hidden=!shouldShow(f)});
+    }
+    function sectionComplete(sec){return sec.fields.filter(shouldShow).every(f=>!valueError(f))}
+    function updateProgressUI(){
+      const total=Math.max(1,sections.length),pct=Math.round(((activeStep+1)/total)*100);
+      document.getElementById('formStepPercent').textContent=pct+'%';document.getElementById('formStepProgressBar').style.width=pct+'%';renderSectionNav();
+    }
+    function renderSectionNav(){
+      const nav=document.getElementById('sectionNav');if(!nav)return;
+      nav.innerHTML=sections.map((sec,i)=>`<button type="button" data-step-index="${i}" class="${i===activeStep?'active':''} ${sectionComplete(sec)?'complete':''}"><span>${sectionComplete(sec)?'✓':i+1}</span><b>${esc(sec.title)}</b></button>`).join('');
+      nav.querySelectorAll('[data-step-index]').forEach(btn=>btn.addEventListener('click',()=>{
+        const target=Number(btn.dataset.stepIndex);captureCurrent();
+        if(target>activeStep&&!validateSection(activeStep,true)){toast('Please complete this section first');return}
+        activeStep=target;renderStep();scrollToForm();
+      }));
     }
     function saveForm(complete){
       const answers=collect();
-      if(complete&&!validate(answers)){toast('Complete the required questions');return}
+      if(complete&&!validateAll()){toast('Please fix the highlighted fields');return}
       saved={categoryId:String(catId),answers,completed:complete,updatedAt:new Date().toISOString()};
       write(answerKey(catId),saved);
       upsertNominationReport(catId,answers,complete?'Form complete':'Draft saved',{formCompleted:!!complete,formCompletedAt:complete?new Date().toISOString():''});
@@ -274,19 +387,7 @@
         setTimeout(()=>{location.href=next?'nomination-form.html?category='+encodeURIComponent(next.categoryId):'nomination-bucket.html'},550);
       }
     }
-    function updateConditional(){
-      const current=collect();
-      fields.forEach(f=>{
-        if(!f.logic||!f.logic.enabled||!f.logic.fieldId)return;
-        const source=fields.find(x=>String(x.id)===String(f.logic.fieldId));if(!source)return;
-        const sv=current[semantic(source)],target=document.querySelector(`[data-wrap-field-id="${CSS.escape(String(f.id))}"]`);if(!target)return;
-        const wanted=String(f.logic.value||''),actual=Array.isArray(sv)?sv.join(','):String(sv||'');let show=true;
-        if(f.logic.operator==='equals')show=actual===wanted;
-        else if(f.logic.operator==='contains')show=actual.toLowerCase().includes(wanted.toLowerCase());
-        else if(f.logic.operator==='not_equals')show=actual!==wanted;
-        target.hidden=!show;
-      });
-    }
+    function scrollToForm(){const card=document.querySelector('.nom-wizard-card');if(card)card.scrollIntoView({behavior:'smooth',block:'start'})}
   }
 
   function initCheckout(){

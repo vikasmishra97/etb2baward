@@ -26,3 +26,55 @@ body[data-nomination-page="form"] .nom-side-summary h3{font-size:21px}.nom-side-
 .profile-attached-strip{display:flex;align-items:center;gap:10px;margin:0 0 18px;padding:12px 14px;border:1px solid #d8e9df;background:#f5fbf7;border-radius:12px;color:#2c5d45;font-size:13px;font-weight:750}.profile-attached-strip span{width:25px;height:25px;display:grid;place-items:center;border-radius:50%;background:#dff2e7;color:#17683f;font-weight:900}
 body[data-nomination-page="checkout"] .checkout-grid{gap:20px}.checkout-item{padding:16px 0!important}.checkout-item b{font-size:15px!important}.checkout-item small{display:block;color:#777;font-size:12px!important;margin-top:5px}.checkout-item>span{font-size:15px!important;font-weight:850}.checkout-method{font-size:14px!important;min-height:48px!important}.checkout-total-row{font-size:14px!important;padding:11px 0!important}.checkout-total-row.grand{font-size:18px!important}.checkout-pay{min-height:52px!important;font-size:15px!important;border-radius:12px!important}.checkout-note{font-size:12px!important;line-height:1.5!important}
 @media(max-width:760px){body[data-nomination-page="form"] .nom-flow-main,body[data-nomination-page="checkout"] .nom-flow-main{padding:18px 14px 60px}body[data-nomination-page="form"] .nom-flow-head,body[data-nomination-page="checkout"] .nom-flow-head{grid-template-columns:1fr;gap:13px}body[data-nomination-page="form"] .nom-flow-head h1,body[data-nomination-page="checkout"] .nom-flow-head h1{font-size:32px}body[data-nomination-page="form"] .nom-progress,body[data-nomination-page="checkout"] .nom-progress{grid-template-columns:repeat(2,1fr)}body[data-nomination-page="form"] .nom-progress span,body[data-nomination-page="checkout"] .nom-progress span{font-size:12px}body[data-nomination-page="form"] .nom-card,body[data-nomination-page="checkout"] .nom-card{padding:18px;border-radius:16px}}
+
+/* Step-by-step nomination form */
+body[data-nomination-page="form"] .nom-form-wrap{grid-template-columns:minmax(0,1fr) 300px;align-items:start}
+body[data-nomination-page="form"] .nom-wizard-card{padding:30px}
+body[data-nomination-page="form"] .nom-wizard-card .section-title{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:20px;border-bottom:1px solid #eee8df}
+body[data-nomination-page="form"] .nom-wizard-card .section-title>div{min-width:0}
+body[data-nomination-page="form"] .nom-wizard-card #publicFormIntro{margin:7px 0 0!important;max-width:760px}
+body[data-nomination-page="form"] .nom-wizard-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin:26px 0 14px}
+body[data-nomination-page="form"] .nom-step-eyebrow{display:block;margin-bottom:7px;font-size:11px;font-weight:900;letter-spacing:.12em;color:#b20d1d}
+body[data-nomination-page="form"] .nom-wizard-head h3{margin:0;font-size:27px;line-height:1.18;letter-spacing:-.025em;color:#151922}
+body[data-nomination-page="form"] .nom-wizard-head p{margin:7px 0 0;font-size:15px;line-height:1.55;color:#6e7480}
+body[data-nomination-page="form"] .nom-step-score{text-align:right;flex:0 0 auto;padding-top:2px}
+body[data-nomination-page="form"] .nom-step-score strong{display:block;font-size:26px;line-height:1;color:#171b24}
+body[data-nomination-page="form"] .nom-step-score span{display:block;margin-top:5px;font-size:11px;font-weight:800;color:#8a8f98;text-transform:uppercase;letter-spacing:.06em}
+body[data-nomination-page="form"] .nom-step-progress{height:8px;border-radius:999px;background:#eeeae4;overflow:hidden;margin:0 0 28px}
+body[data-nomination-page="form"] .nom-step-progress span{display:block;height:100%;width:0;border-radius:inherit;background:#c91325;transition:width .25s ease}
+body[data-nomination-page="form"] .nom-fields{display:grid;gap:20px}
+body[data-nomination-page="form"] .nom-field{margin:0;padding:20px;border:1px solid #e5e0d9;border-radius:16px;background:#fff;transition:border-color .16s ease,box-shadow .16s ease,background .16s ease}
+body[data-nomination-page="form"] .nom-field:focus-within{border-color:#c9b7aa;box-shadow:0 0 0 4px rgba(150,93,58,.07)}
+body[data-nomination-page="form"] .nom-field.has-error{border-color:#e4a0a8;background:#fffafa;box-shadow:0 0 0 3px rgba(201,19,37,.05)}
+body[data-nomination-page="form"] .nom-field.is-valid:not(.has-error){border-color:#cfe4d8}
+body[data-nomination-page="form"] .nom-field-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:7px}
+body[data-nomination-page="form"] .nom-field-label-row label{font-size:17px!important;line-height:1.35!important;font-weight:850!important;color:#191e27}
+body[data-nomination-page="form"] .nom-help{display:block;margin:0 0 12px;font-size:13.5px!important;line-height:1.55!important;color:#737984!important}
+body[data-nomination-page="form"] .nom-imported{display:inline-flex;align-items:center;gap:4px;white-space:nowrap;padding:5px 8px;border-radius:999px;background:#ecf7ef;color:#197044;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+body[data-nomination-page="form"] .nom-field input[type="text"],body[data-nomination-page="form"] .nom-field input[type="email"],body[data-nomination-page="form"] .nom-field input[type="url"],body[data-nomination-page="form"] .nom-field input[type="number"],body[data-nomination-page="form"] .nom-field textarea{width:100%;box-sizing:border-box;font-size:16px!important;background:#fcfcfb!important;border:1px solid #d8dbe0!important;outline:none;transition:border-color .15s ease,box-shadow .15s ease}
+body[data-nomination-page="form"] .nom-field input:focus,body[data-nomination-page="form"] .nom-field textarea:focus{border-color:#b99a87!important;box-shadow:0 0 0 3px rgba(185,154,135,.12)}
+body[data-nomination-page="form"] .nom-field .nom-error{border-color:#d94151!important;box-shadow:0 0 0 3px rgba(217,65,81,.08)!important}
+body[data-nomination-page="form"] .nom-field-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+body[data-nomination-page="form"] .nom-field-options label{display:flex;align-items:center;gap:10px;min-height:48px;border:1px solid #dddfe4;border-radius:12px;background:#fcfcfb;cursor:pointer;font-size:15px!important}
+body[data-nomination-page="form"] .nom-field-options label:has(input:checked){border-color:#b98b72;background:#fff8f4}
+body[data-nomination-page="form"] .nom-field-options input{width:18px;height:18px;accent-color:#c91325}
+body[data-nomination-page="form"] .nom-field-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;min-height:18px}
+body[data-nomination-page="form"] .nom-field-meta small{font-size:11.5px!important;color:#8a8f98!important}
+body[data-nomination-page="form"] .nom-counter{font-weight:800!important}
+body[data-nomination-page="form"] .nom-counter.is-over{color:#c91325!important}
+body[data-nomination-page="form"] .nom-field-error{min-height:18px;margin-top:5px;font-size:12.5px;font-weight:750;color:#c61d2e}
+body[data-nomination-page="form"] .nom-wizard-actions{position:sticky;bottom:12px;z-index:5;margin-top:28px;padding:12px;border:1px solid #e3ddd5;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 12px 34px rgba(24,27,33,.09);backdrop-filter:blur(10px);display:flex;gap:10px;justify-content:flex-end}
+body[data-nomination-page="form"] .nom-wizard-actions #saveDraftBtn{margin-right:auto}
+body[data-nomination-page="form"] .nom-side-summary{position:sticky;top:108px;padding:22px}
+body[data-nomination-page="form"] .nom-section-nav-wrap{margin-top:20px;padding-top:18px;border-top:1px solid #ece7df}
+body[data-nomination-page="form"] .nom-section-nav-wrap>span{display:block;margin-bottom:10px;font-size:10px;font-weight:900;letter-spacing:.12em;color:#90959d}
+body[data-nomination-page="form"] .nom-section-nav{display:grid;gap:7px}
+body[data-nomination-page="form"] .nom-section-nav button{display:grid;grid-template-columns:28px minmax(0,1fr);align-items:center;gap:9px;width:100%;padding:9px 10px;border:1px solid transparent;border-radius:11px;background:transparent;color:#656c77;text-align:left;cursor:pointer}
+body[data-nomination-page="form"] .nom-section-nav button span{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#f0eeea;font-size:11px;font-weight:900}
+body[data-nomination-page="form"] .nom-section-nav button b{font-size:12.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis}
+body[data-nomination-page="form"] .nom-section-nav button.active{border-color:#e4d6cc;background:#fff8f4;color:#9e1724}
+body[data-nomination-page="form"] .nom-section-nav button.active span{background:#c91325;color:#fff}
+body[data-nomination-page="form"] .nom-section-nav button.complete:not(.active){color:#27694c}
+body[data-nomination-page="form"] .nom-section-nav button.complete:not(.active) span{background:#e7f4ec;color:#246948}
+@media(max-width:900px){body[data-nomination-page="form"] .nom-form-wrap{grid-template-columns:1fr}body[data-nomination-page="form"] .nom-side-summary{position:static;order:-1}body[data-nomination-page="form"] .nom-section-nav{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){body[data-nomination-page="form"] .nom-wizard-card{padding:18px}body[data-nomination-page="form"] .nom-wizard-card .section-title,body[data-nomination-page="form"] .nom-wizard-head{display:block}body[data-nomination-page="form"] .nom-step-score{text-align:left;margin-top:14px}body[data-nomination-page="form"] .nom-field{padding:16px}body[data-nomination-page="form"] .nom-field-options{grid-template-columns:1fr}body[data-nomination-page="form"] .nom-section-nav{grid-template-columns:1fr}body[data-nomination-page="form"] .nom-wizard-actions{position:static;display:grid;grid-template-columns:1fr 1fr}body[data-nomination-page="form"] .nom-wizard-actions #saveDraftBtn{margin:0}body[data-nomination-page="form"] .nom-wizard-actions .nom-primary{grid-column:1/-1}body[data-nomination-page="form"] .nom-field-label-row{align-items:flex-start;flex-direction:column}}
