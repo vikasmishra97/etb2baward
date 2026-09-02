@@ -181,13 +181,21 @@
 
             <section class="card pad pr-card">
               <div class="section-title pr-section-title">
-                <div><span class="pr-step">05</span><h2>Taxes</h2><p>Add GST, VAT or another tax. This prototype calculates tax at checkout.</p></div>
-                <button class="pr-toggle active" id="taxToggle" aria-label="Toggle tax"><i></i></button>
+                <div><span class="pr-step">05</span><h2>Invoice &amp; tax invoice</h2><p>Choose the document entrants receive after payment. Tax is added only when Tax invoice is selected.</p></div>
+                <span class="badge green" id="invoiceTypeBadge">Invoice</span>
               </div>
-              <div class="pr-inline-config" id="taxSettings">
-                <div class="field"><label>Tax name</label><input id="taxLabel" value="GST"></div>
+              <div class="pr-choice-grid" id="invoiceTypeChoices">
+                <button class="pr-choice" type="button" data-invoice-type="invoice">
+                  <span class="pr-radio"></span><div><b>Invoice</b><small>Standard payment invoice. No GST/tax is added at checkout.</small></div><em>Standard</em>
+                </button>
+                <button class="pr-choice" type="button" data-invoice-type="tax_invoice">
+                  <span class="pr-radio"></span><div><b>Tax invoice</b><small>Generate a tax invoice and calculate GST/tax on the payment page.</small></div><em>GST</em>
+                </button>
+              </div>
+              <div class="pr-inline-config" id="taxInvoiceSettings" style="margin-top:12px">
+                <div class="field"><label>Tax name</label><input id="taxLabel" value="GST" placeholder="GST"></div>
                 <div class="field"><label>Tax rate</label><div class="pr-affix-input"><input id="taxRate" type="number" min="0" max="100" value="18"><span>%</span></div></div>
-                <div class="field"><label>Tax handling</label><select id="taxMode"><option value="exclusive">Add tax at checkout</option><option value="inclusive">Tax included in displayed fee</option></select></div>
+                <div class="field"><label>Business GSTIN / Tax ID <span class="pr-muted">Optional</span></label><input id="businessTaxId" placeholder="e.g. 27ABCDE1234F1Z5"></div>
               </div>
             </section>
 
@@ -202,7 +210,6 @@
                 <button class="pr-gateway" data-gateway="manual"><span>↗</span><div><b>Invoice / bank transfer</b><small>Approve payment manually</small></div><em>Select</em></button>
               </div>
               <div class="pr-payment-options">
-                <label><input id="invoiceToggle" type="checkbox" checked> Allow entrant to download an invoice</label>
                 <label><input id="partialToggle" type="checkbox"> Allow save-now, pay-later submissions</label>
                 <label><input id="receiptToggle" type="checkbox" checked> Send payment receipt automatically</label>
               </div>
@@ -244,7 +251,7 @@
             <div class="pr-health-list">
               <div><span id="healthBaseIcon">✓</span><p><b>Base fee configured</b><small id="healthBaseText">₹2,000 per entry</small></p></div>
               <div><span id="healthPhasesIcon">✓</span><p><b>Promo codes</b><small id="healthPhasesText">2 active promo codes</small></p></div>
-              <div><span id="healthTaxIcon">✓</span><p><b>Tax configured</b><small id="healthTaxText">18% GST at checkout</small></p></div>
+              <div><span id="healthTaxIcon">✓</span><p><b>Invoice setup</b><small id="healthTaxText">Standard invoice</small></p></div>
               <div><span id="healthGatewayIcon">○</span><p><b>Payment gateway</b><small>Connect before launch</small></p></div>
             </div>
           </section>
@@ -324,12 +331,13 @@
     {id:4,name:'Best Campaign',feeMode:'custom',fee:1500,status:'draft'}
   ]}
   const storeKey='etb2b_awards_pricing_'+(award.slug||'demo');
+  const categoryStoreKey='etb2b_awards_categories_'+(award.slug||'demo');
   const symbols={INR:'₹',USD:'$',GBP:'£',AED:'د.إ',SGD:'S$'};
   const localeMap={INR:'en-IN',USD:'en-US',GBP:'en-GB',AED:'en-US',SGD:'en-SG'};
   const state={
     entryMode:award.entryType||'paid',currency:award.currency||'INR',baseFee:Number(award.baseFee||2000),priceDisplay:'exclusive',
     phases:{early:{enabled:true,discount:20,start:'',end:''},regular:{enabled:true,price:Number(award.baseFee||2000),start:'',end:''},late:{enabled:true,premium:10,start:'',end:''}},
-    multi:{enabled:false,threshold:0,discount:0},tax:{enabled:true,label:'GST',rate:18,mode:'exclusive'},gateway:'razorpay',invoice:true,partial:false,receipt:true,
+    multi:{enabled:false,threshold:0,discount:0},invoiceType:'invoice',businessTaxId:'',tax:{enabled:false,label:'GST',rate:18,mode:'exclusive'},gateway:'razorpay',invoice:true,partial:false,receipt:true,
     categoryOverrides:{},promos:[
       {id:'p1',code:'PARTNER20',couponType:'quantity',type:'percent',value:20,min:2,max:0,email:'',description:'Partner multi-entry coupon',limit:100,used:24,status:'active',start:'',end:''},
       {id:'p2',code:'AUTO500',couponType:'amount',type:'fixed',value:500,min:5000,max:0,email:'',description:'Automatic saving for larger orders',limit:0,used:0,status:'active',start:'',end:''}
@@ -342,6 +350,9 @@
   const saved=(()=>{try{return JSON.parse(localStorage.getItem(storeKey)||'null')}catch(e){return null}})();
   if(saved)deepAssign(state,saved);
   state.promos=(state.promos||[]).map(p=>Object.assign({couponType:'quantity',min:0,max:0,email:'',description:''},p));
+  if(!state.invoiceType) state.invoiceType=(state.tax&&state.tax.enabled)?'tax_invoice':'invoice';
+  state.tax=Object.assign({enabled:false,label:'GST',rate:18,mode:'exclusive'},state.tax||{});
+  state.tax.mode='exclusive'; state.tax.enabled=state.invoiceType==='tax_invoice';
   state.phases.early.enabled=false; state.phases.late.enabled=false; state.multi={enabled:false,threshold:0,discount:0};
   seedDates();
   seedCategoryOverrides();
@@ -351,7 +362,22 @@
   function money(n){const value=Math.max(0,Number(n||0));try{return symbol()+Math.round(value).toLocaleString(localeMap[state.currency]||'en-US')}catch(e){return symbol()+Math.round(value)}}
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
   function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
-  function persist(silent=true){localStorage.setItem(storeKey,JSON.stringify(state));if(!silent)toast('Pricing saved in this browser')}
+  function syncCategoryRecordsFromPricing(){
+    const current=(()=>{try{return JSON.parse(localStorage.getItem(categoryStoreKey)||'[]')}catch(e){return []}})();
+    if(!Array.isArray(current)||!current.length)return;
+    let changed=false;
+    current.forEach(c=>{
+      if(!c||c.id==null)return;
+      const ov=state.categoryOverrides&&state.categoryOverrides[String(c.id)];
+      const nextFee=c.categoryType==='free'||state.entryMode==='free'?0:(ov&&ov.enabled?Math.max(0,Number(ov.fee||0)):Math.max(0,Number(state.baseFee||0)));
+      if(Number(c.fee||0)!==nextFee){c.fee=nextFee;changed=true}
+      const nextMode=ov&&ov.enabled?'custom':'base';
+      if(c.feeMode!==nextMode){c.feeMode=nextMode;changed=true}
+      if(c.currency!==state.currency){c.currency=state.currency;changed=true}
+    });
+    if(changed)localStorage.setItem(categoryStoreKey,JSON.stringify(current));
+  }
+  function persist(silent=true){localStorage.setItem(storeKey,JSON.stringify(state));syncCategoryRecordsFromPricing();if(!silent)toast('Pricing saved in this browser')}
   function dateAdd(value,days){if(!value)return'';const d=new Date(value+'T00:00:00');d.setDate(d.getDate()+days);return d.toISOString().slice(0,10)}
   function seedDates(){
     const open=award.openDate||'2027-06-01',close=award.closeDate||'2027-09-30';
@@ -380,12 +406,14 @@
     if($('earlyDiscount')){$('earlyDiscount').value=state.phases.early.discount;$('earlyStart').value=state.phases.early.start;$('earlyEnd').value=state.phases.early.end;}
     if($('regularPrice')){$('regularPrice').value=state.baseFee;$('regularStart').value=state.phases.regular.start;$('regularEnd').value=state.phases.regular.end;}
     if($('latePremium')){$('latePremium').value=state.phases.late.premium;$('lateStart').value=state.phases.late.start;$('lateEnd').value=state.phases.late.end;}
-    $('taxLabel').value=state.tax.label;$('taxRate').value=state.tax.rate;$('taxMode').value=state.tax.mode;
-    $('invoiceToggle').checked=!!state.invoice;$('partialToggle').checked=!!state.partial;$('receiptToggle').checked=!!state.receipt;$('projectedEntries').value=state.projectedEntries;
+    $('taxLabel').value=state.tax.label;$('taxRate').value=state.tax.rate;$('businessTaxId').value=state.businessTaxId||'';
+    $('partialToggle').checked=!!state.partial;$('receiptToggle').checked=!!state.receipt;$('projectedEntries').value=state.projectedEntries;
     document.querySelectorAll('[data-entry-mode]').forEach(b=>b.classList.toggle('active',b.dataset.entryMode===state.entryMode));
     $('paidSettings').classList.toggle('pr-settings-disabled',state.entryMode==='free');
     $('entryModelBadge').textContent=state.entryMode==='free'?'Free entries':'Paid entries';$('entryModelBadge').className='badge '+(state.entryMode==='free'?'':'green');
-    $('taxToggle').classList.toggle('active',state.tax.enabled);$('taxSettings').classList.toggle('pr-disabled-row',!state.tax.enabled);
+    document.querySelectorAll('[data-invoice-type]').forEach(b=>b.classList.toggle('active',b.dataset.invoiceType===state.invoiceType));
+    $('invoiceTypeBadge').textContent=state.invoiceType==='tax_invoice'?'Tax invoice':'Invoice';
+    $('taxInvoiceSettings').classList.toggle('pr-disabled-row',state.invoiceType!=='tax_invoice');
     document.querySelectorAll('[data-toggle-phase]').forEach(b=>{const ph=b.dataset.togglePhase;b.classList.toggle('active',!!state.phases[ph].enabled);$(ph+'Fields').classList.toggle('pr-disabled-row',!state.phases[ph].enabled)});
     document.querySelectorAll('.pr-gateway').forEach(b=>{const on=b.dataset.gateway===state.gateway;b.classList.toggle('active',on);b.querySelector('em').textContent=on?'Selected':'Select'});
   }
@@ -447,8 +475,8 @@
     $('copilotSummary').textContent=`Keep the public fee simple at ${money(base)} and use targeted promo codes when you need partner, sponsor or campaign discounts.`;
   }
   function renderHealth(){
-    let score=state.entryMode==='free'?100:35;if(state.entryMode==='paid'){if(state.baseFee>0)score+=20;if(state.phases.early.enabled||state.phases.late.enabled)score+=15;if(state.tax.enabled)score+=10;if(state.gateway)score+=10;if(state.promos.length)score+=10;}score=Math.min(100,score);$('pricingHealth').textContent=score+'%';$('pricingHealthBar').style.width=score+'%';
-    $('healthBaseText').textContent=state.entryMode==='free'?'Free entries':money(state.baseFee)+' per entry';$('healthPhasesText').textContent=(state.promos||[]).filter(p=>p.status==='active').length+' active promo code'+((state.promos||[]).filter(p=>p.status==='active').length===1?'':'s');$('healthTaxText').textContent=state.tax.enabled?Number(state.tax.rate||0)+'% '+(state.tax.label||'Tax')+(state.tax.mode==='exclusive'?' at checkout':' included'):'Tax disabled';
+    let score=state.entryMode==='free'?100:35;if(state.entryMode==='paid'){if(state.baseFee>0)score+=20;if(state.phases.early.enabled||state.phases.late.enabled)score+=15;if(state.invoiceType)score+=10;if(state.gateway)score+=10;if(state.promos.length)score+=10;}score=Math.min(100,score);$('pricingHealth').textContent=score+'%';$('pricingHealthBar').style.width=score+'%';
+    $('healthBaseText').textContent=state.entryMode==='free'?'Free entries':money(state.baseFee)+' per entry';$('healthPhasesText').textContent=(state.promos||[]).filter(p=>p.status==='active').length+' active promo code'+((state.promos||[]).filter(p=>p.status==='active').length===1?'':'s');$('healthTaxText').textContent=state.invoiceType==='tax_invoice'?'Tax invoice · '+Number(state.tax.rate||0)+'% '+(state.tax.label||'GST'):'Standard invoice · no tax added';
   }
   function renderProjection(){const entries=Math.max(0,Number(state.projectedEntries||0));const gross=state.entryMode==='free'?0:entries*Number(state.baseFee||0);$('projectedRevenue').textContent=money(gross);$('projectionNote').textContent=state.entryMode==='free'?'free-entry award':'before discounts and tax'}
   function renderAll(){syncInputs();renderSummary();renderCategoryPricing();renderPromos();renderCheckoutOptions();renderCheckout();renderHealth();renderProjection()}
@@ -467,9 +495,10 @@
   $('clearCategorySearch').addEventListener('click',()=>{categoryPricingQuery='';$('categoryPricingSearch').value='';$('clearCategorySearch').hidden=true;renderCategoryPricing();$('categoryPricingSearch').focus()});
   $('applyBulkCategoryFee').addEventListener('click',()=>{const raw=$('bulkCategoryFee').value;const fee=Number(raw);if(!selectedCategoryIds.size){toast('Select at least one category');return}if(raw===''||!Number.isFinite(fee)||fee<0){toast('Enter a valid amount');$('bulkCategoryFee').focus();return}selectedCategoryIds.forEach(id=>{if(state.categoryOverrides[id]){state.categoryOverrides[id].enabled=true;state.categoryOverrides[id].fee=fee}});persist();renderAll();toast('Applied '+money(fee)+' to '+selectedCategoryIds.size+' categor'+(selectedCategoryIds.size===1?'y':'ies'))});
 
-  $('taxToggle').addEventListener('click',()=>{state.tax.enabled=!state.tax.enabled;persist();renderAll()});bindValue('taxLabel',v=>state.tax.label=v);bindValue('taxRate',v=>state.tax.rate=Math.max(0,Number(v||0)));bindValue('taxMode',v=>state.tax.mode=v,'change');
+  document.querySelectorAll('[data-invoice-type]').forEach(b=>b.addEventListener('click',()=>{state.invoiceType=b.dataset.invoiceType;state.tax.enabled=state.invoiceType==='tax_invoice';state.invoice=true;persist();renderAll();toast(state.invoiceType==='tax_invoice'?'Tax invoice enabled':'Standard invoice enabled')}));
+  bindValue('taxLabel',v=>state.tax.label=v);bindValue('taxRate',v=>state.tax.rate=Math.max(0,Math.min(100,Number(v||0))));bindValue('businessTaxId',v=>state.businessTaxId=v);
   document.querySelectorAll('.pr-gateway').forEach(b=>b.addEventListener('click',()=>{state.gateway=b.dataset.gateway;persist();renderAll();toast(b.querySelector('b').textContent+' selected for demo')}));
-  [['invoiceToggle','invoice'],['partialToggle','partial'],['receiptToggle','receipt']].forEach(([id,key])=>$(id).addEventListener('change',()=>{state[key]=$(id).checked;persist()}));
+  [['partialToggle','partial'],['receiptToggle','receipt']].forEach(([id,key])=>$(id).addEventListener('change',()=>{state[key]=$(id).checked;persist()}));
   $('projectedEntries').addEventListener('input',()=>{state.projectedEntries=Math.max(0,Number($('projectedEntries').value||0));persist();renderProjection()});
   ['checkoutCategory','checkoutQty','checkoutPhase'].forEach(id=>{const el=$(id);if(el)el.addEventListener('change',renderCheckout)});
   $('applyPromo').addEventListener('click',()=>{const code=$('checkoutPromo').value.trim().toUpperCase();const promo=activePromos().find(p=>p.code.toUpperCase()===code);if(!promo){toast('Promo code not found or inactive');return}appliedPromoId=promo.id;$('appliedCode').hidden=false;$('appliedCodeText').textContent=promo.code+' · '+promoOffer(promo);$('checkoutPromo').value='';renderCheckout();toast('Promo code applied')});

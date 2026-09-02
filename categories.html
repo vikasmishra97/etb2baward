@@ -155,6 +155,7 @@
   const categoryKey='etb2b_awards_categories_'+slug;
   const masterKey='etb2b_awards_master_categories_'+slug;
   const settingsKey='etb2b_awards_category_settings_'+slug;
+  const pricingKey='etb2b_awards_pricing_'+slug;
   const symbols={INR:'₹',USD:'$',AED:'د.إ',GBP:'£',SGD:'S$'};
   let masters=read(masterKey,[]),subs=read(categoryKey,[]);
   let settings=Object.assign({selectionMode:'multiple',maxSelections:5,autoImportAnswers:true,aiFinder:true},read(settingsKey,{}));
@@ -166,7 +167,22 @@
   function codeFrom(name){return String(name||'CAT').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim().split(/\s+/).slice(0,3).map(x=>x.slice(0,4)).join('-').slice(0,16)}
   function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
   function id(){return Date.now()+Math.random().toString(36).slice(2,7)}
-  function money(c){const symbol=symbols[c.currency||award.currency]||'₹';return c.categoryType==='free'||Number(c.fee||0)===0?'Free':symbol+Number(c.fee||0).toLocaleString('en-IN')}
+  function pricingConfig(){return read(pricingKey,{})||{}}
+  function effectiveCategoryFee(c){
+    if(!c||c.categoryType==='free')return 0;
+    const cfg=pricingConfig(),ov=cfg.categoryOverrides&&cfg.categoryOverrides[String(c.id)];
+    if(ov&&ov.enabled)return Math.max(0,Number(ov.fee||0));
+    if(Number.isFinite(Number(cfg.baseFee)))return Math.max(0,Number(cfg.baseFee||0));
+    return Math.max(0,Number(c.fee??award.baseFee??0));
+  }
+  function money(c){const cfg=pricingConfig(),symbol=symbols[c.currency||cfg.currency||award.currency]||'₹',amount=effectiveCategoryFee(c);return c.categoryType==='free'||amount===0?'Free':symbol+amount.toLocaleString('en-IN')}
+  function syncCategoryToPricing(c){
+    if(!c||!c.id)return;
+    const cfg=pricingConfig();
+    if(!cfg.categoryOverrides)cfg.categoryOverrides={};
+    cfg.categoryOverrides[String(c.id)]={enabled:c.categoryType!=='free',fee:c.categoryType==='free'?0:Math.max(0,Number(c.fee||0))};
+    write(pricingKey,cfg);
+  }
   function masterById(masterId){return masters.find(m=>String(m.id)===String(masterId))}
   function subCount(masterId){return subs.filter(c=>String(c.masterId)===String(masterId)).length}
 
@@ -270,11 +286,11 @@
     fillMasterSelect(master.id);if(input)input.value='';toast(created?'Master Category added and selected':'Master Category already exists - selected')
   }
   function openSub(idValue){
-    editingSub=idValue||null;const c=idValue?subs.find(x=>String(x.id)===String(idValue)):null,defaultMaster=c?.masterId||masters.find(m=>m.status!=='inactive')?.id||masters[0]?.id||'';$('subDrawerEyebrow').textContent=c?'EDIT SUB CATEGORY':'NEW SUB CATEGORY';$('subDrawerTitle').textContent=c?c.name:'Add Sub Category';fillMasterSelect(defaultMaster);$('inlineMasterName').value='';$('subType').value=c?.categoryType||'paid';$('subName').value=c?.name||'';$('subDescription').value=c?.description||'';$('subCurrency').value=c?.currency||award.currency||'INR';$('subPrice').value=Number(c?.fee??award.baseFee??0);$('subArea').value=c?.allowedArea||'global';$('subStatus').value=c?.status||'open';$('subEligibility').value=c?.eligibility||'';$('subCode').value=c?.code||'';$('subMaxEntries').value=String(c?.maxEntries||0);$('subNameError').textContent='';toggleSubPrice();openModal('subModal','subName')
+    editingSub=idValue||null;const c=idValue?subs.find(x=>String(x.id)===String(idValue)):null,defaultMaster=c?.masterId||masters.find(m=>m.status!=='inactive')?.id||masters[0]?.id||'';$('subDrawerEyebrow').textContent=c?'EDIT SUB CATEGORY':'NEW SUB CATEGORY';$('subDrawerTitle').textContent=c?c.name:'Add Sub Category';fillMasterSelect(defaultMaster);$('inlineMasterName').value='';$('subType').value=c?.categoryType||'paid';$('subName').value=c?.name||'';$('subDescription').value=c?.description||'';$('subCurrency').value=c?.currency||award.currency||'INR';$('subPrice').value=c?effectiveCategoryFee(c):Number(pricingConfig().baseFee??award.baseFee??0);$('subArea').value=c?.allowedArea||'global';$('subStatus').value=c?.status||'open';$('subEligibility').value=c?.eligibility||'';$('subCode').value=c?.code||'';$('subMaxEntries').value=String(c?.maxEntries||0);$('subNameError').textContent='';toggleSubPrice();openModal('subModal','subName')
   }
   function toggleSubPrice(){$('subPriceField').hidden=$('subType').value==='free'}
-  function saveSub(){const name=$('subName').value.trim(),masterId=$('subMaster').value;if(!name){$('subNameError').textContent='Enter a Sub Category name';return}if(!masterId){toast('Choose or add a Master Category');$('inlineMasterName')?.focus();return}if(subs.some(c=>c.name.toLowerCase()===name.toLowerCase()&&String(c.id)!==String(editingSub))){$('subNameError').textContent='This Sub Category already exists';return}const m=masterById(masterId),type=$('subType').value;const data={name,masterId,group:m?.name||'',description:$('subDescription').value.trim(),categoryType:type,currency:$('subCurrency').value,feeMode:'custom',fee:type==='free'?0:Number($('subPrice').value||0),allowedArea:$('subArea').value,status:$('subStatus').value,eligibility:$('subEligibility').value.trim(),code:$('subCode').value.trim()||codeFrom(name),maxEntries:String($('subMaxEntries').value||0)};if(editingSub){Object.assign(subs.find(x=>String(x.id)===String(editingSub)),data);toast('Sub Category updated')}else{subs.push({id:id(),...data});toast('Sub Category added')}persist();closeModal('subModal')}
-  function deleteSub(subId){const c=subs.find(x=>String(x.id)===String(subId));if(!c||!confirm('Delete '+c.name+'?'))return;subs=subs.filter(x=>String(x.id)!==String(subId));persist();toast('Sub Category deleted')}
+  function saveSub(){const name=$('subName').value.trim(),masterId=$('subMaster').value;if(!name){$('subNameError').textContent='Enter a Sub Category name';return}if(!masterId){toast('Choose or add a Master Category');$('inlineMasterName')?.focus();return}if(subs.some(c=>c.name.toLowerCase()===name.toLowerCase()&&String(c.id)!==String(editingSub))){$('subNameError').textContent='This Sub Category already exists';return}const m=masterById(masterId),type=$('subType').value;const data={name,masterId,group:m?.name||'',description:$('subDescription').value.trim(),categoryType:type,currency:$('subCurrency').value,feeMode:'custom',fee:type==='free'?0:Number($('subPrice').value||0),allowedArea:$('subArea').value,status:$('subStatus').value,eligibility:$('subEligibility').value.trim(),code:$('subCode').value.trim()||codeFrom(name),maxEntries:String($('subMaxEntries').value||0)};let savedCategory;if(editingSub){savedCategory=subs.find(x=>String(x.id)===String(editingSub));Object.assign(savedCategory,data);toast('Sub Category updated')}else{savedCategory={id:id(),...data};subs.push(savedCategory);toast('Sub Category added')}syncCategoryToPricing(savedCategory);persist();closeModal('subModal')}
+  function deleteSub(subId){const c=subs.find(x=>String(x.id)===String(subId));if(!c||!confirm('Delete '+c.name+'?'))return;subs=subs.filter(x=>String(x.id)!==String(subId));const cfg=pricingConfig();if(cfg.categoryOverrides){delete cfg.categoryOverrides[String(subId)];write(pricingKey,cfg)}persist();toast('Sub Category deleted')}
   function moveSub(subId,dir){const i=subs.findIndex(c=>String(c.id)===String(subId)),j=dir==='up'?i-1:i+1;if(i<0||j<0||j>=subs.length)return;[subs[i],subs[j]]=[subs[j],subs[i]];persist()}
 
   function openModal(idValue,focusId){$(idValue).classList.add('open');$(idValue).setAttribute('aria-hidden','false');document.body.classList.add('modal-open');setTimeout(()=>$(focusId)?.focus(),70)}
