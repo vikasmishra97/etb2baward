@@ -76,29 +76,10 @@
 
       <div class="pr-layout">
         <div class="pr-content-col">
-          <section class="card pad pr-card" id="entryModelCard">
-            <div class="section-title pr-section-title">
-              <div><span class="pr-step">01</span><h2>How will entrants pay?</h2><p>Choose a free or paid entry model. You can change this later.</p></div>
-              <span class="badge green" id="entryModelBadge">Paid entries</span>
-            </div>
-            <div class="pr-choice-grid">
-              <button class="pr-choice" data-entry-mode="free">
-                <span class="pr-radio"></span>
-                <div><b>Free entries</b><small>No fee at checkout. Useful for internal awards or open nominations.</small></div>
-                <em>₹0</em>
-              </button>
-              <button class="pr-choice active" data-entry-mode="paid">
-                <span class="pr-radio"></span>
-                <div><b>Paid entries</b><small>Charge a base fee and optionally add category pricing, discounts and promo codes.</small></div>
-                <em id="paidChoiceAmount">₹2,000</em>
-              </button>
-            </div>
-          </section>
-
           <div id="paidSettings">
             <section class="card pad pr-card">
               <div class="section-title pr-section-title">
-                <div><span class="pr-step">02</span><h2>Base price</h2><p>Your default fee for one entry before discounts, taxes or category-specific pricing.</p></div>
+                <div><span class="pr-step">01</span><h2>Base price</h2><p>Your default fee for one entry before discounts, taxes or category-specific pricing.</p></div>
                 <span class="pr-save-state" id="baseSaveState">Auto-saved locally</span>
               </div>
               <div class="pr-base-grid">
@@ -124,6 +105,26 @@
                   </select>
                 </div>
               </div>
+            </section>
+
+
+            <section class="card pad pr-card" id="entryModelCard">
+            <div class="section-title pr-section-title">
+              <div><span class="pr-step">02</span><h2>How will entrants pay?</h2><p>Choose a free or paid entry model. You can change this later.</p></div>
+              <span class="badge green" id="entryModelBadge">Paid entries</span>
+            </div>
+            <div class="pr-choice-grid">
+              <button class="pr-choice" data-entry-mode="free">
+                <span class="pr-radio"></span>
+                <div><b>Free entries</b><small>No fee at checkout. Useful for internal awards or open nominations.</small></div>
+                <em>₹0</em>
+              </button>
+              <button class="pr-choice active" data-entry-mode="paid">
+                <span class="pr-radio"></span>
+                <div><b>Paid entries</b><small>Charge a base fee and optionally add category pricing, discounts and promo codes.</small></div>
+                <em id="paidChoiceAmount">₹2,000</em>
+              </button>
+            </div>
             </section>
 
             <section class="card pad pr-card">
@@ -180,19 +181,7 @@
 
             <section class="card pad pr-card">
               <div class="section-title pr-section-title">
-                <div><span class="pr-step">05</span><h2>Multi-entry discount</h2><p>Encourage entrants to submit more than one category in the same checkout.</p></div>
-                <button class="pr-toggle active" id="multiToggle" aria-label="Toggle multi-entry discount"><i></i></button>
-              </div>
-              <div class="pr-inline-config" id="multiSettings">
-                <div class="field"><label>Apply when entrant buys</label><div class="pr-affix-input"><input id="multiThreshold" type="number" min="2" value="3"><span>+ entries</span></div></div>
-                <div class="field"><label>Discount</label><div class="pr-affix-input"><input id="multiDiscount" type="number" min="0" max="90" value="10"><span>% off</span></div></div>
-                <div class="pr-config-preview"><span>Example</span><b id="multiExample">3 entries save ₹600</b></div>
-              </div>
-            </section>
-
-            <section class="card pad pr-card">
-              <div class="section-title pr-section-title">
-                <div><span class="pr-step">06</span><h2>Taxes</h2><p>Add GST, VAT or another tax. This prototype calculates tax at checkout.</p></div>
+                <div><span class="pr-step">05</span><h2>Taxes</h2><p>Add GST, VAT or another tax. This prototype calculates tax at checkout.</p></div>
                 <button class="pr-toggle active" id="taxToggle" aria-label="Toggle tax"><i></i></button>
               </div>
               <div class="pr-inline-config" id="taxSettings">
@@ -204,7 +193,7 @@
 
             <section class="card pad pr-card">
               <div class="section-title pr-section-title">
-                <div><span class="pr-step">07</span><h2>Payment setup</h2><p>Choose how payment should work after an entrant submits. Gateway buttons are demo-only.</p></div>
+                <div><span class="pr-step">06</span><h2>Payment setup</h2><p>Choose how payment should work after an entrant submits. Gateway buttons are demo-only.</p></div>
                 <span class="badge orange">Connect later</span>
               </div>
               <div class="pr-payment-grid">
@@ -239,7 +228,6 @@
               <div class="pr-price-lines">
                 <div><span>Entry fee</span><b id="lineEntryFee">₹2,000</b></div>
                 <div id="linePhaseRow"><span id="linePhaseLabel">Pricing adjustment</span><b id="linePhase">₹0</b></div>
-                <div id="lineMultiRow"><span>Multi-entry discount</span><b id="lineMulti">−₹0</b></div>
                 <div id="linePromoRow"><span>Promo discount</span><b id="linePromo">−₹0</b></div>
                 <div id="lineTaxRow"><span id="lineTaxLabel">GST (18%)</span><b id="lineTax">₹360</b></div>
               </div>
@@ -277,7 +265,7 @@
 <div class="pr-drawer" id="promoDrawer" aria-hidden="true">
   <div class="pr-drawer-backdrop" data-close-drawer></div>
   <div class="pr-drawer-panel pr-coupon-panel">
-    <div class="pr-drawer-head"><div><span class="pr-kicker">COUPON</span><h2 id="promoDrawerTitle">Add coupon</h2><p>Create an automatic amount-based offer or a shareable quantity coupon.</p></div><button data-close-drawer>×</button></div>
+    <div class="pr-drawer-head"><div><span class="pr-kicker">COUPON</span><h2 id="promoDrawerTitle">Add coupon</h2><p>Create an automatic amount-based offer or a shareable quantity coupon.</p></div><button type="button" data-close-drawer>×</button></div>
     <div class="pr-drawer-body">
       <div class="field"><label>Coupon code <em>*</em></label><input id="promoCode" placeholder="SAVE20" maxlength="24"><small>Used as the coupon reference. Quantity coupons are entered by users at checkout.</small></div>
       <div class="field"><label>Coupon type <em>*</em></label><select id="couponType"><option value="amount">Amount</option><option value="quantity">Quantity</option></select><small id="couponTypeHelp">Amount coupons are applied automatically when the cart total is within the configured range.</small></div>
@@ -304,7 +292,7 @@
       </div>
       <div class="pr-drawer-preview"><span>Checkout preview</span><b id="promoPreviewText">20% off</b><small id="promoPreviewCode">Automatic · SAVE20</small></div>
     </div>
-    <div class="pr-drawer-foot"><button class="btn secondary" id="deletePromo" hidden>Delete</button><span></span><button class="btn secondary" data-close-drawer>Cancel</button><button class="btn primary" id="savePromo">Save coupon</button></div>
+    <div class="pr-drawer-foot"><button class="btn secondary" id="deletePromo" type="button" hidden>Delete</button><span></span><button class="btn secondary" type="button" data-close-drawer>Cancel</button><button class="btn primary" id="savePromo" type="button">Save coupon</button></div>
   </div>
 </div>
 
@@ -341,7 +329,7 @@
   const state={
     entryMode:award.entryType||'paid',currency:award.currency||'INR',baseFee:Number(award.baseFee||2000),priceDisplay:'exclusive',
     phases:{early:{enabled:true,discount:20,start:'',end:''},regular:{enabled:true,price:Number(award.baseFee||2000),start:'',end:''},late:{enabled:true,premium:10,start:'',end:''}},
-    multi:{enabled:true,threshold:3,discount:10},tax:{enabled:true,label:'GST',rate:18,mode:'exclusive'},gateway:'razorpay',invoice:true,partial:false,receipt:true,
+    multi:{enabled:false,threshold:0,discount:0},tax:{enabled:true,label:'GST',rate:18,mode:'exclusive'},gateway:'razorpay',invoice:true,partial:false,receipt:true,
     categoryOverrides:{},promos:[
       {id:'p1',code:'PARTNER20',couponType:'quantity',type:'percent',value:20,min:2,max:0,email:'',description:'Partner multi-entry coupon',limit:100,used:24,status:'active',start:'',end:''},
       {id:'p2',code:'AUTO500',couponType:'amount',type:'fixed',value:500,min:5000,max:0,email:'',description:'Automatic saving for larger orders',limit:0,used:0,status:'active',start:'',end:''}
@@ -354,7 +342,7 @@
   const saved=(()=>{try{return JSON.parse(localStorage.getItem(storeKey)||'null')}catch(e){return null}})();
   if(saved)deepAssign(state,saved);
   state.promos=(state.promos||[]).map(p=>Object.assign({couponType:'quantity',min:0,max:0,email:'',description:''},p));
-  state.phases.early.enabled=false; state.phases.late.enabled=false;
+  state.phases.early.enabled=false; state.phases.late.enabled=false; state.multi={enabled:false,threshold:0,discount:0};
   seedDates();
   seedCategoryOverrides();
 
@@ -392,13 +380,11 @@
     if($('earlyDiscount')){$('earlyDiscount').value=state.phases.early.discount;$('earlyStart').value=state.phases.early.start;$('earlyEnd').value=state.phases.early.end;}
     if($('regularPrice')){$('regularPrice').value=state.baseFee;$('regularStart').value=state.phases.regular.start;$('regularEnd').value=state.phases.regular.end;}
     if($('latePremium')){$('latePremium').value=state.phases.late.premium;$('lateStart').value=state.phases.late.start;$('lateEnd').value=state.phases.late.end;}
-    $('multiThreshold').value=state.multi.threshold;$('multiDiscount').value=state.multi.discount;
     $('taxLabel').value=state.tax.label;$('taxRate').value=state.tax.rate;$('taxMode').value=state.tax.mode;
     $('invoiceToggle').checked=!!state.invoice;$('partialToggle').checked=!!state.partial;$('receiptToggle').checked=!!state.receipt;$('projectedEntries').value=state.projectedEntries;
     document.querySelectorAll('[data-entry-mode]').forEach(b=>b.classList.toggle('active',b.dataset.entryMode===state.entryMode));
     $('paidSettings').classList.toggle('pr-settings-disabled',state.entryMode==='free');
     $('entryModelBadge').textContent=state.entryMode==='free'?'Free entries':'Paid entries';$('entryModelBadge').className='badge '+(state.entryMode==='free'?'':'green');
-    $('multiToggle').classList.toggle('active',state.multi.enabled);$('multiSettings').classList.toggle('pr-disabled-row',!state.multi.enabled);
     $('taxToggle').classList.toggle('active',state.tax.enabled);$('taxSettings').classList.toggle('pr-disabled-row',!state.tax.enabled);
     document.querySelectorAll('[data-toggle-phase]').forEach(b=>{const ph=b.dataset.togglePhase;b.classList.toggle('active',!!state.phases[ph].enabled);$(ph+'Fields').classList.toggle('pr-disabled-row',!state.phases[ph].enabled)});
     document.querySelectorAll('.pr-gateway').forEach(b=>{const on=b.dataset.gateway===state.gateway;b.classList.toggle('active',on);b.querySelector('em').textContent=on?'Selected':'Select'});
@@ -444,26 +430,24 @@
   }
   function renderCheckout(){
     if(state.entryMode==='free'){
-      $('lineEntryFee').textContent=money(0);$('linePhase').textContent=money(0);$('lineMulti').textContent='−'+money(0);$('linePromo').textContent='−'+money(0);$('lineTax').textContent=money(0);$('checkoutTotal').textContent=money(0);$('checkoutSavings').hidden=true;return;
+      $('lineEntryFee').textContent=money(0);$('linePhase').textContent=money(0);$('linePromo').textContent='−'+money(0);$('lineTax').textContent=money(0);$('checkoutTotal').textContent=money(0);$('checkoutSavings').hidden=true;return;
     }
     const catId=$('checkoutCategory').value||categories[0]?.id||'base',qty=Math.max(1,Number($('checkoutQty').value||1)),phase=$('checkoutPhase').value||'regular';
     const base=catId==='base'?Number(state.baseFee):effectiveBaseForCategory(catId);const rawBase=base*qty;let unit=phaseUnitPrice(base,phase);let phaseSubtotal=unit*qty;let phaseAdjust=phaseSubtotal-rawBase;
-    let multi=0;if(state.multi.enabled&&qty>=Number(state.multi.threshold||3))multi=phaseSubtotal*Number(state.multi.discount||0)/100;
-    let afterMulti=Math.max(0,phaseSubtotal-multi);let promoDiscount=0;const promo=currentPromo();if(promo){if(promo.type==='free')promoDiscount=afterMulti;else if(promo.type==='percent')promoDiscount=afterMulti*Number(promo.value||0)/100;else promoDiscount=Math.min(afterMulti,Number(promo.value||0));}
-    let taxable=Math.max(0,afterMulti-promoDiscount),tax=0,total=taxable;if(state.tax.enabled){if(state.tax.mode==='exclusive'){tax=taxable*Number(state.tax.rate||0)/100;total=taxable+tax}else{tax=taxable*(Number(state.tax.rate||0)/(100+Number(state.tax.rate||0)));total=taxable;}}
+    let promoDiscount=0;const promo=currentPromo();if(promo){if(promo.type==='free')promoDiscount=phaseSubtotal;else if(promo.type==='percent')promoDiscount=phaseSubtotal*Number(promo.value||0)/100;else promoDiscount=Math.min(phaseSubtotal,Number(promo.value||0));}
+    let taxable=Math.max(0,phaseSubtotal-promoDiscount),tax=0,total=taxable;if(state.tax.enabled){if(state.tax.mode==='exclusive'){tax=taxable*Number(state.tax.rate||0)/100;total=taxable+tax}else{tax=taxable*(Number(state.tax.rate||0)/(100+Number(state.tax.rate||0)));total=taxable;}}
     $('lineEntryFee').textContent=money(rawBase);$('linePhaseLabel').textContent=phase==='early'?'Early bird discount':phase==='late'?'Late-entry premium':'Regular pricing';$('linePhase').textContent=(phaseAdjust<0?'−':phaseAdjust>0?'+':'')+money(Math.abs(phaseAdjust));$('linePhase').classList.toggle('pr-positive',phaseAdjust>0);
-    $('lineMulti').textContent='−'+money(multi);$('linePromo').textContent='−'+money(promoDiscount);$('lineTaxLabel').textContent=(state.tax.label||'Tax')+' ('+Number(state.tax.rate||0)+'%)';$('lineTax').textContent=money(tax);$('checkoutTotal').textContent=money(total);
-    $('lineMultiRow').hidden=!(state.multi.enabled&&qty>=Number(state.multi.threshold||3));$('linePromoRow').hidden=!promo;$('lineTaxRow').hidden=!state.tax.enabled;$('linePhaseRow').hidden=phaseAdjust===0;
+    $('linePromo').textContent='−'+money(promoDiscount);$('lineTaxLabel').textContent=(state.tax.label||'Tax')+' ('+Number(state.tax.rate||0)+'%)';$('lineTax').textContent=money(tax);$('checkoutTotal').textContent=money(total);
+    $('linePromoRow').hidden=!promo;$('lineTaxRow').hidden=!state.tax.enabled;$('linePhaseRow').hidden=phaseAdjust===0;
     const savings=Math.max(0,rawBase-total+(state.tax.enabled&&state.tax.mode==='exclusive'?tax:0));$('checkoutSavings').hidden=savings<=0;$('savingsAmount').textContent=money(savings);
   }
   function renderSummary(){
     const base=Number(state.baseFee||0),early=base*(1-Number(state.phases.early.discount||0)/100),late=base*(1+Number(state.phases.late.premium||0)/100);
     $('baseCurrencySymbol').textContent=symbol();document.querySelectorAll('.currencyMirror').forEach(e=>e.textContent=symbol());$('paidChoiceAmount').textContent=money(base);if($('regularPrice'))$('regularPrice').value=state.baseFee;if($('earlyPrice'))$('earlyPrice').textContent=money(early);if($('regularPriceLabel'))$('regularPriceLabel').textContent=money(state.baseFee);if($('latePrice'))$('latePrice').textContent=money(late);if($('earlyBadge'))$('earlyBadge').textContent=Number(state.phases.early.discount||0)+'% off';if($('lateBadge'))$('lateBadge').textContent=Number(state.phases.late.premium||0)+'% premium';
-    $('multiExample').textContent=Number(state.multi.threshold||3)+' entries save '+money(base*Number(state.multi.threshold||3)*Number(state.multi.discount||0)/100);
     $('copilotSummary').textContent=`Keep the public fee simple at ${money(base)} and use targeted promo codes when you need partner, sponsor or campaign discounts.`;
   }
   function renderHealth(){
-    let score=state.entryMode==='free'?100:35;if(state.entryMode==='paid'){if(state.baseFee>0)score+=20;if(state.phases.early.enabled||state.phases.late.enabled)score+=15;if(state.tax.enabled)score+=10;if(state.gateway)score+=10;if(state.promos.length)score+=5;if(state.multi.enabled)score+=5;}score=Math.min(100,score);$('pricingHealth').textContent=score+'%';$('pricingHealthBar').style.width=score+'%';
+    let score=state.entryMode==='free'?100:35;if(state.entryMode==='paid'){if(state.baseFee>0)score+=20;if(state.phases.early.enabled||state.phases.late.enabled)score+=15;if(state.tax.enabled)score+=10;if(state.gateway)score+=10;if(state.promos.length)score+=10;}score=Math.min(100,score);$('pricingHealth').textContent=score+'%';$('pricingHealthBar').style.width=score+'%';
     $('healthBaseText').textContent=state.entryMode==='free'?'Free entries':money(state.baseFee)+' per entry';$('healthPhasesText').textContent=(state.promos||[]).filter(p=>p.status==='active').length+' active promo code'+((state.promos||[]).filter(p=>p.status==='active').length===1?'':'s');$('healthTaxText').textContent=state.tax.enabled?Number(state.tax.rate||0)+'% '+(state.tax.label||'Tax')+(state.tax.mode==='exclusive'?' at checkout':' included'):'Tax disabled';
   }
   function renderProjection(){const entries=Math.max(0,Number(state.projectedEntries||0));const gross=state.entryMode==='free'?0:entries*Number(state.baseFee||0);$('projectedRevenue').textContent=money(gross);$('projectionNote').textContent=state.entryMode==='free'?'free-entry award':'before discounts and tax'}
@@ -483,7 +467,6 @@
   $('clearCategorySearch').addEventListener('click',()=>{categoryPricingQuery='';$('categoryPricingSearch').value='';$('clearCategorySearch').hidden=true;renderCategoryPricing();$('categoryPricingSearch').focus()});
   $('applyBulkCategoryFee').addEventListener('click',()=>{const raw=$('bulkCategoryFee').value;const fee=Number(raw);if(!selectedCategoryIds.size){toast('Select at least one category');return}if(raw===''||!Number.isFinite(fee)||fee<0){toast('Enter a valid amount');$('bulkCategoryFee').focus();return}selectedCategoryIds.forEach(id=>{if(state.categoryOverrides[id]){state.categoryOverrides[id].enabled=true;state.categoryOverrides[id].fee=fee}});persist();renderAll();toast('Applied '+money(fee)+' to '+selectedCategoryIds.size+' categor'+(selectedCategoryIds.size===1?'y':'ies'))});
 
-  $('multiToggle').addEventListener('click',()=>{state.multi.enabled=!state.multi.enabled;persist();renderAll()});bindValue('multiThreshold',v=>state.multi.threshold=Math.max(2,Number(v||2)));bindValue('multiDiscount',v=>state.multi.discount=Math.max(0,Number(v||0)));
   $('taxToggle').addEventListener('click',()=>{state.tax.enabled=!state.tax.enabled;persist();renderAll()});bindValue('taxLabel',v=>state.tax.label=v);bindValue('taxRate',v=>state.tax.rate=Math.max(0,Number(v||0)));bindValue('taxMode',v=>state.tax.mode=v,'change');
   document.querySelectorAll('.pr-gateway').forEach(b=>b.addEventListener('click',()=>{state.gateway=b.dataset.gateway;persist();renderAll();toast(b.querySelector('b').textContent+' selected for demo')}));
   [['invoiceToggle','invoice'],['partialToggle','partial'],['receiptToggle','receipt']].forEach(([id,key])=>$(id).addEventListener('change',()=>{state[key]=$(id).checked;persist()}));
@@ -495,7 +478,7 @@
   $('previewCheckoutTop').addEventListener('click',()=>{$('.pr-checkout-card').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>$('checkoutCategory').focus(),450)});
   $('savePricing').addEventListener('click',()=>persist(false));$('saveDraftBottom').addEventListener('click',()=>persist(false));
   $('continueWebsite').addEventListener('click',()=>persist());
-  $('applyRecommendation').addEventListener('click',()=>{state.entryMode='paid';state.phases.early.enabled=true;state.phases.early.discount=20;state.phases.regular.price=state.baseFee;state.phases.late.enabled=true;state.phases.late.premium=10;state.multi.enabled=true;state.multi.threshold=3;state.multi.discount=10;persist();renderAll();toast('Recommended pricing applied')});
+  $('applyRecommendation').addEventListener('click',()=>{state.entryMode='paid';state.phases.early.enabled=true;state.phases.early.discount=20;state.phases.regular.price=state.baseFee;state.phases.late.enabled=true;state.phases.late.premium=10;persist();renderAll();toast('Recommended pricing applied')});
   $('dismissRecommendation').addEventListener('click',()=>{$('.pr-copilot-banner').style.display='none'});
 
   function openPromo(id){
@@ -515,18 +498,35 @@
   $('newPromo').addEventListener('click',()=>openPromo());document.querySelectorAll('[data-close-drawer]').forEach(b=>b.addEventListener('click',closePromo));['promoCode','couponType','promoType','promoValue','couponMin','couponMax'].forEach(id=>$(id).addEventListener((id==='couponType'||id==='promoType')?'change':'input',updatePromoPreview));
   $('promoCode').addEventListener('input',()=>{$('promoCode').value=$('promoCode').value.toUpperCase().replace(/[^A-Z0-9_-]/g,'')});
   $('savePromo').addEventListener('click',()=>{
+    const btn=$('savePromo');
     const code=$('promoCode').value.trim().toUpperCase(),couponType=$('couponType').value,type=$('promoType').value,start=$('promoStart').value,end=$('promoEnd').value,description=$('promoDescription').value.trim();
     const min=Math.max(0,Number($('couponMin').value||0)),max=Math.max(0,Number($('couponMax').value||0));
-    if(!code){toast('Enter a coupon code');$('promoCode').focus();return}if(state.promos.some(p=>String(p.code||'').toUpperCase()===code&&p.id!==editingPromoId)){toast('That coupon code already exists');return}
-    if(!start||!end){toast('Select Valid from and Valid to dates');(!start?$('promoStart'):$('promoEnd')).focus();return}if(end<start){toast('Valid to must be after Valid from');$('promoEnd').focus();return}
-    if(max>0&&max<min){toast('Maximum range must be greater than minimum');$('couponMax').focus();return}if(!description){toast('Add a coupon description');$('promoDescription').focus();return}
-    const wasEditing=!!editingPromoId;const data={id:editingPromoId||'p'+Date.now(),code,couponType,type,value:type==='free'?100:Math.max(0,Number($('promoValue').value||0)),min,max,email:$('promoEmail').value.trim().toLowerCase(),description,limit:Math.max(0,Number($('promoLimit').value||0)),used:editingPromoId?(state.promos.find(p=>p.id===editingPromoId)?.used||0):0,status:$('promoStatus').value,start,end};
-    if(editingPromoId){const i=state.promos.findIndex(p=>p.id===editingPromoId);state.promos[i]=data}else state.promos.push(data);persist();closePromo();renderAll();toast(wasEditing?'Coupon updated':'Coupon created')
+    const rawValue=Number($('promoValue').value||0), limit=Math.max(0,Number($('promoLimit').value||0));
+    const email=$('promoEmail').value.trim().toLowerCase();
+    if(!code){toast('Enter a coupon code');$('promoCode').focus();return}
+    if(state.promos.some(p=>String(p.code||'').toUpperCase()===code&&p.id!==editingPromoId)){toast('That coupon code already exists');$('promoCode').focus();return}
+    if(!start||!end){toast('Select Valid from and Valid to dates');(!start?$('promoStart'):$('promoEnd')).focus();return}
+    if(end<start){toast('Valid to must be after Valid from');$('promoEnd').focus();return}
+    if(type!=='free'&&(!Number.isFinite(rawValue)||rawValue<=0)){toast('Enter a valid discount value');$('promoValue').focus();return}
+    if(type==='percent'&&rawValue>100){toast('Percentage discount cannot be more than 100%');$('promoValue').focus();return}
+    if(max>0&&max<min){toast('Maximum range must be greater than minimum');$('couponMax').focus();return}
+    if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){toast('Enter a valid user email or leave it blank');$('promoEmail').focus();return}
+    if(!description){toast('Add a coupon description');$('promoDescription').focus();return}
+    const wasEditing=!!editingPromoId;
+    const data={id:editingPromoId||'p'+Date.now(),code,couponType,type,value:type==='free'?100:rawValue,min,max,email,description,limit,used:editingPromoId?(state.promos.find(p=>p.id===editingPromoId)?.used||0):0,status:$('promoStatus').value,start,end};
+    btn.disabled=true;btn.textContent='Saving…';
+    try{
+      if(editingPromoId){const i=state.promos.findIndex(p=>p.id===editingPromoId);if(i>=0)state.promos[i]=data;else state.promos.push(data)}else state.promos.push(data);
+      persist();
+      const verify=JSON.parse(localStorage.getItem(storeKey)||'{}');
+      if(!(verify.promos||[]).some(p=>p.id===data.id))throw new Error('Coupon was not persisted');
+      closePromo();renderAll();toast(wasEditing?'Coupon updated successfully':'Coupon saved successfully');
+    }catch(err){console.error(err);toast('Could not save coupon. Please try again.')}finally{btn.disabled=false;btn.textContent='Save coupon'}
   });
   $('deletePromo').addEventListener('click',()=>{if(!editingPromoId)return;state.promos=state.promos.filter(p=>p.id!==editingPromoId);if(appliedPromoId===editingPromoId){appliedPromoId=null;$('appliedCode').hidden=true}persist();closePromo();renderAll();toast('Coupon deleted')});
 
   $('openCopilot').addEventListener('click',()=>{$('copilotPanel').classList.add('open');$('copilotPanel').setAttribute('aria-hidden','false')});$('closeCopilot').addEventListener('click',()=>{$('copilotPanel').classList.remove('open');$('copilotPanel').setAttribute('aria-hidden','true')});
-  document.querySelectorAll('[data-copilot]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.copilot;const answers={simple:`Keep one base fee of ${money(state.baseFee)}, a ${state.phases.early.discount}% early-bird offer and no more than one late-entry premium. Avoid category overrides unless a category has materially higher review costs.`,conversion:`Your strongest conversion lever is urgency. Keep early bird around ${state.phases.early.discount}% and end it clearly before the main deadline. Pair it with an automated reminder campaign.`,revenue:`Use a modest late-entry premium and a multi-entry discount. The premium protects deadline discipline, while the multi-entry offer can increase average order value.`,promos:`Create PARTNER20 for strategic partners, SPONSOR100 for complimentary sponsor entries and a time-limited campaign code for low-performing categories.`};$('copilotAnswer').textContent=answers[a]}));
+  document.querySelectorAll('[data-copilot]').forEach(b=>b.addEventListener('click',()=>{const a=b.dataset.copilot;const answers={simple:`Keep one base fee of ${money(state.baseFee)}, a ${state.phases.early.discount}% early-bird offer and no more than one late-entry premium. Avoid category overrides unless a category has materially higher review costs.`,conversion:`Your strongest conversion lever is urgency. Keep early bird around ${state.phases.early.discount}% and end it clearly before the main deadline. Pair it with an automated reminder campaign.`,revenue:`Use clear category pricing and targeted promo codes to improve conversion without making the checkout confusing.`,promos:`Create PARTNER20 for strategic partners, SPONSOR100 for complimentary sponsor entries and a time-limited campaign code for low-performing categories.`};$('copilotAnswer').textContent=answers[a]}));
 
   setText();syncInputs();renderAll();
 })();
