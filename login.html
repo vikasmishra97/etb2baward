@@ -1,2 +1,53 @@
-<!doctype html><html><head>
-  <link rel="icon" type="image/jpeg" href="et-logo.jpg"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ETB2B Awards · Sign in</title><link rel="stylesheet" href="styles.css"></head><body style="display:grid;place-items:center;min-height:100vh;background:radial-gradient(circle at 80% 0%,#dcd9ff,transparent 30%),#f7f8fb"><div class="card pad" style="width:min(430px,92vw);box-shadow:var(--shadow)"><div class="brand" style="color:var(--ink);padding-left:0"><div class="brandmark et-brandmark"><img src="et-logo.jpg" alt="ET Business Verticals logo"></div><b>ETB2B Awards</b></div><h1 style="margin:8px 0">Welcome back</h1><p style="color:var(--muted)">Sign in to manage your awards.</p><div class="field"><label>Email</label><input value="manager@example.com"></div><div class="field"><label>Password</label><input type="password" value="password"></div><a href="index.html" class="btn primary" style="display:block;text-align:center">Sign in to demo</a><p class="footer-note">Vikas Mishra</p></div></body></html>
+<!doctype html>
+<html>
+<head>
+  <link rel="icon" type="image/jpeg" href="et-logo.jpg">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="google-client-id" content="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com">
+  <title>ETB2B Awards · Sign in</title>
+  <link rel="stylesheet" href="login.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <main class="login-shell">
+    <section class="login-story" aria-label="ETB2B platform introduction">
+      <div class="oneworld-brand"><span class="et-box">ET</span><span>One<span class="world-dot">o</span>world</span></div>
+      <div class="story-copy">
+        <h1>Welcome to the Future of <span>B2B Excellence</span></h1>
+        <p>Join thousands of enterprises leveraging our platform for unparalleled B2B growth and networking success.</p>
+      </div>
+      <div class="trust-grid">
+        <article><span class="trust-icon">⌾</span><b>Enterprise Security</b><small>Secure Google authentication with protected workspace access</small></article>
+        <article><span class="trust-icon">◎</span><b>50K+ Enterprises</b><small>Trusted by leading organizations across ET business verticals</small></article>
+        <article><span class="trust-icon">↗</span><b>98% Success Rate</b><small>Built for high-impact B2B programs and awards operations</small></article>
+        <article><span class="trust-icon">◇</span><b>Industry Leader</b><small>One workspace for awards, entries, judging and growth</small></article>
+      </div>
+      <div class="story-footer">ETB2B Awards Operating System</div>
+    </section>
+
+    <section class="login-panel">
+      <div class="login-card">
+        <div class="mobile-brand"><span class="et-box">ET</span><b>ETB2B Awards</b></div>
+        <h2>Welcome Back</h2>
+        <p class="login-intro">Sign in to access your enterprise dashboard and manage your B2B awards workspace.</p>
+
+        <div class="google-wrap">
+          <div id="googleButton" class="google-button-host"></div>
+          <button id="googleFallback" class="google-fallback" type="button" hidden>
+            <span class="google-g">G</span><span>Login with Google</span>
+          </button>
+        </div>
+        <p id="loginError" class="login-error" hidden></p>
+
+        <div class="security-box">
+          <span class="security-shield">♢</span>
+          <div><b>Enterprise Security</b><p>Your account information is used only to identify your workspace session and selected ET portal.</p></div>
+        </div>
+      </div>
+      <div class="support-strip">For any concern, connect to <a href="mailto:vikas.mishra@timesinternet.in">vikas.mishra@timesinternet.in</a></div>
+    </section>
+  </main>
+  <script src="login.js"></script>
+</body>
+</html>
