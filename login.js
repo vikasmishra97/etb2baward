@@ -36,6 +36,6 @@
     if (label) label.textContent = 'Continuing...';
 
     // Prototype flow only: no account data or session is stored.
-    window.location.href = 'portal-select.html';
+    window.location.assign('portal-select.html');
   });
 })();

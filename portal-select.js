@@ -25,8 +25,7 @@
       '<small>From The Economic Times</small></span>';
 
     button.addEventListener('click', function () {
-      // No portal or user details are stored. Every portal opens the same home dashboard.
-      window.location.href = 'index.html';
+      window.location.assign('index.html');
     });
 
     grid.appendChild(button);

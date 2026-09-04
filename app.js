@@ -1,19 +1,11 @@
 (function(){
   const STORAGE_PREFIX='etb2b_';
-  const AUTH_USER_KEY='etb2b_auth_user';
-  const PORTAL_KEY='etb2b_selected_portal';
 
-  function readJson(key){try{return JSON.parse(localStorage.getItem(key)||'null')}catch(e){return null}}
-  const authUser=readJson(AUTH_USER_KEY);
-  const selectedPortal=readJson(PORTAL_KEY);
-  if(!authUser?.email){location.replace('login.html');return;}
-  if(!selectedPortal?.id){location.replace('portal-select.html');return;}
+  // Prototype flow only:
+  // no authentication state, email, profile or portal selection is stored.
+  // The login page appears only when opened directly or when Sign out is clicked.
 
   function safe(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
-  function initials(name,email){
-    const parts=String(name||email||'U').trim().split(/\s+/).filter(Boolean);
-    return (parts.length>1?parts[0][0]+parts[parts.length-1][0]:parts[0].slice(0,2)).toUpperCase();
-  }
 
   function toast(message){
     const t=document.getElementById('toast');
@@ -202,23 +194,28 @@
 
     const avatar=document.querySelector('.topbar .avatar');
     if(avatar && !document.querySelector('.profile-menu')){
-      const userInitials=initials(authUser.name,authUser.email);
-      avatar.textContent=userInitials;
-      avatar.setAttribute('role','button');avatar.setAttribute('tabindex','0');avatar.title=authUser.name||authUser.email;
-      if(authUser.picture){avatar.style.backgroundImage=`url("${String(authUser.picture).replace(/"/g,'')}")`;avatar.classList.add('has-photo');}
-      const profile=document.createElement('div');profile.className='profile-menu';
-      profile.innerHTML=`<div class="profile-head">${authUser.picture?`<img class="profile-avatar profile-photo" src="${safe(authUser.picture)}" alt="">`:`<span class="profile-avatar">${safe(userInitials)}</span>`}<span><b>${safe(authUser.name||authUser.email)}</b><small>${safe(authUser.email)}</small></span></div><div class="profile-portal"><span>Current portal</span><b>${safe(selectedPortal.name||'ETB2B')}</b></div><a href="portal-select.html">Switch portal</a><a href="settings.html">Workspace settings</a><button type="button" id="profileSignOut">Sign out</button>`;
+      avatar.textContent='U';
+      avatar.setAttribute('role','button');
+      avatar.setAttribute('tabindex','0');
+      avatar.title='Signed in';
+      const profile=document.createElement('div');
+      profile.className='profile-menu';
+      profile.innerHTML=`<div class="profile-head"><span class="profile-avatar">U</span><span><b>Signed in</b><small>Prototype access</small></span></div><a href="portal-select.html">Switch portal</a><a href="settings.html">Workspace settings</a><button type="button" id="profileSignOut">Sign out</button>`;
       document.body.appendChild(profile);
       const toggleProfile=()=>profile.classList.toggle('open');
       avatar.addEventListener('click',toggleProfile);
       avatar.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleProfile();}});
-      profile.querySelector('#profileSignOut').addEventListener('click',()=>{localStorage.removeItem(AUTH_USER_KEY);localStorage.removeItem(PORTAL_KEY);location.href='login.html';});
+      profile.querySelector('#profileSignOut').addEventListener('click',()=>{
+        location.href='login.html';
+      });
       document.addEventListener('click',e=>{if(!avatar.contains(e.target)&&!profile.contains(e.target)) profile.classList.remove('open');});
     }
 
     const crumb=document.querySelector('.topbar .crumb');
     if(crumb && !document.querySelector('.topbar .portal-context')){
-      const portal=document.createElement('span');portal.className='portal-context';portal.textContent=selectedPortal.name||'ETB2B';
+      const portal=document.createElement('span');
+      portal.className='portal-context';
+      portal.textContent='ETB2B';
       crumb.insertAdjacentElement('afterend',portal);
     }
   }
