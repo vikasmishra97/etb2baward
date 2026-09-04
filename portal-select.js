@@ -1,4 +1,21 @@
 (function(){
+  const STORAGE_KEY='etb2bPrototypeSession';
+  const sessionRaw=localStorage.getItem(STORAGE_KEY);
+
+  // Portal selection is available only after the prototype email login.
+  if(!sessionRaw){
+    window.location.replace('login.html');
+    return;
+  }
+
+  let session={};
+  try{ session=JSON.parse(sessionRaw)||{}; }catch(e){}
+  const portalUser=document.getElementById('portalUser');
+  if(portalUser && session.email){
+    portalUser.textContent=session.email;
+    portalUser.title=session.email;
+  }
+
   const portals=[
     ['retail','Retail.com'],['auto','Auto'],['healthworld','Healthworld.com'],['telecom','Telecom.com'],['energyworld','Energyworld.com'],['cio','CIO.com'],
     ['realty','Realty.com'],['brandequity','BRAND EQUITY.com','brand'],['cfo','CFO.com'],['ciso','CISO.in'],['bfsi','BFSI'],['government','Government'],
@@ -17,6 +34,10 @@
     b.setAttribute('aria-label','Open '+name+' portal');
     b.innerHTML=`<span class="mini-et">ET</span><span class="portal-name"><span class="portal-wordmark">${name}</span><small>From The Economic Times</small></span>`;
     b.addEventListener('click',()=>{
+      // Keep the login session and remember the chosen portal for the prototype.
+      session.portal=id;
+      session.portalName=name;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
       window.location.href='index.html';
     });
     grid.appendChild(b);
