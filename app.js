@@ -218,11 +218,38 @@
     }
 
     const crumb=document.querySelector('.topbar .crumb');
-    if(crumb && !document.querySelector('.topbar .portal-context')){
-      const portal=document.createElement('span');
-      portal.className='portal-context';
-      portal.textContent='Login Portal · ETB2B';
-      crumb.insertAdjacentElement('afterend',portal);
+    if(crumb && !document.querySelector('.topbar .portal-switcher')){
+      const portalWrap=document.createElement('div');
+      portalWrap.className='portal-switcher';
+      portalWrap.innerHTML=`<button type="button" class="portal-switch-btn" aria-haspopup="true" aria-expanded="false"><span>Login Portal · </span><b>ETB2B</b><span class="portal-caret">▾</span></button><div class="portal-switch-menu"><div class="portal-switch-title">Switch portal</div><button type="button" data-portal="ET Retail">ET Retail</button><button type="button" data-portal="ET Auto">ET Auto</button><button type="button" data-portal="ET HealthWorld">ET HealthWorld</button><button type="button" data-portal="ET Telecom">ET Telecom</button><button type="button" data-portal="ET EnergyWorld">ET EnergyWorld</button><button type="button" data-portal="ET CIO">ET CIO</button><button type="button" data-portal="ET HRWorld">ET HRWorld</button><button type="button" data-portal="ET BFSI">ET BFSI</button><a href="portal-select.html">View all portals →</a></div>`;
+      crumb.insertAdjacentElement('afterend',portalWrap);
+      const switchBtn=portalWrap.querySelector('.portal-switch-btn');
+      const switchMenu=portalWrap.querySelector('.portal-switch-menu');
+      const closePortal=()=>{portalWrap.classList.remove('open');switchBtn.setAttribute('aria-expanded','false');};
+      switchBtn.addEventListener('click',e=>{e.stopPropagation();const open=portalWrap.classList.toggle('open');switchBtn.setAttribute('aria-expanded',String(open));});
+      switchMenu.addEventListener('click',e=>{const option=e.target.closest('[data-portal]');if(!option)return;switchBtn.querySelector('b').textContent=option.dataset.portal;closePortal();toast(`Switched to ${option.dataset.portal}`);});
+      document.addEventListener('click',e=>{if(!portalWrap.contains(e.target))closePortal();});
+    }
+
+    const copilotBtn=[...document.querySelectorAll('.topbar [data-toast]')].find(el=>(el.textContent||'').includes('Ask Award Copilot'));
+    if(copilotBtn && !document.querySelector('.copilot-drawer')){
+      copilotBtn.removeAttribute('data-toast');
+      copilotBtn.setAttribute('aria-expanded','false');
+      const overlay=document.createElement('div');
+      overlay.className='copilot-overlay';
+      const drawer=document.createElement('aside');
+      drawer.className='copilot-drawer';
+      drawer.setAttribute('aria-label','Award Copilot');
+      drawer.innerHTML=`<div class="copilot-head"><div><span class="copilot-kicker">AI ASSISTANT</span><h3>Ask Award Copilot</h3></div><button type="button" class="copilot-close" aria-label="Close Copilot">×</button></div><div class="copilot-body"><div class="copilot-welcome"><div class="copilot-spark">✦</div><div><b>How can I help?</b><p>This is a working prototype panel for your awards workspace.</p></div></div><div class="copilot-suggestions"><button type="button">Summarize current entries</button><button type="button">Suggest reminder campaign</button><button type="button">Review judging readiness</button></div><div class="copilot-response" id="copilotResponse">Choose a suggestion or type a question below.</div></div><form class="copilot-compose"><input type="text" placeholder="Ask about your award..." aria-label="Ask Award Copilot"><button type="submit">Send</button></form>`;
+      document.body.append(overlay,drawer);
+      const openCopilot=()=>{drawer.classList.add('open');overlay.classList.add('open');copilotBtn.setAttribute('aria-expanded','true');setTimeout(()=>drawer.querySelector('input')?.focus(),120);};
+      const closeCopilot=()=>{drawer.classList.remove('open');overlay.classList.remove('open');copilotBtn.setAttribute('aria-expanded','false');};
+      copilotBtn.addEventListener('click',openCopilot);
+      drawer.querySelector('.copilot-close').addEventListener('click',closeCopilot);
+      overlay.addEventListener('click',closeCopilot);
+      document.addEventListener('keydown',e=>{if(e.key==='Escape')closeCopilot();});
+      drawer.querySelectorAll('.copilot-suggestions button').forEach(btn=>btn.addEventListener('click',()=>{drawer.querySelector('#copilotResponse').textContent=`Prototype response: ${btn.textContent}. Connect the real AI/API later to generate live workspace insights.`;}));
+      drawer.querySelector('.copilot-compose').addEventListener('submit',e=>{e.preventDefault();const input=drawer.querySelector('input');const q=input.value.trim();if(!q)return;drawer.querySelector('#copilotResponse').textContent=`Prototype response for: “${q}”. The UI flow is working; a live AI service can be connected later.`;input.value='';});
     }
   }
 
