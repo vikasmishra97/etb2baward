@@ -193,14 +193,20 @@
     }
 
     const avatar=document.querySelector('.topbar .avatar');
+    if(avatar && !document.querySelector('.topbar-user-name')){
+      const adminName=document.createElement('span');
+      adminName.className='topbar-user-name';
+      adminName.textContent='Admin';
+      avatar.insertAdjacentElement('beforebegin',adminName);
+    }
     if(avatar && !document.querySelector('.profile-menu')){
-      avatar.textContent='U';
+      avatar.textContent='A';
       avatar.setAttribute('role','button');
       avatar.setAttribute('tabindex','0');
-      avatar.title='Signed in';
+      avatar.title='Admin';
       const profile=document.createElement('div');
       profile.className='profile-menu';
-      profile.innerHTML=`<div class="profile-head"><span class="profile-avatar">U</span><span><b>Signed in</b><small>Prototype access</small></span></div><a href="portal-select.html">Switch portal</a><a href="settings.html">Workspace settings</a><button type="button" id="profileSignOut">Sign out</button>`;
+      profile.innerHTML=`<div class="profile-head"><span class="profile-avatar">A</span><span><b>Admin</b><small>Admin ID login</small></span></div><a href="portal-select.html">Switch portal</a><a href="settings.html">Workspace settings</a><button type="button" id="profileSignOut">Sign out</button>`;
       document.body.appendChild(profile);
       const toggleProfile=()=>profile.classList.toggle('open');
       avatar.addEventListener('click',toggleProfile);
@@ -215,7 +221,7 @@
     if(crumb && !document.querySelector('.topbar .portal-context')){
       const portal=document.createElement('span');
       portal.className='portal-context';
-      portal.textContent='ETB2B';
+      portal.textContent='Login Portal · ETB2B';
       crumb.insertAdjacentElement('afterend',portal);
     }
   }
