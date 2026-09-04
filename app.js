@@ -1,4 +1,5 @@
 (function(){
+  const CURRENT_PAGE=(location.pathname.split('/').pop() || 'index.html').toLowerCase();
   const STORAGE_PREFIX='etb2b_';
 
   // Prototype flow only:
@@ -206,7 +207,7 @@
       avatar.title='Admin';
       const profile=document.createElement('div');
       profile.className='profile-menu';
-      profile.innerHTML=`<div class="profile-head"><span class="profile-avatar">A</span><span><b>Admin</b><small>Admin ID login</small></span></div><a href="portal-select.html">Switch portal</a><a href="settings.html">Workspace settings</a><button type="button" id="profileSignOut">Sign out</button>`;
+      profile.innerHTML=`<div class="profile-head"><span class="profile-avatar">A</span><span><b>Admin</b><small>Admin ID login</small></span></div><div class="profile-current-portal"><small>Current portal</small><b>ETB2B</b></div><a href="settings.html">Workspace settings</a><button type="button" id="profileSignOut">Sign out</button>`;
       document.body.appendChild(profile);
       const toggleProfile=()=>profile.classList.toggle('open');
       avatar.addEventListener('click',toggleProfile);
@@ -218,7 +219,7 @@
     }
 
     const crumb=document.querySelector('.topbar .crumb');
-    if(crumb && !document.querySelector('.topbar .portal-switcher')){
+    if(CURRENT_PAGE==='index.html' && crumb && !document.querySelector('.topbar .portal-switcher')){
       const portalWrap=document.createElement('div');
       portalWrap.className='portal-switcher';
       portalWrap.innerHTML=`<button type="button" class="portal-switch-btn" aria-haspopup="true" aria-expanded="false"><span>Login Portal · </span><b>ETB2B</b><span class="portal-caret">▾</span></button><div class="portal-switch-menu"><div class="portal-switch-title">Switch portal</div><button type="button" data-portal="ET Retail">ET Retail</button><button type="button" data-portal="ET Auto">ET Auto</button><button type="button" data-portal="ET HealthWorld">ET HealthWorld</button><button type="button" data-portal="ET Telecom">ET Telecom</button><button type="button" data-portal="ET EnergyWorld">ET EnergyWorld</button><button type="button" data-portal="ET CIO">ET CIO</button><button type="button" data-portal="ET HRWorld">ET HRWorld</button><button type="button" data-portal="ET BFSI">ET BFSI</button><a href="portal-select.html">View all portals →</a></div>`;
