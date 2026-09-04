@@ -1,0 +1,23 @@
+ETB2B EMAIL OTP LOGIN - FREE SUPABASE SETUP
+
+1. Create a free project at https://supabase.com
+2. In Supabase Dashboard open Project Settings -> API.
+3. Copy:
+   - Project URL
+   - anon / publishable key
+4. Open login.html and replace:
+   YOUR_SUPABASE_PROJECT_URL
+   YOUR_SUPABASE_ANON_KEY
+5. In Supabase Dashboard -> Authentication -> Providers -> Email:
+   - Keep Email enabled.
+   - Use OTP email authentication.
+6. Upload login.html, login.js and login.css to the same folder in GitHub.
+
+LOGIN JOURNEY
+@timesinternet.in email -> email OTP -> portal selection -> dashboard
+
+DOMAIN RULE
+The login screen only accepts @timesinternet.in email IDs.
+
+IMPORTANT SECURITY NOTE
+The client-side domain check protects the UI flow. If this application later accesses sensitive server-side data, enforce the same domain/role restriction in your server/API, Supabase RLS policies, or auth hook as well.

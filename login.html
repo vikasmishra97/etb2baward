@@ -4,10 +4,19 @@
   <link rel="icon" type="image/jpeg" href="et-logo.jpg">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="google-client-id" content="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com">
+
+  <!--
+    FREE EMAIL OTP AUTH (Supabase)
+    Replace the two values below from:
+    Supabase Dashboard -> Project Settings -> API
+  -->
+  <meta name="supabase-url" content="https://pnxoomrjekdwgcximmru.supabase.co">
+  <meta name="supabase-anon-key" content="sb_publishable_4cPrPhouoZUCPUusi5AMYg_NYXG_acS">
+  <meta name="allowed-email-domain" content="timesinternet.in">
+
   <title>ETB2B Awards · Sign in</title>
   <link rel="stylesheet" href="login.css">
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <main class="login-shell">
@@ -15,37 +24,70 @@
       <div class="oneworld-brand"><span class="et-box">ET</span><span>One<span class="world-dot">o</span>world</span></div>
       <div class="story-copy">
         <h1>Welcome to the Future of <span>B2B Excellence</span></h1>
-        <p>Join thousands of enterprises leveraging our platform for unparalleled B2B growth and networking success.</p>
+        <p>Sign in with your Times Internet work email to access your ETB2B Awards workspace.</p>
       </div>
       <div class="trust-grid">
-        <article><span class="trust-icon">⌾</span><b>Enterprise Security</b><small>Secure Google authentication with protected workspace access</small></article>
-        <article><span class="trust-icon">◎</span><b>50K+ Enterprises</b><small>Trusted by leading organizations across ET business verticals</small></article>
-        <article><span class="trust-icon">↗</span><b>98% Success Rate</b><small>Built for high-impact B2B programs and awards operations</small></article>
-        <article><span class="trust-icon">◇</span><b>Industry Leader</b><small>One workspace for awards, entries, judging and growth</small></article>
+        <article><span class="trust-icon">⌾</span><b>Secure OTP Sign-in</b><small>Password-free email verification for your workspace access</small></article>
+        <article><span class="trust-icon">◎</span><b>Company Access Only</b><small>Access is restricted to approved Times Internet email accounts</small></article>
+        <article><span class="trust-icon">↗</span><b>One Account</b><small>Use the same account across ET business verticals and awards programs</small></article>
+        <article><span class="trust-icon">◇</span><b>Portal Based Access</b><small>Select your ET vertical after verification and switch when required</small></article>
       </div>
       <div class="story-footer">ETB2B Awards Operating System</div>
     </section>
 
     <section class="login-panel">
-      <div class="login-card">
-        <div class="mobile-brand"><span class="et-box">ET</span><b>ETB2B Awards</b></div>
-        <h2>Welcome Back</h2>
-        <p class="login-intro">Sign in to access your enterprise dashboard and manage your B2B awards workspace.</p>
+      <div>
+        <div class="login-card">
+          <div class="mobile-brand"><span class="et-box">ET</span><b>ETB2B Awards</b></div>
 
-        <div class="google-wrap">
-          <div id="googleButton" class="google-button-host"></div>
-          <button id="googleFallback" class="google-fallback" type="button" hidden>
-            <span class="google-g">G</span><span>Login with Google</span>
-          </button>
-        </div>
-        <p id="loginError" class="login-error" hidden></p>
+          <div id="emailStep">
+            <span class="auth-kicker">SECURE WORKSPACE ACCESS</span>
+            <h2>Welcome Back</h2>
+            <p class="login-intro">Enter your <b>@timesinternet.in</b> email address. We will send a one-time verification code to your inbox.</p>
 
-        <div class="security-box">
-          <span class="security-shield">♢</span>
-          <div><b>Enterprise Security</b><p>Your account information is used only to identify your workspace session and selected ET portal.</p></div>
+            <form id="emailForm" novalidate>
+              <label class="field-label" for="workEmail">Work email</label>
+              <div class="email-field">
+                <span class="field-icon">@</span>
+                <input id="workEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@timesinternet.in" required>
+              </div>
+              <button id="sendOtpBtn" class="primary-auth-btn" type="submit">
+                <span>Send verification code</span><span class="btn-arrow">→</span>
+              </button>
+            </form>
+          </div>
+
+          <div id="otpStep" hidden>
+            <span class="auth-kicker">CHECK YOUR INBOX</span>
+            <h2>Verify your email</h2>
+            <p class="login-intro">We sent a 6-digit verification code to <b id="otpEmailLabel"></b>.</p>
+
+            <form id="otpForm" novalidate>
+              <label class="field-label" for="otpCode">Verification code</label>
+              <input id="otpCode" class="otp-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="000000" required>
+              <button id="verifyOtpBtn" class="primary-auth-btn" type="submit">
+                <span>Verify &amp; continue</span><span class="btn-arrow">→</span>
+              </button>
+            </form>
+
+            <div class="otp-actions">
+              <button id="resendOtpBtn" type="button" class="text-btn">Resend code</button>
+              <span class="otp-divider">•</span>
+              <button id="changeEmailBtn" type="button" class="text-btn">Change email</button>
+            </div>
+          </div>
+
+          <p id="loginError" class="login-error" hidden></p>
+          <p id="loginSuccess" class="login-success" hidden></p>
+
+          <div class="security-box">
+            <span class="security-shield">♢</span>
+            <div><b>Enterprise Security</b><p>Only <strong>@timesinternet.in</strong> email IDs are accepted. Your verified profile is used to identify your workspace session and selected ET portal.</p></div>
+          </div>
         </div>
+
+        <div class="support-strip">For any concern, connect to <a href="mailto:vikas.mishra@timesinternet.in">vikas.mishra@timesinternet.in</a></div>
       </div>
-      <div class="support-strip">For any concern, connect to <a href="mailto:vikas.mishra@timesinternet.in">vikas.mishra@timesinternet.in</a></div>
     </section>
   </main>
   <script src="login.js"></script>
