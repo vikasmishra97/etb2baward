@@ -4,19 +4,8 @@
   <link rel="icon" type="image/jpeg" href="et-logo.jpg">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-
-  <!--
-    FREE EMAIL OTP AUTH (Supabase)
-    Replace the two values below from:
-    Supabase Dashboard -> Project Settings -> API
-  -->
-  <meta name="supabase-url" content="https://pnxoomrjekdwgcximmru.supabase.co">
-  <meta name="supabase-anon-key" content="sb_publishable_4cPrPhouoZUCPUusi5AMYg_NYXG_acS">
-  <meta name="allowed-email-domain" content="timesinternet.in">
-
   <title>ETB2B Awards · Sign in</title>
   <link rel="stylesheet" href="login.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
   <main class="login-shell">
@@ -24,13 +13,13 @@
       <div class="oneworld-brand"><span class="et-box">ET</span><span>One<span class="world-dot">o</span>world</span></div>
       <div class="story-copy">
         <h1>Welcome to the Future of <span>B2B Excellence</span></h1>
-        <p>Sign in with your Times Internet work email to access your ETB2B Awards workspace.</p>
+        <p>Access your ETB2B Awards workspace and manage programs across Economic Times business verticals.</p>
       </div>
       <div class="trust-grid">
-        <article><span class="trust-icon">⌾</span><b>Secure OTP Sign-in</b><small>Password-free email verification for your workspace access</small></article>
-        <article><span class="trust-icon">◎</span><b>Company Access Only</b><small>Access is restricted to approved Times Internet email accounts</small></article>
-        <article><span class="trust-icon">↗</span><b>One Account</b><small>Use the same account across ET business verticals and awards programs</small></article>
-        <article><span class="trust-icon">◇</span><b>Portal Based Access</b><small>Select your ET vertical after verification and switch when required</small></article>
+        <article><span class="trust-icon">⌾</span><b>Simple Access</b><small>A clean prototype login journey for the backend workspace</small></article>
+        <article><span class="trust-icon">◎</span><b>Portal Selection</b><small>Choose the ET business vertical you want to work with</small></article>
+        <article><span class="trust-icon">↗</span><b>Fast Navigation</b><small>Continue directly from sign in to portal selection and dashboard</small></article>
+        <article><span class="trust-icon">◇</span><b>Prototype Flow</b><small>No credentials or profile information are stored</small></article>
       </div>
       <div class="story-footer">ETB2B Awards Operating System</div>
     </section>
@@ -40,49 +29,33 @@
         <div class="login-card">
           <div class="mobile-brand"><span class="et-box">ET</span><b>ETB2B Awards</b></div>
 
-          <div id="emailStep">
-            <span class="auth-kicker">SECURE WORKSPACE ACCESS</span>
-            <h2>Welcome Back</h2>
-            <p class="login-intro">Enter your <b>@timesinternet.in</b> email address. We will send a one-time verification code to your inbox.</p>
+          <span class="auth-kicker">BACKEND ACCESS</span>
+          <h2>Welcome Back</h2>
+          <p class="login-intro">Sign in to continue to your ETB2B Awards workspace.</p>
 
-            <form id="emailForm" novalidate>
-              <label class="field-label" for="workEmail">Work email</label>
-              <div class="email-field">
-                <span class="field-icon">@</span>
-                <input id="workEmail" type="email" inputmode="email" autocomplete="email" placeholder="name@timesinternet.in" required>
-              </div>
-              <button id="sendOtpBtn" class="primary-auth-btn" type="submit">
-                <span>Send verification code</span><span class="btn-arrow">→</span>
-              </button>
-            </form>
-          </div>
-
-          <div id="otpStep" hidden>
-            <span class="auth-kicker">CHECK YOUR INBOX</span>
-            <h2>Verify your email</h2>
-            <p class="login-intro">We sent a 6-digit verification code to <b id="otpEmailLabel"></b>.</p>
-
-            <form id="otpForm" novalidate>
-              <label class="field-label" for="otpCode">Verification code</label>
-              <input id="otpCode" class="otp-input" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="000000" required>
-              <button id="verifyOtpBtn" class="primary-auth-btn" type="submit">
-                <span>Verify &amp; continue</span><span class="btn-arrow">→</span>
-              </button>
-            </form>
-
-            <div class="otp-actions">
-              <button id="resendOtpBtn" type="button" class="text-btn">Resend code</button>
-              <span class="otp-divider">•</span>
-              <button id="changeEmailBtn" type="button" class="text-btn">Change email</button>
+          <form id="loginForm" novalidate>
+            <label class="field-label" for="userId">Email / User ID</label>
+            <div class="email-field">
+              <span class="field-icon">@</span>
+              <input id="userId" type="text" autocomplete="username" placeholder="Enter your email or user ID" required>
             </div>
-          </div>
+
+            <label class="field-label" for="password">Password</label>
+            <div class="email-field">
+              <span class="field-icon">●</span>
+              <input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+            </div>
+
+            <button id="loginBtn" class="primary-auth-btn" type="submit">
+              <span>Sign in &amp; continue</span><span class="btn-arrow">→</span>
+            </button>
+          </form>
 
           <p id="loginError" class="login-error" hidden></p>
-          <p id="loginSuccess" class="login-success" hidden></p>
 
           <div class="security-box">
             <span class="security-shield">♢</span>
-            <div><b>Enterprise Security</b><p>Only <strong>@timesinternet.in</strong> email IDs are accepted. Your verified profile is used to identify your workspace session and selected ET portal.</p></div>
+            <div><b>Prototype Login</b><p>This screen demonstrates the intended journey only. No login credentials or user information are stored.</p></div>
           </div>
         </div>
 
