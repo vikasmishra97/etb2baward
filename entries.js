@@ -31,6 +31,7 @@
   let currentTab='email';
   let composerChannel='email';
   let composerMode='schedule';
+  let savedEditorRange=null;
   let selectedAudience=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_selected_audience')||'null')}catch(e){return null}})();
   let automationSeq=5;
   const automations=[
@@ -139,6 +140,117 @@
     updateMessageHealth();
   }
 
+  function saveEditorSelection(){
+    const editor=$('emailRichEditor');
+    const sel=window.getSelection();
+    if(!editor||!sel||!sel.rangeCount)return;
+    const range=sel.getRangeAt(0);
+    const node=range.commonAncestorContainer.nodeType===1?range.commonAncestorContainer:range.commonAncestorContainer.parentNode;
+    if(node&&editor.contains(node)) savedEditorRange=range.cloneRange();
+  }
+
+  function restoreEditorSelection(){
+    const editor=$('emailRichEditor');
+    if(!editor)return false;
+    editor.focus();
+    if(!savedEditorRange)return false;
+    const sel=window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedEditorRange.cloneRange());
+    return true;
+  }
+
+  function runEditorCommand(command,value=null){
+    setEmailEditorMode('visual');
+    restoreEditorSelection();
+    try{document.execCommand('styleWithCSS',false,true);}catch(e){}
+    const ok=document.execCommand(command,false,value);
+    saveEditorSelection();
+    updateMessageHealth();
+    return ok;
+  }
+
+  function applyEditorColor(command,value){
+    setEmailEditorMode('visual');
+    restoreEditorSelection();
+    try{document.execCommand('styleWithCSS',false,true);}catch(e){}
+    let ok=document.execCommand(command,false,value);
+    if(!ok&&command==='hiliteColor') ok=document.execCommand('backColor',false,value);
+    saveEditorSelection();
+    updateMessageHealth();
+    return ok;
+  }
+
+  function escapeHtml(value){
+    return String(value||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  function updateCtaPreview(){
+    const text=$('ctaButtonText')?.value||'Complete your entry';
+    const size=$('ctaButtonSize')?.value||'medium';
+    const bg=$('ctaButtonBg')?.value||'#d71920';
+    const color=$('ctaButtonColor')?.value||'#ffffff';
+    const radius=$('ctaButtonRadius')?.value||'8';
+    const align=$('ctaButtonAlign')?.value||'center';
+    const styles={small:['9px 14px','12px'],medium:['12px 20px','14px'],large:['14px 26px','16px'],full:['13px 22px','14px']}[size]||['12px 20px','14px'];
+    const preview=$('ctaButtonPreview');
+    if(preview){
+      preview.textContent=text;
+      preview.style.background=bg;preview.style.color=color;preview.style.borderRadius=radius+'px';preview.style.padding=styles[0];preview.style.fontSize=styles[1];preview.style.display=size==='full'?'block':'inline-block';preview.style.width=size==='full'?'100%':'auto';preview.style.boxSizing='border-box';preview.style.textAlign='center';
+    }
+    if($('ctaButtonPreviewWrap')) $('ctaButtonPreviewWrap').style.textAlign=align;
+    if($('ctaButtonBgCode')) $('ctaButtonBgCode').textContent=bg;
+    if($('ctaButtonColorCode')) $('ctaButtonColorCode').textContent=color;
+  }
+
+  function openCtaBuilder(){
+    saveEditorSelection();
+    $('ctaBuilder').hidden=false;
+    updateCtaPreview();
+    setTimeout(()=>$('ctaButtonText')?.focus(),30);
+  }
+
+  function closeCtaBuilder(){if($('ctaBuilder'))$('ctaBuilder').hidden=true;}
+
+  function insertStyledCta(){
+    const text=($('ctaButtonText').value||'Complete your entry').trim();
+    const url=($('ctaButtonUrl').value||'').trim();
+    if(!text){toast('Add button text');return;}
+    if(!/^https?:\/\//i.test(url)){toast('Add a valid http or https button URL');$('ctaButtonUrl').focus();return;}
+    const size=$('ctaButtonSize').value,align=$('ctaButtonAlign').value,bg=$('ctaButtonBg').value,color=$('ctaButtonColor').value,radius=$('ctaButtonRadius').value;
+    const styles={small:['9px 14px','12px'],medium:['12px 20px','14px'],large:['14px 26px','16px'],full:['13px 22px','14px']}[size]||['12px 20px','14px'];
+    const display=size==='full'?'block':'inline-block';
+    const width=size==='full'?'width:100%;box-sizing:border-box;':'';
+    const html=`<div style="margin:20px 0;text-align:${align};"><a href="${escapeHtml(url)}" style="display:${display};${width}background:${bg};color:${color};text-decoration:none;font-weight:700;font-size:${styles[1]};line-height:1.2;padding:${styles[0]};border-radius:${radius}px;text-align:center;">${escapeHtml(text)}</a></div>`;
+    setEmailEditorMode('visual');restoreEditorSelection();document.execCommand('insertHTML',false,html);saveEditorSelection();closeCtaBuilder();updateMessageHealth();toast('CTA button inserted');
+  }
+
+  function runDemoAiPreflight(){
+    syncEmailEditorToMessage();
+    const html=$('composerMessage').value||'';
+    const text=stripHtml(html);
+    const subject=($('composerSubject').value||'').trim();
+    const doc=document.createElement('div');doc.innerHTML=html;
+    const links=Array.from(doc.querySelectorAll('a[href]'));
+    const images=Array.from(doc.querySelectorAll('img'));
+    const checks=[];
+    let score=42;
+    const subjectOk=subject.length>=25&&subject.length<=70;
+    checks.push({ok:subjectOk,label:subjectOk?'Subject length looks strong':'Keep the subject between 25 and 70 characters'});if(subjectOk)score+=16;
+    const personal=/{{name}}|{{company}}/.test(html);
+    checks.push({ok:personal,label:personal?'Personalisation variable detected':'Add {{name}} or {{company}} personalisation'});if(personal)score+=12;
+    const ctaOk=links.length>0;
+    checks.push({ok:ctaOk,label:ctaOk?'CTA/link detected':'Add at least one clear CTA or link'});if(ctaOk)score+=12;
+    const bodyOk=text.length>=80;
+    checks.push({ok:bodyOk,label:bodyOk?'Body has enough context':'Add more context so the reminder is clear'});if(bodyOk)score+=10;
+    const imagesOk=images.every(img=>/^https:\/\//i.test(img.getAttribute('src')||''));
+    checks.push({ok:imagesOk,label:images.length?(imagesOk?'Images use HTTPS URLs':'Use public HTTPS URLs for every image'):'No image delivery risks detected'});if(imagesOk)score+=8;
+    score=Math.min(100,score);
+    $('demoAiScore').textContent=String(score);
+    $('demoAiChecks').innerHTML=checks.map(c=>`<span class="${c.ok?'ok':'warn'}"><i>${c.ok?'OK':'!'}</i>${escapeHtml(c.label)}</span>`).join('');
+    return score;
+  }
+
   function configureComposer(channel,item,mode='schedule'){
     composerChannel=channel;composerMode=mode;
     const label={email:'Email',whatsapp:'WhatsApp',sms:'SMS'}[channel];
@@ -197,6 +309,7 @@
     const content=$('composerMessage').value||'<p style="color:#7c8395">Your email body is empty. Return to the editor and add content before scheduling.</p>';
     const frame=$('demoEmailFrame');
     frame.srcdoc=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;padding:0;background:#f3f5f8;font-family:Arial,Helvetica,sans-serif;color:#2d3345}body{padding:24px 12px}.email-shell{max-width:620px;margin:0 auto;background:#fff;border:1px solid #e5e8ef;border-radius:12px;box-shadow:0 8px 30px rgba(28,34,54,.08);overflow:hidden}.email-body{padding:28px;line-height:1.6;font-size:15px}.email-body img{max-width:100%;height:auto}.email-body a{word-break:break-word}@media(max-width:520px){body{padding:8px}.email-body{padding:20px 16px;font-size:14px}.email-shell{border-radius:8px}}</style></head><body><div class="email-shell"><div class="email-body">${content}</div></div></body></html>`;
+    runDemoAiPreflight();
     const modal=$('reminderDemoModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
     $$('[data-demo-device]').forEach(b=>b.classList.toggle('active',b.dataset.demoDevice==='desktop'));
     $('demoStage').classList.remove('mobile');
@@ -304,26 +417,34 @@
   $('emailRichEditor').addEventListener('input',updateMessageHealth);
   $('emailHtmlSource').addEventListener('input',()=>{$('composerMessage').value=$('emailHtmlSource').value;updateMessageHealth();});
   $$('[data-editor-mode]').forEach(btn=>btn.addEventListener('click',()=>setEmailEditorMode(btn.dataset.editorMode)));
-  $$('[data-editor-command]').forEach(btn=>btn.addEventListener('click',()=>{setEmailEditorMode('visual');$('emailRichEditor').focus();document.execCommand(btn.dataset.editorCommand,false,null);updateMessageHealth();}));
-  $$('[data-insert-variable]').forEach(btn=>btn.addEventListener('click',()=>{setEmailEditorMode('visual');$('emailRichEditor').focus();document.execCommand('insertText',false,btn.dataset.insertVariable);updateMessageHealth();}));
+  $('emailRichEditor').addEventListener('mouseup',saveEditorSelection);
+  $('emailRichEditor').addEventListener('keyup',saveEditorSelection);
+  $('emailRichEditor').addEventListener('focus',saveEditorSelection);
+  document.addEventListener('selectionchange',()=>{const sel=window.getSelection();if(sel&&sel.rangeCount&&$('emailRichEditor').contains(sel.anchorNode))saveEditorSelection();});
+  $$('.rh-editor-toolbar button[data-editor-command], .rh-editor-toolbar button[data-editor-action], [data-insert-variable]').forEach(btn=>btn.addEventListener('mousedown',e=>{saveEditorSelection();e.preventDefault();}));
+  $$('[data-editor-command]').forEach(btn=>btn.addEventListener('click',()=>runEditorCommand(btn.dataset.editorCommand)));
+  $$('[data-insert-variable]').forEach(btn=>btn.addEventListener('click',()=>{setEmailEditorMode('visual');restoreEditorSelection();document.execCommand('insertText',false,btn.dataset.insertVariable);saveEditorSelection();updateMessageHealth();}));
   $$('[data-editor-action]').forEach(btn=>btn.addEventListener('click',()=>{
-    setEmailEditorMode('visual');$('emailRichEditor').focus();
-    if(btn.dataset.editorAction==='link'){const url=prompt('Paste the destination URL');if(url)document.execCommand('createLink',false,url);}
-    if(btn.dataset.editorAction==='image'){const url=prompt('Paste a public HTTPS image URL');if(url)document.execCommand('insertImage',false,url);}
-    if(btn.dataset.editorAction==='heading') document.execCommand('formatBlock',false,'h2');
-    if(btn.dataset.editorAction==='button'){
-      const text=prompt('Button text','Complete your entry');
-      if(!text)return;
-      const url=prompt('Button destination URL','https://');
-      if(!url)return;
-      const safeText=text.replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
-      const safeUrl=url.replace(/"/g,'&quot;');
-      document.execCommand('insertHTML',false,`<p style="margin:18px 0"><a href="${safeUrl}" style="display:inline-block;background:#d71920;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:7px">${safeText}</a></p>`);
-    }
-    updateMessageHealth();
+    const action=btn.dataset.editorAction;
+    if(action==='button'){openCtaBuilder();return;}
+    setEmailEditorMode('visual');restoreEditorSelection();
+    if(action==='link'){const url=prompt('Paste the destination URL');if(url&&/^https?:\/\//i.test(url))document.execCommand('createLink',false,url);else if(url)toast('Use a valid http or https URL');}
+    if(action==='image'){const url=prompt('Paste a public HTTPS image URL');if(url&&/^https:\/\//i.test(url))document.execCommand('insertImage',false,url);else if(url)toast('Images should use a public HTTPS URL');}
+    if(action==='heading') document.execCommand('formatBlock',false,'h2');
+    if(action==='divider') document.execCommand('insertHorizontalRule',false,null);
+    saveEditorSelection();updateMessageHealth();
   }));
-  $('editorTextColor')?.addEventListener('input',e=>{setEmailEditorMode('visual');$('emailRichEditor').focus();document.execCommand('foreColor',false,e.target.value);updateMessageHealth();});
-  $('editorHighlightColor')?.addEventListener('input',e=>{setEmailEditorMode('visual');$('emailRichEditor').focus();document.execCommand('hiliteColor',false,e.target.value);updateMessageHealth();});
+  $('editorFontSize')?.addEventListener('change',e=>{if(e.target.value){runEditorCommand('fontSize',e.target.value);e.target.value='';}});
+  ['editorTextColor','editorHighlightColor'].forEach(id=>{
+    const input=$(id);if(!input)return;
+    input.addEventListener('mousedown',saveEditorSelection);
+    input.addEventListener('click',saveEditorSelection);
+  });
+  $('editorTextColor')?.addEventListener('input',e=>{$('editorTextColorSwatch').style.background=e.target.value;applyEditorColor('foreColor',e.target.value);});
+  $('editorHighlightColor')?.addEventListener('input',e=>{$('editorHighlightColorSwatch').style.background=e.target.value;applyEditorColor('hiliteColor',e.target.value);});
+  ['ctaButtonText','ctaButtonSize','ctaButtonAlign','ctaButtonBg','ctaButtonColor','ctaButtonRadius'].forEach(id=>$(id)?.addEventListener(id.includes('Text')?'input':'change',updateCtaPreview));
+  $('ctaButtonBg')?.addEventListener('input',updateCtaPreview);$('ctaButtonColor')?.addEventListener('input',updateCtaPreview);
+  $('closeCtaBuilder')?.addEventListener('click',closeCtaBuilder);$('cancelCtaBuilder')?.addEventListener('click',closeCtaBuilder);$('insertCtaButton')?.addEventListener('click',insertStyledCta);
   $('composerTemplate').addEventListener('change',()=>{
     const custom=$('composerTemplate').value==='Custom template';$('customTemplateNameWrap').hidden=!custom;
     if(custom)setTimeout(()=>$('customTemplateName').focus(),60);
@@ -335,7 +456,27 @@
   $('backToEditor').addEventListener('click',closeDemoPreview);
   document.querySelector('[data-close-demo]')?.addEventListener('click',closeDemoPreview);
   $$('[data-demo-device]').forEach(btn=>btn.addEventListener('click',()=>{const mobile=btn.dataset.demoDevice==='mobile';$('demoStage').classList.toggle('mobile',mobile);$$('[data-demo-device]').forEach(b=>b.classList.toggle('active',b===btn));}));
-  $('sendDemoTest').addEventListener('click',()=>toast('Demo email queued to your test inbox'));
+  $('runDemoAiCheck')?.addEventListener('click',()=>{const score=runDemoAiPreflight();toast(`AI preflight score: ${score}/100`);});
+  $('sendDemoTest').addEventListener('click',async()=>{
+    const email=($('testEmailAddress').value||'').trim();
+    const status=$('testEmailStatus');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){status.textContent='Enter a valid email address.';status.classList.add('error');$('testEmailAddress').focus();return;}
+    status.classList.remove('error');
+    syncEmailEditorToMessage();
+    const payload={to:email,from:$('composerSender').value,subject:$('composerSubject').value,html:$('composerMessage').value,audience:selectedAudienceLabel()};
+    const button=$('sendDemoTest');const original=button.textContent;button.disabled=true;button.textContent='Sending...';
+    try{
+      if(window.ETB2B_REMINDER_API&&typeof window.ETB2B_REMINDER_API.sendTestEmail==='function'){
+        await window.ETB2B_REMINDER_API.sendTestEmail(payload);
+        status.textContent=`Demo sent to ${email}.`;toast('Demo email sent');
+      }else{
+        window.dispatchEvent(new CustomEvent('etb2b:send-test-email',{detail:payload}));
+        status.textContent='Preview request is ready. Connect ETB2B_REMINDER_API.sendTestEmail to your mail backend to deliver it.';
+        toast('Test email payload prepared');
+      }
+    }catch(err){status.textContent='The mail service could not send this demo. Check the backend connection and try again.';status.classList.add('error');toast('Demo send failed');}
+    finally{button.disabled=false;button.textContent=original;}
+  });
   $('saveReminderDraft').addEventListener('click',()=>{closeDrawers();toast('Reminder saved as draft');});
   $('scheduleReminder').addEventListener('click',()=>{if(composerChannel==='email')syncEmailEditorToMessage();const target=$('composerAudience').value==='selected'&&selectedAudience?(selectedAudience.segmentName||'selected audience'):$('composerAudience').value;closeDrawers();toast(`${composerMode==='mailer'?'Mailer':composerChannel==='whatsapp'?'WhatsApp':composerChannel.toUpperCase()} scheduled for ${target}`);});
 

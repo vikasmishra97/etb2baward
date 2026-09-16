@@ -210,38 +210,62 @@
       <div class="rh-email-editor">
         <div class="rh-editor-toolbar" aria-label="Email formatting toolbar">
           <div class="rh-editor-toolgroup">
-            <button type="button" title="Undo" data-editor-command="undo">↶</button>
-            <button type="button" title="Redo" data-editor-command="redo">↷</button>
+            <button type="button" title="Undo" data-editor-command="undo">Undo</button>
+            <button type="button" title="Redo" data-editor-command="redo">Redo</button>
           </div>
           <span class="rh-editor-sep"></span>
           <div class="rh-editor-toolgroup">
             <button type="button" title="Bold" data-editor-command="bold"><b>B</b></button>
             <button type="button" title="Italic" data-editor-command="italic"><i>I</i></button>
             <button type="button" title="Underline" data-editor-command="underline"><u>U</u></button>
+            <button type="button" title="Strikethrough" data-editor-command="strikeThrough"><s>S</s></button>
           </div>
           <span class="rh-editor-sep"></span>
           <div class="rh-editor-toolgroup">
             <button type="button" title="Heading" data-editor-action="heading">H2</button>
-            <button type="button" title="Bulleted list" data-editor-command="insertUnorderedList">• List</button>
+            <select id="editorFontSize" class="rh-editor-select" aria-label="Font size" title="Font size">
+              <option value="">Size</option>
+              <option value="2">Small</option>
+              <option value="3">Normal</option>
+              <option value="4">Large</option>
+              <option value="5">XL</option>
+            </select>
+            <button type="button" title="Bulleted list" data-editor-command="insertUnorderedList">List</button>
             <button type="button" title="Numbered list" data-editor-command="insertOrderedList">1. List</button>
           </div>
           <span class="rh-editor-sep"></span>
           <div class="rh-editor-toolgroup">
-            <button type="button" title="Align left" data-editor-command="justifyLeft">≡</button>
-            <button type="button" title="Align center" data-editor-command="justifyCenter">≡</button>
-            <button type="button" title="Align right" data-editor-command="justifyRight">≡</button>
+            <button type="button" title="Align left" data-editor-command="justifyLeft">Left</button>
+            <button type="button" title="Align center" data-editor-command="justifyCenter">Center</button>
+            <button type="button" title="Align right" data-editor-command="justifyRight">Right</button>
           </div>
           <span class="rh-editor-sep"></span>
           <div class="rh-editor-toolgroup rh-color-tools">
-            <label class="rh-color-tool" title="Text colour"><span>A</span><input id="editorTextColor" type="color" value="#333a4b" aria-label="Text colour"></label>
-            <label class="rh-color-tool" title="Highlight colour"><span>▰</span><input id="editorHighlightColor" type="color" value="#fff1b8" aria-label="Highlight colour"></label>
+            <label class="rh-color-tool" title="Text colour"><span>Text</span><i id="editorTextColorSwatch" style="background:#333a4b"></i><input id="editorTextColor" type="color" value="#333a4b" aria-label="Text colour"></label>
+            <label class="rh-color-tool" title="Background colour"><span>BG</span><i id="editorHighlightColorSwatch" style="background:#fff1b8"></i><input id="editorHighlightColor" type="color" value="#fff1b8" aria-label="Background colour"></label>
           </div>
           <span class="rh-editor-sep"></span>
           <div class="rh-editor-toolgroup">
-            <button type="button" title="Insert link" data-editor-action="link">🔗</button>
-            <button type="button" title="Insert image" data-editor-action="image">▧</button>
+            <button type="button" title="Insert link" data-editor-action="link">Link</button>
+            <button type="button" title="Insert image" data-editor-action="image">Image</button>
+            <button type="button" title="Insert divider" data-editor-action="divider">Divider</button>
+            <button type="button" title="Clear formatting" data-editor-command="removeFormat">Clear</button>
             <button type="button" class="rh-editor-cta-tool" title="Insert CTA button" data-editor-action="button">+ Button</button>
           </div>
+        </div>
+        <div class="rh-cta-builder" id="ctaBuilder" hidden>
+          <div class="rh-cta-builder-head"><div><b>CTA button</b><span>Style an email-safe button before inserting it.</span></div><button type="button" id="closeCtaBuilder" aria-label="Close button builder">x</button></div>
+          <div class="rh-cta-builder-grid">
+            <label class="wide"><span>Button text</span><input id="ctaButtonText" type="text" value="Complete your entry"></label>
+            <label class="wide"><span>Destination URL</span><input id="ctaButtonUrl" type="url" value="https://" placeholder="https://"></label>
+            <label><span>Size</span><select id="ctaButtonSize"><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option><option value="full">Full width</option></select></label>
+            <label><span>Alignment</span><select id="ctaButtonAlign"><option value="left">Left</option><option value="center" selected>Center</option><option value="right">Right</option></select></label>
+            <label><span>Button colour</span><div class="rh-cta-color"><input id="ctaButtonBg" type="color" value="#d71920"><code id="ctaButtonBgCode">#d71920</code></div></label>
+            <label><span>Text colour</span><div class="rh-cta-color"><input id="ctaButtonColor" type="color" value="#ffffff"><code id="ctaButtonColorCode">#ffffff</code></div></label>
+            <label><span>Corner style</span><select id="ctaButtonRadius"><option value="4">Square</option><option value="8" selected>Rounded</option><option value="18">Pill</option></select></label>
+          </div>
+          <div class="rh-cta-preview"><span>Preview</span><div id="ctaButtonPreviewWrap"><a id="ctaButtonPreview" href="#" onclick="return false">Complete your entry</a></div></div>
+          <div class="rh-cta-builder-actions"><button type="button" class="btn secondary" id="cancelCtaBuilder">Cancel</button><button type="button" class="btn primary" id="insertCtaButton">Insert button</button></div>
         </div>
         <div class="rh-editor-variablebar"><span>Personalise:</span><button type="button" data-insert-variable="{{name}}">{{name}}</button><button type="button" data-insert-variable="{{entry_link}}">{{entry_link}}</button><button type="button" data-insert-variable="{{company}}">{{company}}</button></div>
         <div id="emailRichEditor" class="rh-editor-canvas" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Email body content"></div>
@@ -285,12 +309,24 @@
       <div><span>Audience</span><strong id="demoAudience">All Registered Users</strong></div>
       <div class="wide"><span>Subject</span><strong id="demoSubject">—</strong></div>
     </div>
+    <div class="rh-demo-ai" id="demoAiPanel">
+      <div class="rh-demo-ai-top"><div class="rh-demo-ai-title"><span class="rh-ai-glyph">AI</span><div><b>AI preflight check</b><p>Review subject, personalisation, CTA and mobile readiness before sending.</p></div></div><div class="rh-demo-ai-score"><strong id="demoAiScore">--</strong><span>/100</span></div></div>
+      <div class="rh-demo-ai-checks" id="demoAiChecks"></div>
+      <button type="button" class="rh-ai-review-btn" id="runDemoAiCheck">Run AI check</button>
+    </div>
     <div class="rh-demo-toolbar">
       <span>Preview</span>
       <div class="rh-device-toggle" role="group" aria-label="Preview size"><button type="button" class="active" data-demo-device="desktop">Desktop</button><button type="button" data-demo-device="mobile">Mobile</button></div>
     </div>
     <div class="rh-demo-stage" id="demoStage"><iframe id="demoEmailFrame" title="Email demo preview"></iframe></div>
-    <div class="rh-demo-foot"><button class="btn secondary" type="button" id="backToEditor">Back to editor</button><button class="btn primary" type="button" id="sendDemoTest">Send test to me</button></div>
+    <div class="rh-demo-foot">
+      <div class="rh-demo-send-test">
+        <label for="testEmailAddress">Send demo email</label>
+        <div><input id="testEmailAddress" type="email" placeholder="name@company.com" autocomplete="email"><button class="btn primary" type="button" id="sendDemoTest">Send demo</button></div>
+        <small id="testEmailStatus">Enter an email address to send this preview through your connected mail API.</small>
+      </div>
+      <button class="btn secondary" type="button" id="backToEditor">Back to editor</button>
+    </div>
   </div>
 </div>
 
