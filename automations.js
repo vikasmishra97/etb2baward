@@ -41,6 +41,7 @@
   let settings=(()=>{try{return JSON.parse(localStorage.getItem(settingsKey)||'null')}catch(e){return null}})()||{frequencyGuard:true,quietHours:true};
   let activeFilter='all';
   let searchTerm='';
+  let channelFilter='all';
   let activeAutomationId=null;
   let libraryFilter='all';
 
@@ -49,12 +50,20 @@
   function formatNumber(n){return new Intl.NumberFormat('en-IN').format(n||0)}
   function formatMoneyShort(n){if(!n)return'₹0';if(n>=100000)return'₹'+(n/100000).toFixed(n%100000?2:0)+'L';if(n>=1000)return'₹'+(n/1000).toFixed(n%1000?1:0)+'K';return'₹'+formatNumber(n)}
   function iconFor(a){const recipe=recipes.find(r=>r.id===a.recipeId);return recipe?.icon||'⚡'}
+  function channelType(label=''){const v=String(label).toLowerCase();if(v.includes('whatsapp'))return'whatsapp';if(v.includes('sms'))return'sms';return'email'}
+  function channelIcon(label=''){const t=channelType(label);return t==='whatsapp'?'W':t==='sms'?'SMS':'✉'}
 
   function updateStats(){
     const active=automations.filter(a=>a.status==='active').length;
     const processed=automations.reduce((s,a)=>s+(a.processed||0),0);
     const converted=automations.reduce((s,a)=>s+(a.converted||0),0);
     const revenue=automations.reduce((s,a)=>s+(a.revenue||0),0);
+    const total=Math.max(automations.length,1);
+    const withStops=automations.filter(a=>a.goal&&String(a.goal).trim()).length;
+    const withQuiet=automations.filter(a=>a.quiet!==false).length;
+    const withMessages=automations.filter(a=>(a.steps||[]).some(s=>['email','whatsapp','sms'].includes(s[0]))).length;
+    const pct=n=>Math.round((n/total)*100);
+    const health=Math.max(0,Math.min(100,Math.round(pct(withStops)*.35+pct(withQuiet)*.25+pct(withMessages)*.25+(settings.frequencyGuard?15:0))));
     $('activeAutomationCount').textContent=active;
     $('processedCount').textContent=formatNumber(processed);
     $('conversionCount').textContent=formatNumber(converted);
@@ -63,6 +72,21 @@
     $('filterActiveCount').textContent=active;
     $('filterPausedCount').textContent=automations.filter(a=>a.status==='paused').length;
     $('filterAttentionCount').textContent=automations.filter(a=>a.attention).length;
+    if($('automationHealthScore')){
+      $('automationHealthScore').textContent=health;
+      $('healthStopText').textContent=`${withStops} / ${automations.length}`;$('healthStopBar').style.width=pct(withStops)+'%';
+      $('healthQuietText').textContent=`${withQuiet} / ${automations.length}`;$('healthQuietBar').style.width=pct(withQuiet)+'%';
+      $('healthTemplateText').textContent=`${withMessages} / ${automations.length}`;$('healthTemplateBar').style.width=pct(withMessages)+'%';
+      const badge=$('healthBadge');
+      if(health>=85){badge.textContent='Healthy';badge.className='badge green';$('automationHealthTitle').textContent='Strong setup';$('automationHealthCopy').textContent='Your automation safeguards and message steps are in good shape.'}
+      else if(health>=65){badge.textContent='Review';badge.className='badge amber';$('automationHealthTitle').textContent='A few improvements';$('automationHealthCopy').textContent='Review safeguards before scaling automated outreach.'}
+      else{badge.textContent='Needs attention';badge.className='badge red';$('automationHealthTitle').textContent='Configuration needed';$('automationHealthCopy').textContent='Some automations are missing important safety or message settings.'}
+      const quietMissing=automations.find(a=>a.quiet===false);
+      const missingStop=automations.find(a=>!a.goal);
+      $('healthNote').textContent=quietMissing?`⚠ ${quietMissing.name} has quiet hours disabled.`:missingStop?`⚠ ${missingStop.name} is missing a goal-based stop rule.`:'✓ All key safeguards look good.';
+    }
+    const payment=automations.find(a=>a.recipeId==='payment-recovery');
+    if($('enablePaymentRecipe')) $('enablePaymentRecipe').textContent=payment?.status==='active'?'View recovery flow':'Enable recovery flow';
   }
 
   function renderRecommended(){
@@ -75,22 +99,28 @@
 
   function filteredAutomations(){return automations.filter(a=>{
     const matchesFilter=activeFilter==='all'||(activeFilter==='attention'?a.attention:a.status===activeFilter);
-    const hay=(a.name+' '+a.description+' '+a.audience+' '+a.trigger).toLowerCase();
-    return matchesFilter&&hay.includes(searchTerm.toLowerCase());
+    const matchesChannel=channelFilter==='all'||String(a.channels||'').toLowerCase().includes(channelFilter);
+    const hay=(a.name+' '+a.description+' '+a.audience+' '+a.trigger+' '+a.channels+' '+a.goal).toLowerCase();
+    return matchesFilter&&matchesChannel&&hay.includes(searchTerm.toLowerCase());
   })}
 
   function renderAutomations(){
     const rows=filteredAutomations();
     $('automationList').innerHTML=rows.length?rows.map(a=>{
       const rate=a.processed?Math.round((a.converted/a.processed)*100):0;
-      return `<div class="at-auto-row" data-automation-id="${a.id}">
-        <div class="at-auto-title"><span class="at-auto-icon">${iconFor(a)}</span><div><b>${a.name}</b><small>${a.description}</small></div></div>
-        <div class="at-auto-meta"><label>Trigger</label><b>${a.trigger}</b></div>
-        <div class="at-auto-meta"><label>Audience</label><b>${a.audience}</b></div>
-        <div class="at-auto-result"><b>${a.converted||0}</b><small>${a.processed?rate+'% goal rate':'No runs yet'}</small></div>
-        <div class="at-auto-status"><button class="at-toggle ${a.status==='active'?'on':''}" aria-label="Toggle ${a.name}" data-toggle-id="${a.id}"></button><button class="at-more-btn" data-open-id="${a.id}">•••</button></div>
-      </div>`
-    }).join(''):'<div class="at-empty">No automations match this view.</div>';
+      const statusLabel=a.status==='active'?'Active':'Paused';
+      const channelPills=String(a.channels||'Email').split('+').map(x=>x.trim()).filter(Boolean).map(ch=>`<span class="at-channel-chip ${channelType(ch)}">${channelIcon(ch)} ${ch}</span>`).join('');
+      return `<article class="at-auto-row ${a.attention?'needs-attention':''}" data-automation-id="${a.id}">
+        <div class="at-auto-primary">
+          <span class="at-auto-icon">${iconFor(a)}</span>
+          <div class="at-auto-copy"><div class="at-auto-name-line"><b>${a.name}</b>${a.attention?'<span class="at-attention-pill">Needs attention</span>':''}</div><small>${a.description}</small><div class="at-auto-chips">${channelPills}<span class="at-goal-chip">Goal: ${a.goal}</span></div></div>
+        </div>
+        <div class="at-auto-journey"><small>Trigger</small><b>${a.trigger}</b><span>${a.audience}</span></div>
+        <div class="at-auto-metrics"><div><small>Processed</small><b>${formatNumber(a.processed||0)}</b></div><div><small>Goal rate</small><b>${a.processed?rate+'%':'—'}</b></div><div><small>Last run</small><b>${a.lastRun||'Not run yet'}</b></div></div>
+        <div class="at-auto-actions"><span class="at-status-pill ${a.status}"><i></i>${statusLabel}</span><button class="at-toggle ${a.status==='active'?'on':''}" aria-label="Toggle ${a.name}" data-toggle-id="${a.id}"></button><button class="btn secondary at-manage-btn" data-open-id="${a.id}">Manage</button></div>
+      </article>`
+    }).join(''):'<div class="at-empty at-empty-state"><span>⌕</span><b>No automations found</b><p>Try another search or clear the filters.</p><button type="button" id="emptyResetFilters" class="btn secondary">Clear filters</button></div>';
+    const emptyReset=$('emptyResetFilters');if(emptyReset)emptyReset.addEventListener('click',resetFilters);
     updateStats();renderRecommended();
   }
 
@@ -108,8 +138,8 @@
     $('drawerSummary').innerHTML=`<div><small>TRIGGER</small><b>${a.trigger}</b></div><div><small>AUDIENCE</small><b>${a.audience}</b></div><div><small>GOAL</small><b>${a.goal}</b></div>`;
     $('drawerFlow').innerHTML=(a.steps||[]).map((s,i)=>{
       const type=s[0],label=s[1],detail=s[2];let icon='⚡';
-      if(type==='email')icon='✉'; else if(type==='whatsapp')icon='W'; else if(type==='wait')icon='◷'; else if(type==='goal')icon='✓'; else if(type==='action')icon='✦';
-      const className=['email','whatsapp','wait','goal'].includes(type)?type:'';
+      if(type==='email')icon='✉'; else if(type==='whatsapp')icon='W'; else if(type==='sms')icon='SMS'; else if(type==='wait')icon='◷'; else if(type==='goal')icon='✓'; else if(type==='action')icon='✦';
+      const className=['email','whatsapp','sms','wait','goal'].includes(type)?type:'';
       return `<div class="at-flow-node"><span class="at-flow-icon ${className}">${icon}</span><div><b>${label}</b><p>${detail}</p><small>${type==='goal'?'Person exits the flow immediately':'Step '+(i+1)}</small></div>${type==='goal'?'<span class="badge green">STOP RULE</span>':''}</div>`
     }).join('');
     const rate=a.processed?Math.round((a.converted/a.processed)*100):0;
@@ -137,8 +167,11 @@
     $('libraryGrid').innerHTML=list.map(r=>{const existing=automations.find(a=>a.recipeId===r.id);const on=existing?.status==='active';return `<article class="at-library-card" data-category="${r.category}"><div><span class="at-recipe-icon">${r.icon}</span><div><h3>${r.name}</h3><p>${r.description}</p></div></div><div class="at-library-meta"><span>${r.trigger}</span><span>${r.channels}</span><span>Stop: ${r.goal}</span></div><button class="btn ${on?'secondary':'primary'}" data-library-enable="${r.id}">${on?'View automation':'Use this recipe'}</button></article>`}).join('');
   }
 
+  function resetFilters(){activeFilter='all';searchTerm='';channelFilter='all';$('automationSearch').value='';$('automationChannelFilter').value='all';[...$('automationFilters').querySelectorAll('button')].forEach(x=>x.classList.toggle('active',x.dataset.filter==='all'));renderAutomations()}
   $('automationFilters').addEventListener('click',e=>{const b=e.target.closest('button[data-filter]');if(!b)return;activeFilter=b.dataset.filter;[...$('automationFilters').querySelectorAll('button')].forEach(x=>x.classList.toggle('active',x===b));renderAutomations()});
   $('automationSearch').addEventListener('input',e=>{searchTerm=e.target.value.trim();renderAutomations()});
+  $('automationChannelFilter').addEventListener('change',e=>{channelFilter=e.target.value;renderAutomations()});
+  $('resetAutomationFilters').addEventListener('click',resetFilters);
   $('automationList').addEventListener('click',e=>{
     const toggle=e.target.closest('[data-toggle-id]');if(toggle){e.stopPropagation();const a=automations.find(x=>x.id===toggle.dataset.toggleId);if(!a)return;a.status=a.status==='active'?'paused':'active';persist();renderAutomations();toast(`${a.name} ${a.status==='active'?'turned on':'paused'}`);return}
     const open=e.target.closest('[data-open-id]');if(open){e.stopPropagation();openDrawer(open.dataset.openId);return}
@@ -146,52 +179,71 @@
   });
 
   $('recommendedRecipes').addEventListener('click',e=>{const b=e.target.closest('[data-recipe-action]');if(!b)return;const existing=automations.find(a=>a.recipeId===b.dataset.recipeAction);if(existing?.status==='active')openDrawer(existing.id);else{const a=enableRecipe(b.dataset.recipeAction);if(a)setTimeout(()=>openDrawer(a.id),150)}});
-  $('enablePaymentRecipe').addEventListener('click',()=>{const a=enableRecipe('payment-recovery');if(a)setTimeout(()=>openDrawer(a.id),160)});
+  $('enablePaymentRecipe').addEventListener('click',()=>{const existing=automations.find(a=>a.recipeId==='payment-recovery');if(existing?.status==='active'){openDrawer(existing.id);return}const a=enableRecipe('payment-recovery');if(a)setTimeout(()=>openDrawer(a.id),160)});
   document.addEventListener('click',e=>{const b=e.target.closest('[data-open-automation]');if(b){const a=automations.find(x=>x.recipeId===b.dataset.openAutomation);if(a)openDrawer(a.id);else{const created=enableRecipe(b.dataset.openAutomation);if(created)openDrawer(created.id)}}});
 
   document.querySelectorAll('[data-close-drawer]').forEach(el=>el.addEventListener('click',closeDrawer));
-  $('drawerActiveToggle').addEventListener('change',()=>{});
+  $('drawerActiveToggle').addEventListener('change',()=>{$('drawerEyebrow').textContent=($('drawerActiveToggle').checked?'ACTIVE':'PAUSED')+' AUTOMATION'});
   $('saveAutomationBtn').addEventListener('click',()=>{const a=automations.find(x=>x.id===activeAutomationId);if(!a)return;a.status=$('drawerActiveToggle').checked?'active':'paused';a.guard=$('drawerGuardToggle').checked;a.quiet=$('drawerQuietToggle').checked;if(a.quiet)a.attention=false;persist();renderAutomations();closeDrawer();toast('Automation changes saved')});
   $('duplicateAutomationBtn').addEventListener('click',()=>{const a=automations.find(x=>x.id===activeAutomationId);if(!a)return;const clone=JSON.parse(JSON.stringify(a));clone.id='a'+Date.now();clone.name=a.name+' copy';clone.status='paused';clone.processed=0;clone.converted=0;clone.revenue=0;clone.lastRun='Not run yet';automations.unshift(clone);persist();renderAutomations();closeDrawer();toast('Automation duplicated as paused')});
-  $('testAutomationBtn').addEventListener('click',()=>{const a=automations.find(x=>x.id===activeAutomationId);if(!a)return;recentRuns.unshift({id:Date.now(),name:a.name,detail:'Test completed · no real message sent',status:'sent',time:'Just now'});persist();renderRuns();toast('Test run completed successfully')});
+  $('testAutomationBtn').addEventListener('click',()=>{const a=automations.find(x=>x.id===activeAutomationId);if(!a)return;a.lastRun='Just now';recentRuns.unshift({id:Date.now(),name:a.name,detail:'Test completed · no real message sent',status:'sent',time:'Just now'});persist();renderRuns();renderAutomations();toast('Test run completed successfully')});
+  $('deleteAutomationBtn').addEventListener('click',()=>{const a=automations.find(x=>x.id===activeAutomationId);if(!a)return;if(!confirm(`Delete \"${a.name}\"? This removes the demo automation from this browser.`))return;automations=automations.filter(x=>x.id!==a.id);persist();renderAutomations();closeDrawer();toast('Automation deleted')});
 
   $('libraryBtn').addEventListener('click',()=>{renderLibrary();openModal('libraryModal')});$('viewAllRecipes').addEventListener('click',()=>{renderLibrary();openModal('libraryModal')});
   $('libraryTabs').addEventListener('click',e=>{const b=e.target.closest('button[data-library-filter]');if(!b)return;libraryFilter=b.dataset.libraryFilter;[...$('libraryTabs').querySelectorAll('button')].forEach(x=>x.classList.toggle('active',x===b));renderLibrary()});
   $('libraryGrid').addEventListener('click',e=>{const b=e.target.closest('[data-library-enable]');if(!b)return;const existing=automations.find(a=>a.recipeId===b.dataset.libraryEnable);closeModal('libraryModal');if(existing?.status==='active')setTimeout(()=>openDrawer(existing.id),120);else{const a=enableRecipe(b.dataset.libraryEnable);if(a)setTimeout(()=>openDrawer(a.id),160)}});
   document.querySelectorAll('[data-close-modal]').forEach(el=>el.addEventListener('click',()=>closeModal(el.dataset.closeModal)));
 
-  $('createAutomationBtn').addEventListener('click',()=>openModal('createModal'));
+  function resetCreateForm(){
+    $('newAutomationName').value='';$('newAutomationGoal').value='entry';$('newAutomationAudience').selectedIndex=0;$('newTrigger').selectedIndex=0;$('newDelay').value='72';$('firstChannel').value='Email';$('firstTemplate').value='Finish your nomination';$('betweenDelay').selectedIndex=1;$('secondChannel').value='WhatsApp';$('secondTemplate').value='Quick reminder';$('aiAutomationPrompt').value='';$('aiPromptBox').hidden=true;syncStop();renderCreatePreview();
+  }
+  function applyPreset(type){
+    const presets={
+      registration:{name:'Registration welcome',goal:'registration',audience:2,trigger:2,delay:'0',firstChannel:'Email',first:'Registration confirmation',secondChannel:'WhatsApp',second:'Welcome reminder'},
+      entry:{name:'Incomplete entry recovery',goal:'entry',audience:0,trigger:0,delay:'72',firstChannel:'Email',first:'Finish your nomination',secondChannel:'WhatsApp',second:'Quick reminder'},
+      payment:{name:'Payment recovery',goal:'payment',audience:1,trigger:1,delay:'6',firstChannel:'Email',first:'Complete your payment',secondChannel:'WhatsApp',second:'Payment reminder'},
+      judge:{name:'Judge inactivity reminder',goal:'judge',audience:3,trigger:3,delay:'120',firstChannel:'Email',first:'Your reviews are waiting',secondChannel:'Email',second:'Final jury reminder'}
+    };const v=presets[type]||presets.entry;$('newAutomationName').value=v.name;$('newAutomationGoal').value=v.goal;$('newAutomationAudience').selectedIndex=v.audience;$('newTrigger').selectedIndex=v.trigger;$('newDelay').value=v.delay;$('firstChannel').value=v.firstChannel;$('firstTemplate').value=v.first;$('secondChannel').value=v.secondChannel;$('secondTemplate').value=v.second;syncStop();renderCreatePreview();
+  }
+  $('createAutomationBtn').addEventListener('click',()=>{resetCreateForm();openModal('createModal')});
+  document.querySelectorAll('[data-create-preset]').forEach(b=>b.addEventListener('click',()=>applyPreset(b.dataset.createPreset)));
   $('showAiBuilderBtn').addEventListener('click',()=>{$('aiPromptBox').hidden=false;$('aiAutomationPrompt').focus()});
   $('cancelAiBuilderBtn').addEventListener('click',()=>{$('aiPromptBox').hidden=true});
   function syncStop(){const goal=$('newAutomationGoal').value;const map={entry:'Stop when entry is submitted',payment:'Stop when payment is received',registration:'Stop when an entry is started',judge:'Stop when judging activity resumes',winner:'Stop when winner is notified'};$('newStopCondition').textContent=map[goal]||'Stop when goal is complete'}
-  $('newAutomationGoal').addEventListener('change',syncStop);
+  function renderCreatePreview(){const el=$('createFlowPreview');if(!el)return;const name=$('newAutomationName').value.trim()||'Untitled automation';const delay=$('newDelay').selectedOptions[0]?.text||'Immediately';const first=$('firstChannel').value;const second=$('secondChannel').value;const wait=$('betweenDelay').selectedOptions[0]?.text||'Wait 24 hours';el.innerHTML=`<div class="at-create-preview-head"><span>LIVE FLOW PREVIEW</span><b>${name}</b></div><div class="at-create-preview-flow"><span>⚡ ${$('newTrigger').value}</span><i>→</i><span>${delay}</span><i>→</i><span>${channelIcon(first)} ${first}</span><i>→</i><span>${wait}</span><i>→</i><span>${channelIcon(second)} ${second}</span><i>→</i><span class="goal">✓ Goal</span></div>`}
+  $('newAutomationGoal').addEventListener('change',()=>{syncStop();renderCreatePreview()});
+  ['newAutomationName','newAutomationAudience','newTrigger','newDelay','firstChannel','firstTemplate','betweenDelay','secondChannel','secondTemplate'].forEach(id=>{ $(id).addEventListener('input',renderCreatePreview); $(id).addEventListener('change',renderCreatePreview); });
   $('generateAutomationBtn').addEventListener('click',()=>{
-    const p=$('aiAutomationPrompt').value.toLowerCase();
-    if(p.includes('payment')){$('newAutomationName').value='Smart payment recovery';$('newAutomationGoal').value='payment';$('newAutomationAudience').selectedIndex=1;$('newTrigger').selectedIndex=1;$('newDelay').value='6';$('firstTemplate').value='Complete your payment';$('secondTemplate').value='Payment reminder'}
-    else if(p.includes('judge')){$('newAutomationName').value='Judge inactivity recovery';$('newAutomationGoal').value='judge';$('newAutomationAudience').selectedIndex=3;$('newTrigger').selectedIndex=3;$('newDelay').value='120';$('firstTemplate').value='Your reviews are waiting';$('secondChannel').value='Email';$('secondTemplate').value='Final jury reminder'}
-    else{$('newAutomationName').value='Incomplete entry recovery';$('newAutomationGoal').value='entry';$('newAutomationAudience').selectedIndex=0;$('newTrigger').selectedIndex=0;$('newDelay').value=p.includes('2 day')?'48':'72';$('firstTemplate').value='Finish your nomination';$('secondTemplate').value='Quick reminder'}
-    syncStop();$('aiPromptBox').hidden=true;toast('Copilot generated a recommended flow')
+    const raw=$('aiAutomationPrompt').value.trim();if(!raw){toast('Describe what you want to automate first');$('aiAutomationPrompt').focus();return}
+    const p=raw.toLowerCase();if(p.includes('payment'))applyPreset('payment');else if(p.includes('judge')||p.includes('jury'))applyPreset('judge');else if(p.includes('register')||p.includes('welcome'))applyPreset('registration');else applyPreset('entry');
+    if(p.includes('sms'))$('secondChannel').value='SMS';if(p.includes('whatsapp')&&!p.includes('email'))$('firstChannel').value='WhatsApp';if(p.includes('2 day'))$('newDelay').value='48';if(p.includes('1 day')||p.includes('24 hour'))$('newDelay').value='24';
+    renderCreatePreview();$('aiPromptBox').hidden=true;toast('Copilot generated a recommended flow')
   });
-  $('saveNewAutomationBtn').addEventListener('click',()=>{
-    const name=$('newAutomationName').value.trim();if(!name){toast('Add an automation name first');$('newAutomationName').focus();return}
+
+  function createAutomation(status){
+    const name=$('newAutomationName').value.trim();if(!name){toast('Add an automation name first');$('newAutomationName').focus();return null}
     const goalValue=$('newAutomationGoal').value;const goalMap={entry:'Entry submitted',payment:'Payment received',registration:'Entry started',judge:'Review activity resumed',winner:'Winner notified'};
     const delay=$('newDelay').selectedOptions[0].text;const trigger=$('newTrigger').value+' · '+delay;
-    const steps=[['trigger',$('newTrigger').value,delay],[$('firstChannel').value==='Email'?'email':'whatsapp','Send '+$('firstChannel').value,$('firstTemplate').value||'Message'],['wait','Wait',$('betweenDelay').selectedOptions[0].text.replace('Wait ','')],[$('secondChannel').value==='Email'?'email':'whatsapp','Send '+$('secondChannel').value,$('secondTemplate').value||'Follow-up'],['goal','Stop when',goalMap[goalValue]]];
-    const a={id:'a'+Date.now(),recipeId:null,name,description:'Custom workflow created for '+$('newAutomationAudience').value+'.',status:'active',attention:false,trigger,audience:$('newAutomationAudience').value,channels:$('firstChannel').value+' + '+$('secondChannel').value,goal:goalMap[goalValue],processed:0,converted:0,revenue:0,lastRun:'Not run yet',steps,guard:true,quiet:true};
-    automations.unshift(a);persist();renderAutomations();closeModal('createModal');toast('Automation created and turned on');setTimeout(()=>openDrawer(a.id),160)
-  });
+    const first=$('firstChannel').value,second=$('secondChannel').value;
+    const steps=[['trigger',$('newTrigger').value,delay],[channelType(first),'Send '+first,$('firstTemplate').value||'Message'],['wait','Wait',$('betweenDelay').selectedOptions[0].text.replace('Wait ','')],[channelType(second),'Send '+second,$('secondTemplate').value||'Follow-up'],['goal','Stop when',goalMap[goalValue]]];
+    const a={id:'a'+Date.now(),recipeId:null,name,description:'Custom workflow for '+$('newAutomationAudience').value+'.',status,attention:false,trigger,audience:$('newAutomationAudience').value,channels:first+' + '+second,goal:goalMap[goalValue],processed:0,converted:0,revenue:0,lastRun:'Not run yet',steps,guard:true,quiet:true};
+    automations.unshift(a);persist();renderAutomations();closeModal('createModal');toast(status==='active'?'Automation created and turned on':'Automation saved as draft');setTimeout(()=>openDrawer(a.id),140);return a
+  }
+  $('saveNewAutomationBtn').addEventListener('click',()=>createAutomation('active'));
+  $('saveDraftAutomationBtn').addEventListener('click',()=>createAutomation('paused'));
 
   $('frequencyGuard').checked=settings.frequencyGuard;$('quietHours').checked=settings.quietHours;
-  $('frequencyGuard').addEventListener('change',e=>{settings.frequencyGuard=e.target.checked;persist();toast(`Frequency Guard ${e.target.checked?'enabled':'disabled'}`)});
-  $('quietHours').addEventListener('change',e=>{settings.quietHours=e.target.checked;persist();toast(`Quiet hours ${e.target.checked?'enabled':'disabled'}`)});
+  $('frequencyGuard').addEventListener('change',e=>{settings.frequencyGuard=e.target.checked;persist();updateStats();toast(`Frequency Guard ${e.target.checked?'enabled':'disabled'}`)});
+  $('quietHours').addEventListener('change',e=>{settings.quietHours=e.target.checked;persist();updateStats();toast(`Quiet hours ${e.target.checked?'enabled':'disabled'}`)});
   $('clearRunsBtn').addEventListener('click',()=>{recentRuns=[];persist();renderRuns();toast('Demo activity cleared')});
 
-  $('copilotBtn').addEventListener('click',()=>{$('copilotPanel').classList.toggle('open')});$('closeCopilotBtn').addEventListener('click',()=>$('copilotPanel').classList.remove('open'));
+  $('copilotBtn').addEventListener('click',e=>{e.stopPropagation();$('copilotPanel').classList.toggle('open')});$('closeCopilotBtn').addEventListener('click',()=>$('copilotPanel').classList.remove('open'));
+  document.addEventListener('click',e=>{if($('copilotPanel').classList.contains('open')&&!$('copilotPanel').contains(e.target)&&!$('copilotBtn').contains(e.target))$('copilotPanel').classList.remove('open')});
   document.querySelectorAll('[data-copilot-question]').forEach(b=>b.addEventListener('click',()=>{
     const answers={recovery:'Start with payment recovery. Those 18 people have already submitted, so they are your highest-intent audience and represent about ₹36,000 in recoverable revenue. Next, keep incomplete-entry recovery active for the 296 people who have already started.',frequency:'Your Frequency Guard is set to 24 hours, which is a good default. Keep WhatsApp quiet hours on and use goal-based stop rules so entrants leave a workflow immediately after submitting or paying.',judge:'Use a light-touch sequence: email after 5 days of inactivity, wait 2 days, then send one final reminder. Stop immediately when the judge scores any assigned entry.'};$('copilotAnswer').textContent=answers[b.dataset.copilotQuestion]||answers.recovery
   }));
 
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDrawer();['libraryModal','createModal'].forEach(id=>closeModal(id));$('copilotPanel').classList.remove('open')}});
 
-  renderAutomations();renderRuns();renderLibrary();syncStop();
+  renderAutomations();renderRuns();renderLibrary();syncStop();renderCreatePreview();
 })();

@@ -59,17 +59,10 @@
         </div>
       </div>
 
-      <div class="stagebar">
-        <div class="stage done">BUILD</div>
-        <div class="stage active">GROW</div>
-        <div class="stage">DECIDE</div>
-        <div class="stage">CELEBRATE</div>
-      </div>
-
       <div class="at-grow-path" aria-label="Grow workflow">
         <a href="audience.html"><span class="at-path-icon">◉</span><div><b>Audience</b><small>Find who to target</small></div><em>✓</em></a>
         <span class="at-path-arrow">→</span>
-        <a href="campaigns.html"><span class="at-path-icon">✉</span><div><b>Campaigns</b><small>Create the message</small></div><em>✓</em></a>
+        <a href="entries.html"><span class="at-path-icon">✉</span><div><b>Reminder Hub</b><small>Create & schedule messages</small></div><em>✓</em></a>
         <span class="at-path-arrow">→</span>
         <a class="active" href="automations.html"><span class="at-path-icon">⚡</span><div><b>Automations</b><small>Run it at the right time</small></div><em>3</em></a>
       </div>
@@ -108,9 +101,15 @@
           <div class="at-table-head">
             <div>
               <h2>Your automations</h2>
-              <p>Each automation has a trigger, follow-up sequence and a goal that stops unnecessary messages.</p>
+              <p>Manage triggers, messaging sequences, stop rules and performance from one place.</p>
             </div>
-            <div class="at-search"><span>⌕</span><input id="automationSearch" placeholder="Search automations"></div>
+            <div class="at-list-tools">
+              <div class="at-search"><span>⌕</span><input id="automationSearch" placeholder="Search automations"></div>
+              <select class="at-compact-select" id="automationChannelFilter" aria-label="Filter by channel">
+                <option value="all">All channels</option><option value="email">Email</option><option value="whatsapp">WhatsApp</option><option value="sms">SMS</option>
+              </select>
+              <button class="at-reset-filter" id="resetAutomationFilters" type="button">Reset</button>
+            </div>
           </div>
           <div class="at-filter-row" id="automationFilters">
             <button class="active" data-filter="all">All <span id="filterAllCount">7</span></button>
@@ -123,12 +122,12 @@
 
         <aside class="at-side-column">
           <div class="card pad at-health-card">
-            <div class="section-title"><h2>Automation health</h2><span class="badge green">Healthy</span></div>
-            <div class="at-health-score"><strong>92</strong><span>/100</span><div><b>Strong setup</b><p>Your high-intent recovery flows are active.</p></div></div>
-            <div class="at-health-item"><div><span>Goal-based stop rules</span><b>6 / 7</b></div><div class="progress"><span style="width:86%"></span></div></div>
-            <div class="at-health-item"><div><span>Quiet hours enabled</span><b>5 / 7</b></div><div class="progress"><span style="width:71%"></span></div></div>
-            <div class="at-health-item"><div><span>Message templates ready</span><b>7 / 7</b></div><div class="progress"><span style="width:100%"></span></div></div>
-            <div class="at-health-note">⚠ Judge inactivity reminder has no quiet hours configured.</div>
+            <div class="section-title"><h2>Automation health</h2><span class="badge green" id="healthBadge">Healthy</span></div>
+            <div class="at-health-score"><strong id="automationHealthScore">92</strong><span>/100</span><div><b id="automationHealthTitle">Strong setup</b><p id="automationHealthCopy">Your high-intent recovery flows are active.</p></div></div>
+            <div class="at-health-item"><div><span>Goal-based stop rules</span><b id="healthStopText">6 / 7</b></div><div class="progress"><span id="healthStopBar" style="width:86%"></span></div></div>
+            <div class="at-health-item"><div><span>Quiet hours enabled</span><b id="healthQuietText">5 / 7</b></div><div class="progress"><span id="healthQuietBar" style="width:71%"></span></div></div>
+            <div class="at-health-item"><div><span>Message templates ready</span><b id="healthTemplateText">7 / 7</b></div><div class="progress"><span id="healthTemplateBar" style="width:100%"></span></div></div>
+            <div class="at-health-note" id="healthNote">⚠ Judge inactivity reminder has no quiet hours configured.</div>
           </div>
 
           <div class="card pad at-runs-card section">
@@ -147,8 +146,8 @@
       </section>
 
       <div class="at-bottom-actions">
-        <div><b>GROW is ready</b><span>Audience, campaigns and automation now work as one journey.</span></div>
-        <div class="top-actions"><a class="btn secondary" href="campaigns.html">← Campaigns</a><a class="btn primary" href="judges.html">Continue to Judging →</a></div>
+        <div><b>Your growth workflow is connected</b><span>Audience, Reminder Hub and Automations now work as one journey.</span></div>
+        <div class="top-actions"><a class="btn secondary" href="entries.html">← Reminder Hub</a><a class="btn primary" href="judges.html">Continue to Judging →</a></div>
       </div>
 
       <div class="footer-note">Vikas Mishra</div>
@@ -179,7 +178,7 @@
         <label class="at-switch-row"><span><b>Respect WhatsApp quiet hours</b><small>Queue messages until the next safe window</small></span><input type="checkbox" id="drawerQuietToggle" checked><i></i></label>
       </div>
     </div>
-    <div class="at-drawer-foot"><button class="btn secondary" id="duplicateAutomationBtn">Duplicate</button><button class="btn primary" id="saveAutomationBtn">Save changes</button></div>
+    <div class="at-drawer-foot"><button class="btn danger-ghost" id="deleteAutomationBtn">Delete</button><span class="at-drawer-foot-spacer"></span><button class="btn secondary" id="duplicateAutomationBtn">Duplicate</button><button class="btn primary" id="saveAutomationBtn">Save changes</button></div>
   </aside>
 </div>
 
@@ -203,8 +202,14 @@
     <div class="at-modal-body">
       <div class="at-ai-builder">
         <span class="at-ai-spark">✦</span>
-        <div><b>Build with Award Copilot</b><p>Describe the outcome you want and we'll prepare the flow.</p></div>
+        <div><b>Build with Award Copilot</b><p>Describe the outcome you want and we'll prepare the trigger, timing and sequence.</p></div>
         <button class="btn ghost" id="showAiBuilderBtn">Use Copilot</button>
+      </div>
+      <div class="at-starter-row" aria-label="Quick automation starters">
+        <button type="button" data-create-preset="registration">Registration welcome</button>
+        <button type="button" data-create-preset="entry">Incomplete entry</button>
+        <button type="button" data-create-preset="payment">Payment recovery</button>
+        <button type="button" data-create-preset="judge">Judge reminder</button>
       </div>
       <div class="at-ai-prompt" id="aiPromptBox" hidden>
         <textarea id="aiAutomationPrompt" placeholder="Example: Remind incomplete entrants after 2 days by email, then WhatsApp the next day. Stop when they submit."></textarea>
@@ -226,15 +231,16 @@
 
       <div class="at-form-section"><span>3</span><div><h3>Follow-up sequence</h3><p>Keep it short. Two well-timed touches are usually enough.</p></div></div>
       <div class="at-action-builder">
-        <div class="at-action-line"><span class="at-mini-icon email">✉</span><div><b>First message</b><small>Use campaign template</small></div><select id="firstChannel"><option>Email</option><option>WhatsApp</option></select><input id="firstTemplate" value="Finish your nomination"></div>
+        <div class="at-action-line"><span class="at-mini-icon email">✉</span><div><b>First message</b><small>Use a Reminder Hub template</small></div><select id="firstChannel"><option>Email</option><option>WhatsApp</option><option>SMS</option></select><input id="firstTemplate" value="Finish your nomination"></div>
         <div class="at-wait-line"><span>↓</span><select id="betweenDelay"><option>Wait 12 hours</option><option selected>Wait 24 hours</option><option>Wait 2 days</option></select><span>then</span></div>
-        <div class="at-action-line"><span class="at-mini-icon whatsapp">W</span><div><b>Second message</b><small>Only if goal not met</small></div><select id="secondChannel"><option>WhatsApp</option><option>Email</option></select><input id="secondTemplate" value="Quick reminder"></div>
+        <div class="at-action-line"><span class="at-mini-icon whatsapp">W</span><div><b>Second message</b><small>Only if the goal is not met</small></div><select id="secondChannel"><option>WhatsApp</option><option>Email</option><option>SMS</option></select><input id="secondTemplate" value="Quick reminder"></div>
       </div>
 
       <div class="at-form-section"><span>4</span><div><h3>Stop condition</h3><p>This is what keeps automations helpful instead of annoying.</p></div></div>
       <div class="at-stop-box"><span>✓</span><div><b id="newStopCondition">Stop when entry is submitted</b><p>A person exits the automation immediately after completing the goal.</p></div></div>
+      <div class="at-create-preview" id="createFlowPreview" aria-live="polite"></div>
     </div>
-    <div class="at-modal-foot"><button class="btn secondary" data-close-modal="createModal">Cancel</button><button class="btn primary" id="saveNewAutomationBtn">Create & turn on</button></div>
+    <div class="at-modal-foot"><button class="btn secondary" data-close-modal="createModal">Cancel</button><button class="btn secondary" id="saveDraftAutomationBtn">Save as draft</button><button class="btn primary" id="saveNewAutomationBtn">Create & turn on</button></div>
   </div>
 </div>
 
