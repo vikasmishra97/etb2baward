@@ -142,11 +142,12 @@
     composerChannel=channel;composerMode=mode;
     const label={email:'Email',whatsapp:'WhatsApp',sms:'SMS'}[channel];
     const mailerMode=mode==='mailer'&&channel==='email'&&!item;
-    $('composerKicker').textContent=mailerMode?'MAILER STUDIO':item?'EDIT REMINDER':'SCHEDULE MESSAGE';
+    $('composerKicker').textContent=mailerMode?'MAILER STUDIO':item?'EDIT REMINDER':`SCHEDULE ${label.toUpperCase()}`;
     $('composerTitle').textContent=mailerMode?'Create mailer':(item?'Edit ':'Schedule ')+label;
     const singleLeadName=selectedAudience&&Number(selectedAudience.count||0)===1&&Array.isArray(selectedAudience.contactNames)&&selectedAudience.contactNames[0]?selectedAudience.contactNames[0]:'';
-    $('composerSubtitle').textContent=mailerMode?'Create an AI-assisted email, choose the audience and schedule when ready.':item?'Update the message, audience or schedule.':singleLeadName?`Ready for ${singleLeadName}. Review the message, choose a time and schedule.`:'Create, preview and schedule a message.';
-    $('scheduleReminder').textContent=mailerMode?'Schedule mailer':'Schedule message';
+    const channelSubtitle={email:'Create an email reminder with subject, template and rich HTML content.',whatsapp:'Choose a WhatsApp template, review the message and schedule it.',sms:'Write a short SMS reminder, review the segment length and schedule it.'}[channel];
+    $('composerSubtitle').textContent=mailerMode?'Create an AI-assisted email, choose the audience and schedule when ready.':item?'Update the message, audience or schedule.':singleLeadName?`Ready for ${singleLeadName}. Review the ${label} reminder and choose a time.`:channelSubtitle;
+    $('scheduleReminder').textContent=mailerMode?'Schedule mailer':item?'Save changes':`Schedule ${label}`;
     $$('.email-only').forEach(el=>el.hidden=channel!=='email');
     $$('.sms-only').forEach(el=>el.hidden=channel!=='sms');
     $$('.non-email-message').forEach(el=>el.hidden=channel==='email');
@@ -248,7 +249,7 @@
     configureComposer(requested);
     if(selectedAudience&&Number(selectedAudience.count||0)===1){
       const name=Array.isArray(selectedAudience.contactNames)?selectedAudience.contactNames[0]:'';
-      if(name) $('smartSendText').textContent=`Best predicted send time for ${name}: Today, 4:30 PM.`;
+      if(name) $('smartSendText').textContent=`Smart: Today, 4:30 PM for ${name}`;
     }
     params.delete('compose');
     params.delete('source');

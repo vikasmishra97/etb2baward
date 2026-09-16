@@ -198,12 +198,16 @@
 
     <div class="rh-form-grid rh-form-grid-timing">
       <label><span>Send to</span><select id="composerAudience"><option id="selectedAudienceOption" value="selected" hidden>Selected from Audience</option><option>All Registered Users</option><option>Registered, no entry</option><option>Entry started, incomplete</option><option>Submitted, payment pending</option><option>Custom segment</option></select></label>
-      <div class="rh-timing-stack">
-        <label><span>Schedule date & time</span><input id="composerSchedule" type="datetime-local"></label>
-        <div class="rh-smart-inline">
-          <div class="rh-smart-inline-copy"><span class="rh-smart-icon">◎</span><div><b>Smart send</b><p id="smartSendText">Best time: Tomorrow, 10:45 AM.</p></div></div>
-          <button type="button" id="applySmartTime">Apply</button>
+      <div class="rh-timing-field">
+        <div class="rh-timing-label-row">
+          <label for="composerSchedule">Schedule date & time</label>
+          <div class="rh-smart-hint" aria-label="Smart send recommendation">
+            <span class="rh-smart-hint-icon">✦</span>
+            <span id="smartSendText">Smart: Tomorrow, 10:45 AM</span>
+            <button type="button" id="applySmartTime">Apply</button>
+          </div>
         </div>
+        <input id="composerSchedule" type="datetime-local">
       </div>
     </div>
 
