@@ -249,7 +249,7 @@
     configureComposer(requested);
     if(selectedAudience&&Number(selectedAudience.count||0)===1){
       const name=Array.isArray(selectedAudience.contactNames)?selectedAudience.contactNames[0]:'';
-      if(name) $('smartSendText').textContent=`Smart: Today, 4:30 PM for ${name}`;
+      if(name) $('smartSendText').textContent=`Today · 4:30 PM · ${name}`;
     }
     params.delete('compose');
     params.delete('source');
@@ -281,8 +281,20 @@
     setEmailEditorMode('visual');$('emailRichEditor').focus();
     if(btn.dataset.editorAction==='link'){const url=prompt('Paste the destination URL');if(url)document.execCommand('createLink',false,url);}
     if(btn.dataset.editorAction==='image'){const url=prompt('Paste a public HTTPS image URL');if(url)document.execCommand('insertImage',false,url);}
+    if(btn.dataset.editorAction==='heading') document.execCommand('formatBlock',false,'h2');
+    if(btn.dataset.editorAction==='button'){
+      const text=prompt('Button text','Complete your entry');
+      if(!text)return;
+      const url=prompt('Button destination URL','https://');
+      if(!url)return;
+      const safeText=text.replace(/[<>&"']/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+      const safeUrl=url.replace(/"/g,'&quot;');
+      document.execCommand('insertHTML',false,`<p style="margin:18px 0"><a href="${safeUrl}" style="display:inline-block;background:#d71920;color:#ffffff;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:7px">${safeText}</a></p>`);
+    }
     updateMessageHealth();
   }));
+  $('editorTextColor')?.addEventListener('input',e=>{setEmailEditorMode('visual');$('emailRichEditor').focus();document.execCommand('foreColor',false,e.target.value);updateMessageHealth();});
+  $('editorHighlightColor')?.addEventListener('input',e=>{setEmailEditorMode('visual');$('emailRichEditor').focus();document.execCommand('hiliteColor',false,e.target.value);updateMessageHealth();});
   $('composerTemplate').addEventListener('change',()=>{
     const custom=$('composerTemplate').value==='Custom template';$('customTemplateNameWrap').hidden=!custom;
     if(custom)setTimeout(()=>$('customTemplateName').focus(),60);

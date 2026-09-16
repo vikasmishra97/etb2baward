@@ -203,7 +203,7 @@
           <label for="composerSchedule">Schedule date & time</label>
           <div class="rh-smart-hint" aria-label="Smart send recommendation">
             <span class="rh-smart-hint-icon">✦</span>
-            <span id="smartSendText">Smart: Tomorrow, 10:45 AM</span>
+            <span class="rh-smart-copy"><b>Best time</b><span id="smartSendText">Tomorrow · 10:45 AM</span></span>
             <button type="button" id="applySmartTime">Apply</button>
           </div>
         </div>
@@ -222,12 +222,18 @@
       <div class="rh-email-editor">
         <div class="rh-editor-toolbar" aria-label="Email formatting toolbar">
           <div class="rh-editor-toolgroup">
+            <button type="button" title="Undo" data-editor-command="undo">↶</button>
+            <button type="button" title="Redo" data-editor-command="redo">↷</button>
+          </div>
+          <span class="rh-editor-sep"></span>
+          <div class="rh-editor-toolgroup">
             <button type="button" title="Bold" data-editor-command="bold"><b>B</b></button>
             <button type="button" title="Italic" data-editor-command="italic"><i>I</i></button>
             <button type="button" title="Underline" data-editor-command="underline"><u>U</u></button>
           </div>
           <span class="rh-editor-sep"></span>
           <div class="rh-editor-toolgroup">
+            <button type="button" title="Heading" data-editor-action="heading">H2</button>
             <button type="button" title="Bulleted list" data-editor-command="insertUnorderedList">• List</button>
             <button type="button" title="Numbered list" data-editor-command="insertOrderedList">1. List</button>
           </div>
@@ -238,9 +244,15 @@
             <button type="button" title="Align right" data-editor-command="justifyRight">≡</button>
           </div>
           <span class="rh-editor-sep"></span>
+          <div class="rh-editor-toolgroup rh-color-tools">
+            <label class="rh-color-tool" title="Text colour"><span>A</span><input id="editorTextColor" type="color" value="#333a4b" aria-label="Text colour"></label>
+            <label class="rh-color-tool" title="Highlight colour"><span>▰</span><input id="editorHighlightColor" type="color" value="#fff1b8" aria-label="Highlight colour"></label>
+          </div>
+          <span class="rh-editor-sep"></span>
           <div class="rh-editor-toolgroup">
             <button type="button" title="Insert link" data-editor-action="link">🔗</button>
             <button type="button" title="Insert image" data-editor-action="image">▧</button>
+            <button type="button" class="rh-editor-cta-tool" title="Insert CTA button" data-editor-action="button">+ Button</button>
           </div>
         </div>
         <div class="rh-editor-variablebar"><span>Personalise:</span><button type="button" data-insert-variable="{{name}}">{{name}}</button><button type="button" data-insert-variable="{{entry_link}}">{{entry_link}}</button><button type="button" data-insert-variable="{{company}}">{{company}}</button></div>
