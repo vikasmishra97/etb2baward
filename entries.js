@@ -112,7 +112,8 @@
     const mailerMode=mode==='mailer'&&channel==='email'&&!item;
     $('composerKicker').textContent=mailerMode?'MAILER STUDIO':item?'EDIT REMINDER':'SCHEDULE MESSAGE';
     $('composerTitle').textContent=mailerMode?'Create mailer':(item?'Edit ':'Schedule ')+label;
-    $('composerSubtitle').textContent=mailerMode?'Create an AI-assisted email, choose the audience and schedule when ready.':item?'Update the message, audience or schedule.':'Create, preview and schedule a message.';
+    const singleLeadName=selectedAudience&&Number(selectedAudience.count||0)===1&&Array.isArray(selectedAudience.contactNames)&&selectedAudience.contactNames[0]?selectedAudience.contactNames[0]:'';
+    $('composerSubtitle').textContent=mailerMode?'Create an AI-assisted email, choose the audience and schedule when ready.':item?'Update the message, audience or schedule.':singleLeadName?`Ready for ${singleLeadName}. Review the message, choose a time and schedule.`:'Create, preview and schedule a message.';
     $('scheduleReminder').textContent=mailerMode?'Schedule mailer':'Schedule message';
     $$('.email-only').forEach(el=>el.hidden=channel!=='email');
     $$('.sms-only').forEach(el=>el.hidden=channel!=='sms');
@@ -194,6 +195,22 @@
     $('autoPreviewText').textContent=`Send “${$('autoTemplate').value}” by ${$('autoChannel').value} ${$('autoDelay').value.toLowerCase()}.`;
   }
 
+  function openComposerFromAudience(){
+    const params=new URLSearchParams(location.search);
+    const requested=params.get('compose');
+    if(!['email','whatsapp','sms'].includes(requested))return;
+    switchTab(requested);
+    configureComposer(requested);
+    if(selectedAudience&&Number(selectedAudience.count||0)===1){
+      const name=Array.isArray(selectedAudience.contactNames)?selectedAudience.contactNames[0]:'';
+      if(name) $('smartSendText').textContent=`Best predicted send time for ${name}: Today, 4:30 PM.`;
+    }
+    params.delete('compose');
+    params.delete('source');
+    const clean=params.toString();
+    history.replaceState({},'',location.pathname+(clean?'?'+clean:'')+location.hash);
+  }
+
   // initial render
   ['email','whatsapp','sms'].forEach(renderChannel);renderAutomations();hydrateAudienceContext();
 
@@ -243,5 +260,6 @@
     renderAutomations();closeDrawers();toast('Automation activated');
   });
 
+  openComposerFromAudience();
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawers();});
 })();

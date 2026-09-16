@@ -58,3 +58,20 @@
 @media(max-width:480px){
   .au-opportunity-stats-grid{grid-template-columns:1fr}
 }
+
+
+/* Lead profile channel-first reminder actions */
+.au-profile-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.au-channel-action{min-height:54px;border-radius:12px!important;padding:8px 12px!important;display:flex!important;align-items:center;justify-content:flex-start!important;gap:10px;text-align:left;box-shadow:none;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease,background .16s ease}
+.au-channel-action:hover{transform:translateY(-1px)}
+.au-channel-action .au-action-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;font-size:15px;font-weight:900}
+.au-channel-action.email .au-action-icon{background:rgba(255,255,255,.16);color:#fff}
+.au-channel-action.whatsapp{background:#f2fbf6!important;border:1px solid #bfe8d1!important;color:#117a50!important}
+.au-channel-action.whatsapp:hover{background:#eaf8f1!important;border-color:#8fd3af!important;box-shadow:0 8px 20px rgba(22,135,85,.09)}
+.au-channel-action.whatsapp .au-action-icon{position:relative;background:#1fae73;color:#fff;font-size:0;border-radius:50%}
+.au-channel-action.whatsapp .au-action-icon:before{content:'↗';font-size:14px;line-height:1;transform:rotate(-18deg)}
+.au-action-copy{display:flex;flex-direction:column;min-width:0}
+.au-action-copy b{font-size:10px;line-height:1.15;color:inherit}
+.au-action-copy small{font-size:7.5px;line-height:1.25;margin-top:3px;font-weight:700;opacity:.7;color:inherit}
+.au-profile-action-note{margin:8px 2px 0;font-size:8px;line-height:1.45;color:#8a8ea0}
+@media(max-width:720px){.au-profile-actions{grid-template-columns:1fr}.au-channel-action{min-height:52px}}

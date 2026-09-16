@@ -226,9 +226,16 @@
       </div>
 
       <div class="au-profile-actions">
-        <button class="btn primary" id="drawerCampaign">Send reminder</button>
-        <button class="btn secondary" id="drawerReminder">Send reminder</button>
+        <button class="btn primary au-channel-action email" id="drawerCampaign" type="button">
+          <span class="au-action-icon" aria-hidden="true">✉</span>
+          <span class="au-action-copy"><b>Email reminder</b><small>Open email composer</small></span>
+        </button>
+        <button class="btn secondary au-channel-action whatsapp" id="drawerReminder" type="button">
+          <span class="au-action-icon au-whatsapp-icon" aria-hidden="true">●</span>
+          <span class="au-action-copy"><b>WhatsApp</b><small>Open WhatsApp composer</small></span>
+        </button>
       </div>
+      <p class="au-profile-action-note">This contact will be selected automatically in Reminder Hub, and the chosen composer will open ready to schedule.</p>
 
       <div class="au-profile-grid">
         <div><small>Email</small><b id="drawerEmail">—</b></div>
