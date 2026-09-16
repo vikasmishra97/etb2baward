@@ -112,10 +112,30 @@
 
   function defaultCopy(channel){
     const map={
-      email:{subject:'Complete your India FinTech Awards entry',message:'Hi {{name}},\n\nYour registration for India FinTech Awards 2027 is confirmed. Your entry is still waiting to be completed.\n\nContinue your entry here: {{entry_link}}\n\nRegards,\nETB2B Awards Team'},
+      email:{subject:'Complete your India FinTech Awards entry',message:`<p>Hi {{name}},</p><p>Your registration for <strong>India FinTech Awards 2027</strong> is confirmed. Your entry is still waiting to be completed.</p><p><a href="{{entry_link}}" style="display:inline-block;background:#d71920;color:#ffffff;text-decoration:none;padding:11px 18px;border-radius:7px;font-weight:700;">Continue your entry</a></p><p>Regards,<br><strong>ETB2B Awards Team</strong></p>`},
       whatsapp:{subject:'',message:'Hi {{name}}, your India FinTech Awards 2027 registration is confirmed. Complete your entry here: {{entry_link}}'},
       sms:{subject:'',message:'ETB2B Awards: Complete your India FinTech Awards 2027 entry here: {{short_link}}'}
     }; return map[channel];
+  }
+
+  function stripHtml(html){
+    const node=document.createElement('div');node.innerHTML=html||'';return (node.textContent||node.innerText||'').trim();
+  }
+  function syncEmailEditorFromMessage(){
+    const editor=$('emailRichEditor'),source=$('emailHtmlSource');if(!editor||!source)return;
+    const html=$('composerMessage').value||'';editor.innerHTML=html;source.value=html;
+  }
+  function syncEmailEditorToMessage(){
+    const editor=$('emailRichEditor'),source=$('emailHtmlSource');if(!editor||!source)return;
+    const sourceMode=!source.hidden;const html=sourceMode?source.value:editor.innerHTML;
+    $('composerMessage').value=html;if(!sourceMode)source.value=html;
+  }
+  function setEmailEditorMode(mode){
+    const editor=$('emailRichEditor'),source=$('emailHtmlSource');if(!editor||!source)return;
+    if(mode==='html'){syncEmailEditorToMessage();source.value=$('composerMessage').value;editor.hidden=true;source.hidden=false;}
+    else{$('composerMessage').value=source.value||$('composerMessage').value;editor.innerHTML=$('composerMessage').value;source.hidden=true;editor.hidden=false;}
+    $$('[data-editor-mode]').forEach(b=>b.classList.toggle('active',b.dataset.editorMode===mode));
+    updateMessageHealth();
   }
 
   function configureComposer(channel,item,mode='schedule'){
@@ -129,7 +149,8 @@
     $('scheduleReminder').textContent=mailerMode?'Schedule mailer':'Schedule message';
     $$('.email-only').forEach(el=>el.hidden=channel!=='email');
     $$('.sms-only').forEach(el=>el.hidden=channel!=='sms');
-    $('messageLabel').textContent=channel==='email'?'Body content':channel==='whatsapp'?'WhatsApp message':'SMS message';
+    $$('.non-email-message').forEach(el=>el.hidden=channel==='email');
+    $('messageLabel').textContent=channel==='whatsapp'?'WhatsApp message':'SMS message';
     $('composerSender').value=channel==='sms'?'ETB2B':'ETB2B Awards';
     const copy=defaultCopy(channel);
     $('composerSubject').value=item&&channel==='email'?item.title:copy.subject;
@@ -140,27 +161,38 @@
     else $('composerAudience').value='All Registered Users';
     $('composerSchedule').value='';
     $('composerTemplate').value='';
+    $('customTemplateNameWrap').hidden=true;
+    $('customTemplateName').value='';
+    if(channel==='email'){
+      $('emailHtmlSource').hidden=true;$('emailRichEditor').hidden=false;
+      $$('[data-editor-mode]').forEach(b=>b.classList.toggle('active',b.dataset.editorMode==='visual'));
+      syncEmailEditorFromMessage();
+    }
     updateMessageHealth();
     openDrawer('reminderComposer');
   }
 
   function updateMessageHealth(){
-    const text=$('composerMessage').value||'';
+    if(composerChannel==='email') syncEmailEditorToMessage();
+    const raw=$('composerMessage').value||'';
+    const text=composerChannel==='email'?stripHtml(raw):raw;
     if(composerChannel==='sms'){
       const segments=Math.max(1,Math.ceil(text.length/160));
-      $('messageHealth').textContent=`${text.length} characters · ${segments} SMS segment${segments>1?'s':''}. AI recommends staying within 160 characters where possible.`;
+      $('channelMessageHealth').textContent=`${text.length} characters · ${segments} SMS segment${segments>1?'s':''}. AI recommends staying within 160 characters where possible.`;
     }else if(composerChannel==='whatsapp'){
-      $('messageHealth').textContent=`${text.length} characters · Template variables detected: ${(text.match(/{{/g)||[]).length}. Keep approved WhatsApp variables unchanged.`;
+      $('channelMessageHealth').textContent=`${text.length} characters · Template variables detected: ${(text.match(/{{/g)||[]).length}. Keep approved WhatsApp variables unchanged.`;
     }else{
-      $('messageHealth').textContent=`${text.length} characters · Use {{name}} and {{entry_link}} as personalisation variables.`;
+      $('messageHealth').textContent=`${text.length} characters · ${(raw.match(/{{/g)||[]).length} personalisation variable${(raw.match(/{{/g)||[]).length===1?'':'s'} detected · Email-safe HTML supported.`;
     }
   }
+
 
   function aiGenerate(){
     const goal=($('aiGoal').value||'remind registered users to complete their entry').trim();
     if(composerChannel==='email'){
       $('composerSubject').value='Action needed: complete your India FinTech Awards entry';
-      $('composerMessage').value=`Hi {{name}},\n\nA quick reminder to ${goal.replace(/^to\s+/,'')}. Your saved progress is ready when you return.\n\nContinue here: {{entry_link}}\n\nRegards,\nETB2B Awards Team`;
+      $('composerMessage').value=`<p>Hi {{name}},</p><p>A quick reminder to ${goal.replace(/^to\s+/,'')}. Your saved progress is ready when you return.</p><p><a href="{{entry_link}}" style="display:inline-block;background:#d71920;color:#ffffff;text-decoration:none;padding:11px 18px;border-radius:7px;font-weight:700;">Continue your entry</a></p><p>Regards,<br><strong>ETB2B Awards Team</strong></p>`;
+      syncEmailEditorFromMessage();
       $('subjectScore').textContent='AI subject score: 88 / 100 · Clear action + award context';
     }else if(composerChannel==='whatsapp'){
       $('composerMessage').value=`Hi {{name}}, a quick reminder to ${goal.replace(/^to\s+/,'')}. Continue here: {{entry_link}}`;
@@ -169,6 +201,7 @@
     }
     updateMessageHealth();toast('AI draft generated');
   }
+
 
   function generateAutoJourney(){
     const goal=($('autoAiGoal').value||'welcome new users after registration').trim();
@@ -238,10 +271,25 @@
   $('closeReminderComposer').addEventListener('click',closeDrawers);$('closeAutomationComposer').addEventListener('click',closeDrawers);$('reminderOverlay').addEventListener('click',closeDrawers);
   $('generateAiCopy').addEventListener('click',aiGenerate);
   $('composerMessage').addEventListener('input',updateMessageHealth);
+  $('emailRichEditor').addEventListener('input',updateMessageHealth);
+  $('emailHtmlSource').addEventListener('input',()=>{$('composerMessage').value=$('emailHtmlSource').value;updateMessageHealth();});
+  $$('[data-editor-mode]').forEach(btn=>btn.addEventListener('click',()=>setEmailEditorMode(btn.dataset.editorMode)));
+  $$('[data-editor-command]').forEach(btn=>btn.addEventListener('click',()=>{setEmailEditorMode('visual');$('emailRichEditor').focus();document.execCommand(btn.dataset.editorCommand,false,null);updateMessageHealth();}));
+  $$('[data-insert-variable]').forEach(btn=>btn.addEventListener('click',()=>{setEmailEditorMode('visual');$('emailRichEditor').focus();document.execCommand('insertText',false,btn.dataset.insertVariable);updateMessageHealth();}));
+  $$('[data-editor-action]').forEach(btn=>btn.addEventListener('click',()=>{
+    setEmailEditorMode('visual');$('emailRichEditor').focus();
+    if(btn.dataset.editorAction==='link'){const url=prompt('Paste the destination URL');if(url)document.execCommand('createLink',false,url);}
+    if(btn.dataset.editorAction==='image'){const url=prompt('Paste a public HTTPS image URL');if(url)document.execCommand('insertImage',false,url);}
+    updateMessageHealth();
+  }));
+  $('composerTemplate').addEventListener('change',()=>{
+    const custom=$('composerTemplate').value==='Custom template';$('customTemplateNameWrap').hidden=!custom;
+    if(custom)setTimeout(()=>$('customTemplateName').focus(),60);
+  });
   $('improveSubject').addEventListener('click',()=>{$('composerSubject').value='Final reminder: complete your India FinTech Awards entry';$('subjectScore').textContent='AI subject score: 92 / 100 · Strong urgency without spam signals';toast('Subject improved');});
   $('applySmartTime').addEventListener('click',()=>{$('composerSchedule').value='2026-09-17T10:45';toast('Smart send time applied');});
   $('saveReminderDraft').addEventListener('click',()=>{closeDrawers();toast('Reminder saved as draft');});
-  $('scheduleReminder').addEventListener('click',()=>{const target=$('composerAudience').value==='selected'&&selectedAudience?(selectedAudience.segmentName||'selected audience'):$('composerAudience').value;closeDrawers();toast(`${composerMode==='mailer'?'Mailer':composerChannel==='whatsapp'?'WhatsApp':composerChannel.toUpperCase()} scheduled for ${target}`);});
+  $('scheduleReminder').addEventListener('click',()=>{if(composerChannel==='email')syncEmailEditorToMessage();const target=$('composerAudience').value==='selected'&&selectedAudience?(selectedAudience.segmentName||'selected audience'):$('composerAudience').value;closeDrawers();toast(`${composerMode==='mailer'?'Mailer':composerChannel==='whatsapp'?'WhatsApp':composerChannel.toUpperCase()} scheduled for ${target}`);});
 
   $$('[data-smart-schedule]').forEach(btn=>btn.addEventListener('click',()=>{configureComposer(btn.dataset.smartSchedule);setTimeout(()=>$('applySmartTime').click(),120);}));
   $$('[data-ai-review]').forEach(btn=>btn.addEventListener('click',()=>{configureComposer(btn.dataset.aiReview);setTimeout(aiGenerate,120);}));

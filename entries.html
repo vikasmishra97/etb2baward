@@ -196,21 +196,58 @@
       <div class="rh-ai-prompt"><input id="aiGoal" type="text" placeholder="e.g. remind registered users to start entry"><button type="button" id="generateAiCopy">Generate</button></div>
     </div>
 
-    <div class="rh-form-grid">
+    <div class="rh-form-grid rh-form-grid-timing">
       <label><span>Send to</span><select id="composerAudience"><option id="selectedAudienceOption" value="selected" hidden>Selected from Audience</option><option>All Registered Users</option><option>Registered, no entry</option><option>Entry started, incomplete</option><option>Submitted, payment pending</option><option>Custom segment</option></select></label>
-      <label><span>Schedule date & time</span><input id="composerSchedule" type="datetime-local"></label>
+      <div class="rh-timing-stack">
+        <label><span>Schedule date & time</span><input id="composerSchedule" type="datetime-local"></label>
+        <div class="rh-smart-inline">
+          <div class="rh-smart-inline-copy"><span class="rh-smart-icon">◎</span><div><b>Smart send</b><p id="smartSendText">Best time: Tomorrow, 10:45 AM.</p></div></div>
+          <button type="button" id="applySmartTime">Apply</button>
+        </div>
+      </div>
     </div>
 
     <label class="rh-field"><span>Sender name</span><input id="composerSender" type="text" value="ETB2B Awards"></label>
     <label class="rh-field email-only"><span>Subject</span><div class="rh-input-action"><input id="composerSubject" type="text" placeholder="Mailer subject"><button type="button" id="improveSubject">✦ Improve</button></div><small id="subjectScore">AI subject score: —</small></label>
     <label class="rh-field sms-only" hidden><span>SMS event title</span><input id="smsEventTitle" type="text" value="India FinTech Awards 2027"></label>
-    <label class="rh-field"><span>Template</span><select id="composerTemplate"><option value="">Select template</option><option>Registration confirmation</option><option>Entry deadline reminder</option><option>Payment reminder</option><option>Event update</option></select></label>
-    <label class="rh-field"><span id="messageLabel">Body content</span><textarea id="composerMessage" rows="10" placeholder="Write your message..."></textarea><small id="messageHealth">Use {{name}} and {{entry_link}} as personalisation variables.</small></label>
+    <label class="rh-field"><span>Template</span><select id="composerTemplate"><option value="">Select template</option><option>Registration confirmation</option><option>Entry deadline reminder</option><option>Payment reminder</option><option>Event update</option><option value="Custom template">+ Custom template</option></select></label>
+    <label class="rh-field" id="customTemplateNameWrap" hidden><span>Custom template name</span><input id="customTemplateName" type="text" placeholder="e.g. Final 48-hour reminder"></label>
 
-    <div class="rh-smart-box">
-      <div><span class="rh-smart-icon">◎</span><div><b>Smart send recommendation</b><p id="smartSendText">Best predicted time for this audience: Tomorrow, 10:45 AM.</p></div></div>
-      <button type="button" id="applySmartTime">Apply</button>
+    <div class="rh-field email-only" id="emailBodyField">
+      <div class="rh-editor-label-row"><span>Body content</span><div class="rh-editor-mode" role="group" aria-label="Email editor mode"><button type="button" class="active" data-editor-mode="visual">Visual</button><button type="button" data-editor-mode="html">&lt;/&gt; HTML</button></div></div>
+      <div class="rh-email-editor">
+        <div class="rh-editor-toolbar" aria-label="Email formatting toolbar">
+          <div class="rh-editor-toolgroup">
+            <button type="button" title="Bold" data-editor-command="bold"><b>B</b></button>
+            <button type="button" title="Italic" data-editor-command="italic"><i>I</i></button>
+            <button type="button" title="Underline" data-editor-command="underline"><u>U</u></button>
+          </div>
+          <span class="rh-editor-sep"></span>
+          <div class="rh-editor-toolgroup">
+            <button type="button" title="Bulleted list" data-editor-command="insertUnorderedList">• List</button>
+            <button type="button" title="Numbered list" data-editor-command="insertOrderedList">1. List</button>
+          </div>
+          <span class="rh-editor-sep"></span>
+          <div class="rh-editor-toolgroup">
+            <button type="button" title="Align left" data-editor-command="justifyLeft">≡</button>
+            <button type="button" title="Align center" data-editor-command="justifyCenter">≡</button>
+            <button type="button" title="Align right" data-editor-command="justifyRight">≡</button>
+          </div>
+          <span class="rh-editor-sep"></span>
+          <div class="rh-editor-toolgroup">
+            <button type="button" title="Insert link" data-editor-action="link">🔗</button>
+            <button type="button" title="Insert image" data-editor-action="image">▧</button>
+          </div>
+        </div>
+        <div class="rh-editor-variablebar"><span>Personalise:</span><button type="button" data-insert-variable="{{name}}">{{name}}</button><button type="button" data-insert-variable="{{entry_link}}">{{entry_link}}</button><button type="button" data-insert-variable="{{company}}">{{company}}</button></div>
+        <div id="emailRichEditor" class="rh-editor-canvas" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Email body content"></div>
+        <textarea id="emailHtmlSource" class="rh-editor-source" rows="14" hidden spellcheck="false" aria-label="Email HTML source"></textarea>
+        <div class="rh-editor-foot"><span>Responsive email content</span><span>Images should use public HTTPS URLs</span></div>
+      </div>
+      <small id="messageHealth">Use {{name}} and {{entry_link}} as personalisation variables.</small>
     </div>
+
+    <label class="rh-field non-email-message" hidden><span id="messageLabel">Message</span><textarea id="composerMessage" rows="10" placeholder="Write your message..."></textarea><small id="channelMessageHealth">Use approved template variables.</small></label>
   </div>
   <div class="rh-drawer-foot"><button class="btn secondary" type="button" id="saveReminderDraft">Save draft</button><button class="btn primary" type="button" id="scheduleReminder">Schedule message</button></div>
 </aside>
