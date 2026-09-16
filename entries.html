@@ -309,6 +309,13 @@
       <div><span>Audience</span><strong id="demoAudience">All Registered Users</strong></div>
       <div class="wide"><span>Subject</span><strong id="demoSubject">—</strong></div>
     </div>
+    <div class="rh-demo-testbar">
+      <div class="rh-demo-testbar-copy"><span class="rh-demo-test-icon">@</span><div><b>Send a demo</b><span>Enter an email address to test this mailer before scheduling.</span></div></div>
+      <div class="rh-demo-send-test">
+        <div><input id="testEmailAddress" type="email" placeholder="name@company.com" autocomplete="email"><button class="btn primary" type="button" id="sendDemoTest">Send demo</button></div>
+        <small id="testEmailStatus">Demo delivery will work when your mail API is connected.</small>
+      </div>
+    </div>
     <div class="rh-demo-ai" id="demoAiPanel">
       <div class="rh-demo-ai-top"><div class="rh-demo-ai-title"><span class="rh-ai-glyph">AI</span><div><b>AI preflight check</b><p>Review subject, personalisation, CTA and mobile readiness before sending.</p></div></div><div class="rh-demo-ai-score"><strong id="demoAiScore">--</strong><span>/100</span></div></div>
       <div class="rh-demo-ai-checks" id="demoAiChecks"></div>
@@ -320,11 +327,6 @@
     </div>
     <div class="rh-demo-stage" id="demoStage"><iframe id="demoEmailFrame" title="Email demo preview"></iframe></div>
     <div class="rh-demo-foot">
-      <div class="rh-demo-send-test">
-        <label for="testEmailAddress">Send demo email</label>
-        <div><input id="testEmailAddress" type="email" placeholder="name@company.com" autocomplete="email"><button class="btn primary" type="button" id="sendDemoTest">Send demo</button></div>
-        <small id="testEmailStatus">Enter an email address to send this preview through your connected mail API.</small>
-      </div>
       <button class="btn secondary" type="button" id="backToEditor">Back to editor</button>
     </div>
   </div>

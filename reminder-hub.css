@@ -171,3 +171,29 @@
   .rh-cta-builder-grid{grid-template-columns:1fr}.rh-cta-builder-grid label.wide{grid-column:auto}.rh-cta-builder-actions{display:grid;grid-template-columns:1fr 1fr}.rh-cta-builder-actions .btn{min-width:0}
   .rh-demo-ai-top{align-items:center}.rh-demo-ai-title p{display:none}.rh-demo-ai-checks{display:grid;grid-template-columns:1fr}.rh-demo-send-test>div{grid-template-columns:1fr}.rh-demo-send-test .btn{width:100%}
 }
+
+
+/* Compact mail editor + always-visible demo recipient */
+.rh-email-editor{border-radius:11px}
+.rh-editor-toolbar{min-height:0!important;padding:6px 7px!important;gap:4px!important;align-items:center!important}
+.rh-editor-toolgroup{gap:2px!important}
+.rh-editor-toolbar button{height:29px!important;min-height:29px!important;min-width:29px!important;padding:0 7px!important;border-radius:6px!important;font-size:9.5px!important;line-height:1!important}
+.rh-editor-toolbar button[title="Undo"],.rh-editor-toolbar button[title="Redo"]{min-width:44px!important}
+.rh-editor-toolbar button[title="Bulleted list"],.rh-editor-toolbar button[title="Numbered list"]{min-width:40px!important}
+.rh-editor-toolbar button[title="Align left"],.rh-editor-toolbar button[title="Align center"],.rh-editor-toolbar button[title="Align right"]{min-width:37px!important}
+.rh-editor-select{height:29px!important;min-width:70px;padding:0 24px 0 8px!important;border-radius:6px!important;font-size:9.5px!important}
+.rh-color-tool{height:29px!important;min-width:53px!important;padding:0 7px!important;gap:5px!important;border-radius:6px!important}
+.rh-color-tool span{font-size:9px!important}.rh-color-tool i{width:13px!important;height:13px!important;border-radius:4px!important}
+.rh-editor-cta-tool{min-width:65px!important}
+.rh-editor-sep{height:18px!important;margin:0 1px!important}
+.rh-editor-variablebar{padding:6px 8px!important;gap:5px!important}.rh-editor-variablebar>span{font-size:8px!important}.rh-editor-variablebar button{padding:4px 7px!important;font-size:8px!important}
+.rh-editor-canvas{min-height:190px!important;padding:14px 16px!important;font-size:12px!important;line-height:1.58!important}
+.rh-editor-foot{padding:6px 9px!important;font-size:7.8px!important}
+
+.rh-demo-testbar{display:grid;grid-template-columns:minmax(180px,.75fr) minmax(280px,1.25fr);gap:16px;align-items:center;padding:11px 22px;border-bottom:1px solid #e8eaf0;background:#fff}
+.rh-demo-testbar-copy{display:flex;align-items:center;gap:9px;min-width:0}.rh-demo-test-icon{width:28px;height:28px;flex:0 0 28px;border-radius:8px;display:grid;place-items:center;background:#fff0f0;color:#d71920;font-size:12px;font-weight:900}.rh-demo-testbar-copy b,.rh-demo-testbar-copy span{display:block}.rh-demo-testbar-copy b{font-size:10.5px;color:#282e3f}.rh-demo-testbar-copy span{margin-top:2px;font-size:8.5px;color:#8a90a0;line-height:1.35}
+.rh-demo-testbar .rh-demo-send-test>div{display:flex;align-items:center;gap:7px}.rh-demo-testbar .rh-demo-send-test input{min-width:0;flex:1;height:36px;border:1px solid #dfe3eb;border-radius:8px;background:#fff;padding:0 10px;color:#2b3142;font:inherit;font-size:10px;outline:none}.rh-demo-testbar .rh-demo-send-test input:focus{border-color:#d5a0a6;box-shadow:0 0 0 3px rgba(215,25,32,.06)}.rh-demo-testbar .rh-demo-send-test .btn{height:36px;min-width:96px;padding:0 12px}.rh-demo-testbar .rh-demo-send-test small{display:block;margin-top:4px;color:#9298a7;font-size:7.8px;line-height:1.3}.rh-demo-testbar .rh-demo-send-test small.error{color:#c91820}
+.rh-demo-foot{display:flex!important;justify-content:flex-end!important;align-items:center!important;padding:10px 22px!important}.rh-demo-foot>#backToEditor{height:36px;min-width:110px}
+
+@media(max-width:780px){.rh-demo-testbar{grid-template-columns:1fr;padding:10px 14px;gap:9px}.rh-demo-testbar-copy span{display:none}.rh-demo-testbar .rh-demo-send-test>div{display:grid;grid-template-columns:1fr auto}.rh-editor-toolbar{overflow-x:auto;flex-wrap:nowrap!important}}
+@media(max-width:520px){.rh-demo-testbar .rh-demo-send-test>div{grid-template-columns:1fr}.rh-demo-testbar .rh-demo-send-test .btn{width:100%}}
