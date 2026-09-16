@@ -15,11 +15,10 @@
     <div class="award-switch"><small>Current award</small><strong id="sideAwardName">India FinTech Awards 2027</strong></div>
     <nav class="nav">
       <a href="index.html"><span class="ico">⌂</span><span>Home</span></a>
-      <div class="nav-label">Build</div><a href="award.html"><span class="ico">◇</span><span>Award</span></a><a href="website.html"><span class="ico">▣</span><span>Website</span></a><a href="categories.html"><span class="ico">▦</span><span>Categories</span></a><a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a><a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a><div class="nav-label">Operate</div>
-      <a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <div class="nav-label">Build</div><a href="award.html"><span class="ico">◇</span><span>Award</span></a><a href="website.html"><span class="ico">▣</span><span>Website</span></a><a href="categories.html"><span class="ico">▦</span><span>Categories</span></a><a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a><a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
       <div class="nav-label">Grow</div>
       <a class="active" href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
-      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a href="entries.html"><span class="ico">✉</span><span>Reminder Hub</span></a>
       <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
       <div class="nav-label">Judge</div>
       <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
@@ -51,7 +50,7 @@
         <div>
           <div class="au-kicker">GROW · STEP 1 OF 3</div>
           <h1>Audience & leads</h1>
-          <p>Find the people most likely to enter, recover drop-offs, and build targeted audiences for campaigns.</p>
+          <p>Find the people most likely to enter, recover drop-offs, and send category-wise reminders from one audience workspace.</p>
         </div>
         <div class="top-actions au-head-actions">
           <button class="btn secondary" id="importContacts">⇧ Import contacts</button>
@@ -64,7 +63,7 @@
       <div class="au-grow-path" aria-label="Grow setup progress">
         <a class="active" href="audience.html"><span>1</span><b>Audience</b><small>Find who to target</small></a>
         <i></i>
-        <a href="campaigns.html"><span>2</span><b>Campaigns</b><small>Reach each segment</small></a>
+        <a href="entries.html"><span>2</span><b>Reminder Hub</b><small>Message each audience</small></a>
         <i></i>
         <a href="automations.html"><span>3</span><b>Automations</b><small>Keep follow-up running</small></a>
       </div>
@@ -77,7 +76,7 @@
           <p>They already started an entry and have the highest modeled intent in your current audience.</p>
         </div>
         <div class="au-copilot-actions">
-          <button class="btn primary" data-use-segment="incomplete">Create recovery campaign</button>
+          <button class="btn primary" data-use-segment="incomplete">Create recovery reminder</button>
           <button class="btn secondary" data-segment-jump="incomplete">View 296 leads</button>
         </div>
       </section>
@@ -111,7 +110,7 @@
             </div>
             <div class="au-table-head-actions">
               <button class="btn secondary au-small-btn" id="exportVisible">↓ Export</button>
-              <button class="btn primary au-small-btn" id="campaignVisible">Create campaign</button>
+              <button class="btn primary au-small-btn" id="campaignVisible">Send reminder</button>
             </div>
           </div>
 
@@ -133,7 +132,16 @@
               <option value="medium">Medium · 45–74</option>
               <option value="low">Low · under 45</option>
             </select>
-            <select id="categoryFilter" aria-label="Category"><option value="all">All categories</option></select>
+            <div class="au-category-filter" id="categoryFilterWrap">
+              <button class="au-category-trigger" type="button" id="categoryFilterButton" aria-expanded="false" aria-controls="categoryFilterMenu">
+                <span id="categoryFilterLabel">All categories</span><i>⌄</i>
+              </button>
+              <div class="au-category-menu" id="categoryFilterMenu" hidden>
+                <div class="au-category-menu-head"><div><b>Filter by category</b><small>Select one or multiple categories</small></div><button type="button" id="clearCategoryFilter">Clear</button></div>
+                <div class="au-category-options" id="categoryFilterOptions"></div>
+                <div class="au-category-menu-foot"><span id="categorySelectionCount">All categories</span><button type="button" id="applyCategoryFilter">Apply</button></div>
+              </div>
+            </div>
             <button class="au-filter-reset" id="resetFilters">Reset</button>
           </div>
 
@@ -141,7 +149,7 @@
             <div><b id="bulkCount">0 selected</b><span>Use selected contacts without changing the segment.</span></div>
             <div>
               <button id="bulkExport">Export</button>
-              <button id="bulkCampaign">Add to campaign</button>
+              <button id="bulkCampaign">Send reminder</button>
             </div>
           </div>
 
@@ -175,7 +183,7 @@
             <p>Incomplete entrants are more likely to convert than imported prospects because they already invested time in the form.</p>
             <div class="au-opportunity-stat"><b>296</b><span>entry starters waiting</span></div>
             <div class="au-opportunity-stat"><b>₹5.3L</b><span>estimated recoverable revenue</span></div>
-            <button class="btn primary" data-use-segment="incomplete">Build recovery campaign</button>
+            <button class="btn primary" data-use-segment="incomplete">Build recovery reminder</button>
           </section>
 
           <section class="card pad au-source-card section">
@@ -193,8 +201,8 @@
       </div>
 
       <div class="au-bottom-actions section">
-        <div><b>Audience foundation ready</b><span>Next, turn your segments into targeted email, WhatsApp and social campaigns.</span></div>
-        <div class="top-actions"><button class="btn secondary" id="saveAudience">Save audience</button><a class="btn primary" href="campaigns.html">Continue to Campaigns →</a></div>
+        <div><b>Audience foundation ready</b><span>Next, turn your selected audience into targeted Email, WhatsApp or SMS reminders.</span></div>
+        <div class="top-actions"><button class="btn secondary" id="saveAudience">Save audience</button><button class="btn primary" type="button" id="continueReminderHub">Continue to Reminder Hub →</button></div>
       </div>
 
       <div class="footer-note">Vikas Mishra</div>
@@ -217,7 +225,7 @@
       </div>
 
       <div class="au-profile-actions">
-        <button class="btn primary" id="drawerCampaign">Add to campaign</button>
+        <button class="btn primary" id="drawerCampaign">Send reminder</button>
         <button class="btn secondary" id="drawerReminder">Send reminder</button>
       </div>
 

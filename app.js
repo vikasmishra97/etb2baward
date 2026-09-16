@@ -152,6 +152,20 @@
 
     const nav=sidebar.querySelector('.nav');
     if(nav){
+      // Reminder Hub now replaces the former Campaigns destination in the Grow section.
+      const legacyEntries=[...nav.querySelectorAll('a')].find(a=>(a.getAttribute('href')||'').split('/').pop()==='entries.html');
+      const campaignSlot=[...nav.querySelectorAll('a')].find(a=>(a.getAttribute('href')||'').split('/').pop()==='campaigns.html');
+      if(campaignSlot){
+        campaignSlot.setAttribute('href','entries.html');
+        const campaignLabel=campaignSlot.querySelector('span:last-child');
+        if(campaignLabel) campaignLabel.textContent='Reminder Hub';
+        campaignSlot.classList.toggle('active',CURRENT_PAGE==='entries.html');
+      }
+      if(legacyEntries && campaignSlot && legacyEntries!==campaignSlot){
+        const maybeOperate=legacyEntries.previousElementSibling;
+        legacyEntries.remove();
+        if(maybeOperate?.classList.contains('nav-label') && maybeOperate.textContent.trim().toLowerCase()==='operate') maybeOperate.remove();
+      }
       nav.querySelectorAll('a').forEach(a=>{
         const href=(a.getAttribute('href')||'').split('/').pop();
         const ico=a.querySelector('.ico');
@@ -244,7 +258,7 @@
       const drawer=document.createElement('aside');
       drawer.className='copilot-drawer';
       drawer.setAttribute('aria-label','Award Copilot');
-      drawer.innerHTML=`<div class="copilot-head"><div><span class="copilot-kicker">AI ASSISTANT</span><h3>Ask Award Copilot</h3></div><button type="button" class="copilot-close" aria-label="Close Copilot">×</button></div><div class="copilot-body"><div class="copilot-welcome"><div class="copilot-spark">✦</div><div><b>How can I help?</b><p>This is a working prototype panel for your awards workspace.</p></div></div><div class="copilot-suggestions"><button type="button">Summarize current entries</button><button type="button">Suggest reminder campaign</button><button type="button">Review judging readiness</button></div><div class="copilot-response" id="copilotResponse">Choose a suggestion or type a question below.</div></div><form class="copilot-compose"><input type="text" placeholder="Ask about your award..." aria-label="Ask Award Copilot"><button type="submit">Send</button></form>`;
+      drawer.innerHTML=`<div class="copilot-head"><div><span class="copilot-kicker">AI ASSISTANT</span><h3>Ask Award Copilot</h3></div><button type="button" class="copilot-close" aria-label="Close Copilot">×</button></div><div class="copilot-body"><div class="copilot-welcome"><div class="copilot-spark">✦</div><div><b>How can I help?</b><p>This is a working prototype panel for your awards workspace.</p></div></div><div class="copilot-suggestions"><button type="button">Summarize current entries</button><button type="button">Suggest reminder journey</button><button type="button">Review judging readiness</button></div><div class="copilot-response" id="copilotResponse">Choose a suggestion or type a question below.</div></div><form class="copilot-compose"><input type="text" placeholder="Ask about your award..." aria-label="Ask Award Copilot"><button type="submit">Send</button></form>`;
       document.body.append(overlay,drawer);
       const openCopilot=()=>{drawer.classList.add('open');overlay.classList.add('open');copilotBtn.setAttribute('aria-expanded','true');setTimeout(()=>drawer.querySelector('input')?.focus(),120);};
       const closeCopilot=()=>{drawer.classList.remove('open');overlay.classList.remove('open');copilotBtn.setAttribute('aria-expanded','false');};

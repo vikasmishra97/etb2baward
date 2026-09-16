@@ -21,11 +21,9 @@
       <a href="categories.html"><span class="ico">▦</span><span>Categories</span></a>
       <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
       <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
-      <div class="nav-label">Operate</div>
-      <a class="active" href="entries.html"><span class="ico">✉</span><span>Reminder Hub</span></a>
       <div class="nav-label">Grow</div>
       <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
-      <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
+      <a class="active" href="entries.html"><span class="ico">✉</span><span>Reminder Hub</span></a>
       <a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
       <div class="nav-label">Judge</div>
       <a href="judges.html"><span class="ico">♟</span><span>Judges</span></a>
@@ -61,6 +59,30 @@
           <button class="btn primary" type="button" id="heroScheduleBtn">+ Schedule message</button>
         </div>
       </div>
+
+      <section class="rh-audience-context" id="audienceContext" hidden>
+        <div class="rh-audience-icon">◎</div>
+        <div class="rh-audience-copy">
+          <span>SELECTED FROM AUDIENCE</span>
+          <h3 id="audienceContextTitle">Target audience ready</h3>
+          <p id="audienceContextText">Your selected contacts are ready for a reminder.</p>
+          <div class="rh-audience-chips" id="audienceCategoryChips"></div>
+        </div>
+        <div class="rh-audience-actions"><a class="btn secondary" href="audience.html">Change audience</a><button class="btn ghost" type="button" id="clearAudienceContext">Clear</button></div>
+      </section>
+
+      <section class="rh-create-grid" aria-label="Quick create">
+        <article class="rh-create-card auto">
+          <div class="rh-create-icon">⚡</div>
+          <div><span>AUTO JOURNEY</span><h2>Create automation</h2><p>Trigger Email, WhatsApp or SMS automatically when a participant registers, drops off, submits or has payment pending.</p></div>
+          <button class="btn primary" type="button" id="openAutoJourney">Create automation</button>
+        </article>
+        <article class="rh-create-card mailer">
+          <div class="rh-create-icon">✉</div>
+          <div><span>MAILER STUDIO</span><h2>Create mailer</h2><p>Build a one-time email with AI-assisted subject, copy, audience targeting and smart send-time recommendations.</p></div>
+          <button class="btn secondary" type="button" id="openMailerStudio">Create mailer</button>
+        </article>
+      </section>
 
       <section class="rh-kpi-grid" aria-label="Reminder performance">
         <article class="rh-kpi"><div class="rh-kpi-icon scheduled">◷</div><div><span>Scheduled</span><strong>12</strong><small>Next 7 days</small></div></article>
@@ -116,7 +138,7 @@
 
         <div class="rh-panel" id="panel-automations" data-reminder-panel="automations" role="tabpanel">
           <div class="automation-head">
-            <div><span class="reminder-eyebrow">ALWAYS-ON COMMUNICATION</span><h2>Auto Journeys</h2><p>Set messages once and let the system trigger them automatically when participant behaviour changes.</p></div>
+            <div><span class="reminder-eyebrow">ALWAYS-ON COMMUNICATION</span><h2>Auto Journeys</h2><p>Create behaviour-based journeys for registration, incomplete entries, payment recovery and deadline nudges.</p></div>
             <button class="btn primary" type="button" id="createAutomation">+ Create automation</button>
           </div>
 
@@ -159,7 +181,7 @@
     </div>
 
     <div class="rh-form-grid">
-      <label><span>Send to</span><select id="composerAudience"><option>All Registered Users</option><option>Registered, no entry</option><option>Entry started, incomplete</option><option>Submitted, payment pending</option><option>Custom segment</option></select></label>
+      <label><span>Send to</span><select id="composerAudience"><option id="selectedAudienceOption" value="selected" hidden>Selected from Audience</option><option>All Registered Users</option><option>Registered, no entry</option><option>Entry started, incomplete</option><option>Submitted, payment pending</option><option>Custom segment</option></select></label>
       <label><span>Schedule date & time</span><input id="composerSchedule" type="datetime-local"></label>
     </div>
 
@@ -183,6 +205,10 @@
     <button type="button" class="rh-close" id="closeAutomationComposer" aria-label="Close">×</button>
   </div>
   <div class="rh-drawer-body">
+    <div class="rh-ai-compose-box rh-auto-ai-box">
+      <div><span class="rh-ai-glyph">✦</span><div><b>AI Journey Builder</b><p>Describe the outcome you want and AI will suggest the trigger, channel, delay and template.</p></div></div>
+      <div class="rh-ai-prompt"><input id="autoAiGoal" type="text" placeholder="e.g. welcome new users instantly on Email + WhatsApp"><button type="button" id="generateAutoJourney">Build journey</button></div>
+    </div>
     <div class="rh-automation-flow">
       <div class="flow-step"><span>1</span><div><b>When this happens</b><small>Participant behaviour trigger</small></div></div>
       <div class="flow-line"></div>

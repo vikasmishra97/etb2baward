@@ -30,6 +30,8 @@
 
   let currentTab='email';
   let composerChannel='email';
+  let composerMode='schedule';
+  let selectedAudience=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_selected_audience')||'null')}catch(e){return null}})();
   let automationSeq=5;
   const automations=[
     {id:1,name:'Registration welcome',trigger:'When user registers',channel:'Email + WhatsApp',delay:'Immediately',template:'Registration confirmation',status:true,triggered:'1,584',conversion:'48.2% opened'},
@@ -37,6 +39,20 @@
     {id:3,name:'Incomplete entry recovery',trigger:'Entry incomplete after 48 hours',channel:'Email',delay:'48 hours',template:'Complete your entry',status:true,triggered:'296',conversion:'18.9% recovered'},
     {id:4,name:'Payment recovery',trigger:'Payment pending after submission',channel:'Email + WhatsApp',delay:'1 hour',template:'Complete payment',status:false,triggered:'18',conversion:'Enable to start'}
   ];
+
+  function hydrateAudienceContext(){
+    const box=$('audienceContext');const option=$('selectedAudienceOption');
+    if(!box||!option)return;
+    if(!selectedAudience){box.hidden=true;option.hidden=true;return;}
+    const count=Number(selectedAudience.count||selectedAudience.sampleCount||selectedAudience.contactIds?.length||0);
+    const name=selectedAudience.segmentName||'Selected audience';
+    const categories=Array.isArray(selectedAudience.categories)?selectedAudience.categories:[];
+    box.hidden=false;
+    $('audienceContextTitle').textContent=`${count.toLocaleString('en-IN')} contact${count===1?'':'s'} ready for reminders`;
+    $('audienceContextText').textContent=`${name} was selected in Audience. New reminders will target this audience by default.`;
+    $('audienceCategoryChips').innerHTML=categories.slice(0,5).map(c=>`<span>${String(c).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}</span>`).join('')+(categories.length>5?`<span>+${categories.length-5} more</span>`:'');
+    option.hidden=false;option.textContent=`Selected from Audience · ${count.toLocaleString('en-IN')} contacts`;
+  }
 
   function statusLabel(status){return status.charAt(0).toUpperCase()+status.slice(1);}
   function actionButtons(channel,id){
@@ -90,12 +106,14 @@
     }; return map[channel];
   }
 
-  function configureComposer(channel,item){
-    composerChannel=channel;
+  function configureComposer(channel,item,mode='schedule'){
+    composerChannel=channel;composerMode=mode;
     const label={email:'Email',whatsapp:'WhatsApp',sms:'SMS'}[channel];
-    $('composerKicker').textContent=item?'EDIT REMINDER':'SCHEDULE MESSAGE';
-    $('composerTitle').textContent=(item?'Edit ':'Schedule ')+label;
-    $('composerSubtitle').textContent=item?'Update the message, audience or schedule.':'Create, preview and schedule a message.';
+    const mailerMode=mode==='mailer'&&channel==='email'&&!item;
+    $('composerKicker').textContent=mailerMode?'MAILER STUDIO':item?'EDIT REMINDER':'SCHEDULE MESSAGE';
+    $('composerTitle').textContent=mailerMode?'Create mailer':(item?'Edit ':'Schedule ')+label;
+    $('composerSubtitle').textContent=mailerMode?'Create an AI-assisted email, choose the audience and schedule when ready.':item?'Update the message, audience or schedule.':'Create, preview and schedule a message.';
+    $('scheduleReminder').textContent=mailerMode?'Schedule mailer':'Schedule message';
     $$('.email-only').forEach(el=>el.hidden=channel!=='email');
     $$('.sms-only').forEach(el=>el.hidden=channel!=='sms');
     $('messageLabel').textContent=channel==='email'?'Body content':channel==='whatsapp'?'WhatsApp message':'SMS message';
@@ -104,7 +122,9 @@
     $('composerSubject').value=item&&channel==='email'?item.title:copy.subject;
     $('composerMessage').value=item&&channel!=='email'?item.title:copy.message;
     if(item&&channel==='email') $('composerMessage').value=copy.message;
-    $('composerAudience').value=item?.audience&&Array.from($('composerAudience').options).some(o=>o.value===item.audience)?item.audience:'All Registered Users';
+    if(item?.audience&&Array.from($('composerAudience').options).some(o=>o.value===item.audience)) $('composerAudience').value=item.audience;
+    else if(selectedAudience&&!$('selectedAudienceOption').hidden) $('composerAudience').value='selected';
+    else $('composerAudience').value='All Registered Users';
     $('composerSchedule').value='';
     $('composerTemplate').value='';
     updateMessageHealth();
@@ -137,6 +157,18 @@
     updateMessageHealth();toast('AI draft generated');
   }
 
+  function generateAutoJourney(){
+    const goal=($('autoAiGoal').value||'welcome new users after registration').trim();
+    const g=goal.toLowerCase();
+    let preset={trigger:'registered',channel:'Email + WhatsApp',delay:'Immediately',name:'Registration welcome',template:'Registration confirmation'};
+    if(/payment|unpaid|checkout/.test(g)) preset={trigger:'payment',channel:'Email + WhatsApp',delay:'1 hour',name:'Payment recovery',template:'Complete payment'};
+    else if(/incomplete|finish|resume/.test(g)) preset={trigger:'incomplete',channel:'Email',delay:'48 hours',name:'Incomplete entry recovery',template:'Complete your entry'};
+    else if(/no entry|not started|start entry|registered/.test(g)&&!/welcome|confirm/.test(g)) preset={trigger:'noentry',channel:'WhatsApp',delay:'24 hours',name:'Start your entry',template:'Start your entry'};
+    else if(/deadline|last day|48 hour|closing/.test(g)) preset={trigger:'deadline',channel:'Email + WhatsApp',delay:'Immediately',name:'Deadline countdown',template:'Complete your entry'};
+    $('autoTrigger').value=preset.trigger;$('autoChannel').value=preset.channel;$('autoDelay').value=preset.delay;$('autoName').value=preset.name;$('autoTemplate').value=preset.template;
+    updateAutomationPreview();toast('AI journey suggestion applied');
+  }
+
   function renderAutomations(){
     $('automationGrid').innerHTML=automations.map(a=>`<article class="rh-auto-card ${a.status?'':'off'}" data-auto-id="${a.id}">
       <div class="rh-auto-top"><div class="rh-auto-title"><span class="rh-auto-icon">⚡</span><div><b>${a.name}</b><span>${a.trigger}</span></div></div><button class="rh-toggle ${a.status?'on':''}" type="button" data-toggle-auto="${a.id}" aria-label="Toggle ${a.name}"><i></i></button></div>
@@ -163,7 +195,7 @@
   }
 
   // initial render
-  ['email','whatsapp','sms'].forEach(renderChannel);renderAutomations();
+  ['email','whatsapp','sms'].forEach(renderChannel);renderAutomations();hydrateAudienceContext();
 
   $$('[data-reminder-tab]').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.reminderTab)));
   $$('[data-channel-search]').forEach(input=>input.addEventListener('input',()=>renderChannel(input.dataset.channelSearch)));
@@ -178,7 +210,7 @@
   $('improveSubject').addEventListener('click',()=>{$('composerSubject').value='Final reminder: complete your India FinTech Awards entry';$('subjectScore').textContent='AI subject score: 92 / 100 · Strong urgency without spam signals';toast('Subject improved');});
   $('applySmartTime').addEventListener('click',()=>{$('composerSchedule').value='2026-09-17T10:45';toast('Smart send time applied');});
   $('saveReminderDraft').addEventListener('click',()=>{closeDrawers();toast('Reminder saved as draft');});
-  $('scheduleReminder').addEventListener('click',()=>{closeDrawers();toast(`${composerChannel==='whatsapp'?'WhatsApp':composerChannel.toUpperCase()} reminder scheduled`);});
+  $('scheduleReminder').addEventListener('click',()=>{const target=$('composerAudience').value==='selected'&&selectedAudience?(selectedAudience.segmentName||'selected audience'):$('composerAudience').value;closeDrawers();toast(`${composerMode==='mailer'?'Mailer':composerChannel==='whatsapp'?'WhatsApp':composerChannel.toUpperCase()} scheduled for ${target}`);});
 
   $$('[data-smart-schedule]').forEach(btn=>btn.addEventListener('click',()=>{configureComposer(btn.dataset.smartSchedule);setTimeout(()=>$('applySmartTime').click(),120);}));
   $$('[data-ai-review]').forEach(btn=>btn.addEventListener('click',()=>{configureComposer(btn.dataset.aiReview);setTimeout(aiGenerate,120);}));
@@ -197,6 +229,10 @@
     const edit=e.target.closest('[data-edit-auto]');if(edit){configureAutomation(automations.find(x=>x.id===Number(edit.dataset.editAuto)));}
   });
 
+  $('openAutoJourney').addEventListener('click',()=>{switchTab('automations');configureAutomation();});
+  $('openMailerStudio').addEventListener('click',()=>{switchTab('email');configureComposer('email',null,'mailer');setTimeout(()=>$('aiGoal').focus(),220);});
+  $('clearAudienceContext').addEventListener('click',()=>{localStorage.removeItem('etb2b_awards_selected_audience');localStorage.removeItem('etb2b_awards_selected_leads');selectedAudience=null;hydrateAudienceContext();toast('Audience selection cleared');});
+  $('generateAutoJourney').addEventListener('click',generateAutoJourney);
   $('createAutomation').addEventListener('click',()=>configureAutomation());
   $('addDefaultWhatsapp').addEventListener('click',()=>{switchTab('automations');configureAutomation({name:'Registration welcome',trigger:'When user registers',channel:'WhatsApp',delay:'Immediately',template:'Registration confirmation'});});
   $('createSuggestedAutomation').addEventListener('click',()=>{configureAutomation({name:'Start your entry',trigger:'Registered, no entry after 24 hours',channel:'WhatsApp',delay:'24 hours',template:'Start your entry'});});

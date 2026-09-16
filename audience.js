@@ -46,6 +46,7 @@
   let activeSegment='all';
   let activeLeadId=null;
   let selectedIds=new Set();
+  let selectedCategories=new Set();
   let importBuffer=[];
 
   const segmentDefs=[
@@ -85,15 +86,32 @@
   function activeDef(){return segmentDefs.find(s=>s.key===activeSegment)||customSegments.find(s=>s.key===activeSegment)||segmentDefs[0]}
   function activeRules(){const s=customSegments.find(x=>x.key===activeSegment);return s?s.rules:null}
 
+  function updateCategoryFilterUi(){
+    const count=selectedCategories.size;
+    const label=$('categoryFilterLabel');
+    const selectionCount=$('categorySelectionCount');
+    if(label) label.textContent=count===0?'All categories':count===1?[...selectedCategories][0]:`${count} categories selected`;
+    if(selectionCount) selectionCount.textContent=count===0?'All categories':`${count} categor${count===1?'y':'ies'} selected`;
+    document.querySelectorAll('#categoryFilterOptions input[type="checkbox"]').forEach(input=>{input.checked=selectedCategories.has(input.value)});
+  }
+
   function populateCategoryControls(){
-    ['categoryFilter','newLeadCategory','segmentCategory'].forEach(id=>{
+    ['newLeadCategory','segmentCategory'].forEach(id=>{
       const el=$(id);if(!el)return;
       const current=el.value;
-      if(id==='categoryFilter')el.innerHTML='<option value="all">All categories</option>'+categoryNames.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
-      else if(id==='segmentCategory')el.innerHTML='<option value="all">Any category interest</option>'+categoryNames.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
+      if(id==='segmentCategory')el.innerHTML='<option value="all">Any category interest</option>'+categoryNames.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
       else el.innerHTML=categoryNames.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');
       if([...el.options].some(o=>o.value===current))el.value=current;
     });
+    const options=$('categoryFilterOptions');
+    if(options){
+      options.innerHTML=categoryNames.map(n=>`<label class="au-category-option"><input type="checkbox" value="${esc(n)}"><span class="au-category-check">✓</span><span>${esc(n)}</span></label>`).join('');
+      options.querySelectorAll('input[type="checkbox"]').forEach(input=>input.addEventListener('change',()=>{
+        if(input.checked)selectedCategories.add(input.value);else selectedCategories.delete(input.value);
+        updateCategoryFilterUi();
+      }));
+    }
+    updateCategoryFilterUi();
   }
 
   function renderSegments(){
@@ -111,7 +129,6 @@
     const q=$('contactSearch').value.trim().toLowerCase();
     const life=$('lifecycleFilter').value;
     const intent=$('intentFilter').value;
-    const cat=$('categoryFilter').value;
     const rules=activeRules();
     return leads.filter(l=>{
       if(!segmentMatches(l,activeSegment,rules))return false;
@@ -120,7 +137,7 @@
       if(intent==='high'&&l.score<75)return false;
       if(intent==='medium'&&(l.score<45||l.score>=75))return false;
       if(intent==='low'&&l.score>=45)return false;
-      if(cat!=='all'&&l.category!==cat)return false;
+      if(selectedCategories.size&&!selectedCategories.has(l.category))return false;
       return true;
     }).sort((a,b)=>b.score-a.score);
   }
@@ -151,7 +168,7 @@
 
   function selectSegment(key,scroll){
     activeSegment=key;selectedIds.clear();
-    $('contactSearch').value='';$('lifecycleFilter').value='all';$('intentFilter').value='all';$('categoryFilter').value='all';
+    $('contactSearch').value='';$('lifecycleFilter').value='all';$('intentFilter').value='all';selectedCategories.clear();updateCategoryFilterUi();
     renderSegments();renderTable();
     if(scroll)$('contactsTitle').scrollIntoView({behavior:'smooth',block:'center'});
   }
@@ -195,11 +212,29 @@
   function openModal(id){$(id).classList.add('open');$(id).setAttribute('aria-hidden','false')}
   function closeModal(id){$(id).classList.remove('open');$(id).setAttribute('aria-hidden','true')}
 
-  function useSegmentForCampaign(key){
+  function prepareReminderAudience(key,forceSelected=false){
     const s=segmentDefs.find(x=>x.key===key)||customSegments.find(x=>x.key===key)||activeDef();
-    localStorage.setItem('etb2b_awards_selected_audience',JSON.stringify({award:awardSlug,segmentKey:s.key,segmentName:s.name,count:s.count,createdAt:new Date().toISOString()}));
-    toast(`${s.name} prepared for Campaigns`);
-    setTimeout(()=>{location.href='campaigns.html'},500);
+    const visible=filteredLeads();
+    const chosen=selectedIds.size?leads.filter(l=>selectedIds.has(l.id)):visible;
+    const categoryList=[...new Set(chosen.map(l=>l.category).filter(Boolean))];
+    const hasFilters=selectedCategories.size||$('contactSearch').value.trim()||$('lifecycleFilter').value!=='all'||$('intentFilter').value!=='all';
+    const audienceName=selectedIds.size?`${selectedIds.size} selected contacts`:selectedCategories.size?(selectedCategories.size===1?[...selectedCategories][0]:`${selectedCategories.size} selected categories`):s.name;
+    const payload={
+      award:awardSlug,
+      segmentKey:s.key,
+      segmentName:audienceName,
+      count:selectedIds.size?selectedIds.size:(hasFilters?chosen.length:(s.count||chosen.length)),
+      sampleCount:chosen.length,
+      contactIds:chosen.map(l=>l.id),
+      contactNames:chosen.slice(0,4).map(l=>l.name),
+      categories:selectedCategories.size?[...selectedCategories]:categoryList,
+      source:'audience',
+      createdAt:new Date().toISOString()
+    };
+    localStorage.setItem('etb2b_awards_selected_audience',JSON.stringify(payload));
+    localStorage.setItem('etb2b_awards_selected_leads',JSON.stringify(payload.contactIds));
+    toast(`${selectedIds.size?selectedIds.size+' selected contacts':s.name} prepared for Reminder Hub`);
+    setTimeout(()=>{location.href='entries.html?source=audience'},420);
   }
 
   function exportRows(rows,filename){
@@ -238,24 +273,29 @@
   populateCategoryControls();renderSegments();renderTable();renderSources();renderDemand();
 
   // Filters and table actions
-  ['contactSearch','lifecycleFilter','intentFilter','categoryFilter'].forEach(id=>$(id).addEventListener(id==='contactSearch'?'input':'change',()=>{selectedIds.clear();renderTable()}));
-  $('resetFilters').addEventListener('click',()=>{$('contactSearch').value='';$('lifecycleFilter').value='all';$('intentFilter').value='all';$('categoryFilter').value='all';selectedIds.clear();renderTable()});
+  ['contactSearch','lifecycleFilter','intentFilter'].forEach(id=>$(id).addEventListener(id==='contactSearch'?'input':'change',()=>{selectedIds.clear();renderTable()}));
+  $('categoryFilterButton').addEventListener('click',()=>{const menu=$('categoryFilterMenu');const open=menu.hidden;menu.hidden=!open;$('categoryFilterButton').setAttribute('aria-expanded',String(open));});
+  $('clearCategoryFilter').addEventListener('click',()=>{selectedCategories.clear();updateCategoryFilterUi();renderTable()});
+  $('applyCategoryFilter').addEventListener('click',()=>{$('categoryFilterMenu').hidden=true;$('categoryFilterButton').setAttribute('aria-expanded','false');selectedIds.clear();renderTable()});
+  document.addEventListener('click',e=>{if(!$('categoryFilterWrap').contains(e.target)){$('categoryFilterMenu').hidden=true;$('categoryFilterButton').setAttribute('aria-expanded','false')}});
+  $('resetFilters').addEventListener('click',()=>{$('contactSearch').value='';$('lifecycleFilter').value='all';$('intentFilter').value='all';selectedCategories.clear();updateCategoryFilterUi();selectedIds.clear();renderTable()});
   $('selectAll').addEventListener('change',()=>{filteredLeads().forEach(l=>$('selectAll').checked?selectedIds.add(l.id):selectedIds.delete(l.id));renderTable()});
   $('bulkExport').addEventListener('click',()=>exportRows(leads.filter(l=>selectedIds.has(l.id)),'etb2b-awards-selected-leads.csv'));
-  $('bulkCampaign').addEventListener('click',()=>{localStorage.setItem('etb2b_awards_selected_leads',JSON.stringify([...selectedIds]));toast(`${selectedIds.size} contacts prepared for Campaigns`);setTimeout(()=>location.href='campaigns.html',500)});
+  $('bulkCampaign').addEventListener('click',()=>prepareReminderAudience(activeSegment,true));
   $('exportVisible').addEventListener('click',()=>exportRows(filteredLeads(),'etb2b-awards-audience.csv'));
-  $('campaignVisible').addEventListener('click',()=>useSegmentForCampaign(activeSegment));
+  $('campaignVisible').addEventListener('click',()=>prepareReminderAudience(activeSegment));
   $('saveAudience').addEventListener('click',()=>{persist();toast('Audience saved in this browser')});
+  $('continueReminderHub').addEventListener('click',()=>prepareReminderAudience(activeSegment));
 
   // Segment shortcuts
   document.querySelectorAll('[data-segment-jump]').forEach(b=>b.addEventListener('click',()=>selectSegment(b.dataset.segmentJump,true)));
-  document.querySelectorAll('[data-use-segment]').forEach(b=>b.addEventListener('click',()=>useSegmentForCampaign(b.dataset.useSegment)));
+  document.querySelectorAll('[data-use-segment]').forEach(b=>b.addEventListener('click',()=>prepareReminderAudience(b.dataset.useSegment)));
 
   // Lead drawer
   document.querySelectorAll('[data-close-drawer]').forEach(b=>b.addEventListener('click',closeDrawer));
   $('saveLeadNote').addEventListener('click',()=>{const l=leads.find(x=>x.id===activeLeadId);if(!l)return;l.note=$('drawerNote').value.trim();persist();$('drawerSaveState').textContent='Saved just now';toast('Lead profile saved')});
-  $('drawerCampaign').addEventListener('click',()=>{if(!activeLeadId)return;localStorage.setItem('etb2b_awards_selected_leads',JSON.stringify([activeLeadId]));toast('Lead prepared for Campaigns')});
-  $('drawerReminder').addEventListener('click',()=>toast('Reminder draft created for this lead'));
+  $('drawerCampaign').addEventListener('click',()=>{if(!activeLeadId)return;selectedIds=new Set([activeLeadId]);prepareReminderAudience(activeSegment,true)});
+  $('drawerReminder').addEventListener('click',()=>{if(!activeLeadId)return;selectedIds=new Set([activeLeadId]);prepareReminderAudience(activeSegment,true)});
   $('addTag').addEventListener('click',()=>{const tag=prompt('Tag name');if(!tag)return;const l=leads.find(x=>x.id===activeLeadId);if(!l)return;l.tags=l.tags||[];if(!l.tags.includes(tag))l.tags.push(tag);persist();openLead(activeLeadId);toast('Tag added')});
 
   // Modal open / close
@@ -301,5 +341,5 @@
   }));
 
   $('showSources').addEventListener('click',()=>toast('Source performance report is planned for Reports'));
-  $('promoteLowDemand').addEventListener('click',()=>{const low=categoryNames[categoryNames.length-1]||'lowest-demand category';localStorage.setItem('etb2b_awards_selected_audience',JSON.stringify({award:awardSlug,segmentKey:'category_growth',segmentName:low+' prospects',count:421,createdAt:new Date().toISOString()}));toast(`${low} audience prepared for Campaigns`)});
+  $('promoteLowDemand').addEventListener('click',()=>{const low=categoryNames[categoryNames.length-1]||'lowest-demand category';localStorage.setItem('etb2b_awards_selected_audience',JSON.stringify({award:awardSlug,segmentKey:'category_growth',segmentName:low+' prospects',count:421,createdAt:new Date().toISOString()}));toast(`${low} audience prepared for Reminder Hub`)});
 })();
