@@ -34,6 +34,7 @@
   let savedEditorRange=null;
   let selectedAudience=(()=>{try{return JSON.parse(localStorage.getItem('etb2b_awards_selected_audience')||'null')}catch(e){return null}})();
   let automationSeq=5;
+  let editingAutomationId=null;
   const automations=[
     {id:1,name:'Registration welcome',trigger:'When user registers',channel:'Email + WhatsApp',delay:'Immediately',template:'Registration confirmation',status:true,triggered:'1,584',conversion:'48.2% opened'},
     {id:2,name:'Start your entry',trigger:'Registered, no entry after 24 hours',channel:'WhatsApp',delay:'24 hours',template:'Start your entry',status:true,triggered:'812',conversion:'12.6% started'},
@@ -252,15 +253,31 @@
   }
 
   function configureComposer(channel,item,mode='schedule'){
-    composerChannel=channel;composerMode=mode;
+    composerChannel=channel;composerMode=mode;if(mode!=='automation')editingAutomationId=null;
     const label={email:'Email',whatsapp:'WhatsApp',sms:'SMS'}[channel];
     const mailerMode=mode==='mailer'&&channel==='email'&&!item;
-    $('composerKicker').textContent=mailerMode?'MAILER STUDIO':item?'EDIT REMINDER':`SCHEDULE ${label.toUpperCase()}`;
-    $('composerTitle').textContent=mailerMode?'Create mailer':(item?'Edit ':'Schedule ')+label;
-    const singleLeadName=selectedAudience&&Number(selectedAudience.count||0)===1&&Array.isArray(selectedAudience.contactNames)&&selectedAudience.contactNames[0]?selectedAudience.contactNames[0]:'';
-    const channelSubtitle={email:'Create an email reminder with subject, template and rich HTML content.',whatsapp:'Choose a WhatsApp template, review the message and schedule it.',sms:'Write a short SMS reminder, review the segment length and schedule it.'}[channel];
-    $('composerSubtitle').textContent=mailerMode?'Create an AI-assisted email, choose the audience and schedule when ready.':item?'Update the message, audience or schedule.':singleLeadName?`Ready for ${singleLeadName}. Review the ${label} reminder and choose a time.`:channelSubtitle;
-    $('scheduleReminder').textContent=mailerMode?'Schedule mailer':item?'Save changes':`Schedule ${label}`;
+    const automationMode=mode==='automation';
+    const autoBlock=$('automationSettingsBlock');
+    if(autoBlock) autoBlock.hidden=!automationMode;
+    const delivery=$('composerDeliveryCard');
+    if(delivery) delivery.hidden=automationMode;
+    const recipientGrid=$('composerRecipientGrid');
+    if(recipientGrid){recipientGrid.classList.toggle('automation-mode',automationMode);const audienceLabel=$('composerAudience')?.closest('label');if(audienceLabel) audienceLabel.hidden=automationMode;}
+
+    if(automationMode){
+      $('composerKicker').textContent='AUTO JOURNEY';
+      $('composerTitle').textContent=editingAutomationId?'Edit automation':'Create automation';
+      $('composerSubtitle').textContent='Define the trigger, then edit the message with the same tools used for scheduled reminders.';
+      $('scheduleReminder').textContent=editingAutomationId?'Save automation':'Activate automation';
+    }else{
+      $('composerKicker').textContent=mailerMode?'MAILER STUDIO':item?'EDIT REMINDER':`SCHEDULE ${label.toUpperCase()}`;
+      $('composerTitle').textContent=mailerMode?'Create mailer':(item?'Edit ':'Schedule ')+label;
+      const singleLeadName=selectedAudience&&Number(selectedAudience.count||0)===1&&Array.isArray(selectedAudience.contactNames)&&selectedAudience.contactNames[0]?selectedAudience.contactNames[0]:'';
+      const channelSubtitle={email:'Create an email reminder with subject, template and rich HTML content.',whatsapp:'Choose a WhatsApp template, review the message and schedule it.',sms:'Write a short SMS reminder, review the segment length and schedule it.'}[channel];
+      $('composerSubtitle').textContent=mailerMode?'Create an AI-assisted email, choose the audience and schedule when ready.':item?'Update the message, audience or schedule.':singleLeadName?`Ready for ${singleLeadName}. Review the ${label} reminder and choose a time.`:channelSubtitle;
+      $('scheduleReminder').textContent=mailerMode?'Schedule mailer':item?'Save changes':`Schedule ${label}`;
+    }
+
     $$('.email-only').forEach(el=>el.hidden=channel!=='email');
     $$('.sms-only').forEach(el=>el.hidden=channel!=='sms');
     $$('.non-email-message').forEach(el=>el.hidden=channel==='email');
@@ -270,9 +287,11 @@
     $('composerSubject').value=item&&channel==='email'?item.title:copy.subject;
     $('composerMessage').value=item&&channel!=='email'?item.title:copy.message;
     if(item&&channel==='email') $('composerMessage').value=copy.message;
-    if(item?.audience&&Array.from($('composerAudience').options).some(o=>o.value===item.audience)) $('composerAudience').value=item.audience;
-    else if(selectedAudience&&!$('selectedAudienceOption').hidden) $('composerAudience').value='selected';
-    else $('composerAudience').value='All Registered Users';
+    if(!automationMode){
+      if(item?.audience&&Array.from($('composerAudience').options).some(o=>o.value===item.audience)) $('composerAudience').value=item.audience;
+      else if(selectedAudience&&!$('selectedAudienceOption').hidden) $('composerAudience').value='selected';
+      else $('composerAudience').value='All Registered Users';
+    }
     $('composerSchedule').value='';
     $('composerTemplate').value='';
     $('customTemplateNameWrap').hidden=true;
@@ -287,6 +306,7 @@
   }
 
   function selectedAudienceLabel(){
+    if(composerMode==='automation')return $('autoPreviewTitle')?.textContent||'Triggered automatically';
     if($('composerAudience').value==='selected'&&selectedAudience){
       const count=Number(selectedAudience.count||selectedAudience.sampleCount||selectedAudience.contactIds?.length||0);
       return `${selectedAudience.segmentName||'Selected audience'}${count?` · ${count.toLocaleString('en-IN')} contact${count===1?'':'s'}`:''}`;
@@ -346,6 +366,94 @@
   }
 
 
+  function automationTriggerValue(auto){
+    if(!auto)return 'registered';
+    if(['registered','noentry','incomplete','payment','deadline'].includes(auto.trigger))return auto.trigger;
+    const map={'When user registers':'registered','When a user registers':'registered','Registered, no entry after 24 hours':'noentry','If no entry is started after 24 hours':'noentry','Entry incomplete after 48 hours':'incomplete','If an entry is incomplete after 48 hours':'incomplete','Payment pending after submission':'payment','When payment is pending after submission':'payment','3 days before the entry deadline':'deadline'};
+    return map[auto.trigger]||'registered';
+  }
+
+  function automationPrimaryChannel(channel){
+    const v=String(channel||'Email');
+    if(v==='SMS')return 'sms';
+    if(v==='WhatsApp')return 'whatsapp';
+    return 'email';
+  }
+
+  function automationCopy(auto,channel){
+    const template=String(auto?.template||'Registration confirmation').toLowerCase();
+    const name=String(auto?.name||'').toLowerCase();
+    const key=template+' '+name;
+    if(channel==='email'){
+      if(/payment/.test(key)) return {subject:'Complete payment for your India FinTech Awards entry',message:`<p>Hi {{name}},</p><p>Your India FinTech Awards entry has been submitted, but the payment is still pending.</p><p><a href="{{entry_link}}" style="display:inline-block;background:#d71920;color:#ffffff;text-decoration:none;padding:11px 18px;border-radius:7px;font-weight:700;">Complete payment</a></p><p>Regards,<br><strong>ETB2B Awards Team</strong></p>`};
+      if(/incomplete|complete your entry/.test(key)) return {subject:'Complete your India FinTech Awards entry',message:`<p>Hi {{name}},</p><p>Your award entry is saved but still incomplete. Continue from where you left off and submit it before the deadline.</p><p><a href="{{entry_link}}" style="display:inline-block;background:#d71920;color:#ffffff;text-decoration:none;padding:11px 18px;border-radius:7px;font-weight:700;">Continue your entry</a></p><p>Regards,<br><strong>ETB2B Awards Team</strong></p>`};
+      if(/start your entry|no entry/.test(key)) return {subject:'Your India FinTech Awards entry is ready to start',message:`<p>Hi {{name}},</p><p>You are registered for India FinTech Awards 2027. Your entry has not been started yet.</p><p><a href="{{entry_link}}" style="display:inline-block;background:#d71920;color:#ffffff;text-decoration:none;padding:11px 18px;border-radius:7px;font-weight:700;">Start your entry</a></p><p>Regards,<br><strong>ETB2B Awards Team</strong></p>`};
+      return {subject:'Welcome to India FinTech Awards 2027',message:`<p>Hi {{name}},</p><p>Your registration for <strong>India FinTech Awards 2027</strong> is confirmed.</p><p><a href="{{entry_link}}" style="display:inline-block;background:#d71920;color:#ffffff;text-decoration:none;padding:11px 18px;border-radius:7px;font-weight:700;">Start your entry</a></p><p>Regards,<br><strong>ETB2B Awards Team</strong></p>`};
+    }
+    if(channel==='whatsapp'){
+      if(/payment/.test(key))return {subject:'',message:'Hi {{name}}, your India FinTech Awards entry payment is pending. Complete payment here: {{entry_link}}'};
+      if(/incomplete|complete your entry/.test(key))return {subject:'',message:'Hi {{name}}, your award entry is saved but incomplete. Continue here: {{entry_link}}'};
+      if(/start your entry|no entry/.test(key))return {subject:'',message:'Hi {{name}}, you are registered for India FinTech Awards 2027. Start your entry here: {{entry_link}}'};
+      return {subject:'',message:'Hi {{name}}, welcome to India FinTech Awards 2027. Your registration is confirmed. Start here: {{entry_link}}'};
+    }
+    if(/payment/.test(key))return {subject:'',message:'ETB2B Awards: Payment is pending for your award entry. Complete it here: {{short_link}}'};
+    if(/incomplete|complete your entry/.test(key))return {subject:'',message:'ETB2B Awards: Your entry is incomplete. Continue here: {{short_link}}'};
+    if(/start your entry|no entry/.test(key))return {subject:'',message:'ETB2B Awards: You are registered. Start your entry here: {{short_link}}'};
+    return {subject:'',message:'ETB2B Awards: Registration confirmed. Start your entry here: {{short_link}}'};
+  }
+
+  function openAutomationCenter(){
+    renderAutomations();
+    openDrawer('automationComposer');
+  }
+
+  function closeAutomationCenterOnly(){
+    const drawer=$('automationComposer');
+    if(drawer){drawer.classList.remove('open');drawer.setAttribute('aria-hidden','true');}
+  }
+
+  function openAutomationEditor(auto){
+    const source=auto||{name:'Registration welcome',trigger:'registered',channel:'Email',delay:'Immediately',template:'Registration confirmation'};
+    editingAutomationId=auto?.id||null;
+    closeAutomationCenterOnly();
+    const primary=automationPrimaryChannel(source.channel);
+    configureComposer(primary,null,'automation');
+    $('autoName').value=source.name||'Registration welcome';
+    $('autoTrigger').value=automationTriggerValue(source);
+    $('autoChannel').value=source.channel||'Email';
+    $('autoDelay').value=source.delay||'Immediately';
+    $('composerTemplate').value=source.template||'Registration confirmation';
+    const copy=automationCopy(source,primary);
+    $('composerSubject').value=source.subject||copy.subject;
+    $('composerMessage').value=source.message||copy.message;
+    if(primary==='email')syncEmailEditorFromMessage();
+    $('composerTitle').textContent=editingAutomationId?'Edit automation':'Create automation';
+    $('composerSubtitle').textContent=editingAutomationId?`Update “${source.name}” using the same editor as a scheduled ${primary==='whatsapp'?'WhatsApp':primary==='sms'?'SMS':'email'} reminder.`:'Set the trigger and build the message with the same editor used for scheduled reminders.';
+    $('scheduleReminder').textContent=editingAutomationId?'Save automation':'Activate automation';
+    updateAutomationPreview();updateMessageHealth();
+  }
+
+  function switchAutomationChannel(){
+    if(composerMode!=='automation')return;
+    const settings={name:$('autoName').value,trigger:$('autoTrigger').value,channel:$('autoChannel').value,delay:$('autoDelay').value,template:$('composerTemplate').value||'Registration confirmation'};
+    const primary=automationPrimaryChannel(settings.channel);
+    composerChannel=primary;
+    $$('.email-only').forEach(el=>el.hidden=primary!=='email');
+    $$('.sms-only').forEach(el=>el.hidden=primary!=='sms');
+    $$('.non-email-message').forEach(el=>el.hidden=primary==='email');
+    $('messageLabel').textContent=primary==='whatsapp'?'WhatsApp message':'SMS message';
+    $('composerSender').value=primary==='sms'?'ETB2B':'ETB2B Awards';
+    const copy=automationCopy(settings,primary);
+    $('composerSubject').value=copy.subject;
+    $('composerMessage').value=copy.message;
+    if(primary==='email'){
+      $('emailHtmlSource').hidden=true;$('emailRichEditor').hidden=false;
+      $$('[data-editor-mode]').forEach(b=>b.classList.toggle('active',b.dataset.editorMode==='visual'));
+      syncEmailEditorFromMessage();
+    }
+    updateAutomationPreview();updateMessageHealth();
+  }
+
   function generateAutoJourney(){
     const goal=($('autoAiGoal').value||'welcome new users after registration').trim();
     const g=goal.toLowerCase();
@@ -354,33 +462,30 @@
     else if(/incomplete|finish|resume/.test(g)) preset={trigger:'incomplete',channel:'Email',delay:'48 hours',name:'Incomplete entry recovery',template:'Complete your entry'};
     else if(/no entry|not started|start entry|registered/.test(g)&&!/welcome|confirm/.test(g)) preset={trigger:'noentry',channel:'WhatsApp',delay:'24 hours',name:'Start your entry',template:'Start your entry'};
     else if(/deadline|last day|48 hour|closing/.test(g)) preset={trigger:'deadline',channel:'Email + WhatsApp',delay:'Immediately',name:'Deadline countdown',template:'Complete your entry'};
-    $('autoTrigger').value=preset.trigger;$('autoChannel').value=preset.channel;$('autoDelay').value=preset.delay;$('autoName').value=preset.name;$('autoTemplate').value=preset.template;
-    updateAutomationPreview();toast('AI journey suggestion applied');
+    openAutomationEditor(preset);toast('AI journey suggestion applied');
   }
 
   function renderAutomations(){
-    $('automationGrid').innerHTML=automations.map(a=>`<article class="rh-auto-card ${a.status?'':'off'}" data-auto-id="${a.id}">
-      <div class="rh-auto-top"><div class="rh-auto-title"><span class="rh-auto-icon">⚡</span><div><b>${a.name}</b><span>${a.trigger}</span></div></div><button class="rh-toggle ${a.status?'on':''}" type="button" data-toggle-auto="${a.id}" aria-label="Toggle ${a.name}"><i></i></button></div>
-      <div class="rh-auto-flowline"><strong>${a.trigger}</strong><span>→</span><span>${a.delay}</span><span class="rh-channel-pill">${a.channel}</span></div>
-      <div class="rh-auto-meta"><span><b>${a.triggered}</b> triggered</span><span>•</span><span>${a.conversion}</span><button class="rh-icon-btn" type="button" title="Edit journey" data-edit-auto="${a.id}" style="margin-left:auto">✎</button></div>
+    const grid=$('automationGrid');if(!grid)return;
+    grid.innerHTML=automations.map(a=>`<article class="rh-auto-card rh-auto-center-card ${a.status?'':'off'}" data-auto-id="${a.id}">
+      <div class="rh-auto-top"><div class="rh-auto-title"><span class="rh-auto-icon">⚡</span><div><b>${escapeHtml(a.name)}</b><span>${escapeHtml(a.trigger)}</span></div></div><button class="rh-toggle ${a.status?'on':''}" type="button" data-toggle-auto="${a.id}" aria-label="Toggle ${escapeHtml(a.name)}"><i></i></button></div>
+      <div class="rh-auto-flowline"><strong>${escapeHtml(a.trigger)}</strong><span>→</span><span>${escapeHtml(a.delay)}</span><span class="rh-channel-pill">${escapeHtml(a.channel)}</span></div>
+      <div class="rh-auto-meta"><span><b>${escapeHtml(a.triggered)}</b> triggered</span><span>•</span><span>${escapeHtml(a.conversion)}</span></div>
+      <div class="rh-auto-card-actions"><button class="btn secondary" type="button" data-edit-auto="${a.id}">Edit message</button><button class="rh-text-action" type="button" data-edit-auto="${a.id}">Journey settings →</button></div>
     </article>`).join('');
+    const active=automations.filter(a=>a.status).length;
+    if($('activeJourneyCount'))$('activeJourneyCount').textContent=String(active);
+    const count=document.querySelector('.rh-auto-center-count');if(count)count.textContent=`${automations.length} journey${automations.length===1?'':'s'}`;
   }
 
-  function configureAutomation(auto){
-    if(auto){
-      $('autoName').value=auto.name;$('autoChannel').value=auto.channel;$('autoDelay').value=auto.delay;
-      const triggerMap={'When user registers':'registered','Registered, no entry after 24 hours':'noentry','Entry incomplete after 48 hours':'incomplete','Payment pending after submission':'payment'};
-      $('autoTrigger').value=triggerMap[auto.trigger]||'registered';$('autoTemplate').value=auto.template;
-    }else{
-      $('autoTrigger').value='registered';$('autoChannel').value='Email';$('autoDelay').value='Immediately';$('autoName').value='Registration welcome';$('autoTemplate').value='Registration confirmation';
-    }
-    updateAutomationPreview();openDrawer('automationComposer');
-  }
+  function configureAutomation(auto){openAutomationEditor(auto);}
 
   function updateAutomationPreview(){
+    if(!$('autoTrigger')||composerMode!=='automation')return;
     const triggerText={registered:'When a user registers',noentry:'If no entry is started after 24 hours',incomplete:'If an entry is incomplete after 48 hours',payment:'When payment is pending after submission',deadline:'3 days before the entry deadline'}[$('autoTrigger').value];
     $('autoPreviewTitle').textContent=triggerText;
-    $('autoPreviewText').textContent=`Send “${$('autoTemplate').value}” by ${$('autoChannel').value} ${$('autoDelay').value.toLowerCase()}.`;
+    const template=$('composerTemplate').value||'selected template';
+    $('autoPreviewText').textContent=`Send “${template}” by ${$('autoChannel').value} ${$('autoDelay').value.toLowerCase()}.`;
   }
 
   function openComposerFromAudience(){
@@ -408,7 +513,7 @@
   $$('[data-open-composer]').forEach(btn=>btn.addEventListener('click',()=>configureComposer(btn.dataset.openComposer)));
 
   $('heroScheduleBtn').addEventListener('click',openChannelChooser);
-  $('openAiComposer').addEventListener('click',()=>{configureComposer(currentTab==='automations'?'email':currentTab);setTimeout(()=>$('aiGoal').focus(),240);});
+  $('openAiComposer').addEventListener('click',()=>{configureComposer(currentTab);setTimeout(()=>$('aiGoal').focus(),240);});
   $('closeChannelChooser').addEventListener('click',closeDrawers);
   $$('[data-choose-channel]').forEach(btn=>btn.addEventListener('click',()=>{const channel=btn.dataset.chooseChannel;$('channelChooser').classList.remove('open');$('channelChooser').setAttribute('aria-hidden','true');switchTab(channel);configureComposer(channel);}));
   $('closeReminderComposer').addEventListener('click',closeDrawers);$('closeAutomationComposer').addEventListener('click',closeDrawers);$('reminderOverlay').addEventListener('click',closeDrawers);
@@ -448,6 +553,7 @@
   $('composerTemplate').addEventListener('change',()=>{
     const custom=$('composerTemplate').value==='Custom template';$('customTemplateNameWrap').hidden=!custom;
     if(custom)setTimeout(()=>$('customTemplateName').focus(),60);
+    if(composerMode==='automation')updateAutomationPreview();
   });
   $('improveSubject').addEventListener('click',()=>{$('composerSubject').value='Final reminder: complete your India FinTech Awards entry';$('subjectScore').textContent='AI subject score: 92 / 100 · Strong urgency without spam signals';toast('Subject improved');});
   $('applySmartTime').addEventListener('click',()=>{$('composerSchedule').value='2026-09-17T10:45';toast('Smart send time applied');});
@@ -477,8 +583,22 @@
     }catch(err){status.textContent='The mail service could not send this demo. Check the backend connection and try again.';status.classList.add('error');toast('Demo send failed');}
     finally{button.disabled=false;button.textContent=original;}
   });
-  $('saveReminderDraft').addEventListener('click',()=>{closeDrawers();toast('Reminder saved as draft');});
-  $('scheduleReminder').addEventListener('click',()=>{if(composerChannel==='email')syncEmailEditorToMessage();const target=$('composerAudience').value==='selected'&&selectedAudience?(selectedAudience.segmentName||'selected audience'):$('composerAudience').value;closeDrawers();toast(`${composerMode==='mailer'?'Mailer':composerChannel==='whatsapp'?'WhatsApp':composerChannel.toUpperCase()} scheduled for ${target}`);});
+  $('saveReminderDraft').addEventListener('click',()=>{
+    if(composerMode==='automation'){closeDrawers();toast('Automation saved as draft');return;}
+    closeDrawers();toast('Reminder saved as draft');
+  });
+  $('scheduleReminder').addEventListener('click',()=>{
+    if(composerChannel==='email')syncEmailEditorToMessage();
+    if(composerMode==='automation'){
+      const trigger=$('autoPreviewTitle').textContent;
+      const payload={name:$('autoName').value||'New automation',trigger,channel:$('autoChannel').value,delay:$('autoDelay').value,template:$('composerTemplate').value||'Custom template',status:true,triggered:'0',conversion:'New journey',subject:$('composerSubject').value,message:$('composerMessage').value};
+      if(editingAutomationId){const index=automations.findIndex(a=>a.id===editingAutomationId);if(index>-1)automations[index]={...automations[index],...payload};toast('Automation updated');}
+      else{automations.push({id:automationSeq++,...payload});toast('Automation activated');}
+      editingAutomationId=null;renderAutomations();closeDrawers();return;
+    }
+    const target=$('composerAudience').value==='selected'&&selectedAudience?(selectedAudience.segmentName||'selected audience'):$('composerAudience').value;
+    closeDrawers();toast(`${composerMode==='mailer'?'Mailer':composerChannel==='whatsapp'?'WhatsApp':composerChannel.toUpperCase()} scheduled for ${target}`);
+  });
 
   $$('[data-smart-schedule]').forEach(btn=>btn.addEventListener('click',()=>{configureComposer(btn.dataset.smartSchedule);setTimeout(()=>$('applySmartTime').click(),120);}));
   $$('[data-ai-review]').forEach(btn=>btn.addEventListener('click',()=>{configureComposer(btn.dataset.aiReview);setTimeout(aiGenerate,120);}));
@@ -494,22 +614,19 @@
     }
     const toggle=e.target.closest('[data-toggle-auto]');
     if(toggle){const a=automations.find(x=>x.id===Number(toggle.dataset.toggleAuto));a.status=!a.status;renderAutomations();toast(`${a.name} ${a.status?'activated':'paused'}`);return;}
-    const edit=e.target.closest('[data-edit-auto]');if(edit){configureAutomation(automations.find(x=>x.id===Number(edit.dataset.editAuto)));}
+    const edit=e.target.closest('[data-edit-auto]');if(edit){openAutomationEditor(automations.find(x=>x.id===Number(edit.dataset.editAuto)));}
   });
 
-  $('openAutoJourney').addEventListener('click',()=>{switchTab('automations');configureAutomation();});
+  $('openAutoJourney').addEventListener('click',openAutomationCenter);
   $('openMailerStudio').addEventListener('click',()=>{switchTab('email');configureComposer('email',null,'mailer');setTimeout(()=>$('aiGoal').focus(),220);});
   $('clearAudienceContext').addEventListener('click',()=>{localStorage.removeItem('etb2b_awards_selected_audience');localStorage.removeItem('etb2b_awards_selected_leads');selectedAudience=null;hydrateAudienceContext();toast('Audience selection cleared');});
   $('generateAutoJourney').addEventListener('click',generateAutoJourney);
-  $('createAutomation').addEventListener('click',()=>configureAutomation());
-  $('addDefaultWhatsapp').addEventListener('click',()=>{switchTab('automations');configureAutomation({name:'Registration welcome',trigger:'When user registers',channel:'WhatsApp',delay:'Immediately',template:'Registration confirmation'});});
-  $('createSuggestedAutomation').addEventListener('click',()=>{configureAutomation({name:'Start your entry',trigger:'Registered, no entry after 24 hours',channel:'WhatsApp',delay:'24 hours',template:'Start your entry'});});
-  ['autoTrigger','autoChannel','autoDelay','autoTemplate'].forEach(id=>$(id).addEventListener('change',updateAutomationPreview));
-  $('saveAutoDraft').addEventListener('click',()=>{closeDrawers();toast('Automation saved as draft');});
-  $('activateAutomation').addEventListener('click',()=>{
-    automations.push({id:automationSeq++,name:$('autoName').value||'New automation',trigger:$('autoPreviewTitle').textContent,channel:$('autoChannel').value,delay:$('autoDelay').value,template:$('autoTemplate').value,status:true,triggered:'0',conversion:'New journey'});
-    renderAutomations();closeDrawers();toast('Automation activated');
-  });
+  $('createAutomation').addEventListener('click',()=>openAutomationEditor());
+  $('addDefaultWhatsapp').addEventListener('click',()=>openAutomationEditor({name:'Registration welcome',trigger:'registered',channel:'WhatsApp',delay:'Immediately',template:'Registration confirmation'}));
+  $('createSuggestedAutomation').addEventListener('click',()=>openAutomationEditor({name:'Start your entry',trigger:'noentry',channel:'WhatsApp',delay:'24 hours',template:'Start your entry'}));
+  $('autoTrigger')?.addEventListener('change',updateAutomationPreview);
+  $('autoDelay')?.addEventListener('change',updateAutomationPreview);
+  $('autoChannel')?.addEventListener('change',switchAutomationChannel);
 
   openComposerFromAudience();
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawers();});

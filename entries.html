@@ -96,7 +96,6 @@
           <button class="rh-tab active" type="button" data-reminder-tab="email" role="tab" aria-selected="true"><span class="rh-tab-icon">✉</span><span>Email</span><b>5</b></button>
           <button class="rh-tab" type="button" data-reminder-tab="whatsapp" role="tab" aria-selected="false"><span class="rh-tab-icon">◉</span><span>WhatsApp</span><b>4</b></button>
           <button class="rh-tab" type="button" data-reminder-tab="sms" role="tab" aria-selected="false"><span class="rh-tab-icon">▤</span><span>SMS</span><b>3</b></button>
-          <button class="rh-tab automation" type="button" data-reminder-tab="automations" role="tab" aria-selected="false"><span class="rh-tab-icon">⚡</span><span>Auto Journeys</span><b>4</b></button>
         </div>
 
         <div class="rh-panel active" id="panel-email" data-reminder-panel="email" role="tabpanel">
@@ -135,32 +134,6 @@
           <div class="rh-ai-strip"><div><span class="rh-ai-glyph">✦</span><div><b>AI message optimiser</b><p>Two messages can be shortened to one SMS segment without losing the core call to action.</p></div></div><button type="button" data-ai-review="sms">Optimise copy</button></div>
           <div class="rh-table-wrap"><table class="rh-table"><thead><tr><th>ID</th><th>SMS message</th><th>Created</th><th>Scheduled on</th><th>Sent to</th><th>Batch</th><th>Status</th><th>Actions</th></tr></thead><tbody id="smsReminderRows"></tbody></table></div>
         </div>
-
-        <div class="rh-panel" id="panel-automations" data-reminder-panel="automations" role="tabpanel">
-          <div class="automation-head">
-            <div><span class="reminder-eyebrow">ALWAYS-ON COMMUNICATION</span><h2>Auto Journeys</h2><p>Create behaviour-based journeys for registration, incomplete entries, payment recovery and deadline nudges.</p></div>
-            <button class="btn primary" type="button" id="createAutomation">+ Create automation</button>
-          </div>
-
-          <div class="rh-auto-grid" id="automationGrid"></div>
-
-          <div class="rh-insight-grid">
-            <article class="rh-insight-card">
-              <div class="rh-insight-top"><span class="rh-ai-glyph">✦</span><div><b>AI journey recommendation</b><span>Based on current funnel behaviour</span></div></div>
-              <h3>Add a 24-hour “no entry started” nudge</h3>
-              <p>1,590 registered users have not started an entry. A WhatsApp follow-up after 24 hours is the strongest next automation to test.</p>
-              <div class="rh-insight-metrics"><span><b>1,590</b> eligible</span><span><b>10–14%</b> est. recovery</span></div>
-              <button class="btn secondary" type="button" id="createSuggestedAutomation">Create suggested journey</button>
-            </article>
-            <article class="rh-insight-card neutral">
-              <div class="rh-insight-top"><span class="rh-health-dot"></span><div><b>Automation health</b><span>Last 30 days</span></div></div>
-              <div class="rh-health-row"><span>Triggered successfully</span><b>99.2%</b></div>
-              <div class="rh-health-row"><span>Messages delivered</span><b>98.7%</b></div>
-              <div class="rh-health-row"><span>Suppressed / opted out</span><b>1.1%</b></div>
-              <div class="rh-health-line"><i style="width:98.7%"></i></div>
-            </article>
-          </div>
-        </div>
       </section>
 
       <div class="footer-note">Vikas Mishra</div>
@@ -191,18 +164,32 @@
     <button type="button" class="rh-close" id="closeReminderComposer" aria-label="Close">×</button>
   </div>
   <div class="rh-drawer-body">
+    <section class="rh-automation-settings" id="automationSettingsBlock" hidden>
+      <div class="rh-automation-settings-head">
+        <div><span class="reminder-eyebrow">JOURNEY SETUP</span><h3>Automation rules</h3><p>Define when this message should run. The message editor below works exactly like a scheduled reminder.</p></div>
+        <span class="rh-always-on-pill">Always on</span>
+      </div>
+      <div class="rh-automation-settings-grid">
+        <label class="wide"><span>Journey name</span><input id="autoName" type="text" value="Registration welcome"></label>
+        <label><span>Trigger</span><select id="autoTrigger"><option value="registered">User registers</option><option value="noentry">Registered but no entry started after 24 hours</option><option value="incomplete">Entry incomplete after 48 hours</option><option value="payment">Payment pending after submission</option><option value="deadline">3 days before entry deadline</option></select></label>
+        <label><span>Channel</span><select id="autoChannel"><option>Email</option><option>WhatsApp</option><option>Email + WhatsApp</option><option>SMS</option></select></label>
+        <label><span>Delay</span><select id="autoDelay"><option>Immediately</option><option>15 minutes</option><option>1 hour</option><option>24 hours</option><option>48 hours</option></select></label>
+        <div class="rh-trigger-preview"><span>TRIGGER PREVIEW</span><b id="autoPreviewTitle">When a user registers</b><p id="autoPreviewText">Send this message by Email immediately.</p></div>
+      </div>
+    </section>
+
     <div class="rh-ai-compose-box">
       <div><span class="rh-ai-glyph">✦</span><div><b>AI Compose</b><p>Describe the goal and generate a starting draft.</p></div></div>
       <div class="rh-ai-prompt"><input id="aiGoal" type="text" placeholder="e.g. remind registered users to start entry"><button type="button" id="generateAiCopy">Generate</button></div>
     </div>
 
-    <div class="rh-form-grid rh-recipient-grid">
+    <div class="rh-form-grid rh-recipient-grid" id="composerRecipientGrid">
       <label><span>Send to</span><select id="composerAudience"><option id="selectedAudienceOption" value="selected" hidden>Selected from Audience</option><option>All Registered Users</option><option>Registered, no entry</option><option>Entry started, incomplete</option><option>Submitted, payment pending</option><option>Custom segment</option></select></label>
       <label><span>Sender name</span><input id="composerSender" type="text" value="ETB2B Awards"></label>
     </div>
     <label class="rh-field email-only"><span>Subject</span><div class="rh-input-action"><input id="composerSubject" type="text" placeholder="Mailer subject"><button type="button" id="improveSubject">✦ Improve</button></div><small id="subjectScore">AI subject score: —</small></label>
     <label class="rh-field sms-only" hidden><span>SMS event title</span><input id="smsEventTitle" type="text" value="India FinTech Awards 2027"></label>
-    <label class="rh-field"><span>Template</span><select id="composerTemplate"><option value="">Select template</option><option>Registration confirmation</option><option>Entry deadline reminder</option><option>Payment reminder</option><option>Event update</option><option value="Custom template">+ Custom template</option></select></label>
+    <label class="rh-field"><span>Template</span><select id="composerTemplate"><option value="">Select template</option><option>Registration confirmation</option><option>Start your entry</option><option>Complete your entry</option><option>Complete payment</option><option>Entry deadline reminder</option><option>Payment reminder</option><option>Event update</option><option value="Custom template">+ Custom template</option></select></label>
     <label class="rh-field" id="customTemplateNameWrap" hidden><span>Custom template name</span><input id="customTemplateName" type="text" placeholder="e.g. Final 48-hour reminder"></label>
 
     <div class="rh-field email-only" id="emailBodyField">
@@ -277,7 +264,7 @@
 
     <label class="rh-field non-email-message" hidden><span id="messageLabel">Message</span><textarea id="composerMessage" rows="10" placeholder="Write your message..."></textarea><small id="channelMessageHealth">Use approved template variables.</small></label>
 
-    <section class="rh-delivery-card" aria-labelledby="deliveryTimingTitle">
+    <section class="rh-delivery-card" id="composerDeliveryCard" aria-labelledby="deliveryTimingTitle">
       <div class="rh-delivery-head">
         <div><span class="reminder-eyebrow">DELIVERY</span><h3 id="deliveryTimingTitle">Schedule date &amp; time</h3></div>
         <div class="rh-smart-hint" aria-label="Smart send recommendation">
@@ -332,31 +319,55 @@
   </div>
 </div>
 
-<aside class="rh-drawer automation-drawer" id="automationComposer" aria-hidden="true">
+<aside class="rh-drawer automation-drawer automation-center-drawer" id="automationComposer" aria-hidden="true">
   <div class="rh-drawer-head">
-    <div><span class="reminder-eyebrow">AUTO JOURNEY</span><h2>Create automation</h2><p>Choose a trigger, channel and message that should run automatically.</p></div>
+    <div><span class="reminder-eyebrow">AUTO JOURNEYS</span><h2>Automation center</h2><p>Manage always-on reminders, edit message content and create new behaviour-based journeys.</p></div>
     <button type="button" class="rh-close" id="closeAutomationComposer" aria-label="Close">×</button>
   </div>
-  <div class="rh-drawer-body">
-    <div class="rh-ai-compose-box rh-auto-ai-box">
-      <div><span class="rh-ai-glyph">✦</span><div><b>AI Journey Builder</b><p>Describe the outcome you want and AI will suggest the trigger, channel, delay and template.</p></div></div>
-      <div class="rh-ai-prompt"><input id="autoAiGoal" type="text" placeholder="e.g. welcome new users instantly on Email + WhatsApp"><button type="button" id="generateAutoJourney">Build journey</button></div>
+  <div class="rh-drawer-body rh-auto-center-body">
+    <section class="rh-auto-center-hero">
+      <div>
+        <span class="reminder-eyebrow">LIVE AUTOMATIONS</span>
+        <h3>Your Auto Journeys</h3>
+        <p>Registration welcome, incomplete-entry recovery and payment nudges live here. Edit any journey using the same message editor as Schedule Email, WhatsApp or SMS.</p>
+      </div>
+      <button class="btn primary" type="button" id="createAutomation">+ New automation</button>
+    </section>
+
+    <div class="rh-auto-summary">
+      <div><span>Active journeys</span><b id="activeJourneyCount">3</b><small>Running now</small></div>
+      <div><span>Triggered</span><b>2,692</b><small>Last 30 days</small></div>
+      <div><span>Delivery</span><b>98.7%</b><small class="good">Healthy</small></div>
     </div>
-    <div class="rh-automation-flow">
-      <div class="flow-step"><span>1</span><div><b>When this happens</b><small>Participant behaviour trigger</small></div></div>
-      <div class="flow-line"></div>
-      <div class="flow-step"><span>2</span><div><b>Send this message</b><small>Choose Email, WhatsApp or SMS</small></div></div>
+
+    <div class="rh-auto-center-toolbar">
+      <div><b>Auto Journeys</b><span>Click Edit message to open the full reminder composer.</span></div>
+      <span class="rh-auto-center-count">4 journeys</span>
     </div>
-    <label class="rh-field"><span>Trigger</span><select id="autoTrigger"><option value="registered">User registers</option><option value="noentry">Registered but no entry started after 24 hours</option><option value="incomplete">Entry incomplete after 48 hours</option><option value="payment">Payment pending after submission</option><option value="deadline">3 days before entry deadline</option></select></label>
-    <div class="rh-form-grid">
-      <label><span>Channel</span><select id="autoChannel"><option>Email</option><option>WhatsApp</option><option>Email + WhatsApp</option><option>SMS</option></select></label>
-      <label><span>Delay</span><select id="autoDelay"><option>Immediately</option><option>15 minutes</option><option>1 hour</option><option>24 hours</option><option>48 hours</option></select></label>
+    <div class="rh-auto-grid rh-auto-center-grid" id="automationGrid"></div>
+
+    <section class="rh-auto-ai-builder">
+      <div class="rh-auto-ai-copy"><span class="rh-ai-glyph">✦</span><div><b>Build with AI</b><p>Describe the outcome and AI will suggest the trigger, channel, delay and starting message.</p></div></div>
+      <div class="rh-ai-prompt"><input id="autoAiGoal" type="text" placeholder="e.g. remind users 24 hours after registration if no entry is started"><button type="button" id="generateAutoJourney">Build journey</button></div>
+    </section>
+
+    <div class="rh-insight-grid rh-auto-center-insights">
+      <article class="rh-insight-card">
+        <div class="rh-insight-top"><span class="rh-ai-glyph">✦</span><div><b>AI journey recommendation</b><span>Based on current funnel behaviour</span></div></div>
+        <h3>Add a 24-hour “no entry started” nudge</h3>
+        <p>1,590 registered users have not started an entry. A WhatsApp follow-up after 24 hours is the strongest next automation to test.</p>
+        <div class="rh-insight-metrics"><span><b>1,590</b> eligible</span><span><b>10–14%</b> est. recovery</span></div>
+        <button class="btn secondary" type="button" id="createSuggestedAutomation">Create suggested journey</button>
+      </article>
+      <article class="rh-insight-card neutral">
+        <div class="rh-insight-top"><span class="rh-health-dot"></span><div><b>Automation health</b><span>Last 30 days</span></div></div>
+        <div class="rh-health-row"><span>Triggered successfully</span><b>99.2%</b></div>
+        <div class="rh-health-row"><span>Messages delivered</span><b>98.7%</b></div>
+        <div class="rh-health-row"><span>Suppressed / opted out</span><b>1.1%</b></div>
+        <div class="rh-health-line"><i style="width:98.7%"></i></div>
+      </article>
     </div>
-    <label class="rh-field"><span>Journey name</span><input id="autoName" type="text" value="Registration welcome"></label>
-    <label class="rh-field"><span>Template</span><select id="autoTemplate"><option>Registration confirmation</option><option>Start your entry</option><option>Complete your entry</option><option>Complete payment</option></select></label>
-    <div class="rh-auto-preview"><span>LIVE PREVIEW</span><b id="autoPreviewTitle">When a user registers</b><p id="autoPreviewText">Send “Registration confirmation” by Email immediately.</p></div>
   </div>
-  <div class="rh-drawer-foot"><button class="btn secondary" type="button" id="saveAutoDraft">Save as draft</button><button class="btn primary" type="button" id="activateAutomation">Activate automation</button></div>
 </aside>
 
 <div id="toast" class="toast"></div>
