@@ -98,6 +98,7 @@
     $('reminderOverlay').classList.remove('open');
     $$('.rh-drawer.open').forEach(d=>{d.classList.remove('open');d.setAttribute('aria-hidden','true');});
     const chooser=$('channelChooser');if(chooser){chooser.classList.remove('open');chooser.setAttribute('aria-hidden','true');}
+    const demo=$('reminderDemoModal');if(demo){demo.classList.remove('open');demo.setAttribute('aria-hidden','true');}
     document.body.style.overflow='';
   }
   function openChannelChooser(){
@@ -171,6 +172,34 @@
     }
     updateMessageHealth();
     openDrawer('reminderComposer');
+  }
+
+  function selectedAudienceLabel(){
+    if($('composerAudience').value==='selected'&&selectedAudience){
+      const count=Number(selectedAudience.count||selectedAudience.sampleCount||selectedAudience.contactIds?.length||0);
+      return `${selectedAudience.segmentName||'Selected audience'}${count?` · ${count.toLocaleString('en-IN')} contact${count===1?'':'s'}`:''}`;
+    }
+    return $('composerAudience').value||'All Registered Users';
+  }
+
+  function closeDemoPreview(){
+    const modal=$('reminderDemoModal');if(!modal)return;
+    modal.classList.remove('open');modal.setAttribute('aria-hidden','true');
+    if(!document.querySelector('.rh-drawer.open')&&!$('channelChooser')?.classList.contains('open')) document.body.style.overflow='';
+  }
+
+  function openReminderDemo(){
+    if(composerChannel!=='email')return;
+    syncEmailEditorToMessage();
+    $('demoFrom').textContent=$('composerSender').value||'ETB2B Awards';
+    $('demoAudience').textContent=selectedAudienceLabel();
+    $('demoSubject').textContent=$('composerSubject').value||'No subject added';
+    const content=$('composerMessage').value||'<p style="color:#7c8395">Your email body is empty. Return to the editor and add content before scheduling.</p>';
+    const frame=$('demoEmailFrame');
+    frame.srcdoc=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>html,body{margin:0;padding:0;background:#f3f5f8;font-family:Arial,Helvetica,sans-serif;color:#2d3345}body{padding:24px 12px}.email-shell{max-width:620px;margin:0 auto;background:#fff;border:1px solid #e5e8ef;border-radius:12px;box-shadow:0 8px 30px rgba(28,34,54,.08);overflow:hidden}.email-body{padding:28px;line-height:1.6;font-size:15px}.email-body img{max-width:100%;height:auto}.email-body a{word-break:break-word}@media(max-width:520px){body{padding:8px}.email-body{padding:20px 16px;font-size:14px}.email-shell{border-radius:8px}}</style></head><body><div class="email-shell"><div class="email-body">${content}</div></div></body></html>`;
+    const modal=$('reminderDemoModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+    $$('[data-demo-device]').forEach(b=>b.classList.toggle('active',b.dataset.demoDevice==='desktop'));
+    $('demoStage').classList.remove('mobile');
   }
 
   function updateMessageHealth(){
@@ -301,6 +330,12 @@
   });
   $('improveSubject').addEventListener('click',()=>{$('composerSubject').value='Final reminder: complete your India FinTech Awards entry';$('subjectScore').textContent='AI subject score: 92 / 100 · Strong urgency without spam signals';toast('Subject improved');});
   $('applySmartTime').addEventListener('click',()=>{$('composerSchedule').value='2026-09-17T10:45';toast('Smart send time applied');});
+  $('previewReminderDemo').addEventListener('click',openReminderDemo);
+  $('closeReminderDemo').addEventListener('click',closeDemoPreview);
+  $('backToEditor').addEventListener('click',closeDemoPreview);
+  document.querySelector('[data-close-demo]')?.addEventListener('click',closeDemoPreview);
+  $$('[data-demo-device]').forEach(btn=>btn.addEventListener('click',()=>{const mobile=btn.dataset.demoDevice==='mobile';$('demoStage').classList.toggle('mobile',mobile);$$('[data-demo-device]').forEach(b=>b.classList.toggle('active',b===btn));}));
+  $('sendDemoTest').addEventListener('click',()=>toast('Demo email queued to your test inbox'));
   $('saveReminderDraft').addEventListener('click',()=>{closeDrawers();toast('Reminder saved as draft');});
   $('scheduleReminder').addEventListener('click',()=>{if(composerChannel==='email')syncEmailEditorToMessage();const target=$('composerAudience').value==='selected'&&selectedAudience?(selectedAudience.segmentName||'selected audience'):$('composerAudience').value;closeDrawers();toast(`${composerMode==='mailer'?'Mailer':composerChannel==='whatsapp'?'WhatsApp':composerChannel.toUpperCase()} scheduled for ${target}`);});
 

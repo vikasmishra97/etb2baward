@@ -196,22 +196,10 @@
       <div class="rh-ai-prompt"><input id="aiGoal" type="text" placeholder="e.g. remind registered users to start entry"><button type="button" id="generateAiCopy">Generate</button></div>
     </div>
 
-    <div class="rh-form-grid rh-form-grid-timing">
+    <div class="rh-form-grid rh-recipient-grid">
       <label><span>Send to</span><select id="composerAudience"><option id="selectedAudienceOption" value="selected" hidden>Selected from Audience</option><option>All Registered Users</option><option>Registered, no entry</option><option>Entry started, incomplete</option><option>Submitted, payment pending</option><option>Custom segment</option></select></label>
-      <div class="rh-timing-field">
-        <div class="rh-timing-label-row">
-          <label for="composerSchedule">Schedule date & time</label>
-          <div class="rh-smart-hint" aria-label="Smart send recommendation">
-            <span class="rh-smart-hint-icon">✦</span>
-            <span class="rh-smart-copy"><b>Best time</b><span id="smartSendText">Tomorrow · 10:45 AM</span></span>
-            <button type="button" id="applySmartTime">Apply</button>
-          </div>
-        </div>
-        <input id="composerSchedule" type="datetime-local">
-      </div>
+      <label><span>Sender name</span><input id="composerSender" type="text" value="ETB2B Awards"></label>
     </div>
-
-    <label class="rh-field"><span>Sender name</span><input id="composerSender" type="text" value="ETB2B Awards"></label>
     <label class="rh-field email-only"><span>Subject</span><div class="rh-input-action"><input id="composerSubject" type="text" placeholder="Mailer subject"><button type="button" id="improveSubject">✦ Improve</button></div><small id="subjectScore">AI subject score: —</small></label>
     <label class="rh-field sms-only" hidden><span>SMS event title</span><input id="smsEventTitle" type="text" value="India FinTech Awards 2027"></label>
     <label class="rh-field"><span>Template</span><select id="composerTemplate"><option value="">Select template</option><option>Registration confirmation</option><option>Entry deadline reminder</option><option>Payment reminder</option><option>Event update</option><option value="Custom template">+ Custom template</option></select></label>
@@ -264,9 +252,47 @@
     </div>
 
     <label class="rh-field non-email-message" hidden><span id="messageLabel">Message</span><textarea id="composerMessage" rows="10" placeholder="Write your message..."></textarea><small id="channelMessageHealth">Use approved template variables.</small></label>
+
+    <section class="rh-delivery-card" aria-labelledby="deliveryTimingTitle">
+      <div class="rh-delivery-head">
+        <div><span class="reminder-eyebrow">DELIVERY</span><h3 id="deliveryTimingTitle">Schedule date &amp; time</h3></div>
+        <div class="rh-smart-hint" aria-label="Smart send recommendation">
+          <span class="rh-smart-hint-icon">✦</span>
+          <span class="rh-smart-copy"><b>Best time</b><span id="smartSendText">Tomorrow · 10:45 AM</span></span>
+          <button type="button" id="applySmartTime">Apply</button>
+        </div>
+      </div>
+      <input id="composerSchedule" type="datetime-local" aria-label="Schedule date and time">
+      <p>Choose a date manually or apply the AI-recommended time for this audience.</p>
+    </section>
   </div>
-  <div class="rh-drawer-foot"><button class="btn secondary" type="button" id="saveReminderDraft">Save draft</button><button class="btn primary" type="button" id="scheduleReminder">Schedule message</button></div>
+  <div class="rh-drawer-foot rh-composer-actions">
+    <button class="btn secondary" type="button" id="saveReminderDraft">Save draft</button>
+    <button class="btn secondary email-only rh-preview-demo-btn" type="button" id="previewReminderDemo">◉ Preview demo</button>
+    <button class="btn primary" type="button" id="scheduleReminder">Schedule message</button>
+  </div>
 </aside>
+
+<div class="rh-demo-modal" id="reminderDemoModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="demoModalTitle">
+  <div class="rh-demo-backdrop" data-close-demo></div>
+  <div class="rh-demo-card">
+    <div class="rh-demo-head">
+      <div><span class="reminder-eyebrow">EMAIL CHECK</span><h2 id="demoModalTitle">Mailer demo preview</h2><p>Review the final experience before you schedule it.</p></div>
+      <button type="button" class="rh-close" id="closeReminderDemo" aria-label="Close preview">×</button>
+    </div>
+    <div class="rh-demo-meta">
+      <div><span>From</span><strong id="demoFrom">ETB2B Awards</strong></div>
+      <div><span>Audience</span><strong id="demoAudience">All Registered Users</strong></div>
+      <div class="wide"><span>Subject</span><strong id="demoSubject">—</strong></div>
+    </div>
+    <div class="rh-demo-toolbar">
+      <span>Preview</span>
+      <div class="rh-device-toggle" role="group" aria-label="Preview size"><button type="button" class="active" data-demo-device="desktop">Desktop</button><button type="button" data-demo-device="mobile">Mobile</button></div>
+    </div>
+    <div class="rh-demo-stage" id="demoStage"><iframe id="demoEmailFrame" title="Email demo preview"></iframe></div>
+    <div class="rh-demo-foot"><button class="btn secondary" type="button" id="backToEditor">Back to editor</button><button class="btn primary" type="button" id="sendDemoTest">Send test to me</button></div>
+  </div>
+</div>
 
 <aside class="rh-drawer automation-drawer" id="automationComposer" aria-hidden="true">
   <div class="rh-drawer-head">
