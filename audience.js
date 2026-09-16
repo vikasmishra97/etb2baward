@@ -97,8 +97,10 @@
   }
 
   function renderSegments(){
+    const grid=$('segmentGrid');
+    if(!grid)return;
     const all=[...segmentDefs,...customSegments];
-    $('segmentGrid').innerHTML=all.map(s=>`<button class="au-segment-card ${s.tone||''} ${s.key===activeSegment?'active':''}" data-segment="${esc(s.key)}">
+    grid.innerHTML=all.map(s=>`<button class="au-segment-card ${s.tone||''} ${s.key===activeSegment?'active':''}" data-segment="${esc(s.key)}">
       <div class="au-seg-top"><span class="au-seg-icon">${esc(s.icon||'◇')}</span><strong class="au-seg-count">${fmt(s.count)}</strong></div>
       <b>${esc(s.name)}</b><p>${esc(s.desc||'Custom audience segment.')}</p><footer><span>${esc(s.hint||'Custom rules')}</span><em>View →</em></footer>${s.custom?'<span class="au-custom-badge">CUSTOM</span>':''}
     </button>`).join('');
@@ -229,6 +231,10 @@
     $('importRows').innerHTML=importBuffer.slice(0,5).map(l=>`<tr><td>${esc(l.name)}</td><td>${esc(l.email)}</td><td>${esc(l.company)}</td><td>${esc(l.category)}</td><td>${esc(l.source)}</td></tr>`).join('');
   }
 
+  const pageParams=new URLSearchParams(location.search);
+  const requestedSegment=pageParams.get('segment');
+  if(requestedSegment&&[...segmentDefs,...customSegments].some(s=>s.key===requestedSegment))activeSegment=requestedSegment;
+
   populateCategoryControls();renderSegments();renderTable();renderSources();renderDemand();
 
   // Filters and table actions
@@ -255,7 +261,10 @@
   // Modal open / close
   $('addLead').addEventListener('click',()=>openModal('addLeadModal'));
   $('importContacts').addEventListener('click',()=>{importBuffer=[];renderImportPreview();openModal('importModal')});
-  $('createSegment').addEventListener('click',()=>{['segmentName'].forEach(id=>$(id).value='');$('segmentLifecycle').value='all';$('segmentIntent').value='0';$('segmentCategory').value='all';$('segmentSource').value='all';estimateSegment();openModal('segmentModal')});
+  const openSegmentBuilder=()=>{['segmentName'].forEach(id=>$(id).value='');$('segmentLifecycle').value='all';$('segmentIntent').value='0';$('segmentCategory').value='all';$('segmentSource').value='all';estimateSegment();openModal('segmentModal')};
+  const createSegmentButton=$('createSegment');
+  if(createSegmentButton)createSegmentButton.addEventListener('click',openSegmentBuilder);
+  if(pageParams.get('createSegment')==='1')openSegmentBuilder();
   document.querySelectorAll('[data-close-modal]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.closeModal)));
 
   $('saveNewLead').addEventListener('click',()=>{
