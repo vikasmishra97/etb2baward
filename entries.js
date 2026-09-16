@@ -95,7 +95,19 @@
     $('reminderOverlay').classList.add('open');$(id).classList.add('open');$(id).setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
   }
   function closeDrawers(){
-    $('reminderOverlay').classList.remove('open');$$('.rh-drawer.open').forEach(d=>{d.classList.remove('open');d.setAttribute('aria-hidden','true');});document.body.style.overflow='';
+    $('reminderOverlay').classList.remove('open');
+    $$('.rh-drawer.open').forEach(d=>{d.classList.remove('open');d.setAttribute('aria-hidden','true');});
+    const chooser=$('channelChooser');if(chooser){chooser.classList.remove('open');chooser.setAttribute('aria-hidden','true');}
+    document.body.style.overflow='';
+  }
+  function openChannelChooser(){
+    const chooser=$('channelChooser');if(!chooser)return;
+    const hint=$('channelChooserAudienceHint');
+    if(hint){
+      if(selectedAudience){const count=Number(selectedAudience.count||selectedAudience.sampleCount||selectedAudience.contactIds?.length||0);hint.textContent=`Choose a channel for ${selectedAudience.segmentName||'your selected audience'} · ${count.toLocaleString('en-IN')} contact${count===1?'':'s'}.`;}
+      else hint.textContent='Choose a channel. You can select the target audience in the next step.';
+    }
+    chooser.classList.add('open');chooser.setAttribute('aria-hidden','false');$('reminderOverlay').classList.add('open');document.body.style.overflow='hidden';
   }
 
   function defaultCopy(channel){
@@ -219,8 +231,10 @@
   $$('[data-channel-filter]').forEach(sel=>sel.addEventListener('change',()=>renderChannel(sel.dataset.channelFilter)));
   $$('[data-open-composer]').forEach(btn=>btn.addEventListener('click',()=>configureComposer(btn.dataset.openComposer)));
 
-  $('heroScheduleBtn').addEventListener('click',()=>configureComposer(currentTab==='automations'?'email':currentTab));
+  $('heroScheduleBtn').addEventListener('click',openChannelChooser);
   $('openAiComposer').addEventListener('click',()=>{configureComposer(currentTab==='automations'?'email':currentTab);setTimeout(()=>$('aiGoal').focus(),240);});
+  $('closeChannelChooser').addEventListener('click',closeDrawers);
+  $$('[data-choose-channel]').forEach(btn=>btn.addEventListener('click',()=>{const channel=btn.dataset.chooseChannel;$('channelChooser').classList.remove('open');$('channelChooser').setAttribute('aria-hidden','true');switchTab(channel);configureComposer(channel);}));
   $('closeReminderComposer').addEventListener('click',closeDrawers);$('closeAutomationComposer').addEventListener('click',closeDrawers);$('reminderOverlay').addEventListener('click',closeDrawers);
   $('generateAiCopy').addEventListener('click',aiGenerate);
   $('composerMessage').addEventListener('input',updateMessageHealth);

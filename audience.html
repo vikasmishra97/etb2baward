@@ -93,18 +93,6 @@
       </div>
 
       <section class="au-intelligence-grid">
-        <article class="card pad au-opportunity-card au-intelligence-card">
-          <div class="au-side-title">
-            <div><span class="au-section-eyebrow">NEXT BEST ACTION</span><h3>Focus on warm drop-offs</h3></div>
-            <span class="au-mini-score">92</span>
-          </div>
-          <p>Incomplete entrants are more likely to convert than imported prospects because they already invested time in the form.</p>
-          <div class="au-opportunity-stats-grid">
-            <div class="au-opportunity-stat"><b>296</b><span>entry starters waiting</span></div>
-            <div class="au-opportunity-stat"><b>₹5.3L</b><span>recoverable revenue</span></div>
-          </div>
-          <button class="btn primary" data-use-segment="incomplete">Build recovery reminder</button>
-        </article>
 
         <article class="card pad au-source-card au-intelligence-card">
           <div class="au-side-title">
@@ -326,6 +314,38 @@
       <div class="au-estimate"><span>Estimated audience</span><b id="segmentEstimate">14,842</b><small>Estimate updates from your current rules.</small></div>
     </div>
     <div class="au-modal-foot"><button class="btn secondary" data-close-modal="segmentModal">Cancel</button><button class="btn primary" id="saveSegment">Create segment</button></div>
+  </div>
+</div>
+
+
+<!-- Reminder channel chooser -->
+<div class="au-modal au-reminder-channel-modal" id="reminderChannelModal" aria-hidden="true">
+  <div class="au-modal-backdrop" data-close-modal="reminderChannelModal"></div>
+  <div class="au-modal-card au-channel-modal-card">
+    <div class="au-modal-head">
+      <div><span class="au-section-eyebrow">SEND REMINDER</span><h2>Choose a channel</h2><p id="reminderChannelContext">Choose how you want to reach this audience.</p></div>
+      <button type="button" data-close-modal="reminderChannelModal" aria-label="Close">×</button>
+    </div>
+    <div class="au-modal-body">
+      <div class="au-channel-choice-grid">
+        <button class="au-channel-choice email" type="button" data-reminder-channel="email">
+          <span class="au-channel-choice-icon">✉</span>
+          <span><b>Email</b><small>Best for rich reminders, details and strong CTAs.</small></span>
+          <i>→</i>
+        </button>
+        <button class="au-channel-choice whatsapp" type="button" data-reminder-channel="whatsapp">
+          <span class="au-channel-choice-icon">◉</span>
+          <span><b>WhatsApp</b><small>Fast, personal follow-up for opted-in contacts.</small></span>
+          <i>→</i>
+        </button>
+        <button class="au-channel-choice sms" type="button" data-reminder-channel="sms">
+          <span class="au-channel-choice-icon">▤</span>
+          <span><b>SMS</b><small>Short, urgent reminders with high visibility.</small></span>
+          <i>→</i>
+        </button>
+      </div>
+      <div class="au-channel-ai-note"><span>✦</span><div><b>Smart handoff</b><p>Your selected contacts, categories and filters will carry into Reminder Hub automatically.</p></div></div>
+    </div>
   </div>
 </div>
 

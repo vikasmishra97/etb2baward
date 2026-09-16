@@ -169,6 +169,22 @@
 </div>
 
 <div class="rh-overlay" id="reminderOverlay"></div>
+
+<section class="rh-channel-chooser" id="channelChooser" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="channelChooserTitle">
+  <div class="rh-channel-chooser-card">
+    <div class="rh-channel-chooser-head">
+      <div><span class="reminder-eyebrow">NEW REMINDER</span><h2 id="channelChooserTitle">How do you want to reach them?</h2><p><span id="channelChooserAudienceHint">Choose a channel. Your current audience selection will be applied automatically.</span></p></div>
+      <button type="button" class="rh-close" id="closeChannelChooser" aria-label="Close">×</button>
+    </div>
+    <div class="rh-channel-chooser-body">
+      <button class="rh-channel-option email" type="button" data-choose-channel="email"><span class="rh-channel-option-icon">✉</span><span><b>Email</b><small>Rich content, subject line and CTA.</small><em>Best for detailed reminders</em></span><i>→</i></button>
+      <button class="rh-channel-option whatsapp" type="button" data-choose-channel="whatsapp"><span class="rh-channel-option-icon">◉</span><span><b>WhatsApp</b><small>Personal, fast and action-focused.</small><em>Best for warm follow-up</em></span><i>→</i></button>
+      <button class="rh-channel-option sms" type="button" data-choose-channel="sms"><span class="rh-channel-option-icon">▤</span><span><b>SMS</b><small>Short reminders with high visibility.</small><em>Best for urgent nudges</em></span><i>→</i></button>
+    </div>
+    <div class="rh-channel-chooser-note"><span>✦</span><div><b>AI-assisted setup</b><p>After you choose a channel, the composer opens with your selected audience and channel-specific recommendations.</p></div></div>
+  </div>
+</section>
+
 <aside class="rh-drawer" id="reminderComposer" aria-hidden="true">
   <div class="rh-drawer-head">
     <div><span class="reminder-eyebrow" id="composerKicker">SCHEDULE MESSAGE</span><h2 id="composerTitle">Schedule Email</h2><p id="composerSubtitle">Create, preview and schedule a message.</p></div>

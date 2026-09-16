@@ -24,7 +24,7 @@
 .au-intelligence-head p{margin:0;font-size:10px;color:var(--muted)}
 .au-live-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #e5e6ee;background:#fff;border-radius:99px;padding:7px 10px;font-size:9px;font-weight:850;color:#666b80;white-space:nowrap}
 .au-live-pill i{width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 0 4px rgba(31,173,117,.09)}
-.au-intelligence-grid{display:grid;grid-template-columns:1.16fr .92fr .92fr;gap:14px;align-items:stretch;margin-bottom:14px}
+.au-intelligence-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch;margin-bottom:14px}
 .au-intelligence-card{margin:0;min-width:0;min-height:190px;border-radius:16px;box-shadow:0 9px 28px rgba(28,34,65,.055);display:flex;flex-direction:column}
 .au-intelligence-card .au-side-title{min-height:38px}
 .au-intelligence-card .au-text-btn{margin-top:auto;padding-top:12px;text-align:left}
@@ -75,3 +75,17 @@
 .au-action-copy small{font-size:7.5px;line-height:1.25;margin-top:3px;font-weight:700;opacity:.7;color:inherit}
 .au-profile-action-note{margin:8px 2px 0;font-size:8px;line-height:1.45;color:#8a8ea0}
 @media(max-width:720px){.au-profile-actions{grid-template-columns:1fr}.au-channel-action{min-height:52px}}
+
+
+/* Audience reminder channel chooser */
+.au-channel-modal-card{width:min(680px,100%)}
+.au-channel-choice-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.au-channel-choice{min-height:154px;border:1px solid #e2e5ec;border-radius:16px;background:#fff;padding:16px;text-align:left;display:grid;grid-template-columns:42px 1fr auto;grid-template-rows:auto 1fr;column-gap:11px;align-items:start;color:var(--ink);cursor:pointer;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+.au-channel-choice:hover{transform:translateY(-2px);border-color:#cbc7ef;box-shadow:0 12px 28px rgba(35,40,70,.09)}
+.au-channel-choice-icon{grid-row:1/3;width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:17px;font-weight:900;background:#f2efff;color:#6258f5}
+.au-channel-choice.whatsapp .au-channel-choice-icon{background:#e9f8f1;color:#14865a}.au-channel-choice.sms .au-channel-choice-icon{background:#fff3e7;color:#b86d17}
+.au-channel-choice b{display:block;font-size:14px;margin:1px 0 5px}.au-channel-choice small{display:block;font-size:10px;line-height:1.45;color:#7d8294}.au-channel-choice>i{font-style:normal;font-size:18px;color:#b0b4c2;margin-top:7px}
+.au-channel-choice:hover>i{color:var(--brand)}
+.au-channel-ai-note{display:flex;gap:10px;align-items:flex-start;margin-top:13px;padding:12px 13px;border:1px solid #e2def7;border-radius:12px;background:linear-gradient(120deg,#f7f5ff,#fff)}
+.au-channel-ai-note>span{width:28px;height:28px;border-radius:9px;background:#ece9ff;color:var(--brand);display:grid;place-items:center;font-weight:900}.au-channel-ai-note b{font-size:10px}.au-channel-ai-note p{margin:2px 0 0;color:#777d8e;font-size:9px;line-height:1.5}
+@media(max-width:720px){.au-channel-choice-grid{grid-template-columns:1fr}.au-channel-choice{min-height:auto;grid-template-columns:40px 1fr auto}.au-channel-choice-icon{width:40px;height:40px}}
