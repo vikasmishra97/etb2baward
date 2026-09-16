@@ -81,124 +81,125 @@
         </div>
       </section>
 
-      <section class="au-kpis">
-        <article class="card au-kpi-card">
-          <div class="au-kpi-icon">◎</div>
-          <div><small>Total audience</small><strong id="totalAudienceKpi">14,842</strong><span>Across all sources</span></div>
+
+
+      <div class="au-intelligence-head section">
+        <div>
+          <span class="au-section-eyebrow">AUDIENCE INTELLIGENCE</span>
+          <h2>Signals that deserve attention now</h2>
+          <p>Prioritise high-conversion audiences before opening the full contact workspace.</p>
+        </div>
+        <span class="au-live-pill"><i></i> Live insights</span>
+      </div>
+
+      <section class="au-intelligence-grid">
+        <article class="card pad au-opportunity-card au-intelligence-card">
+          <div class="au-side-title">
+            <div><span class="au-section-eyebrow">NEXT BEST ACTION</span><h3>Focus on warm drop-offs</h3></div>
+            <span class="au-mini-score">92</span>
+          </div>
+          <p>Incomplete entrants are more likely to convert than imported prospects because they already invested time in the form.</p>
+          <div class="au-opportunity-stats-grid">
+            <div class="au-opportunity-stat"><b>296</b><span>entry starters waiting</span></div>
+            <div class="au-opportunity-stat"><b>₹5.3L</b><span>recoverable revenue</span></div>
+          </div>
+          <button class="btn primary" data-use-segment="incomplete">Build recovery reminder</button>
         </article>
-        <article class="card au-kpi-card">
-          <div class="au-kpi-icon hot">↗</div>
-          <div><small>High intent</small><strong>1,942</strong><span class="au-positive">+14% this month</span></div>
+
+        <article class="card pad au-source-card au-intelligence-card">
+          <div class="au-side-title">
+            <div><span class="au-section-eyebrow">SOURCE MIX</span><h3>Where your audience comes from</h3></div>
+            <span class="au-card-chip">Acquisition</span>
+          </div>
+          <div id="sourceBars" class="au-source-bars"></div>
+          <button class="au-text-btn" id="showSources">View source performance →</button>
         </article>
-        <article class="card au-kpi-card">
-          <div class="au-kpi-icon warn">!</div>
-          <div><small>Unconverted</small><strong>1,590</strong><span>Registered, no entry</span></div>
-        </article>
-        <article class="card au-kpi-card">
-          <div class="au-kpi-icon good">✓</div>
-          <div><small>Data quality</small><strong id="dataQualityKpi">91%</strong><span>Email + company coverage</span></div>
+
+        <article class="card pad au-demand-card au-intelligence-card">
+          <div class="au-side-title">
+            <div><span class="au-section-eyebrow">CATEGORY DEMAND</span><h3>Interest by category</h3></div>
+            <span class="au-card-chip">Demand</span>
+          </div>
+          <div id="categoryDemand" class="au-demand-list"></div>
+          <button class="au-text-btn" id="promoteLowDemand">Find an under-promoted category →</button>
         </article>
       </section>
 
-      <div class="au-layout section">
-        <section class="card au-contacts-card">
-          <div class="au-table-head">
-            <div>
-              <span class="au-section-eyebrow">CONTACTS</span>
-              <h2 id="contactsTitle">All contacts</h2>
-              <p id="contactsSubtitle">A sample of your full award audience.</p>
-            </div>
-            <div class="au-table-head-actions">
-              <button class="btn secondary au-small-btn" id="exportVisible">↓ Export</button>
-              <button class="btn primary au-small-btn" id="campaignVisible">Send reminder</button>
-            </div>
+      <section class="card au-contacts-card au-contacts-full section">
+        <div class="au-table-head">
+          <div>
+            <span class="au-section-eyebrow">CONTACTS</span>
+            <h2 id="contactsTitle">All contacts</h2>
+            <p id="contactsSubtitle">A sample of your full award audience.</p>
           </div>
-
-          <div class="au-toolbar">
-            <label class="au-search"><span>⌕</span><input id="contactSearch" type="search" placeholder="Search name, company or email"></label>
-            <select id="lifecycleFilter" aria-label="Lifecycle">
-              <option value="all">All lifecycle stages</option>
-              <option value="prospect">Prospect</option>
-              <option value="registered">Registered</option>
-              <option value="started">Entry started</option>
-              <option value="submitted_unpaid">Submitted · unpaid</option>
-              <option value="paid">Paid / complete</option>
-              <option value="past_entrant">Past entrant</option>
-              <option value="winner">Past winner</option>
-            </select>
-            <select id="intentFilter" aria-label="Intent">
-              <option value="all">All intent</option>
-              <option value="high">High intent · 75+</option>
-              <option value="medium">Medium · 45–74</option>
-              <option value="low">Low · under 45</option>
-            </select>
-            <div class="au-category-filter" id="categoryFilterWrap">
-              <button class="au-category-trigger" type="button" id="categoryFilterButton" aria-expanded="false" aria-controls="categoryFilterMenu">
-                <span id="categoryFilterLabel">All categories</span><i>⌄</i>
-              </button>
-              <div class="au-category-menu" id="categoryFilterMenu" hidden>
-                <div class="au-category-menu-head"><div><b>Filter by category</b><small>Select one or multiple categories</small></div><button type="button" id="clearCategoryFilter">Clear</button></div>
-                <div class="au-category-options" id="categoryFilterOptions"></div>
-                <div class="au-category-menu-foot"><span id="categorySelectionCount">All categories</span><button type="button" id="applyCategoryFilter">Apply</button></div>
-              </div>
-            </div>
-            <button class="au-filter-reset" id="resetFilters">Reset</button>
+          <div class="au-table-head-actions">
+            <button class="btn secondary au-small-btn" id="exportVisible">↓ Export</button>
+            <button class="btn primary au-small-btn" id="campaignVisible">Send reminder</button>
           </div>
+        </div>
 
-          <div class="au-bulk-bar" id="bulkBar" hidden>
-            <div><b id="bulkCount">0 selected</b><span>Use selected contacts without changing the segment.</span></div>
-            <div>
-              <button id="bulkExport">Export</button>
-              <button id="bulkCampaign">Send reminder</button>
+        <div class="au-toolbar">
+          <label class="au-search"><span>⌕</span><input id="contactSearch" type="search" placeholder="Search name, company or email"></label>
+          <select id="lifecycleFilter" aria-label="Lifecycle">
+            <option value="all">All lifecycle stages</option>
+            <option value="prospect">Prospect</option>
+            <option value="registered">Registered</option>
+            <option value="started">Entry started</option>
+            <option value="submitted_unpaid">Submitted · unpaid</option>
+            <option value="paid">Paid / complete</option>
+            <option value="past_entrant">Past entrant</option>
+            <option value="winner">Past winner</option>
+          </select>
+          <select id="intentFilter" aria-label="Intent">
+            <option value="all">All intent</option>
+            <option value="high">High intent · 75+</option>
+            <option value="medium">Medium · 45–74</option>
+            <option value="low">Low · under 45</option>
+          </select>
+          <div class="au-category-filter" id="categoryFilterWrap">
+            <button class="au-category-trigger" type="button" id="categoryFilterButton" aria-expanded="false" aria-controls="categoryFilterMenu">
+              <span id="categoryFilterLabel">All categories</span><i>⌄</i>
+            </button>
+            <div class="au-category-menu" id="categoryFilterMenu" hidden>
+              <div class="au-category-menu-head"><div><b>Filter by category</b><small>Select one or multiple categories</small></div><button type="button" id="clearCategoryFilter">Clear</button></div>
+              <div class="au-category-options" id="categoryFilterOptions"></div>
+              <div class="au-category-menu-foot"><span id="categorySelectionCount">All categories</span><button type="button" id="applyCategoryFilter">Apply</button></div>
             </div>
           </div>
+          <button class="au-filter-reset" id="resetFilters">Reset</button>
+        </div>
 
-          <div class="au-table-wrap">
-            <table class="au-table">
-              <thead>
-                <tr>
-                  <th class="au-check"><input type="checkbox" id="selectAll"></th>
-                  <th>Contact</th>
-                  <th>Company</th>
-                  <th>Lifecycle</th>
-                  <th>Interest</th>
-                  <th>Intent</th>
-                  <th>Source</th>
-                  <th>Last activity</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="contactRows"></tbody>
-            </table>
+        <div class="au-bulk-bar" id="bulkBar" hidden>
+          <div><b id="bulkCount">0 selected</b><span>Use selected contacts without changing the segment.</span></div>
+          <div>
+            <button id="bulkExport">Export</button>
+            <button id="bulkCampaign">Send reminder</button>
           </div>
-          <div class="au-table-footer">
-            <span id="tableCount">Showing 0 sample contacts</span>
-            <div class="au-pagination"><button disabled>‹</button><b>1</b><button disabled>›</button></div>
-          </div>
-        </section>
+        </div>
 
-        <aside class="au-insights-col">
-          <section class="card pad au-opportunity-card">
-            <div class="au-side-title"><div><span class="au-section-eyebrow">NEXT BEST ACTION</span><h3>Focus on warm drop-offs</h3></div><span class="au-mini-score">92</span></div>
-            <p>Incomplete entrants are more likely to convert than imported prospects because they already invested time in the form.</p>
-            <div class="au-opportunity-stat"><b>296</b><span>entry starters waiting</span></div>
-            <div class="au-opportunity-stat"><b>₹5.3L</b><span>estimated recoverable revenue</span></div>
-            <button class="btn primary" data-use-segment="incomplete">Build recovery reminder</button>
-          </section>
-
-          <section class="card pad au-source-card section">
-            <div class="au-side-title"><div><span class="au-section-eyebrow">SOURCE MIX</span><h3>Where your audience comes from</h3></div></div>
-            <div id="sourceBars" class="au-source-bars"></div>
-            <button class="au-text-btn" id="showSources">View source performance →</button>
-          </section>
-
-          <section class="card pad au-demand-card section">
-            <div class="au-side-title"><div><span class="au-section-eyebrow">CATEGORY DEMAND</span><h3>Interest by category</h3></div></div>
-            <div id="categoryDemand" class="au-demand-list"></div>
-            <button class="au-text-btn" id="promoteLowDemand">Find an under-promoted category →</button>
-          </section>
-        </aside>
-      </div>
+        <div class="au-table-wrap">
+          <table class="au-table">
+            <thead>
+              <tr>
+                <th class="au-check"><input type="checkbox" id="selectAll"></th>
+                <th>Contact</th>
+                <th>Company</th>
+                <th>Lifecycle</th>
+                <th>Interest</th>
+                <th>Intent</th>
+                <th>Source</th>
+                <th>Last activity</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="contactRows"></tbody>
+          </table>
+        </div>
+        <div class="au-table-footer">
+          <span id="tableCount">Showing 0 sample contacts</span>
+          <div class="au-pagination"><button disabled>‹</button><b>1</b><button disabled>›</button></div>
+        </div>
+      </section>
 
       <div class="au-bottom-actions section">
         <div><b>Audience foundation ready</b><span>Next, turn your selected audience into targeted Email, WhatsApp or SMS reminders.</span></div>
