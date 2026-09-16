@@ -4,10 +4,11 @@
   <link rel="icon" type="image/jpeg" href="et-logo.jpg">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Entries · ETB2B Awards</title>
+  <title>Reminder Hub · ETB2B Awards</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="reminder-hub.css">
 </head>
-<body class="entries-page">
+<body class="reminder-page">
 <div class="app">
   <aside class="sidebar">
     <div class="brand"><div class="brandmark et-brandmark"><img src="et-logo.jpg" alt="ET Business Verticals logo"></div><b>ETB2B Awards</b></div>
@@ -21,7 +22,7 @@
       <a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a>
       <a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
       <div class="nav-label">Operate</div>
-      <a class="active" href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
+      <a class="active" href="entries.html"><span class="ico">✉</span><span>Reminder Hub</span></a>
       <div class="nav-label">Grow</div>
       <a href="audience.html"><span class="ico">◉</span><span>Audience</span></a>
       <a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a>
@@ -44,111 +45,159 @@
 
   <div class="content">
     <header class="topbar">
-      <div class="crumb">India FinTech Awards 2027 / Entries</div>
+      <div class="crumb">India FinTech Awards 2027 / Reminder Hub</div>
       <div class="top-actions"><button class="btn ghost" data-toast="AI copilot opened">✦ Ask Award Copilot</button><div class="avatar">VM</div></div>
     </header>
 
-    <main class="main entries-main">
-      <div class="page-head">
-        <div><h1>Entries</h1><p>One place for every nomination, payment state and review status.</p></div>
-        <div class="top-actions"><button class="btn secondary" data-toast="Preview opened">Preview</button><button class="btn primary" data-toast="Changes saved">Save changes</button></div>
+    <main class="main reminder-main">
+      <div class="reminder-hero">
+        <div>
+          <span class="reminder-eyebrow">COMMUNICATION OPERATIONS</span>
+          <h1>Reminder Hub</h1>
+          <p>Plan, automate and optimise award communication across Email, WhatsApp and SMS from one workspace.</p>
+        </div>
+        <div class="reminder-hero-actions">
+          <button class="btn secondary rh-ai-btn" type="button" id="openAiComposer">✦ AI Compose</button>
+          <button class="btn primary" type="button" id="heroScheduleBtn">+ Schedule message</button>
+        </div>
       </div>
 
-      <div class="stagebar"><div class="stage active">BUILD</div><div class="stage">GROW</div><div class="stage">DECIDE</div><div class="stage">CELEBRATE</div></div>
+      <section class="rh-kpi-grid" aria-label="Reminder performance">
+        <article class="rh-kpi"><div class="rh-kpi-icon scheduled">◷</div><div><span>Scheduled</span><strong>12</strong><small>Next 7 days</small></div></article>
+        <article class="rh-kpi"><div class="rh-kpi-icon sent">↗</div><div><span>Sent this month</span><strong>8,942</strong><small class="good">+18% vs last month</small></div></article>
+        <article class="rh-kpi"><div class="rh-kpi-icon delivery">✓</div><div><span>Delivery health</span><strong>98.7%</strong><small class="good">Healthy</small></div></article>
+        <article class="rh-kpi ai"><div class="rh-kpi-icon ai">✦</div><div><span>AI opportunities</span><strong>3</strong><small>Ready to optimise</small></div></article>
+      </section>
 
-      <div class="grid4 entries-kpis" id="entryKpis">
-        <button class="card pad kpi entry-kpi active" type="button" data-kpi-filter="all"><small>All entries</small><div class="value">1,620</div><span>Show all</span></button>
-        <button class="card pad kpi entry-kpi" type="button" data-kpi-filter="draft"><small>Draft</small><div class="value">296</div><span>Needs completion</span></button>
-        <button class="card pad kpi entry-kpi" type="button" data-kpi-filter="pending"><small>Payment pending</small><div class="value">18</div><span>Needs payment</span></button>
-        <button class="card pad kpi entry-kpi" type="button" data-kpi-filter="submitted"><small>Submitted</small><div class="value">1,284</div><span>Ready for review</span></button>
-      </div>
+      <section class="rh-workspace">
+        <div class="rh-tabs" role="tablist" aria-label="Reminder channels">
+          <button class="rh-tab active" type="button" data-reminder-tab="email" role="tab" aria-selected="true"><span class="rh-tab-icon">✉</span><span>Email</span><b>5</b></button>
+          <button class="rh-tab" type="button" data-reminder-tab="whatsapp" role="tab" aria-selected="false"><span class="rh-tab-icon">◉</span><span>WhatsApp</span><b>4</b></button>
+          <button class="rh-tab" type="button" data-reminder-tab="sms" role="tab" aria-selected="false"><span class="rh-tab-icon">▤</span><span>SMS</span><b>3</b></button>
+          <button class="rh-tab automation" type="button" data-reminder-tab="automations" role="tab" aria-selected="false"><span class="rh-tab-icon">⚡</span><span>Auto Journeys</span><b>4</b></button>
+        </div>
 
-      <div class="card pad section entries-card">
-        <div class="section-title entries-title-row">
-          <div>
-            <h2>All entries</h2>
-            <p id="entriesResultLabel">4 records shown in this prototype</p>
-          </div>
-          <div class="entries-actions">
-            <div class="entry-search-wrap">
-              <span aria-hidden="true">⌕</span>
-              <input id="entrySearch" type="search" placeholder="Search entrant or category" aria-label="Search entries">
+        <div class="rh-panel active" id="panel-email" data-reminder-panel="email" role="tabpanel">
+          <div class="rh-toolbar">
+            <div class="rh-search"><span>⌕</span><input type="search" placeholder="Search email subject" data-channel-search="email"></div>
+            <div class="rh-toolbar-actions">
+              <select class="rh-select" data-channel-filter="email"><option value="all">All statuses</option><option value="active">Active</option><option value="scheduled">Scheduled</option><option value="draft">Draft</option></select>
+              <button class="btn primary" type="button" data-open-composer="email">+ Schedule Email</button>
             </div>
-            <button class="btn secondary entry-filter-btn" type="button" id="openEntryFilter" aria-expanded="false">
-              <span>Filter</span><span class="filter-count" id="entryFilterCount" hidden>0</span>
-            </button>
-            <button class="btn primary" type="button" id="openBulkReminder">Send reminder</button>
+          </div>
+          <div class="rh-ai-strip"><div><span class="rh-ai-glyph">✦</span><div><b>AI opportunity</b><p>Registrants who have not started an entry convert best when reminded between 10:30–11:30 AM.</p></div></div><button type="button" data-smart-schedule="email">Use smart time</button></div>
+          <div class="rh-table-wrap"><table class="rh-table"><thead><tr><th>ID</th><th>Email subject</th><th>Created</th><th>Scheduled on</th><th>Sent to</th><th>Batch</th><th>Status</th><th>Actions</th></tr></thead><tbody id="emailReminderRows"></tbody></table></div>
+        </div>
+
+        <div class="rh-panel" id="panel-whatsapp" data-reminder-panel="whatsapp" role="tabpanel">
+          <div class="rh-toolbar">
+            <div class="rh-search"><span>⌕</span><input type="search" placeholder="Search WhatsApp content" data-channel-search="whatsapp"></div>
+            <div class="rh-toolbar-actions">
+              <select class="rh-select" data-channel-filter="whatsapp"><option value="all">All templates</option><option value="active">Active</option><option value="scheduled">Scheduled</option><option value="draft">Draft</option></select>
+              <button class="btn secondary" type="button" id="addDefaultWhatsapp">Set default WhatsApp</button>
+              <button class="btn primary" type="button" data-open-composer="whatsapp">+ Schedule WhatsApp</button>
+            </div>
+          </div>
+          <div class="rh-ai-strip"><div><span class="rh-ai-glyph">✦</span><div><b>AI template check</b><p>All active WhatsApp templates are within recommended message length. One draft may need variable cleanup.</p></div></div><button type="button" data-ai-review="whatsapp">Review draft</button></div>
+          <div class="rh-table-wrap"><table class="rh-table"><thead><tr><th>ID</th><th>Content</th><th>Created</th><th>Scheduled on</th><th>Sent to</th><th>Batch</th><th>Status</th><th>Actions</th></tr></thead><tbody id="whatsappReminderRows"></tbody></table></div>
+        </div>
+
+        <div class="rh-panel" id="panel-sms" data-reminder-panel="sms" role="tabpanel">
+          <div class="rh-toolbar">
+            <div class="rh-search"><span>⌕</span><input type="search" placeholder="Search SMS message" data-channel-search="sms"></div>
+            <div class="rh-toolbar-actions">
+              <select class="rh-select" data-channel-filter="sms"><option value="all">All statuses</option><option value="active">Active</option><option value="scheduled">Scheduled</option><option value="draft">Draft</option></select>
+              <button class="btn primary" type="button" data-open-composer="sms">+ Schedule SMS</button>
+            </div>
+          </div>
+          <div class="rh-ai-strip"><div><span class="rh-ai-glyph">✦</span><div><b>AI message optimiser</b><p>Two messages can be shortened to one SMS segment without losing the core call to action.</p></div></div><button type="button" data-ai-review="sms">Optimise copy</button></div>
+          <div class="rh-table-wrap"><table class="rh-table"><thead><tr><th>ID</th><th>SMS message</th><th>Created</th><th>Scheduled on</th><th>Sent to</th><th>Batch</th><th>Status</th><th>Actions</th></tr></thead><tbody id="smsReminderRows"></tbody></table></div>
+        </div>
+
+        <div class="rh-panel" id="panel-automations" data-reminder-panel="automations" role="tabpanel">
+          <div class="automation-head">
+            <div><span class="reminder-eyebrow">ALWAYS-ON COMMUNICATION</span><h2>Auto Journeys</h2><p>Set messages once and let the system trigger them automatically when participant behaviour changes.</p></div>
+            <button class="btn primary" type="button" id="createAutomation">+ Create automation</button>
+          </div>
+
+          <div class="rh-auto-grid" id="automationGrid"></div>
+
+          <div class="rh-insight-grid">
+            <article class="rh-insight-card">
+              <div class="rh-insight-top"><span class="rh-ai-glyph">✦</span><div><b>AI journey recommendation</b><span>Based on current funnel behaviour</span></div></div>
+              <h3>Add a 24-hour “no entry started” nudge</h3>
+              <p>1,590 registered users have not started an entry. A WhatsApp follow-up after 24 hours is the strongest next automation to test.</p>
+              <div class="rh-insight-metrics"><span><b>1,590</b> eligible</span><span><b>10–14%</b> est. recovery</span></div>
+              <button class="btn secondary" type="button" id="createSuggestedAutomation">Create suggested journey</button>
+            </article>
+            <article class="rh-insight-card neutral">
+              <div class="rh-insight-top"><span class="rh-health-dot"></span><div><b>Automation health</b><span>Last 30 days</span></div></div>
+              <div class="rh-health-row"><span>Triggered successfully</span><b>99.2%</b></div>
+              <div class="rh-health-row"><span>Messages delivered</span><b>98.7%</b></div>
+              <div class="rh-health-row"><span>Suppressed / opted out</span><b>1.1%</b></div>
+              <div class="rh-health-line"><i style="width:98.7%"></i></div>
+            </article>
           </div>
         </div>
-
-        <div class="entry-filter-chips" id="entryFilterChips" hidden></div>
-
-        <div class="entry-table-wrap">
-          <table class="table entries-table">
-            <thead><tr><th>Entrant</th><th>Category</th><th>Status</th><th>Payment</th><th>Score</th><th>Action</th></tr></thead>
-            <tbody id="entriesTableBody">
-              <tr data-entry-row data-id="nova" data-name="NovaPay Technologies" data-contact="Priya Shah" data-email="priya@novapay.example" data-category="Best Startup" data-status="submitted" data-payment="paid" data-score="">
-                <td><b>NovaPay Technologies</b><br><small>Priya Shah</small></td><td>Best Startup</td><td><span class="badge green">Submitted</span></td><td><span class="badge green">Paid</span></td><td>—</td><td><button type="button" class="entry-text-action" data-entry-action="view">View</button></td>
-              </tr>
-              <tr data-entry-row data-id="finbridge" data-name="FinBridge Labs" data-contact="Rahul Mehta" data-email="rahul@finbridge.example" data-category="Best Product" data-status="draft" data-payment="paid" data-score="">
-                <td><b>FinBridge Labs</b><br><small>Rahul Mehta</small></td><td>Best Product</td><td><span class="badge orange">Draft</span></td><td><span class="badge green">Paid</span></td><td>—</td><td><button type="button" class="entry-text-action remind" data-entry-action="remind">Remind</button></td>
-              </tr>
-              <tr data-entry-row data-id="orbit" data-name="Orbit Finance" data-contact="Neha Rao" data-email="neha@orbit.example" data-category="Best CEO" data-status="submitted" data-payment="pending" data-score="">
-                <td><b>Orbit Finance</b><br><small>Neha Rao</small></td><td>Best CEO</td><td><span class="badge green">Submitted</span></td><td><span class="badge orange">Pending</span></td><td>—</td><td><button type="button" class="entry-text-action remind" data-entry-action="remind">Remind</button></td>
-              </tr>
-              <tr data-entry-row data-id="credstack" data-name="CredStack" data-contact="Aman Jain" data-email="aman@credstack.example" data-category="Best Startup" data-status="review" data-payment="paid" data-score="8.6">
-                <td><b>CredStack</b><br><small>Aman Jain</small></td><td>Best Startup</td><td><span class="badge">Under review</span></td><td><span class="badge green">Paid</span></td><td>8.6</td><td><button type="button" class="entry-text-action" data-entry-action="view">View</button></td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="entries-empty" id="entriesEmpty" hidden><b>No matching entries</b><span>Try clearing a filter or using a different search.</span><button class="btn secondary" type="button" id="clearEntriesEmpty">Clear filters</button></div>
-        </div>
-      </div>
+      </section>
 
       <div class="footer-note">Vikas Mishra</div>
     </main>
   </div>
 </div>
 
-<div class="entry-modal" id="entryFilterModal" aria-hidden="true">
-  <div class="entry-modal-backdrop" data-close-entry-modal></div>
-  <section class="entry-modal-dialog entry-filter-dialog" role="dialog" aria-modal="true" aria-labelledby="entryFilterTitle">
-    <div class="entry-modal-head"><div><span class="entry-modal-kicker">ENTRY FILTERS</span><h3 id="entryFilterTitle">Find the entries you need</h3><p>Combine filters to narrow the list instantly.</p></div><button type="button" class="entry-modal-close" data-close-entry-modal aria-label="Close">×</button></div>
-    <div class="entry-modal-body">
-      <div class="entry-filter-grid">
-        <label><span>Status</span><select id="filterStatus"><option value="all">All statuses</option><option value="draft">Draft</option><option value="submitted">Submitted</option><option value="review">Under review</option></select></label>
-        <label><span>Payment</span><select id="filterPayment"><option value="all">All payment states</option><option value="paid">Paid</option><option value="pending">Payment pending</option></select></label>
-        <label><span>Category</span><select id="filterCategory"><option value="all">All categories</option><option>Best Startup</option><option>Best Product</option><option>Best CEO</option></select></label>
-        <label><span>Score</span><select id="filterScore"><option value="all">Any score</option><option value="scored">Scored</option><option value="unscored">Not scored</option></select></label>
-      </div>
+<div class="rh-overlay" id="reminderOverlay"></div>
+<aside class="rh-drawer" id="reminderComposer" aria-hidden="true">
+  <div class="rh-drawer-head">
+    <div><span class="reminder-eyebrow" id="composerKicker">SCHEDULE MESSAGE</span><h2 id="composerTitle">Schedule Email</h2><p id="composerSubtitle">Create, preview and schedule a message.</p></div>
+    <button type="button" class="rh-close" id="closeReminderComposer" aria-label="Close">×</button>
+  </div>
+  <div class="rh-drawer-body">
+    <div class="rh-ai-compose-box">
+      <div><span class="rh-ai-glyph">✦</span><div><b>AI Compose</b><p>Describe the goal and generate a starting draft.</p></div></div>
+      <div class="rh-ai-prompt"><input id="aiGoal" type="text" placeholder="e.g. remind registered users to start entry"><button type="button" id="generateAiCopy">Generate</button></div>
     </div>
-    <div class="entry-modal-foot"><button class="btn secondary" type="button" id="clearEntryFilters">Clear all</button><div><button class="btn secondary" type="button" data-close-entry-modal>Cancel</button><button class="btn primary" type="button" id="applyEntryFilters">Apply filters</button></div></div>
-  </section>
-</div>
 
-<div class="entry-modal" id="entryReminderModal" aria-hidden="true">
-  <div class="entry-modal-backdrop" data-close-reminder></div>
-  <section class="entry-modal-dialog entry-reminder-dialog" role="dialog" aria-modal="true" aria-labelledby="entryReminderTitle">
-    <div class="entry-modal-head"><div><span class="entry-modal-kicker">REMINDER CAMPAIGN</span><h3 id="entryReminderTitle">Send entry reminder</h3><p id="entryReminderAudience">Choose who should receive this reminder.</p></div><button type="button" class="entry-modal-close" data-close-reminder aria-label="Close">×</button></div>
-    <div class="entry-modal-body">
-      <div class="reminder-summary"><span>Recipients</span><b id="reminderRecipientCount">0</b><small id="reminderRecipientHint">Based on your current entry list</small></div>
-      <div class="entry-filter-grid reminder-grid">
-        <label><span>Reminder type</span><select id="reminderType"><option value="incomplete">Complete your entry</option><option value="payment">Complete payment</option><option value="deadline">Entry deadline approaching</option></select></label>
-        <label><span>Send to</span><select id="reminderScope"><option value="attention">Entries needing attention</option><option value="filtered">Current filtered results</option><option value="all">All eligible entries</option></select></label>
-      </div>
-      <label class="entry-field"><span>Subject</span><input id="reminderSubject" type="text" value="Action needed: complete your award entry"></label>
-      <label class="entry-field"><span>Message</span><textarea id="reminderMessage" rows="5">Hi {{name}},\n\nYour award entry still needs an action before it can progress. Please sign in to complete the pending step.\n\nRegards,\nETB2B Awards Team</textarea></label>
-      <div class="entry-notice">This project is currently a frontend prototype. The send action confirms the UI flow; connect your email/backend API to deliver real messages.</div>
+    <div class="rh-form-grid">
+      <label><span>Send to</span><select id="composerAudience"><option>All Registered Users</option><option>Registered, no entry</option><option>Entry started, incomplete</option><option>Submitted, payment pending</option><option>Custom segment</option></select></label>
+      <label><span>Schedule date & time</span><input id="composerSchedule" type="datetime-local"></label>
     </div>
-    <div class="entry-modal-foot"><button class="btn secondary" type="button" data-close-reminder>Cancel</button><button class="btn primary" type="button" id="sendEntryReminder">Send reminder</button></div>
-  </section>
-</div>
 
-<div class="entry-drawer-overlay" id="entryDrawerOverlay"></div>
-<aside class="entry-drawer" id="entryDrawer" aria-hidden="true" aria-label="Entry details">
-  <div class="entry-drawer-head"><div><span>ENTRY DETAILS</span><h3 id="drawerEntryName">Entry</h3></div><button type="button" id="closeEntryDrawer" aria-label="Close">×</button></div>
-  <div class="entry-drawer-body" id="entryDrawerBody"></div>
-  <div class="entry-drawer-foot"><button class="btn secondary" type="button" id="drawerReminderBtn">Send reminder</button><button class="btn primary" type="button" data-toast="Entry opened in editor">Open entry</button></div>
+    <label class="rh-field"><span>Sender name</span><input id="composerSender" type="text" value="ETB2B Awards"></label>
+    <label class="rh-field email-only"><span>Subject</span><div class="rh-input-action"><input id="composerSubject" type="text" placeholder="Mailer subject"><button type="button" id="improveSubject">✦ Improve</button></div><small id="subjectScore">AI subject score: —</small></label>
+    <label class="rh-field sms-only" hidden><span>SMS event title</span><input id="smsEventTitle" type="text" value="India FinTech Awards 2027"></label>
+    <label class="rh-field"><span>Template</span><select id="composerTemplate"><option value="">Select template</option><option>Registration confirmation</option><option>Entry deadline reminder</option><option>Payment reminder</option><option>Event update</option></select></label>
+    <label class="rh-field"><span id="messageLabel">Body content</span><textarea id="composerMessage" rows="10" placeholder="Write your message..."></textarea><small id="messageHealth">Use {{name}} and {{entry_link}} as personalisation variables.</small></label>
+
+    <div class="rh-smart-box">
+      <div><span class="rh-smart-icon">◎</span><div><b>Smart send recommendation</b><p id="smartSendText">Best predicted time for this audience: Tomorrow, 10:45 AM.</p></div></div>
+      <button type="button" id="applySmartTime">Apply</button>
+    </div>
+  </div>
+  <div class="rh-drawer-foot"><button class="btn secondary" type="button" id="saveReminderDraft">Save draft</button><button class="btn primary" type="button" id="scheduleReminder">Schedule message</button></div>
+</aside>
+
+<aside class="rh-drawer automation-drawer" id="automationComposer" aria-hidden="true">
+  <div class="rh-drawer-head">
+    <div><span class="reminder-eyebrow">AUTO JOURNEY</span><h2>Create automation</h2><p>Choose a trigger, channel and message that should run automatically.</p></div>
+    <button type="button" class="rh-close" id="closeAutomationComposer" aria-label="Close">×</button>
+  </div>
+  <div class="rh-drawer-body">
+    <div class="rh-automation-flow">
+      <div class="flow-step"><span>1</span><div><b>When this happens</b><small>Participant behaviour trigger</small></div></div>
+      <div class="flow-line"></div>
+      <div class="flow-step"><span>2</span><div><b>Send this message</b><small>Choose Email, WhatsApp or SMS</small></div></div>
+    </div>
+    <label class="rh-field"><span>Trigger</span><select id="autoTrigger"><option value="registered">User registers</option><option value="noentry">Registered but no entry started after 24 hours</option><option value="incomplete">Entry incomplete after 48 hours</option><option value="payment">Payment pending after submission</option><option value="deadline">3 days before entry deadline</option></select></label>
+    <div class="rh-form-grid">
+      <label><span>Channel</span><select id="autoChannel"><option>Email</option><option>WhatsApp</option><option>Email + WhatsApp</option><option>SMS</option></select></label>
+      <label><span>Delay</span><select id="autoDelay"><option>Immediately</option><option>15 minutes</option><option>1 hour</option><option>24 hours</option><option>48 hours</option></select></label>
+    </div>
+    <label class="rh-field"><span>Journey name</span><input id="autoName" type="text" value="Registration welcome"></label>
+    <label class="rh-field"><span>Template</span><select id="autoTemplate"><option>Registration confirmation</option><option>Start your entry</option><option>Complete your entry</option><option>Complete payment</option></select></label>
+    <div class="rh-auto-preview"><span>LIVE PREVIEW</span><b id="autoPreviewTitle">When a user registers</b><p id="autoPreviewText">Send “Registration confirmation” by Email immediately.</p></div>
+  </div>
+  <div class="rh-drawer-foot"><button class="btn secondary" type="button" id="saveAutoDraft">Save as draft</button><button class="btn primary" type="button" id="activateAutomation">Activate automation</button></div>
 </aside>
 
 <div id="toast" class="toast"></div>

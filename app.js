@@ -25,6 +25,7 @@
     rupee:'<path d="M6 4h12M6 8h12M7 4c6 0 7 8 0 8h2l8 8"/>',
     website:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 20V9"/>',
     entries:'<path d="M4 5h16v14H4z"/><path d="M4 13h4l2 3h4l2-3h4"/><path d="M8 8h8"/>',
+    reminder:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>',
     users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
     mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
     zap:'<path d="M13 2 4 14h8l-1 8 9-12h-8l1-8Z"/>',
@@ -49,7 +50,7 @@
   }
 
   const navIconByHref={
-    'index.html':'home','award.html':'award','categories.html':'grid','entry-form.html':'form','pricing.html':'rupee','website.html':'website','entries.html':'entries','audience.html':'users','campaigns.html':'mail','automations.html':'zap','judges.html':'judges','scoring.html':'star','shortlist.html':'shortlist','winners.html':'trophy','winner-gallery.html':'sparkle','certificates.html':'certificate','ceremony.html':'ceremony','reports.html':'report','settings.html':'settings'
+    'index.html':'home','award.html':'award','categories.html':'grid','entry-form.html':'form','pricing.html':'rupee','website.html':'website','entries.html':'reminder','audience.html':'users','campaigns.html':'mail','automations.html':'zap','judges.html':'judges','scoring.html':'star','shortlist.html':'shortlist','winners.html':'trophy','winner-gallery.html':'sparkle','certificates.html':'certificate','ceremony.html':'ceremony','reports.html':'report','settings.html':'settings'
   };
 
   function updateAwardName(name){
@@ -155,7 +156,9 @@
         const href=(a.getAttribute('href')||'').split('/').pop();
         const ico=a.querySelector('.ico');
         if(ico){ ico.innerHTML=icon(navIconByHref[href]||'star'); }
-        const label=a.querySelector('span:last-child')?.textContent?.trim()||'';
+        const labelEl=a.querySelector('span:last-child');
+        if(href==='entries.html' && labelEl) labelEl.textContent='Reminder Hub';
+        const label=labelEl?.textContent?.trim()||'';
         a.dataset.navLabel=label;
       });
 

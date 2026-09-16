@@ -1,225 +1,211 @@
 (function(){
   const $=id=>document.getElementById(id);
-  const rows=[...document.querySelectorAll('[data-entry-row]')];
-  if(!rows.length) return;
+  const $$=sel=>Array.from(document.querySelectorAll(sel));
+  const toast=msg=>{
+    const el=$('toast'); if(!el) return;
+    el.textContent=msg;el.classList.add('show');clearTimeout(window.__rhToast);
+    window.__rhToast=setTimeout(()=>el.classList.remove('show'),1900);
+  };
 
-  const state={search:'',status:'all',payment:'all',category:'all',score:'all',kpi:'all',currentEntry:null};
-  const labels={draft:'Draft',submitted:'Submitted',review:'Under review',paid:'Paid',pending:'Payment pending'};
+  const data={
+    email:[
+      {id:'17008',title:'Final 48 Hours! Block Your India FinTech Awards Entry',created:'10-09-2026, 03:08 PM',scheduled:'18-09-2026, 10:45 AM',audience:'All Registered Users',batch:'Not Started',status:'scheduled'},
+      {id:'16129',title:'Payment failed for India FinTech Awards 2027',created:'05-09-2026, 05:54 PM',scheduled:'—',audience:'Payment Failed - Mail to user',batch:'Not Started',status:'active'},
+      {id:'16128',title:"You're registered for India FinTech Awards 2027",created:'05-09-2026, 05:54 PM',scheduled:'—',audience:'All Registered Users',batch:'Completed',status:'active'},
+      {id:'15844',title:'Complete your entry before the deadline',created:'31-08-2026, 11:30 AM',scheduled:'17-09-2026, 04:00 PM',audience:'Entry started, incomplete',batch:'Queued',status:'scheduled'},
+      {id:'15702',title:'Draft: jury review readiness reminder',created:'29-08-2026, 09:15 AM',scheduled:'—',audience:'Submitted entrants',batch:'Draft',status:'draft'}
+    ],
+    whatsapp:[
+      {id:'2711',title:'Greetings from ETB2B Awards. Your award entry window closes soon. Complete your submission today: {{entry_link}}',created:'05-09-2026, 05:49 PM',scheduled:'18-09-2026, 11:00 AM',audience:'All Registered Users',batch:'Not Started',status:'scheduled'},
+      {id:'2710',title:'Welcome to India FinTech Awards 2027. Your registration is confirmed. Start your entry here: {{entry_link}}',created:'05-09-2026, 05:49 PM',scheduled:'—',audience:'All Registered Users',batch:'Completed',status:'active'},
+      {id:'2699',title:'Your entry is saved but incomplete. Pick up where you left off: {{entry_link}}',created:'02-09-2026, 02:18 PM',scheduled:'17-09-2026, 03:30 PM',audience:'Entry started, incomplete',batch:'Queued',status:'scheduled'},
+      {id:'2672',title:'Payment pending. Complete your payment to confirm your award entry.',created:'30-08-2026, 01:42 PM',scheduled:'—',audience:'Submitted, payment pending',batch:'Draft',status:'draft'}
+    ],
+    sms:[
+      {id:'8801',title:'ETB2B Awards: Your registration is confirmed. Start your entry: {{short_link}}',created:'05-09-2026, 05:50 PM',scheduled:'—',audience:'All Registered Users',batch:'Completed',status:'active'},
+      {id:'8796',title:'48 hours left to complete your India FinTech Awards entry. Resume: {{short_link}}',created:'04-09-2026, 12:15 PM',scheduled:'18-09-2026, 10:30 AM',audience:'Entry started, incomplete',batch:'Queued',status:'scheduled'},
+      {id:'8770',title:'Payment pending for your ETB2B Awards entry. Complete payment: {{short_link}}',created:'01-09-2026, 04:12 PM',scheduled:'—',audience:'Submitted, payment pending',batch:'Draft',status:'draft'}
+    ]
+  };
 
-  function toast(message){
-    const t=$('toast'); if(!t) return;
-    t.textContent=message; t.classList.add('show');
-    clearTimeout(window.__entriesToast); window.__entriesToast=setTimeout(()=>t.classList.remove('show'),2200);
+  let currentTab='email';
+  let composerChannel='email';
+  let automationSeq=5;
+  const automations=[
+    {id:1,name:'Registration welcome',trigger:'When user registers',channel:'Email + WhatsApp',delay:'Immediately',template:'Registration confirmation',status:true,triggered:'1,584',conversion:'48.2% opened'},
+    {id:2,name:'Start your entry',trigger:'Registered, no entry after 24 hours',channel:'WhatsApp',delay:'24 hours',template:'Start your entry',status:true,triggered:'812',conversion:'12.6% started'},
+    {id:3,name:'Incomplete entry recovery',trigger:'Entry incomplete after 48 hours',channel:'Email',delay:'48 hours',template:'Complete your entry',status:true,triggered:'296',conversion:'18.9% recovered'},
+    {id:4,name:'Payment recovery',trigger:'Payment pending after submission',channel:'Email + WhatsApp',delay:'1 hour',template:'Complete payment',status:false,triggered:'18',conversion:'Enable to start'}
+  ];
+
+  function statusLabel(status){return status.charAt(0).toUpperCase()+status.slice(1);}
+  function actionButtons(channel,id){
+    return `<div class="rh-action-group">
+      <button class="rh-icon-btn" type="button" title="Send test" data-action="send" data-channel="${channel}" data-id="${id}">➤</button>
+      <button class="rh-icon-btn" type="button" title="Edit" data-action="edit" data-channel="${channel}" data-id="${id}">✎</button>
+      <button class="rh-icon-btn" type="button" title="Preview" data-action="preview" data-channel="${channel}" data-id="${id}">◉</button>
+    </div>`;
   }
 
-  function rowData(row){
-    return {
-      row,
-      id:row.dataset.id,
-      name:row.dataset.name,
-      contact:row.dataset.contact,
-      email:row.dataset.email,
-      category:row.dataset.category,
-      status:row.dataset.status,
-      payment:row.dataset.payment,
-      score:row.dataset.score
-    };
-  }
-
-  const entries=rows.map(rowData);
-
-  function matches(entry){
-    const q=state.search.trim().toLowerCase();
-    if(q && ![entry.name,entry.contact,entry.email,entry.category,labels[entry.status],labels[entry.payment]].join(' ').toLowerCase().includes(q)) return false;
-    if(state.status!=='all' && entry.status!==state.status) return false;
-    if(state.payment!=='all' && entry.payment!==state.payment) return false;
-    if(state.category!=='all' && entry.category!==state.category) return false;
-    if(state.score==='scored' && !entry.score) return false;
-    if(state.score==='unscored' && entry.score) return false;
-    if(state.kpi==='draft' && entry.status!=='draft') return false;
-    if(state.kpi==='pending' && entry.payment!=='pending') return false;
-    if(state.kpi==='submitted' && entry.status!=='submitted') return false;
-    return true;
-  }
-
-  function activeFilterCount(){
-    return ['status','payment','category','score'].filter(k=>state[k]!=='all').length;
-  }
-
-  function renderChips(){
-    const wrap=$('entryFilterChips');
-    const chips=[];
-    if(state.kpi!=='all') chips.push({key:'kpi',label:state.kpi==='pending'?'Payment pending':labels[state.kpi]||state.kpi});
-    if(state.status!=='all') chips.push({key:'status',label:`Status: ${labels[state.status]}`});
-    if(state.payment!=='all') chips.push({key:'payment',label:`Payment: ${labels[state.payment]}`});
-    if(state.category!=='all') chips.push({key:'category',label:`Category: ${state.category}`});
-    if(state.score!=='all') chips.push({key:'score',label:state.score==='scored'?'Scored':'Not scored'});
-    wrap.hidden=!chips.length;
-    wrap.innerHTML=chips.map(c=>`<button type="button" data-remove-filter="${c.key}">${c.label}<span>×</span></button>`).join('');
-  }
-
-  function apply(){
-    let visible=0;
-    entries.forEach(entry=>{
-      const show=matches(entry);
-      entry.row.hidden=!show;
-      if(show) visible++;
+  function renderChannel(channel){
+    const tbody=$(channel+'ReminderRows'); if(!tbody) return;
+    const q=(document.querySelector(`[data-channel-search="${channel}"]`)?.value||'').trim().toLowerCase();
+    const filter=document.querySelector(`[data-channel-filter="${channel}"]`)?.value||'all';
+    const rows=data[channel].filter(item=>{
+      const searchable=(item.title+' '+item.audience+' '+item.id).toLowerCase();
+      return (!q||searchable.includes(q))&&(filter==='all'||item.status===filter);
     });
-    $('entriesResultLabel').textContent=`${visible} of ${entries.length} prototype records shown`;
-    $('entriesEmpty').hidden=visible!==0;
-    document.querySelector('.entries-table').hidden=visible===0;
-    const count=activeFilterCount();
-    const countEl=$('entryFilterCount'); countEl.textContent=count; countEl.hidden=!count;
-    renderChips();
-    document.querySelectorAll('[data-kpi-filter]').forEach(btn=>btn.classList.toggle('active',btn.dataset.kpiFilter===state.kpi));
-    updateReminderCount();
+    tbody.innerHTML=rows.map(item=>`<tr>
+      <td>${item.id}</td>
+      <td class="${channel==='email'?'subject':'content-preview'}">${item.title}</td>
+      <td class="muted">${item.created}</td>
+      <td>${item.scheduled}</td>
+      <td>${item.audience}</td>
+      <td><span class="rh-batch">${item.batch}</span></td>
+      <td><span class="rh-status ${item.status}">${statusLabel(item.status)}</span></td>
+      <td>${actionButtons(channel,item.id)}</td>
+    </tr>`).join('') || `<tr><td colspan="8"><div class="rh-empty">No reminders match your search or filter.</div></td></tr>`;
   }
 
-  function clearAll(){
-    state.search='';state.status='all';state.payment='all';state.category='all';state.score='all';state.kpi='all';
-    $('entrySearch').value='';
-    syncFilterControls();
-    apply();
+  function switchTab(tab){
+    currentTab=tab;
+    $$('[data-reminder-tab]').forEach(btn=>{
+      const active=btn.dataset.reminderTab===tab;btn.classList.toggle('active',active);btn.setAttribute('aria-selected',String(active));
+    });
+    $$('[data-reminder-panel]').forEach(panel=>panel.classList.toggle('active',panel.dataset.reminderPanel===tab));
   }
 
-  function syncFilterControls(){
-    $('filterStatus').value=state.status;
-    $('filterPayment').value=state.payment;
-    $('filterCategory').value=state.category;
-    $('filterScore').value=state.score;
+  function openDrawer(id){
+    $('reminderOverlay').classList.add('open');$(id).classList.add('open');$(id).setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  }
+  function closeDrawers(){
+    $('reminderOverlay').classList.remove('open');$$('.rh-drawer.open').forEach(d=>{d.classList.remove('open');d.setAttribute('aria-hidden','true');});document.body.style.overflow='';
   }
 
-  function openModal(id){
-    const modal=$(id); if(!modal) return;
-    modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('entry-modal-open');
-    setTimeout(()=>modal.querySelector('select,input,button')?.focus(),60);
+  function defaultCopy(channel){
+    const map={
+      email:{subject:'Complete your India FinTech Awards entry',message:'Hi {{name}},\n\nYour registration for India FinTech Awards 2027 is confirmed. Your entry is still waiting to be completed.\n\nContinue your entry here: {{entry_link}}\n\nRegards,\nETB2B Awards Team'},
+      whatsapp:{subject:'',message:'Hi {{name}}, your India FinTech Awards 2027 registration is confirmed. Complete your entry here: {{entry_link}}'},
+      sms:{subject:'',message:'ETB2B Awards: Complete your India FinTech Awards 2027 entry here: {{short_link}}'}
+    }; return map[channel];
   }
 
-  function closeModal(modal){
-    if(!modal) return;
-    modal.classList.remove('open');modal.setAttribute('aria-hidden','true');
-    if(!document.querySelector('.entry-modal.open')) document.body.classList.remove('entry-modal-open');
+  function configureComposer(channel,item){
+    composerChannel=channel;
+    const label={email:'Email',whatsapp:'WhatsApp',sms:'SMS'}[channel];
+    $('composerKicker').textContent=item?'EDIT REMINDER':'SCHEDULE MESSAGE';
+    $('composerTitle').textContent=(item?'Edit ':'Schedule ')+label;
+    $('composerSubtitle').textContent=item?'Update the message, audience or schedule.':'Create, preview and schedule a message.';
+    $$('.email-only').forEach(el=>el.hidden=channel!=='email');
+    $$('.sms-only').forEach(el=>el.hidden=channel!=='sms');
+    $('messageLabel').textContent=channel==='email'?'Body content':channel==='whatsapp'?'WhatsApp message':'SMS message';
+    $('composerSender').value=channel==='sms'?'ETB2B':'ETB2B Awards';
+    const copy=defaultCopy(channel);
+    $('composerSubject').value=item&&channel==='email'?item.title:copy.subject;
+    $('composerMessage').value=item&&channel!=='email'?item.title:copy.message;
+    if(item&&channel==='email') $('composerMessage').value=copy.message;
+    $('composerAudience').value=item?.audience&&Array.from($('composerAudience').options).some(o=>o.value===item.audience)?item.audience:'All Registered Users';
+    $('composerSchedule').value='';
+    $('composerTemplate').value='';
+    updateMessageHealth();
+    openDrawer('reminderComposer');
   }
 
-  function currentVisible(){return entries.filter(matches);}
-  function attentionEntries(){return entries.filter(e=>e.status==='draft'||e.payment==='pending');}
-
-  function reminderRecipients(){
-    if(state.currentEntry) return [state.currentEntry];
-    const scope=$('reminderScope').value;
-    if(scope==='filtered') return currentVisible();
-    if(scope==='all') return entries;
-    return attentionEntries();
-  }
-
-  function updateReminderCount(){
-    if(!$('reminderRecipientCount')) return;
-    const list=reminderRecipients();
-    $('reminderRecipientCount').textContent=list.length;
-    $('reminderRecipientHint').textContent=state.currentEntry?`${state.currentEntry.contact} · ${state.currentEntry.email}`:(list.length?list.map(x=>x.name).slice(0,3).join(', ')+(list.length>3?` +${list.length-3} more`:''):'No eligible recipients');
-    $('sendEntryReminder').disabled=list.length===0;
-  }
-
-  function setReminderTemplate(){
-    const type=$('reminderType').value;
-    const copy={
-      incomplete:{subject:'Action needed: complete your award entry',message:'Hi {{name}},\n\nYour award entry is still incomplete. Please sign in and complete the remaining sections before the deadline.\n\nRegards,\nETB2B Awards Team'},
-      payment:{subject:'Payment pending for your award entry',message:'Hi {{name}},\n\nYour award entry has been submitted, but payment is still pending. Please complete payment so the entry can progress.\n\nRegards,\nETB2B Awards Team'},
-      deadline:{subject:'Reminder: award entry deadline approaching',message:'Hi {{name}},\n\nThe award entry deadline is approaching. Please review your submission and complete any pending steps in time.\n\nRegards,\nETB2B Awards Team'}
-    }[type];
-    $('reminderSubject').value=copy.subject;
-    $('reminderMessage').value=copy.message;
-  }
-
-  function openReminder(entry){
-    state.currentEntry=entry||null;
-    $('entryReminderAudience').textContent=entry?`Reminder for ${entry.name}.`:'Choose who should receive this reminder.';
-    $('reminderScope').disabled=!!entry;
-    if(entry){
-      $('reminderType').value=entry.payment==='pending'?'payment':'incomplete';
+  function updateMessageHealth(){
+    const text=$('composerMessage').value||'';
+    if(composerChannel==='sms'){
+      const segments=Math.max(1,Math.ceil(text.length/160));
+      $('messageHealth').textContent=`${text.length} characters · ${segments} SMS segment${segments>1?'s':''}. AI recommends staying within 160 characters where possible.`;
+    }else if(composerChannel==='whatsapp'){
+      $('messageHealth').textContent=`${text.length} characters · Template variables detected: ${(text.match(/{{/g)||[]).length}. Keep approved WhatsApp variables unchanged.`;
     }else{
-      $('reminderScope').value='attention';
-      $('reminderType').value='incomplete';
+      $('messageHealth').textContent=`${text.length} characters · Use {{name}} and {{entry_link}} as personalisation variables.`;
     }
-    setReminderTemplate();updateReminderCount();openModal('entryReminderModal');
   }
 
-  function openDrawer(entry){
-    state.currentEntry=entry;
-    $('drawerEntryName').textContent=entry.name;
-    $('entryDrawerBody').innerHTML=`
-      <div class="entry-detail-hero"><span class="entry-detail-avatar">${entry.name.charAt(0)}</span><div><b>${entry.contact}</b><a href="mailto:${entry.email}">${entry.email}</a></div></div>
-      <div class="entry-detail-grid">
-        <div><span>Category</span><b>${entry.category}</b></div>
-        <div><span>Status</span><b>${labels[entry.status]||entry.status}</b></div>
-        <div><span>Payment</span><b>${labels[entry.payment]||entry.payment}</b></div>
-        <div><span>Score</span><b>${entry.score||'Not scored'}</b></div>
-      </div>
-      <div class="entry-progress-card"><div><span>Submission progress</span><b>${entry.status==='draft'?'68%':'100%'}</b></div><div class="entry-progress-track"><i style="width:${entry.status==='draft'?'68':'100'}%"></i></div><small>${entry.status==='draft'?'Entry has unfinished sections.':'Entry submission is complete.'}</small></div>
-      <div class="entry-activity"><h4>Recent activity</h4><div><i></i><span><b>${entry.status==='draft'?'Draft updated':'Entry submitted'}</b><small>Latest prototype activity</small></span></div><div><i></i><span><b>${entry.payment==='pending'?'Payment is pending':'Payment confirmed'}</b><small>${entry.payment==='pending'?'Reminder recommended':'No payment action needed'}</small></span></div></div>`;
-    $('entryDrawer').classList.add('open');$('entryDrawerOverlay').classList.add('open');$('entryDrawer').setAttribute('aria-hidden','false');
+  function aiGenerate(){
+    const goal=($('aiGoal').value||'remind registered users to complete their entry').trim();
+    if(composerChannel==='email'){
+      $('composerSubject').value='Action needed: complete your India FinTech Awards entry';
+      $('composerMessage').value=`Hi {{name}},\n\nA quick reminder to ${goal.replace(/^to\s+/,'')}. Your saved progress is ready when you return.\n\nContinue here: {{entry_link}}\n\nRegards,\nETB2B Awards Team`;
+      $('subjectScore').textContent='AI subject score: 88 / 100 · Clear action + award context';
+    }else if(composerChannel==='whatsapp'){
+      $('composerMessage').value=`Hi {{name}}, a quick reminder to ${goal.replace(/^to\s+/,'')}. Continue here: {{entry_link}}`;
+    }else{
+      $('composerMessage').value=`ETB2B Awards: Reminder to ${goal.replace(/^to\s+/,'')}. Continue: {{short_link}}`;
+    }
+    updateMessageHealth();toast('AI draft generated');
   }
 
-  function closeDrawer(){
-    $('entryDrawer').classList.remove('open');$('entryDrawerOverlay').classList.remove('open');$('entryDrawer').setAttribute('aria-hidden','true');state.currentEntry=null;
+  function renderAutomations(){
+    $('automationGrid').innerHTML=automations.map(a=>`<article class="rh-auto-card ${a.status?'':'off'}" data-auto-id="${a.id}">
+      <div class="rh-auto-top"><div class="rh-auto-title"><span class="rh-auto-icon">⚡</span><div><b>${a.name}</b><span>${a.trigger}</span></div></div><button class="rh-toggle ${a.status?'on':''}" type="button" data-toggle-auto="${a.id}" aria-label="Toggle ${a.name}"><i></i></button></div>
+      <div class="rh-auto-flowline"><strong>${a.trigger}</strong><span>→</span><span>${a.delay}</span><span class="rh-channel-pill">${a.channel}</span></div>
+      <div class="rh-auto-meta"><span><b>${a.triggered}</b> triggered</span><span>•</span><span>${a.conversion}</span><button class="rh-icon-btn" type="button" title="Edit journey" data-edit-auto="${a.id}" style="margin-left:auto">✎</button></div>
+    </article>`).join('');
   }
 
-  $('entrySearch').addEventListener('input',e=>{state.search=e.target.value;apply();});
+  function configureAutomation(auto){
+    if(auto){
+      $('autoName').value=auto.name;$('autoChannel').value=auto.channel;$('autoDelay').value=auto.delay;
+      const triggerMap={'When user registers':'registered','Registered, no entry after 24 hours':'noentry','Entry incomplete after 48 hours':'incomplete','Payment pending after submission':'payment'};
+      $('autoTrigger').value=triggerMap[auto.trigger]||'registered';$('autoTemplate').value=auto.template;
+    }else{
+      $('autoTrigger').value='registered';$('autoChannel').value='Email';$('autoDelay').value='Immediately';$('autoName').value='Registration welcome';$('autoTemplate').value='Registration confirmation';
+    }
+    updateAutomationPreview();openDrawer('automationComposer');
+  }
 
-  document.querySelectorAll('[data-kpi-filter]').forEach(btn=>btn.addEventListener('click',()=>{
-    state.kpi=state.kpi===btn.dataset.kpiFilter?'all':btn.dataset.kpiFilter;
-    apply();
-  }));
+  function updateAutomationPreview(){
+    const triggerText={registered:'When a user registers',noentry:'If no entry is started after 24 hours',incomplete:'If an entry is incomplete after 48 hours',payment:'When payment is pending after submission',deadline:'3 days before the entry deadline'}[$('autoTrigger').value];
+    $('autoPreviewTitle').textContent=triggerText;
+    $('autoPreviewText').textContent=`Send “${$('autoTemplate').value}” by ${$('autoChannel').value} ${$('autoDelay').value.toLowerCase()}.`;
+  }
 
-  $('openEntryFilter').addEventListener('click',()=>{syncFilterControls();openModal('entryFilterModal');});
-  $('applyEntryFilters').addEventListener('click',()=>{
-    state.status=$('filterStatus').value;
-    state.payment=$('filterPayment').value;
-    state.category=$('filterCategory').value;
-    state.score=$('filterScore').value;
-    closeModal($('entryFilterModal'));apply();
-  });
-  $('clearEntryFilters').addEventListener('click',()=>{
-    state.status='all';state.payment='all';state.category='all';state.score='all';syncFilterControls();apply();
-  });
-  $('clearEntriesEmpty').addEventListener('click',clearAll);
+  // initial render
+  ['email','whatsapp','sms'].forEach(renderChannel);renderAutomations();
 
-  $('entryFilterChips').addEventListener('click',e=>{
-    const btn=e.target.closest('[data-remove-filter]'); if(!btn) return;
-    const key=btn.dataset.removeFilter;
-    state[key]='all'; if(key==='kpi') state.kpi='all';
-    syncFilterControls();apply();
-  });
+  $$('[data-reminder-tab]').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.reminderTab)));
+  $$('[data-channel-search]').forEach(input=>input.addEventListener('input',()=>renderChannel(input.dataset.channelSearch)));
+  $$('[data-channel-filter]').forEach(sel=>sel.addEventListener('change',()=>renderChannel(sel.dataset.channelFilter)));
+  $$('[data-open-composer]').forEach(btn=>btn.addEventListener('click',()=>configureComposer(btn.dataset.openComposer)));
 
-  document.querySelectorAll('[data-close-entry-modal]').forEach(btn=>btn.addEventListener('click',()=>closeModal($('entryFilterModal'))));
-  document.querySelectorAll('[data-close-reminder]').forEach(btn=>btn.addEventListener('click',()=>{closeModal($('entryReminderModal'));state.currentEntry=null;}));
+  $('heroScheduleBtn').addEventListener('click',()=>configureComposer(currentTab==='automations'?'email':currentTab));
+  $('openAiComposer').addEventListener('click',()=>{configureComposer(currentTab==='automations'?'email':currentTab);setTimeout(()=>$('aiGoal').focus(),240);});
+  $('closeReminderComposer').addEventListener('click',closeDrawers);$('closeAutomationComposer').addEventListener('click',closeDrawers);$('reminderOverlay').addEventListener('click',closeDrawers);
+  $('generateAiCopy').addEventListener('click',aiGenerate);
+  $('composerMessage').addEventListener('input',updateMessageHealth);
+  $('improveSubject').addEventListener('click',()=>{$('composerSubject').value='Final reminder: complete your India FinTech Awards entry';$('subjectScore').textContent='AI subject score: 92 / 100 · Strong urgency without spam signals';toast('Subject improved');});
+  $('applySmartTime').addEventListener('click',()=>{$('composerSchedule').value='2026-09-17T10:45';toast('Smart send time applied');});
+  $('saveReminderDraft').addEventListener('click',()=>{closeDrawers();toast('Reminder saved as draft');});
+  $('scheduleReminder').addEventListener('click',()=>{closeDrawers();toast(`${composerChannel==='whatsapp'?'WhatsApp':composerChannel.toUpperCase()} reminder scheduled`);});
 
-  $('openBulkReminder').addEventListener('click',()=>openReminder(null));
-  $('reminderScope').addEventListener('change',updateReminderCount);
-  $('reminderType').addEventListener('change',setReminderTemplate);
-  $('sendEntryReminder').addEventListener('click',()=>{
-    const list=reminderRecipients(); if(!list.length) return;
-    const count=list.length;
-    closeModal($('entryReminderModal'));
-    toast(`${count} reminder${count===1?'':'s'} queued in the prototype`);
-    state.currentEntry=null;
-  });
+  $$('[data-smart-schedule]').forEach(btn=>btn.addEventListener('click',()=>{configureComposer(btn.dataset.smartSchedule);setTimeout(()=>$('applySmartTime').click(),120);}));
+  $$('[data-ai-review]').forEach(btn=>btn.addEventListener('click',()=>{configureComposer(btn.dataset.aiReview);setTimeout(aiGenerate,120);}));
 
-  $('entriesTableBody').addEventListener('click',e=>{
-    const action=e.target.closest('[data-entry-action]'); if(!action) return;
-    const row=action.closest('[data-entry-row]');const entry=entries.find(x=>x.row===row);if(!entry)return;
-    if(action.dataset.entryAction==='remind') openReminder(entry); else openDrawer(entry);
-  });
-
-  $('closeEntryDrawer').addEventListener('click',closeDrawer);
-  $('entryDrawerOverlay').addEventListener('click',closeDrawer);
-  $('drawerReminderBtn').addEventListener('click',()=>{const entry=state.currentEntry;closeDrawer();openReminder(entry);});
-
-  document.addEventListener('keydown',e=>{
-    if(e.key!=='Escape') return;
-    document.querySelectorAll('.entry-modal.open').forEach(closeModal);
-    if($('entryDrawer').classList.contains('open')) closeDrawer();
+  document.addEventListener('click',e=>{
+    const action=e.target.closest('[data-action]');
+    if(action){
+      const channel=action.dataset.channel;const item=data[channel].find(x=>x.id===action.dataset.id);if(!item)return;
+      if(action.dataset.action==='edit') configureComposer(channel,item);
+      if(action.dataset.action==='send') toast(`Test ${channel} queued for ${item.id}`);
+      if(action.dataset.action==='preview') toast(`Preview opened for ${item.id}`);
+      return;
+    }
+    const toggle=e.target.closest('[data-toggle-auto]');
+    if(toggle){const a=automations.find(x=>x.id===Number(toggle.dataset.toggleAuto));a.status=!a.status;renderAutomations();toast(`${a.name} ${a.status?'activated':'paused'}`);return;}
+    const edit=e.target.closest('[data-edit-auto]');if(edit){configureAutomation(automations.find(x=>x.id===Number(edit.dataset.editAuto)));}
   });
 
-  apply();
+  $('createAutomation').addEventListener('click',()=>configureAutomation());
+  $('addDefaultWhatsapp').addEventListener('click',()=>{switchTab('automations');configureAutomation({name:'Registration welcome',trigger:'When user registers',channel:'WhatsApp',delay:'Immediately',template:'Registration confirmation'});});
+  $('createSuggestedAutomation').addEventListener('click',()=>{configureAutomation({name:'Start your entry',trigger:'Registered, no entry after 24 hours',channel:'WhatsApp',delay:'24 hours',template:'Start your entry'});});
+  ['autoTrigger','autoChannel','autoDelay','autoTemplate'].forEach(id=>$(id).addEventListener('change',updateAutomationPreview));
+  $('saveAutoDraft').addEventListener('click',()=>{closeDrawers();toast('Automation saved as draft');});
+  $('activateAutomation').addEventListener('click',()=>{
+    automations.push({id:automationSeq++,name:$('autoName').value||'New automation',trigger:$('autoPreviewTitle').textContent,channel:$('autoChannel').value,delay:$('autoDelay').value,template:$('autoTemplate').value,status:true,triggered:'0',conversion:'New journey'});
+    renderAutomations();closeDrawers();toast('Automation activated');
+  });
+
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawers();});
 })();
