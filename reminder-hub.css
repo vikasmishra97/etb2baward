@@ -197,3 +197,223 @@
 
 @media(max-width:780px){.rh-demo-testbar{grid-template-columns:1fr;padding:10px 14px;gap:9px}.rh-demo-testbar-copy span{display:none}.rh-demo-testbar .rh-demo-send-test>div{display:grid;grid-template-columns:1fr auto}.rh-editor-toolbar{overflow-x:auto;flex-wrap:nowrap!important}}
 @media(max-width:520px){.rh-demo-testbar .rh-demo-send-test>div{grid-template-columns:1fr}.rh-demo-testbar .rh-demo-send-test .btn{width:100%}}
+
+/* Premium composer toolbar + pre-send review refresh */
+.rh-email-editor{
+  border:1px solid #e3e6ed!important;
+  border-radius:14px!important;
+  box-shadow:0 8px 28px rgba(31,38,58,.045)!important;
+}
+.rh-editor-toolbar{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:6px!important;
+  padding:8px!important;
+  background:linear-gradient(180deg,#fbfbfd 0%,#f7f8fb 100%)!important;
+  border-bottom:1px solid #e8eaf0!important;
+}
+.rh-editor-sep{display:none!important}
+.rh-editor-toolgroup{
+  display:flex!important;
+  align-items:center!important;
+  gap:2px!important;
+  padding:3px!important;
+  border:1px solid #e5e8ef!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:0 2px 8px rgba(27,33,54,.025)!important;
+}
+.rh-editor-toolgroup:last-child{flex:1 1 245px!important}
+.rh-editor-toolbar button{
+  height:30px!important;
+  min-height:30px!important;
+  min-width:30px!important;
+  padding:0 8px!important;
+  border:1px solid transparent!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  color:#454c5e!important;
+  font-size:9.5px!important;
+  font-weight:800!important;
+  transition:.15s ease!important;
+}
+.rh-editor-toolbar button:hover,
+.rh-editor-toolbar button:focus-visible{
+  background:#fff4f4!important;
+  border-color:#f0c9cc!important;
+  color:#c91820!important;
+  box-shadow:none!important;
+  outline:none!important;
+}
+.rh-editor-toolbar button[title="Bold"],
+.rh-editor-toolbar button[title="Italic"],
+.rh-editor-toolbar button[title="Underline"],
+.rh-editor-toolbar button[title="Strikethrough"]{min-width:31px!important;padding:0!important}
+.rh-editor-toolbar button[title="Undo"],
+.rh-editor-toolbar button[title="Redo"]{min-width:50px!important}
+.rh-editor-toolbar button[title="Align left"],
+.rh-editor-toolbar button[title="Align center"],
+.rh-editor-toolbar button[title="Align right"]{min-width:45px!important}
+.rh-editor-select{
+  height:30px!important;
+  min-width:76px!important;
+  border:1px solid transparent!important;
+  border-radius:7px!important;
+  background:#f8f9fb!important;
+  color:#4a5162!important;
+  padding:0 24px 0 9px!important;
+  font-size:9.5px!important;
+  font-weight:750!important;
+  outline:none!important;
+}
+.rh-editor-select:hover,.rh-editor-select:focus{border-color:#dfe3eb!important;background:#fff!important}
+.rh-color-tools{padding:3px!important}
+.rh-color-tool{
+  height:30px!important;
+  min-width:62px!important;
+  padding:0 8px!important;
+  border:1px solid transparent!important;
+  border-radius:7px!important;
+  background:#f8f9fb!important;
+}
+.rh-color-tool:hover{border-color:#e1e4eb!important;background:#fff!important;box-shadow:none!important}
+.rh-color-tool span{font-size:9px!important}
+.rh-color-tool i{width:14px!important;height:14px!important}
+.rh-editor-cta-tool{
+  margin-left:auto!important;
+  min-width:74px!important;
+  background:#fff3f3!important;
+  border-color:#efc8cb!important;
+  color:#c91820!important;
+}
+.rh-editor-variablebar{
+  padding:7px 10px!important;
+  background:#fff!important;
+  border-bottom:1px solid #eceef2!important;
+}
+.rh-editor-variablebar>span{font-size:8px!important;color:#9298a7!important}
+.rh-editor-variablebar button{
+  background:#f6f7f9!important;
+  border-color:#e2e5eb!important;
+  color:#5d6474!important;
+  padding:4px 8px!important;
+  font-size:8.5px!important;
+}
+.rh-editor-variablebar button:hover{background:#fff3f3!important;color:#c91820!important;border-color:#efc9cc!important}
+
+/* Pre-send review modal */
+.rh-demo-backdrop{background:rgba(13,17,31,.64)!important;backdrop-filter:blur(7px)!important}
+.rh-demo-card{
+  width:min(900px,95vw)!important;
+  max-height:93vh!important;
+  border-radius:20px!important;
+  border:1px solid rgba(255,255,255,.9)!important;
+  box-shadow:0 34px 100px rgba(10,15,35,.32)!important;
+}
+.rh-demo-head{
+  padding:18px 22px 15px!important;
+  background:linear-gradient(135deg,#fff 0%,#fffafa 100%)!important;
+}
+.rh-demo-head .reminder-eyebrow{color:#b27b22!important;letter-spacing:.12em!important}
+.rh-demo-head h2{font-size:22px!important;margin:4px 0 3px!important}
+.rh-demo-head p{font-size:9.5px!important;color:#7d8494!important}
+.rh-demo-meta{
+  grid-template-columns:1fr 1fr 1.35fr!important;
+  gap:10px!important;
+  padding:12px 22px!important;
+  background:#f8f9fb!important;
+}
+.rh-demo-meta>div{
+  padding:9px 11px!important;
+  border:1px solid #e7e9ef!important;
+  border-radius:10px!important;
+  background:#fff!important;
+}
+.rh-demo-meta .wide{grid-column:auto!important}
+.rh-demo-meta span{font-size:7.5px!important;margin-bottom:4px!important}
+.rh-demo-meta strong{font-size:10.5px!important}
+.rh-demo-testbar{
+  grid-template-columns:minmax(210px,.8fr) minmax(330px,1.2fr)!important;
+  gap:18px!important;
+  padding:13px 22px!important;
+  background:linear-gradient(135deg,#fff7f7 0%,#fff 70%)!important;
+  border-bottom:1px solid #eceef2!important;
+}
+.rh-demo-testbar-copy{gap:10px!important}
+.rh-demo-test-icon{
+  width:34px!important;height:34px!important;flex-basis:34px!important;
+  border-radius:10px!important;
+  background:#ffe9ea!important;
+  color:#d71920!important;
+}
+.rh-demo-testbar-copy b{font-size:11px!important;color:#23293a!important}
+.rh-demo-testbar-copy span{font-size:8.5px!important;max-width:250px!important}
+.rh-demo-testbar .rh-demo-send-test>div{
+  padding:4px!important;
+  border:1px solid #e0e3ea!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  box-shadow:0 4px 14px rgba(28,35,56,.035)!important;
+}
+.rh-demo-testbar .rh-demo-send-test input{
+  height:34px!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0 10px!important;
+  background:transparent!important;
+}
+.rh-demo-testbar .rh-demo-send-test .btn{
+  height:34px!important;
+  min-width:102px!important;
+  border-radius:8px!important;
+  box-shadow:0 7px 16px rgba(215,25,32,.16)!important;
+}
+.rh-demo-testbar .rh-demo-send-test small{padding-left:5px!important;margin-top:5px!important}
+.rh-demo-ai{
+  padding:12px 22px!important;
+  background:#fff!important;
+  border-bottom:1px solid #eceef2!important;
+}
+.rh-demo-ai-top{align-items:center!important}
+.rh-demo-ai-title .rh-ai-glyph{
+  width:32px!important;height:32px!important;
+  border-radius:10px!important;
+  background:linear-gradient(135deg,#fff1d8,#fff8eb)!important;
+  border:1px solid #f2dfba!important;
+}
+.rh-demo-ai-title b{font-size:11px!important}
+.rh-demo-ai-title p{font-size:8.5px!important}
+.rh-demo-ai-score{
+  border-color:#efd6a7!important;
+  border-radius:12px!important;
+  padding:6px 10px!important;
+  box-shadow:0 3px 10px rgba(145,98,23,.05)!important;
+}
+.rh-demo-ai-checks{margin-top:8px!important;gap:5px!important}
+.rh-demo-ai-checks span{padding:4px 7px!important;font-size:8px!important}
+.rh-ai-review-btn{margin-top:7px!important}
+.rh-demo-toolbar{
+  padding:9px 22px!important;
+  background:#fbfbfc!important;
+}
+.rh-demo-toolbar>span{font-size:8.5px!important}
+.rh-device-toggle{
+  padding:3px!important;
+  border:1px solid #e0e4eb!important;
+  border-radius:9px!important;
+  background:#f0f2f6!important;
+}
+.rh-device-toggle button{height:27px!important;min-width:58px!important;border-radius:6px!important;font-size:8.5px!important}
+.rh-device-toggle button.active{background:#fff!important;box-shadow:0 2px 7px rgba(28,34,52,.08)!important;color:#1f2535!important}
+.rh-demo-stage{padding:22px!important;background:linear-gradient(145deg,#eef1f6,#f8f9fb)!important}
+.rh-demo-stage iframe{border-radius:14px!important;box-shadow:0 15px 42px rgba(21,28,46,.11)!important}
+.rh-demo-foot{padding:10px 22px!important;background:#fff!important}
+
+@media(max-width:780px){
+  .rh-editor-toolbar{flex-wrap:nowrap!important;overflow-x:auto!important;padding-bottom:7px!important}
+  .rh-editor-toolgroup:last-child{flex:0 0 auto!important}
+  .rh-demo-meta{grid-template-columns:1fr!important}.rh-demo-meta .wide{grid-column:auto!important}
+  .rh-demo-testbar{grid-template-columns:1fr!important;gap:10px!important;padding:12px 14px!important}
+  .rh-demo-stage{padding:12px!important}
+}
