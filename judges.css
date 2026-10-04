@@ -230,16 +230,13 @@
 
 
 /* ===== Jury assignment progress counts ===== */
-.jury-progress-link{display:flex;align-items:center;gap:6px;border:0;background:transparent;padding:3px 4px;margin:-3px -4px;border-radius:10px;cursor:pointer;color:#182033;text-align:left;white-space:nowrap;transition:.18s ease}
-.jury-progress-link:hover{background:#f8fafc}
-.jury-progress-link>svg{width:12px;height:12px;fill:none;stroke:#98a2b3;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:.18s ease;flex:0 0 auto}
-.jury-progress-link:hover>svg{stroke:#d71920;transform:translateX(2px)}
-.jury-progress-pill{min-width:58px;padding:5px 7px;border:1px solid #e4e7ec;border-radius:8px;display:grid;gap:1px;background:#fff}
-.jury-progress-pill b{font-size:12px;line-height:1;color:#172033}
-.jury-progress-pill small{font-size:8px;font-weight:800;line-height:1.15;text-transform:uppercase;letter-spacing:.025em;color:#7a8494}
-.jury-progress-pill.assigned{background:#edf8e9;border-color:#cce3c4}.jury-progress-pill.assigned b,.jury-progress-pill.assigned small{color:#47763a}
-.jury-progress-pill.pending{background:#edf7fc;border-color:#c7e3f1}.jury-progress-pill.pending b,.jury-progress-pill.pending small{color:#347aa0}
-.jury-progress-pill.submitted{background:#fff0f0;border-color:#edcaca}.jury-progress-pill.submitted b,.jury-progress-pill.submitted small{color:#c64b4b}
-.jury-assignment-summary{grid-template-columns:repeat(4,minmax(0,1fr))}
-@media(max-width:900px){.jury-progress-link{gap:4px}.jury-progress-pill{min-width:49px;padding:5px}.jury-progress-pill small{font-size:7px}}
-@media(max-width:640px){.jury-progress-link{align-items:stretch;flex-direction:column}.jury-progress-link>svg{display:none}.jury-progress-pill{min-width:70px}}
+.jury-progress-link.jury-progress-reference{display:flex;align-items:center;gap:8px;border:0;background:transparent;padding:2px 0;cursor:pointer;text-align:left;white-space:nowrap;transition:.18s ease}
+.jury-progress-link.jury-progress-reference:hover{background:transparent}
+.jury-progress-reference .jury-progress-pill{display:inline-flex;align-items:center;justify-content:center;min-width:0;height:28px;padding:0 10px;border-radius:4px;border:1px solid;font-size:11px;font-weight:500;letter-spacing:0;background:#fff}
+.jury-progress-reference .jury-progress-pill b{font-size:11px;line-height:1;font-weight:700;margin-left:1px}
+.jury-progress-reference .jury-progress-pill.assigned{background:#eef7e9;border-color:#bdd8ad;color:#5c8b46}
+.jury-progress-reference .jury-progress-pill.pending{background:#eaf6fc;border-color:#b9dced;color:#3f89ad}
+.jury-progress-reference .jury-progress-pill.submitted{background:#f9eded;border-color:#debcbc;color:#c55a5a}
+.jury-progress-reference .jury-progress-pill:hover{filter:brightness(.985);box-shadow:0 2px 6px rgba(15,23,42,.06)}
+@media(max-width:980px){.jury-progress-link.jury-progress-reference{gap:5px}.jury-progress-reference .jury-progress-pill{height:27px;padding:0 7px;font-size:10px}.jury-progress-reference .jury-progress-pill b{font-size:10px}}
+@media(max-width:700px){.jury-progress-link.jury-progress-reference{flex-wrap:wrap;white-space:normal}.jury-progress-reference .jury-progress-pill{flex:0 0 auto}}
