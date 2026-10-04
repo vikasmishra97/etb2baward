@@ -18,8 +18,7 @@
       <div class="nav-label">Build</div><a href="award.html"><span class="ico">◇</span><span>Award</span></a><a href="website.html"><span class="ico">▣</span><span>Website</span></a><a href="categories.html"><span class="ico">▦</span><span>Categories</span></a><a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a><a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a>
       <div class="nav-label">Operate</div><a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
       <div class="nav-label">Grow</div><a href="audience.html"><span class="ico">◉</span><span>Audience</span></a><a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a><a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
-      <div class="nav-label">Judge</div><a href="scoring.html"><span class="ico">★</span><span>Criteria</span></a><a class="active" href="judges.html"><span class="ico">♟</span><span>Judges</span></a><a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a><a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
-      <div class="nav-label">Celebrate</div><a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a><a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a><a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Judge</div><a href="scoring.html"><span class="ico">★</span><span>Criteria</span></a><a class="active" href="judges.html"><span class="ico">♟</span><span>Judges</span></a><a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a><a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a><div class="nav-label">Celebrate</div><a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a><a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a><a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
       <div class="nav-label">Insights</div><a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a>
       <div class="nav-label">System</div><a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
     </nav>
@@ -90,19 +89,6 @@
         </div>
       </section>
 
-      <div class="jury-workspace-grid premium-workspace section">
-        <section class="card premium-panel jury-members-card">
-          <div class="premium-section-head panel-head">
-            <div><div class="jury-kicker">JURY TEAM</div><h2 id="levelJuryHeading">Jury Level 1</h2><p>Manage access, category expertise and login credentials.</p></div>
-            <button class="btn premium-primary compact" id="addJuryFromList">+ Add jury</button>
-          </div>
-          <div class="panel-toolbar"><div class="premium-search"><span>⌕</span><input id="levelJurySearch" placeholder="Search jury by name or email"></div></div>
-          <div class="jury-list-table-wrap"><table class="jury-list-table premium-table"><thead><tr><th>Jury member</th><th>Categories</th><th>Assigned</th><th>Access</th><th></th></tr></thead><tbody id="levelJuryRows"></tbody></table></div>
-        </section>
-
-
-      </div>
-
       <section class="ai-command-card section">
         <div class="ai-orb">✦</div>
         <div class="ai-command-copy"><span>AWARD COPILOT</span><h2 id="aiHeadline">Assignment intelligence</h2><p id="aiInsight">I’ll highlight unassigned categories, uneven workload and the best jury match for each nomination.</p></div>
@@ -117,6 +103,24 @@
         <div class="category-intelligence-grid" id="categoryIntelligenceGrid"></div>
       </section>
 
+      <div class="jury-workspace-grid premium-workspace section">
+        <section class="card premium-panel jury-members-card">
+          <div class="premium-section-head panel-head">
+            <div><div class="jury-kicker">JURY TEAM</div><h2 id="levelJuryHeading">Jury Level 1</h2><p>Manage access, category expertise and login credentials.</p></div>
+            <button class="btn premium-primary compact" id="addJuryFromList">+ Add jury</button>
+          </div>
+          <div class="panel-toolbar"><div class="premium-search"><span>⌕</span><input id="levelJurySearch" placeholder="Search jury by name or email"></div></div>
+          <div class="jury-list-table-wrap"><table class="jury-list-table premium-table"><thead><tr><th>Jury member</th><th>Categories</th><th>Assigned</th><th>Access</th><th></th></tr></thead><tbody id="levelJuryRows"></tbody></table></div>
+        </section>
+
+        <aside class="card premium-panel assignment-health-card">
+          <div class="jury-kicker">ROUND HEALTH</div><h2>Assignment readiness</h2><p class="panel-muted">Selected jury level</p>
+          <div class="health-meter premium-health"><div class="health-ring" id="assignmentHealthRing"><span id="assignmentHealthScore">0%</span></div><div><b id="healthTitle">Ready to assign</b><p id="healthText">Assign eligible nominations to jury members.</p></div></div>
+          <div class="health-stats premium-health-stats"><div><span>Eligible</span><b id="healthEligible">0</b></div><div><span>Assigned</span><b id="healthAssigned">0</b></div><div><span>Unassigned</span><b id="healthUnassigned">0</b></div></div>
+          <div class="health-ai-tip"><span>✦</span><p id="healthAiTip">AI checks expertise and workload before recommending assignments.</p></div>
+          <a class="btn premium-secondary full" href="scoring.html">Manage scoring criteria →</a>
+        </aside>
+      </div>
 
       <section class="card premium-panel nominations-card section" id="paidSubmittedSection">
         <div class="premium-section-head nomination-head">
@@ -155,6 +159,7 @@
       <div class="form-grid"><div class="field"><label>Mobile</label><input id="newJudgeMobile" placeholder="Mobile number"></div><div class="field"><label>Jury level</label><select id="newJudgeLevel"><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option><option value="4">Level 4</option><option value="5">Level 5</option></select></div></div>
       <div class="field"><label>Jury portal password *</label><div class="jury-password-field"><input id="newJudgePassword" type="text" placeholder="Create or generate password"><button class="btn ghost compact" id="generateJuryPassword" type="button">Generate</button></div></div>
       <div class="field"><label>Expertise</label><div class="expertise-picker" id="expertisePicker"><button type="button" data-exp="FinTech">FinTech</button><button type="button" data-exp="Payments">Payments</button><button type="button" data-exp="AI & Data">AI & Data</button><button type="button" data-exp="Lending">Lending</button><button type="button" data-exp="Startups">Startups</button><button type="button" data-exp="Cybersecurity">Cybersecurity</button></div></div>
+      <div class="judge-ai-match"><span>✦</span><div><b>AI category matching</b><p id="matchText">Choose expertise and I’ll recommend categories.</p></div><button id="matchCategories" type="button">Match</button></div>
       <div class="field"><label>Select Categories *</label>
         <div class="category-multiselect drawer-multiselect" id="inviteCategoryMulti">
           <button type="button" class="category-multiselect-trigger" id="inviteCategoryTrigger"><span id="inviteCategorySummary">None selected</span><span class="chevron">⌄</span></button>
@@ -174,16 +179,8 @@
 <div class="judge-modal" id="assignNominationModal" aria-hidden="true">
   <div class="judge-modal-backdrop" data-close-assignment></div>
   <div class="judge-modal-card assignment-modal-card">
-    <div class="judge-modal-head"><div><span class="eyebrow">NOMINATION ASSIGNMENT</span><h2 id="assignNominationTitle">Assign nomination</h2><p id="assignNominationSubtitle">Choose a jury level, then select one or more jury members.</p></div><button data-close-assignment>×</button></div>
-    <div class="assignment-editor-body">
-      <div class="assignment-level-block">
-        <label for="assignmentLevelSelect">Assign to jury level</label>
-        <select id="assignmentLevelSelect"></select>
-        <small id="assignmentLevelHint">Only jury members from the selected level will be shown.</small>
-      </div>
-      <div class="assignment-jury-head"><span>Jury members</span><small id="assignmentJuryCount"></small></div>
-      <div class="assignment-editor-list" id="nominationJuryPicker"></div>
-    </div>
+    <div class="judge-modal-head"><div><span class="eyebrow">NOMINATION ASSIGNMENT</span><h2 id="assignNominationTitle">Assign nomination</h2><p id="assignNominationSubtitle">Choose one or more jury members.</p></div><button data-close-assignment>×</button></div>
+    <div class="assignment-editor-body"><div class="assignment-editor-list" id="nominationJuryPicker"></div></div>
     <div class="judge-drawer-foot"><button class="btn secondary" data-close-assignment>Cancel</button><button class="btn primary" id="saveNominationAssignment">Save assignment</button></div>
   </div>
 </div>
