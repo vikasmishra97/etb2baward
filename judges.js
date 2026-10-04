@@ -117,7 +117,17 @@
       <td><div class="jury-category-chips">${(j.categories||[]).slice(0,2).map(c=>`<span>${esc(c.replace('Best ',''))}</span>`).join('')}${(j.categories||[]).length>2?`<em>+${j.categories.length-2}</em>`:''}</div></td>
       <td><b>${nominationCountForJudge(j.id)}</b> assigned</td>
       <td><label class="jury-status-toggle"><input type="checkbox" data-toggle-jury="${j.id}" ${j.enabled!==false?'checked':''}><span></span></label></td>
-      <td><div class="jury-actions"><button data-edit-jury="${j.id}" title="Edit">Edit</button><button class="login-jury-btn" data-open-login="${j.id}" title="Open jury login">Login</button><button class="copy-login-btn" data-copy-login="${j.id}" title="Copy credentials">Copy</button></div></td>
+      <td><div class="jury-actions" aria-label="Jury actions">
+        <button class="jury-icon-btn" data-edit-jury="${j.id}" title="Edit jury member" aria-label="Edit jury member">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16v4Zm13.5-16.5 3 3 1-1a1.4 1.4 0 0 0 0-2l-1-1a1.4 1.4 0 0 0-2 0l-1 1Z"/></svg>
+        </button>
+        <button class="jury-icon-btn login-jury-btn" data-open-login="${j.id}" title="Open jury login" aria-label="Open jury login">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17v-2h4V9h-4V7l-5 5 5 5Zm4-13h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5v-2h5V6h-5V4Z"/></svg>
+        </button>
+        <button class="jury-icon-btn copy-login-btn" data-copy-login="${j.id}" title="Copy login credentials" aria-label="Copy login credentials">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3Zm2 0h3a2 2 0 0 1 2 2v3h3V5h-8v3Zm3 2H5v8h8v-8Z"/></svg>
+        </button>
+      </div></td>
     </tr>`).join('');
     const toggleRow=rows.length>5&&!q?`<tr class="jury-more-row"><td colspan="5"><button class="jury-more-btn" data-toggle-jury-list="1">${showAllJury?'Show less':`View ${moreCount} more jury member${moreCount===1?'':'s'}`}</button></td></tr>`:'';
     $('#levelJuryRows').innerHTML=rows.length?memberRows+toggleRow:`<tr><td colspan="5"><div class="empty-state">No jury members in this level yet.</div></td></tr>`;
