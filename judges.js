@@ -43,13 +43,59 @@
   let judges=read(JUDGE_KEY,null)||seedJudges;
   let levels=read(LEVEL_KEY,null)||seedLevels;
   let nominations=read(NOM_KEY,null)||seedNominations;
-  const livePaidSubmitted=read('etb2b_public_nomination_starters',[]).filter(n=>String(n.status||'').toLowerCase()==='submitted'&&n.paymentId).map(n=>({id:String(n.nominationId||n.id||''),company:n.company||n.name||'Entrant',nominee:n.entrantName||n.name||n.company||'Entrant',category:n.category||'Uncategorised',submission:'Submitted',payment:'Paid',email:n.email||'',submittedAt:n.createdAt||''})).filter(n=>n.id);
-  if(livePaidSubmitted.length){
-    const byId=new Map(nominations.map(n=>[String(n.id),n]));
-    livePaidSubmitted.forEach(n=>{byId.set(String(n.id),Object.assign({},byId.get(String(n.id))||{},n));if(n.category&&!categories.includes(n.category))categories.push(n.category)});
-    nominations=[...byId.values()];
-    levels.forEach(l=>{categories.forEach(c=>{if(!l.categories.includes(c))l.categories.push(c)})});
+
+  // Keep the Jury paid-nomination report in sync with the product's main
+  // nomination report. A nomination enters this pool only after the form is
+  // completed and payment has been received.
+  const activeAward=read('etb2b_awards_new_award',{})||{};
+  const slugify=v=>String(v||'demo').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'demo';
+  const activeAwardSlug=activeAward.slug||slugify(activeAward.name);
+  const nominationReportKey=`etb2b_public_nomination_reports_${activeAwardSlug}`;
+
+  function normalisePaidNomination(n){
+    if(!n||typeof n!=='object')return null;
+    const status=String(n.status||'').toLowerCase();
+    const paymentStatus=String(n.paymentStatus||'').toLowerCase();
+    const paid=!!n.paid||!!n.paymentId||paymentStatus==='paid'||paymentStatus==='completed'||paymentStatus==='success';
+    const formSubmitted=status==='submitted'||!!n.formCompleted;
+    if(!paid||!formSubmitted)return null;
+    const id=String(n.nominationId||n.id||'').trim();
+    if(!id)return null;
+    return {
+      id,
+      company:n.company||n.name||'Entrant',
+      nominee:n.entrantName||n.name||n.company||'Entrant',
+      category:n.category||'Uncategorised',
+      submission:'Submitted',
+      payment:'Paid',
+      paymentId:n.paymentId||'',
+      email:n.email||'',
+      mobile:n.mobile||'',
+      submittedAt:n.submittedAt||n.updatedAt||n.createdAt||''
+    };
   }
+
+  function syncPaidSubmittedFromReports(){
+    const reportRows=read(nominationReportKey,[]);
+    const starterRows=read('etb2b_public_nomination_starters',[]);
+    const live=[...(Array.isArray(reportRows)?reportRows:[]),...(Array.isArray(starterRows)?starterRows:[])]
+      .map(normalisePaidNomination).filter(Boolean);
+    if(!live.length)return false;
+
+    const byId=new Map(nominations.map(n=>[String(n.id),n]));
+    live.forEach(n=>{
+      byId.set(String(n.id),Object.assign({},byId.get(String(n.id))||{},n));
+      if(n.category&&!categories.includes(n.category))categories.push(n.category);
+    });
+    nominations=[...byId.values()];
+    levels.forEach(l=>{
+      if(!Array.isArray(l.categories))l.categories=[];
+      categories.forEach(c=>{if(!l.categories.includes(c))l.categories.push(c)});
+    });
+    return true;
+  }
+
+  syncPaidSubmittedFromReports();
   let assignments=read(ASSIGN_KEY,{});
   let progress=read(PROGRESS_KEY,{});
   let selectedLevel=1, editingJudgeId=null, assignmentTargets=[], assignmentLevel=1;
@@ -230,9 +276,16 @@
       const pct=rows.length?Math.round(assignedAny/rows.length*100):100;
       const levelStats=levels.map(l=>{
         const count=rows.filter(n=>assignmentIdsAtLevel(l.level,n.id).length).length;
-        return `<span class="report-level-chip ${count?'has-assignment':''}">L${l.level} <b>${count}</b>/${rows.length}</span>`;
+        const complete=rows.length>0&&count===rows.length;
+        return `<div class="report-level-stat ${count?'has-assignment':''} ${complete?'complete':''}"><span class="report-level-name">L${l.level}</span><strong>${count}<small>/${rows.length}</small></strong><span class="report-level-dot" aria-hidden="true">${complete?'✓':count?'•':'—'}</span></div>`;
       }).join('');
-      return `<article class="category-intel-card report-category-card"><div class="category-intel-top"><h3>${esc(cat)}</h3><span class="category-total">${rows.length} paid</span></div><div class="category-progress"><span style="width:${pct}%"></span></div><div class="category-intel-stats"><span><b>${assignedAny}</b> assigned</span><span><b>${unassigned}</b> unassigned</span><span><b>${pct}%</b> covered</span></div><div class="report-levels"><small>Assigned by jury level</small><div>${levelStats}</div></div><div class="category-report-action"><button class="category-view-btn" data-view-category="${esc(cat)}">View ${rows.length} nominations</button></div></article>`;
+      return `<article class="category-intel-card report-category-card">
+        <div class="category-intel-top"><h3>${esc(cat)}</h3><span class="category-total">${rows.length} paid</span></div>
+        <div class="report-coverage-line"><div class="category-progress"><span style="width:${pct}%"></span></div><b>${pct}%</b></div>
+        <div class="report-summary-row"><span><b>${assignedAny}</b> assigned</span><span class="${unassigned?'needs-attention':''}"><b>${unassigned}</b> unassigned</span></div>
+        <div class="report-level-grid">${levelStats}</div>
+        <button class="category-view-btn report-view-btn" data-view-category="${esc(cat)}"><span>View nominations</span><b>${rows.length}</b><span aria-hidden="true">→</span></button>
+      </article>`;
     }).join('')||'<div class="empty-state">No paid & submitted nominations yet.</div>';
   }
 
@@ -329,6 +382,13 @@
   $$('[data-close-assignment]').forEach(b=>b.addEventListener('click',closeAssign));$('#saveNominationAssignment').addEventListener('click',saveAssignment);$('#assignmentLevelSelect')?.addEventListener('change',e=>{assignmentLevel=Number(e.target.value||selectedLevel);renderAssignmentJuryPicker()});
   $('#aiAutoAssign').addEventListener('click',aiAssign);$('#aiRefresh').addEventListener('click',()=>{renderAiInsight();toast('Copilot insight refreshed')});$('#openJuryLogin').addEventListener('click',()=>window.open('jury-login.html','_blank'));
   $('#importJury').addEventListener('click',()=>$('#importJuryFile').click());$('#importJuryFile').addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{const lines=String(r.result).split(/\r?\n/).filter(Boolean);let added=0;lines.slice(1).forEach(line=>{const [name,email,company,role,level]=line.split(',').map(x=>x?.trim());if(name&&email&&!judges.some(j=>j.email.toLowerCase()===email.toLowerCase())){judges.push({id:Date.now()+added,name,email,company:company||'Independent',role:role||'Jury Member',level:Number(level||selectedLevel),password:`ET${Math.random().toString(36).slice(2,8).toUpperCase()}#`,expertise:[],categories:[...currentLevel().categories],enabled:true,status:'active',requireConflict:true});added++}});persist();renderAll();toast(`${added} jury member${added===1?'':'s'} imported`)};r.readAsText(f);e.target.value=''});
+
+  // If payment is completed in another browser tab, refresh the common paid
+  // nomination report here immediately without requiring a page reload.
+  window.addEventListener('storage',e=>{
+    if(e.key!==nominationReportKey&&e.key!=='etb2b_public_nomination_starters')return;
+    if(syncPaidSubmittedFromReports()){write(NOM_KEY,nominations);renderAll()}
+  });
 
   renderAll();
 })();
