@@ -26,73 +26,110 @@
   </aside>
 
   <div class="content">
-    <header class="topbar"><div class="crumb">India FinTech Awards 2027 / Judges</div><div class="top-actions"><button class="btn ghost" id="openJuryLogin">Open jury login</button><div class="avatar">VM</div></div></header>
+    <header class="topbar"><div class="crumb">India FinTech Awards 2027 / Judges</div><div class="top-actions"><div class="avatar">VM</div></div></header>
 
-    <main class="main judges-page">
-      <div class="page-head judges-head">
-        <div><span class="eyebrow">DECIDE · JURY OPERATIONS</span><h1>Jury workspace</h1><p>Configure rounds, create jury logins, assign paid nominations and monitor evaluation from one place.</p></div>
-        <div class="top-actions"><button class="btn secondary" id="importJury">Import jury</button><input type="file" id="importJuryFile" accept=".csv" hidden><button class="btn primary" id="inviteJudge">+ Add jury member</button></div>
-      </div>
-
-      <section class="jury-summary-grid">
-        <article class="card jury-summary"><small>Jury members</small><strong id="summaryJurors">0</strong><span id="summaryJurorsMeta">Across all levels</span></article>
-        <article class="card jury-summary"><small>Paid & submitted</small><strong id="summaryEligible">0</strong><span>Eligible for jury assignment</span></article>
-        <article class="card jury-summary"><small>Assigned</small><strong id="summaryAssigned">0</strong><span id="summaryAssignedMeta">At selected level</span></article>
-        <article class="card jury-summary attention"><small>Needs action</small><strong id="summaryAttention">0</strong><span id="summaryAttentionMeta">Unassigned nominations</span></article>
-      </section>
-
-      <section class="card jury-control-card section">
-        <div class="jury-control-head">
-          <div><span class="eyebrow">JURY LEVELS</span><h2>Round configuration</h2><p>Create up to five levels. Each level can have its own categories, purpose and jury members.</p></div>
-          <label class="jury-level-count">Number of levels <select id="juryLevelCount"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></label>
+    <main class="main judges-page premium-jury-page">
+      <section class="jury-hero">
+        <div>
+          <div class="jury-kicker">JURY OPERATIONS</div>
+          <h1>Judging command center</h1>
+          <p>Configure rounds, manage jury access, and assign every paid & submitted nomination with complete visibility.</p>
         </div>
-        <div class="jury-level-tabs" id="juryLevelTabs"></div>
-        <div class="jury-config-compact">
-          <div class="field"><label>Round purpose</label><select id="juryRoundType"><option value="verification">Verification / eligibility</option><option value="evaluation">Evaluation / scoring</option><option value="final">Final jury decision</option></select></div>
-          <div class="field"><label>Qualification threshold</label><div class="jury-threshold"><input id="juryThreshold" type="number" min="0" max="100" value="70"><span>%</span></div></div>
-          <div class="field span-2"><label>Categories in this level</label><div class="category-checks compact-category-checks" id="juryLevelCategories"></div></div>
-          <label class="judge-checkbox"><input type="checkbox" id="levelJuryEvaluate" checked> Jury can score</label>
-          <label class="judge-checkbox"><input type="checkbox" id="levelPreviousScores"> Show previous-level scores</label>
-          <button class="btn primary" id="saveJuryLevel">Save level</button>
-          <button class="btn secondary" id="promoteQualified">Promote qualified →</button>
+        <div class="jury-hero-actions">
+          <button class="btn premium-secondary" id="importJury">Import jury</button>
+          <input type="file" id="importJuryFile" accept=".csv" hidden>
+          <button class="btn premium-primary" id="inviteJudge">+ Add jury member</button>
         </div>
       </section>
 
-      <section class="card jury-ai-card section">
-        <div class="jury-ai-icon">✦</div>
-        <div class="jury-ai-copy"><span>Award Copilot</span><h2 id="aiHeadline">Jury assignment assistant</h2><p id="aiInsight">I’ll identify unassigned nominations, category gaps and overloaded jury members for the selected level.</p></div>
-        <div class="jury-ai-actions"><button class="btn secondary" id="aiRefresh">Refresh insight</button><button class="btn primary" id="aiAutoAssign">✦ AI assign unassigned</button></div>
+      <section class="jury-command-strip">
+        <div class="command-metric"><span>Jury members</span><strong id="summaryJurors">0</strong><small id="summaryJurorsMeta">Across all levels</small></div>
+        <div class="command-metric"><span>Paid & submitted</span><strong id="summaryEligible">0</strong><small>Ready for jury</small></div>
+        <div class="command-metric"><span>Assigned</span><strong id="summaryAssigned">0</strong><small id="summaryAssignedMeta">At selected level</small></div>
+        <div class="command-metric alert"><span>Needs action</span><strong id="summaryAttention">0</strong><small id="summaryAttentionMeta">Unassigned nominations</small></div>
+        <button class="command-login" id="openJuryLogin"><span>↗</span><div><b>Jury portal</b><small>Open login experience</small></div></button>
       </section>
 
-      <div class="jury-workspace-grid section">
-        <section class="card jury-members-card">
-          <div class="section-head"><div><h2 id="levelJuryHeading">Jury Level 1</h2><p>Manage jury accounts and category access for this round.</p></div><button class="btn primary compact" id="addJuryFromList">+ Add jury</button></div>
-          <div class="jury-toolbar"><div class="judge-search"><span>⌕</span><input id="levelJurySearch" placeholder="Search name / email"></div></div>
-          <div class="jury-list-table-wrap"><table class="jury-list-table"><thead><tr><th>Jury</th><th>Categories</th><th>Nominations</th><th>Status</th><th>Actions</th></tr></thead><tbody id="levelJuryRows"></tbody></table></div>
+      <section class="card premium-round-card section">
+        <div class="premium-section-head">
+          <div>
+            <div class="jury-kicker">ROUND SETUP</div>
+            <h2>Build your jury journey</h2>
+            <p>Use up to five levels. Each round can have a different purpose, threshold, categories and jury team.</p>
+          </div>
+          <label class="level-count-control"><span>Number of levels</span><select id="juryLevelCount"><option value="1">1 level</option><option value="2">2 levels</option><option value="3" selected>3 levels</option><option value="4">4 levels</option><option value="5">5 levels</option></select></label>
+        </div>
+
+        <div class="round-stepper" id="juryLevelTabs"></div>
+
+        <div class="round-config-shell">
+          <div class="round-config-main">
+            <div class="round-config-grid">
+              <div class="premium-field"><label>Round purpose</label><select id="juryRoundType"><option value="verification">Verification / eligibility</option><option value="evaluation">Evaluation / scoring</option><option value="final">Final jury decision</option></select></div>
+              <div class="premium-field"><label>Qualification threshold</label><div class="premium-threshold"><input id="juryThreshold" type="number" min="0" max="100" value="70"><span>%</span></div></div>
+              <div class="round-toggle-card"><span class="toggle-copy"><b>Jury scoring</b><small>Allow jurors to enter scores</small></span><label class="premium-switch"><input type="checkbox" id="levelJuryEvaluate" checked><span></span></label></div>
+              <div class="round-toggle-card"><span class="toggle-copy"><b>Previous scores</b><small>Show earlier-level scores</small></span><label class="premium-switch"><input type="checkbox" id="levelPreviousScores"><span></span></label></div>
+            </div>
+            <div class="category-config-block">
+              <div class="category-config-head"><div><b>Categories in this level</b><small>Choose what this jury round will evaluate</small></div><button type="button" class="text-action" id="selectAllLevelCategories">Select all</button></div>
+              <div class="premium-category-checks" id="juryLevelCategories"></div>
+            </div>
+          </div>
+          <aside class="round-actions-panel">
+            <div class="round-status-dot"><span></span><div><b id="roundStatusTitle">Round ready</b><small id="roundStatusText">Review settings and save.</small></div></div>
+            <button class="btn premium-primary full" id="saveJuryLevel">Save round</button>
+            <button class="btn premium-secondary full" id="promoteQualified">Promote qualified →</button>
+          </aside>
+        </div>
+      </section>
+
+      <section class="ai-command-card section">
+        <div class="ai-orb">✦</div>
+        <div class="ai-command-copy"><span>AWARD COPILOT</span><h2 id="aiHeadline">Assignment intelligence</h2><p id="aiInsight">I’ll highlight unassigned categories, uneven workload and the best jury match for each nomination.</p></div>
+        <div class="ai-command-actions"><button class="btn premium-secondary" id="aiRefresh">Refresh insight</button><button class="btn premium-primary" id="aiAutoAssign">✦ AI assign unassigned</button></div>
+      </section>
+
+      <section class="section">
+        <div class="premium-section-head compact-head">
+          <div><div class="jury-kicker">CATEGORY INTELLIGENCE</div><h2>Paid nominations by category</h2><p>See exactly who has paid and submitted, then jump straight into assignment.</p></div>
+          <div class="category-legend"><span><i class="dot green"></i>Assigned</span><span><i class="dot red"></i>Needs jury</span></div>
+        </div>
+        <div class="category-intelligence-grid" id="categoryIntelligenceGrid"></div>
+      </section>
+
+      <div class="jury-workspace-grid premium-workspace section">
+        <section class="card premium-panel jury-members-card">
+          <div class="premium-section-head panel-head">
+            <div><div class="jury-kicker">JURY TEAM</div><h2 id="levelJuryHeading">Jury Level 1</h2><p>Manage access, category expertise and login credentials.</p></div>
+            <button class="btn premium-primary compact" id="addJuryFromList">+ Add jury</button>
+          </div>
+          <div class="panel-toolbar"><div class="premium-search"><span>⌕</span><input id="levelJurySearch" placeholder="Search jury by name or email"></div></div>
+          <div class="jury-list-table-wrap"><table class="jury-list-table premium-table"><thead><tr><th>Jury member</th><th>Categories</th><th>Assigned</th><th>Access</th><th></th></tr></thead><tbody id="levelJuryRows"></tbody></table></div>
         </section>
 
-        <aside class="card assignment-health-card">
-          <div class="section-head compact"><div><h2>Assignment health</h2><p>Selected jury level</p></div></div>
-          <div class="health-meter"><div class="health-ring" id="assignmentHealthRing"><span id="assignmentHealthScore">0%</span></div><div><b id="healthTitle">Ready to assign</b><p id="healthText">Assign eligible nominations to jury members.</p></div></div>
-          <div class="health-stats"><div><span>Eligible</span><b id="healthEligible">0</b></div><div><span>Assigned</span><b id="healthAssigned">0</b></div><div><span>Unassigned</span><b id="healthUnassigned">0</b></div></div>
-          <a class="btn secondary full" href="scoring.html">Manage scoring criteria →</a>
+        <aside class="card premium-panel assignment-health-card">
+          <div class="jury-kicker">ROUND HEALTH</div><h2>Assignment readiness</h2><p class="panel-muted">Selected jury level</p>
+          <div class="health-meter premium-health"><div class="health-ring" id="assignmentHealthRing"><span id="assignmentHealthScore">0%</span></div><div><b id="healthTitle">Ready to assign</b><p id="healthText">Assign eligible nominations to jury members.</p></div></div>
+          <div class="health-stats premium-health-stats"><div><span>Eligible</span><b id="healthEligible">0</b></div><div><span>Assigned</span><b id="healthAssigned">0</b></div><div><span>Unassigned</span><b id="healthUnassigned">0</b></div></div>
+          <div class="health-ai-tip"><span>✦</span><p id="healthAiTip">AI checks expertise and workload before recommending assignments.</p></div>
+          <a class="btn premium-secondary full" href="scoring.html">Manage scoring criteria →</a>
         </aside>
       </div>
 
-      <section class="card nominations-card section">
-        <div class="section-head nomination-head">
-          <div><span class="eyebrow">ELIGIBLE NOMINATIONS</span><h2>Paid & submitted nominations</h2><p>Only completed and paid nominations appear here. Assign each Nomination ID to the jury member(s) you want.</p></div>
-          <div class="nomination-bulk-actions"><button class="btn secondary" id="assignSelectedBtn">Assign selected</button><button class="btn ghost" id="clearNominationFilters">Clear filters</button></div>
+      <section class="card premium-panel nominations-card section" id="paidSubmittedSection">
+        <div class="premium-section-head nomination-head">
+          <div><div class="jury-kicker">PAID & SUBMITTED</div><h2>Nomination assignment desk</h2><p>Every paid and submitted nomination appears category-wise. Assign a Nomination ID to one or multiple jurors.</p></div>
+          <div class="nomination-bulk-actions"><button class="btn premium-primary" id="assignSelectedBtn">Assign selected</button><button class="btn premium-secondary" id="clearNominationFilters">Reset</button></div>
         </div>
-        <div class="nomination-toolbar">
-          <div class="judge-search"><span>⌕</span><input id="nominationSearch" placeholder="Search Nomination ID, company or category"></div>
+        <div class="nomination-toolbar premium-toolbar">
+          <div class="premium-search"><span>⌕</span><input id="nominationSearch" placeholder="Search Nomination ID, nominee, company or category"></div>
           <select id="nominationCategoryFilter"><option value="all">All categories</option></select>
-          <select id="nominationAssignmentFilter"><option value="all">All assignments</option><option value="unassigned">Unassigned</option><option value="assigned">Assigned</option></select>
+          <select id="nominationAssignmentFilter"><option value="all">All assignments</option><option value="unassigned">Needs jury</option><option value="assigned">Assigned</option></select>
         </div>
-        <div class="nomination-table-wrap"><table class="nomination-table"><thead><tr><th><input type="checkbox" id="selectAllNominations"></th><th>Nomination ID</th><th>Nominee / Company</th><th>Category</th><th>Payment</th><th>Jury level assignment</th><th>Action</th></tr></thead><tbody id="nominationRows"></tbody></table></div>
+        <div class="nomination-table-wrap"><table class="nomination-table premium-table"><thead><tr><th><input type="checkbox" id="selectAllNominations"></th><th>Nomination ID</th><th>Nominee / Company</th><th>Category</th><th>Status</th><th>Jury assignment</th><th></th></tr></thead><tbody id="nominationRows"></tbody></table></div>
       </section>
 
-      <div class="judge-next-step section"><div><span>DECIDE · NEXT</span><h2>Once assignments are ready, jury members can sign in and evaluate only their allocated nominations.</h2><p>Scores use the criteria configured in the Scoring module.</p></div><a class="btn primary" href="jury-login.html">Open Jury Login →</a></div>
+      <div class="judge-next-step premium-next section"><div><span>READY FOR JUDGING</span><h2>Once assignments are complete, jurors only see the nominations allocated to their login.</h2><p>Scores follow the criteria configured in the Scoring module.</p></div><a class="btn premium-primary" href="jury-login.html">Open Jury Login →</a></div>
       <div class="footer-note">Vikas Mishra</div>
     </main>
   </div>
@@ -120,7 +157,7 @@
   <div class="judge-modal-backdrop" data-close-assignment></div>
   <div class="judge-modal-card assignment-modal-card">
     <div class="judge-modal-head"><div><span class="eyebrow">NOMINATION ASSIGNMENT</span><h2 id="assignNominationTitle">Assign nomination</h2><p id="assignNominationSubtitle">Choose one or more jury members.</p></div><button data-close-assignment>×</button></div>
-    <div class="assignment-editor-body"><div class="assignment-level-bar"><label>Assign to jury level<select id="assignmentTargetLevel"></select></label><div id="assignmentLevelNote" class="assignment-level-note"></div></div><div class="assignment-editor-list" id="nominationJuryPicker"></div></div>
+    <div class="assignment-editor-body"><div class="assignment-editor-list" id="nominationJuryPicker"></div></div>
     <div class="judge-drawer-foot"><button class="btn secondary" data-close-assignment>Cancel</button><button class="btn primary" id="saveNominationAssignment">Save assignment</button></div>
   </div>
 </div>
