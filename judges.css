@@ -50,3 +50,46 @@
 .assignment-load{font-size:11px;font-weight:800;color:#575b70;background:#f3f4f8;border-radius:8px;padding:6px 8px;white-space:nowrap}
 .assignment-editor-row.category-row{grid-template-columns:auto 1fr auto}
 @media(max-width:720px){.assignment-summary{grid-template-columns:1fr 1fr}.assignment-editor-row{grid-template-columns:auto 34px 1fr}.assignment-load{grid-column:3}.assignment-editor-row.category-row{grid-template-columns:auto 1fr}.assignment-editor-row.category-row .assignment-load{grid-column:2}}
+
+/* Multi-level jury workflow */
+.jury-flow-section{padding:22px;border:1px solid #e6e9ef;background:#fff}
+.jury-flow-head,.jury-listing-head,.jury-config-title,.jury-config-footer{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.jury-flow-head h2,.jury-listing-head h3,.jury-config-card h3,.jury-progress-card h3{margin:4px 0 6px;font-size:20px;line-height:1.25}
+.jury-flow-head p,.jury-listing-head p{margin:0;color:#697386;font-size:14px}
+.jury-flow-actions,.jury-listing-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.jury-level-count{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#374151}
+.jury-level-count select{height:42px;border:1px solid #d8dde7;border-radius:10px;padding:0 34px 0 12px;background:#fff}
+.jury-level-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 18px;padding:7px;background:#f3f6fb;border:1px solid #e1e6ef;border-radius:12px}
+.jury-level-tab{border:0;background:transparent;padding:10px 18px;border-radius:9px;font-weight:800;color:#657084;cursor:pointer;font-size:14px}
+.jury-level-tab.active{background:#fff;color:#131722;box-shadow:0 1px 4px rgba(15,23,42,.12)}
+.jury-level-tab small{margin-left:6px;color:#8b95a7;font-weight:700}
+.jury-config-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px}
+.jury-config-card,.jury-progress-card,.jury-listing-card{border:1px solid #e2e6ed;border-radius:14px;background:#fff;padding:18px}
+.jury-round-badge{padding:7px 10px;border-radius:999px;background:#eef2ff;color:#4f46e5;font-size:12px;font-weight:800;text-transform:capitalize}
+.jury-config-form{margin-top:14px}
+.jury-threshold{display:flex;align-items:center;border:1px solid #d8dde7;border-radius:9px;overflow:hidden;background:#fff}
+.jury-threshold input{border:0!important;box-shadow:none!important;flex:1;min-width:0}
+.jury-threshold span{padding:0 12px;color:#667085;font-weight:800}
+.jury-level-category-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:7px}
+.jury-config-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:15px 0}
+.jury-config-options .judge-checkbox{margin:0;padding:10px;border:1px solid #e5e7eb;border-radius:10px;background:#fafbfc}
+.jury-progress-card small,.jury-config-card small{font-size:11px;letter-spacing:.08em;font-weight:800;color:#777ca0}
+.jury-progress-stats{display:grid;gap:9px;margin:16px 0}
+.jury-progress-stats div{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #edf0f4}
+.jury-progress-stats span{color:#697386;font-size:13px}.jury-progress-stats b{font-size:17px;color:#171b2e}
+.jury-progress-note{font-size:12px;line-height:1.55;color:#697386;background:#f8fafc;border-radius:10px;padding:11px;margin-bottom:14px}
+.btn.full{width:100%;justify-content:center}
+.jury-listing-card{margin-top:16px}.jury-list-search{margin:15px 0 12px;max-width:340px}
+.jury-list-table-wrap{overflow-x:auto;border:1px solid #e2e6ed;border-radius:10px}
+.jury-list-table{width:100%;border-collapse:collapse;min-width:900px;font-size:13px}
+.jury-list-table th{background:#f2f6fc;text-transform:uppercase;font-size:11px;letter-spacing:.03em;color:#353d4f;padding:12px;text-align:left;border-bottom:1px solid #dce3ec}
+.jury-list-table td{padding:12px;border-bottom:1px solid #e7ebf1;vertical-align:middle}.jury-list-table tr:last-child td{border-bottom:0}
+.jury-name-cell b{display:block;font-size:14px}.jury-name-cell small{color:#7b8496}
+.jury-cat-count{display:inline-flex;align-items:center;gap:5px;color:#3438d0;font-weight:800}.jury-cat-count:before{content:'◉';font-size:11px}
+.jury-nomination-pills{display:flex;gap:6px;flex-wrap:wrap}.jury-nomination-pills span{padding:5px 9px;border-radius:5px;font-size:11px;border:1px solid}.jury-nomination-pills .assigned{background:#eef8e9;color:#49763a;border-color:#c8ddb9}.jury-nomination-pills .pending{background:#e9f7ff;color:#3f7593;border-color:#bfdeee}.jury-nomination-pills .submitted{background:#fff0f0;color:#c95b5b;border-color:#ecc7c7}
+.jury-status-toggle{width:43px;height:24px;border:0;border-radius:999px;background:#9ca3af;position:relative;cursor:pointer}.jury-status-toggle:after{content:'';position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.2s}.jury-status-toggle.on{background:#ef1744}.jury-status-toggle.on:after{left:22px}
+.jury-actions{display:flex;gap:6px}.jury-action-btn{border:0;background:#eef0f3;color:#333;padding:7px 9px;border-radius:7px;cursor:pointer;font-weight:800}.jury-action-btn:hover{background:#e1e5ea}.jury-action-btn.danger{color:#c3152d}.jury-action-btn.primary{background:#eef2ff;color:#3438d0}
+.jury-password-field{display:flex;gap:8px}.jury-password-field input{flex:1}.field-help{display:block;margin-top:6px;color:#7b8496;font-size:11px;line-height:1.4}
+.jury-empty{padding:28px!important;text-align:center;color:#8b95a7}
+.jury-login-note{font-size:12px;color:#697386;margin-top:8px}
+@media(max-width:1050px){.jury-config-grid{grid-template-columns:1fr}.jury-config-options{grid-template-columns:1fr}.jury-flow-head{align-items:flex-start;flex-direction:column}.jury-level-category-checks{grid-template-columns:1fr}}

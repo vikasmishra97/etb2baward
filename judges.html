@@ -61,6 +61,73 @@
 
       <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage active">DECIDE</div><div class="stage">CELEBRATE</div></div>
 
+
+      <section class="card jury-flow-section section" id="juryFlowSection">
+        <div class="jury-flow-head">
+          <div>
+            <span class="eyebrow">MULTI-LEVEL JURY WORKFLOW</span>
+            <h2>Jury levels & progression</h2>
+            <p>Create up to 5 jury levels, assign categories independently at each level, and move qualified nominations to the next round.</p>
+          </div>
+          <div class="jury-flow-actions">
+            <label class="jury-level-count">Levels
+              <select id="juryLevelCount"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select>
+            </label>
+            <button class="btn secondary" id="openJuryLogin">Open jury login</button>
+            <button class="btn primary" id="addJuryCurrentLevel">+ Add jury</button>
+          </div>
+        </div>
+
+        <div class="jury-level-tabs" id="juryLevelTabs"></div>
+
+        <div class="jury-level-workspace">
+          <div class="jury-level-main">
+            <div class="jury-config-grid">
+              <div class="jury-config-card">
+                <div class="jury-config-title"><div><small>ROUND SETUP</small><h3 id="juryLevelTitle">Jury Level 1</h3></div><span class="jury-round-badge" id="juryLevelBadge">Verification</span></div>
+                <div class="form-grid jury-config-form">
+                  <div class="field"><label>Round purpose</label><select id="juryRoundType"><option value="verification">Verification / eligibility check</option><option value="evaluation">Evaluation / scoring</option><option value="final">Final jury decision</option></select></div>
+                  <div class="field"><label>Qualification threshold</label><div class="jury-threshold"><input id="juryThreshold" type="number" min="0" max="100" value="70"><span>%</span></div></div>
+                </div>
+                <div class="field"><label>Categories available in this level</label><div class="category-checks jury-level-category-checks" id="juryLevelCategories"></div></div>
+                <div class="jury-config-options">
+                  <label class="judge-checkbox"><input type="checkbox" id="levelJuryEvaluate" checked> Jury can evaluate / score nominations</label>
+                  <label class="judge-checkbox"><input type="checkbox" id="levelSimilarNomination"> Allow jury to see similar-user nominations</label>
+                  <label class="judge-checkbox"><input type="checkbox" id="levelPreviousScores"> Show scores from previous jury level</label>
+                </div>
+                <div class="jury-config-footer"><button class="btn primary" id="saveJuryLevel">Save level configuration</button><a class="btn ghost" href="scoring.html">Manage scoring criteria →</a></div>
+              </div>
+
+              <div class="jury-progress-card">
+                <small>ROUND PROGRESSION</small>
+                <h3>Nomination movement</h3>
+                <div class="jury-progress-stats">
+                  <div><span>Available at this level</span><b id="levelAvailableCount">0</b></div>
+                  <div><span>Qualified</span><b id="levelQualifiedCount">0</b></div>
+                  <div><span>Moved forward</span><b id="levelMovedCount">0</b></div>
+                </div>
+                <div class="jury-progress-note" id="juryProgressNote">Scores at or above the threshold can be promoted after this round is complete.</div>
+                <button class="btn primary full" id="promoteQualified">Promote qualified to next level →</button>
+              </div>
+            </div>
+
+            <div class="jury-listing-card">
+              <div class="jury-listing-head">
+                <div><h3 id="levelJuryHeading">Jury Level 1</h3><p>Add, modify and manage jury credentials for this round.</p></div>
+                <div class="jury-listing-actions"><button class="btn secondary" id="importJury">Import jury</button><input type="file" id="importJuryFile" accept=".csv" hidden><button class="btn primary" id="addJuryFromList">+ Add jury</button></div>
+              </div>
+              <div class="jury-list-search"><div class="judge-search"><span>⌕</span><input id="levelJurySearch" placeholder="Search by name / email"></div></div>
+              <div class="jury-list-table-wrap">
+                <table class="jury-list-table">
+                  <thead><tr><th>Name</th><th>Email</th><th>Categories</th><th>Nomination</th><th>Status</th><th>Actions</th></tr></thead>
+                  <tbody id="levelJuryRows"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="judge-kpis">
         <article class="card judge-kpi"><div class="judge-kpi-icon">♟</div><div><small>Judges</small><strong id="judgeCount">18</strong><span>14 active · 4 invited</span></div></article>
         <article class="card judge-kpi"><div class="judge-kpi-icon good">✓</div><div><small>Review progress</small><strong id="reviewProgress">62%</strong><span>485 of 782 reviews</span></div></article>
@@ -198,6 +265,11 @@
         <div class="field"><label>Company</label><input id="newJudgeCompany" placeholder="Company"></div>
         <div class="field"><label>Role</label><input id="newJudgeRole" placeholder="Partner / CEO / Expert"></div>
       </div>
+      <div class="form-grid">
+        <div class="field"><label>Mobile</label><input id="newJudgeMobile" placeholder="Mobile number"></div>
+        <div class="field"><label>Jury level</label><select id="newJudgeLevel"><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option><option value="4">Level 4</option><option value="5">Level 5</option></select></div>
+      </div>
+      <div class="field"><label>Jury portal password</label><div class="jury-password-field"><input id="newJudgePassword" type="text" placeholder="Create or generate password"><button class="btn ghost compact" id="generateJuryPassword" type="button">Generate</button></div><small class="field-help">This prototype stores credentials in this browser. Use a secure backend before production.</small></div>
       <div class="field"><label>Expertise</label><div class="expertise-picker" id="expertisePicker"><button data-exp="FinTech">FinTech</button><button data-exp="Payments">Payments</button><button data-exp="AI & Data">AI & Data</button><button data-exp="Lending">Lending</button><button data-exp="Startups">Startups</button><button data-exp="Cybersecurity">Cybersecurity</button></div></div>
       <div class="judge-ai-match"><span>✦</span><div><b>Expertise matching</b><p id="matchText">Select expertise and ETB2B Awards will recommend categories.</p></div><button id="matchCategories">Match</button></div>
       <div class="field"><label>Assign categories</label><div class="category-checks" id="inviteCategories">
@@ -210,6 +282,11 @@
         <div class="field"><label>Target workload</label><select id="targetWorkload"><option>Up to 20 reviews</option><option selected>Up to 30 reviews</option><option>Up to 40 reviews</option><option>Up to 50 reviews</option></select></div>
         <div class="field"><label>Invite expires</label><select id="inviteExpiry"><option>7 days</option><option selected>14 days</option><option>30 days</option></select></div>
       </div>
+      <div class="form-grid">
+        <div class="field"><label>Jury evaluate</label><select id="newJuryEvaluate"><option value="yes">Yes</option><option value="no">No</option></select></div>
+        <div class="field"><label>Show previous jury scores</label><select id="newShowPrevious"><option value="no">No</option><option value="yes">Yes</option></select></div>
+      </div>
+      <div class="field"><label>Jury similar-user nomination</label><select id="newSimilarNomination"><option value="no">No</option><option value="yes">Yes</option></select></div>
       <label class="judge-checkbox"><input type="checkbox" id="requireConflict" checked> Require conflict-of-interest declaration before reviews</label>
       <label class="judge-checkbox"><input type="checkbox" id="autoInviteReminder" checked> Send automatic reminder if invitation is not accepted in 3 days</label>
     </div>
