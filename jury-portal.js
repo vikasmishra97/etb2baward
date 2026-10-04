@@ -1,53 +1,121 @@
 (() => {
   const JUDGE_KEY='etb2b_awards_judges_v3', SESSION_KEY='etb2b_jury_session_v1', LEVEL_KEY='etb2b_awards_jury_levels_v1', SCORE_KEY='etb2b_awards_scoring_v11', REVIEW_KEY='etb2b_jury_reviews_v1', NOM_KEY='etb2b_awards_nominations_v1', ASSIGN_KEY='etb2b_awards_jury_assignments_v1';
-  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-  const read=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k)||'null');return v??f}catch{return f}};
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)], read=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k)||'null');return v??f}catch{return f}};
   const esc=s=>String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
   const session=read(SESSION_KEY,null), judges=read(JUDGE_KEY,[]), jury=session&&judges.find(j=>String(j.id)===String(session.juryId));
   if(!jury||jury.enabled===false){window.location.replace('jury-login.html');return}
+
+  const award=read('etb2b_awards_new_award',{})||{};
   const levels=read(LEVEL_KEY,[]), levelNo=Number(jury.level||1), level=levels.find(x=>Number(x.level)===levelNo)||{name:`Jury Level ${levelNo}`,type:'evaluation',categories:jury.categories||[]};
+  const starters=read('etb2b_public_nomination_starters',[]);
   const nominations=read(NOM_KEY,[]), assignments=read(ASSIGN_KEY,{}), scoring=read(SCORE_KEY,null);
-  const award=read('etb2b_awards_new_award',{})||{}, slug=award.slug||'demo';
-  const reportRows=read(`etb2b_public_nomination_reports_${slug}`,[]);
-  const fallbackCriteria=[{id:1,name:'Innovation',description:'Originality and differentiation',weight:30,scale:10},{id:2,name:'Market Impact',description:'Customer and industry impact',weight:25,scale:10},{id:3,name:'Execution',description:'Quality of implementation',weight:25,scale:10},{id:4,name:'Scalability',description:'Potential for sustainable growth',weight:20,scale:10}];
-  const criteria=(scoring?.criteria?.length?scoring.criteria:fallbackCriteria);
-  let reviews=read(REVIEW_KEY,{}), currentEntry=null, activeTab='pending';
+  const slug=award.slug||nominations.find(n=>n.awardSlug)?.awardSlug||starters.find(n=>n.slug)?.slug||'demo';
+  const reportKey=`etb2b_public_nomination_reports_${slug}`;
+  const reports=read(reportKey,[]);
+  let reviews=read(REVIEW_KEY,{}), currentEntry=null, currentCriteria=[], activeTab='pending';
 
-  function reportFor(e){return reportRows.find(r=>String(r.nominationId||r.id||'')===String(e.id))||reportRows.find(r=>String(r.category||'')===String(e.category)&&String(r.company||r.name||'')===String(e.company||''))||null}
-  function entries(){const map=assignments[String(levelNo)]||{};return nominations.filter(n=>(map[n.id]||[]).map(String).includes(String(jury.id))).map(n=>({id:n.id,category:n.category,name:n.nominee||n.company,company:n.company,email:n.email||'',code:n.id,report:reportFor(n)}))}
+  function reportForNomination(n){
+    const id=String(n.id||n.nominationId||'');
+    let r=reports.find(x=>String(x.nominationId||'')===id);
+    if(!r&&n.reportId)r=reports.find(x=>String(x.id)===String(n.reportId));
+    if(!r&&n.categoryId)r=reports.find(x=>String(x.categoryId)===String(n.categoryId)&&(!n.email||String(x.email||'').toLowerCase()===String(n.email||'').toLowerCase()));
+    return r||null;
+  }
+  function nominationById(id){
+    const direct=nominations.find(n=>String(n.id||n.nominationId)===String(id));
+    if(direct)return direct;
+    const s=starters.find(n=>String(n.id||n.nominationId)===String(id));
+    if(s)return {id:s.nominationId||s.id,nominationId:s.nominationId||s.id,awardSlug:s.slug,categoryId:s.categoryId,category:s.category,company:s.company||s.name,nominee:s.entrantName||s.name,email:s.email,designation:s.designation,reportId:s.reportId,submission:'Submitted',payment:'Paid'};
+    const r=reports.find(x=>String(x.nominationId||'')===String(id));
+    if(r)return {id:r.nominationId,nominationId:r.nominationId,awardSlug:r.awardSlug,categoryId:r.categoryId,category:r.category,company:r.company,nominee:r.entrantName||r.company,email:r.email,designation:r.designation,reportId:r.id,submission:'Submitted',payment:'Paid'};
+    return null;
+  }
+  function entries(){
+    const map=assignments[String(levelNo)]||{};
+    return Object.keys(map).filter(id=>(map[id]||[]).map(String).includes(String(jury.id))).map(id=>{
+      const n=nominationById(id)||{id,category:'Uncategorised',company:'Entrant',nominee:'Entrant'};
+      const report=reportForNomination(n);
+      return {id:String(n.id||n.nominationId||id),category:n.category||report?.category||'Uncategorised',categoryId:n.categoryId||report?.categoryId||'',name:n.nominee||report?.entrantName||n.company||'Entrant',company:n.company||report?.company||'',email:n.email||report?.email||'',designation:n.designation||report?.designation||'',code:String(n.id||n.nominationId||id),report};
+    });
+  }
   function key(e){return `${jury.id}:${e.id}`}
-  function reviewStatus(e){return reviews[key(e)]?.status||'pending'}
-  function scoreLabel(e){const r=reviews[key(e)];return r?.status==='submitted'?`${Number(r.total||0).toFixed(1)}/10`:r?.status==='draft'?'Draft':'—'}
-  function criteriaFor(e){return criteria.filter(c=>Array.isArray(c.categories)?c.categories.includes(e.category):(!c.category||c.category==='all'||c.category===e.category))}
-  function populateCategoryFilter(es){const f=$('#juryCategoryFilter'),old=f.value||'all',cats=[...new Set(es.map(e=>e.category).filter(Boolean))];f.innerHTML='<option value="all">All categories</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');f.value=[...f.options].some(o=>o.value===old)?old:'all'}
+  function criteriaForCategory(category){
+    const all=scoring?.criteria?.length?scoring.criteria:[];
+    const filtered=all.filter(c=>!Array.isArray(c.categories)||!c.categories.length||c.categories.includes(category));
+    if(filtered.length)return filtered;
+    return [
+      {id:'fallback-1',name:'Innovation',description:'Originality and differentiation',weight:30,scale:10},
+      {id:'fallback-2',name:'Market Impact',description:'Customer and industry impact',weight:25,scale:10},
+      {id:'fallback-3',name:'Execution',description:'Quality of implementation',weight:25,scale:10},
+      {id:'fallback-4',name:'Scalability',description:'Potential for sustainable growth',weight:20,scale:10}
+    ];
+  }
+  function statusFor(e){return reviews[key(e)]?.status||'pending'}
+  function renderFilters(es){
+    const select=$('#reviewCategoryFilter'),old=select.value||'all',cats=[...new Set(es.map(e=>e.category).filter(Boolean))];
+    select.innerHTML='<option value="all">All categories</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+    select.value=[...select.options].some(o=>o.value===old)?old:'all';
+  }
   function render(){
-    const es=entries(), submitted=es.filter(e=>reviewStatus(e)==='submitted').length, pending=es.length-submitted;
-    $('#juryWelcome').textContent=jury.name;$('#juryMeta').textContent=`${jury.role||'Jury Member'} · ${jury.company||'Independent'}`;$('#juryLevelPill').textContent=level.name||`Jury Level ${levelNo}`;$('#sideAwardName').textContent=(award.name||'ETB2B Awards').toUpperCase();
+    const es=entries(),submitted=es.filter(e=>statusFor(e)==='submitted').length,pending=es.length-submitted;
+    $('#awardName').textContent=(award.name||'ETB2B Awards').toUpperCase();$('#juryWelcome').textContent=jury.name;$('#juryMeta').textContent=`${jury.role||'Jury Member'} · ${jury.company||'Independent'}`;$('#juryLevelPill').textContent=level.name||`Jury Level ${levelNo}`;$('#roundPurpose').textContent=level.type==='verification'?'Verification / eligibility':level.type==='final'?'Final jury decision':'Evaluation / scoring';
     $('#assignedStat').textContent=es.length;$('#submittedStat').textContent=submitted;$('#pendingStat').textContent=pending;$('#categoriesStat').textContent=new Set(es.map(e=>e.category)).size;$('#pendingTabCount').textContent=pending;$('#submittedTabCount').textContent=submitted;
-    populateCategoryFilter(es);renderRows();
+    renderFilters(es);
+    const q=($('#reviewSearch').value||'').toLowerCase().trim(),cat=$('#reviewCategoryFilter').value;
+    let rows=es.filter(e=>activeTab==='submitted'?statusFor(e)==='submitted':statusFor(e)!=='submitted');
+    if(cat!=='all')rows=rows.filter(e=>e.category===cat);
+    if(q)rows=rows.filter(e=>`${e.id} ${e.category} ${e.name} ${e.company}`.toLowerCase().includes(q));
+    $('#juryEntries').innerHTML=rows.length?rows.map(e=>{const r=reviews[key(e)],submitted=r?.status==='submitted';return `<article class="entry"><div><small>${esc(e.category)}</small><h3>${esc(e.name)}</h3><p><b>${esc(e.code)}</b> · ${esc(e.company||'')} · ${submitted?'Evaluation submitted':r?'Draft saved':'Assigned to you'}</p></div>${submitted?`<button data-review="${esc(e.id)}" class="secondary">View submission</button>`:`<button data-review="${esc(e.id)}">${r?'Continue evaluation':'Evaluate'} →</button>`}</article>`}).join(''):`<div class="empty">No ${activeTab} nominations match this view.</div>`;
   }
-  function renderRows(){
-    let es=entries();const q=($('#jurySearch').value||'').toLowerCase().trim(),cat=$('#juryCategoryFilter').value;
-    es=es.filter(e=>activeTab==='submitted'?reviewStatus(e)==='submitted':reviewStatus(e)!=='submitted');
-    if(q)es=es.filter(e=>`${e.id} ${e.name} ${e.company} ${e.category} ${e.email}`.toLowerCase().includes(q));if(cat!=='all')es=es.filter(e=>e.category===cat);
-    $('#juryEntries').innerHTML=es.length?es.map(e=>{const st=reviewStatus(e);return `<tr><td><span class="nom-id">${esc(e.code)}</span></td><td class="nom-name"><b>${esc(e.name)}</b><small>${esc(e.company||'')}${e.email?` · ${esc(e.email)}`:''}</small></td><td><span class="cat-pill">${esc(e.category)}</span></td><td><span class="status-pill ${st}">${st==='submitted'?'Submitted':st==='draft'?'Draft saved':'Pending'}</span></td><td><b>${scoreLabel(e)}</b></td><td><button class="evaluate ${st==='submitted'?'secondary':''}" data-review="${esc(e.id)}">${st==='submitted'?'View evaluation':st==='draft'?'Continue':'Evaluate'}</button></td></tr>`}).join(''):'<tr><td colspan="6"><div class="empty">No nominations match this view.</div></td></tr>';
+  function fallbackSections(e){
+    const r=e.report;if(r?.fields?.length)return [{title:'Submitted nomination form',help:'Captured from the nomination submission.',fields:r.fields.map(f=>({label:f.label,value:f.value,help:f.help||''}))}];
+    return [{title:'Nomination details',help:'Detailed answers are not available for this older/demo nomination.',fields:[{label:'Nominee / Entrant',value:e.name},{label:'Company',value:e.company},{label:'Category',value:e.category},{label:'Nomination ID',value:e.id}]}];
   }
-  function showReview(id){currentEntry=entries().find(e=>String(e.id)===String(id));if(!currentEntry)return;const r=reviews[key(currentEntry)]||{scores:{},comments:'',status:'pending'}, rep=currentEntry.report;
-    $('#listView').classList.add('hidden');$('#reviewView').classList.add('open');$('#reviewLevelPill').textContent=level.name||`Jury Level ${levelNo}`;$('#reviewStatusPill').textContent=r.status==='submitted'?'Submitted':r.status==='draft'?'Draft saved':'Pending';$('#reviewTitle').textContent=currentEntry.name;$('#reviewHeroMeta').textContent=`Nomination ID: ${currentEntry.id} · Category: ${currentEntry.category}${currentEntry.company?` · Company: ${currentEntry.company}`:''}`;
-    const fields=(rep?.fields||[]).filter(f=>f&&f.label);const fallback=[['Nominee / Entrant',currentEntry.name],['Company',currentEntry.company],['Email',rep?.email||currentEntry.email],['Category',currentEntry.category],['Payment ID',rep?.paymentId],['Nomination ID',currentEntry.id]].filter(x=>x[1]);
-    $('#nominationFormFields').innerHTML=fields.length?fields.map(f=>`<div class="form-field"><label>${esc(f.label)}</label><div class="form-answer ${!f.value?'empty-answer':''}">${esc(f.value||'No response provided')}</div></div>`).join(''):fallback.map(([l,v])=>`<div class="form-field"><label>${esc(l)}</label><div class="form-answer">${esc(v)}</div></div>`).join('')+'<div class="form-field"><label>Form data</label><div class="form-answer empty-answer">Detailed submitted answers are not available for this older/demo nomination.</div></div>';
-    $('#juryComments').value=r.comments||'';renderCriteria(r);updateWeighted();
-    const submitted=r.status==='submitted';$('#submittedNote').innerHTML=submitted?'<div class="submitted-note">✓ Evaluation submitted. You can review the score below.</div>':'';$('#saveDraftScore').style.display=submitted?'none':'';$('#submitScore').textContent=submitted?'Update evaluation':'Submit evaluation';
-    window.scrollTo({top:0,behavior:'smooth'});
+  function responseSectionsFor(e){
+    const r=e.report;
+    if(Array.isArray(r?.responseSections)&&r.responseSections.length)return r.responseSections;
+    if(Array.isArray(r?.formSnapshot?.sections)&&r.formSnapshot.sections.length)return r.formSnapshot.sections;
+    return fallbackSections(e);
   }
-  function renderCriteria(r){const cs=criteriaFor(currentEntry);$('#criteriaList').innerHTML=cs.map(c=>{const scale=Number(c.scale||10),val=r.scores?.[c.id];const buttons=scale<=10?`<div class="score-scale">${Array.from({length:scale},(_,i)=>i+1).map(v=>`<button type="button" data-score-btn="${v}" data-criterion="${c.id}" class="${Number(val)===v?'active':''}">${v}</button>`).join('')}</div>`:`<input class="score-number" type="number" min="0" max="${scale}" step="1" value="${val??''}" data-score-input="${c.id}" placeholder="Score out of ${scale}">`;return `<div class="criterion"><div class="criterion-head"><b>${esc(c.name)}</b><span>${Number(c.weight||0)}% weight</span></div><p>${esc(c.description||'')}</p>${buttons}</div>`}).join('')||'<div class="empty">No judging criteria are configured. Ask the award administrator to add criteria in Judge → Criteria.</div>'}
-  function collectScores(){const out={};$$('[data-score-btn].active').forEach(b=>out[b.dataset.criterion]=Number(b.dataset.scoreBtn));$$('[data-score-input]').forEach(i=>{if(i.value!=='')out[i.dataset.scoreInput]=Number(i.value)});return out}
-  function updateWeighted(){if(!currentEntry)return;const scores=collectScores(),cs=criteriaFor(currentEntry);let weighted=0,weights=0;cs.forEach(c=>{const raw=Number(scores[c.id]??0),scale=Number(c.scale||10),w=Number(c.weight||0);weighted+=(raw/scale)*w;weights+=w});const out=weights?(weighted/weights)*10:0;$('#weightedScore').textContent=`${out.toFixed(1)} / 10`}
-  function save(status){if(!currentEntry)return;const scores=collectScores(),cs=criteriaFor(currentEntry);if(status==='submitted'&&cs.some(c=>scores[c.id]==null)){alert('Please score every criterion before submitting.');return}if(status==='submitted'&&scoring?.rules?.mandatory!==false&&!$('#juryComments').value.trim()){alert('Please add comments / remarks before submitting.');return}let weighted=0,weights=0;cs.forEach(c=>{const raw=Number(scores[c.id]??0),scale=Number(c.scale||10),w=Number(c.weight||0);weighted+=(raw/scale)*w;weights+=w});const total=weights?(weighted/weights)*10:0;reviews[key(currentEntry)]={status,scores,comments:$('#juryComments').value.trim(),total,updatedAt:new Date().toISOString(),nominationId:currentEntry.id,level:levelNo,category:currentEntry.category};localStorage.setItem(REVIEW_KEY,JSON.stringify(reviews));if(status==='submitted'){showList('submitted')}else{showList('pending')}render()}
-  function showList(tab){activeTab=tab||activeTab;$('#reviewView').classList.remove('open');$('#listView').classList.remove('hidden');$$('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===activeTab));renderRows();window.scrollTo({top:0,behavior:'smooth'})}
+  function renderSubmittedForm(e){
+    const sections=responseSectionsFor(e),hasDetailed=!!(e.report?.responseSections?.length||e.report?.formSnapshot?.sections?.length||e.report?.fields?.length);
+    let html='';
+    if(!hasDetailed)html+='<div class="fallback-note"><b>Prototype fallback:</b> this nomination was created before full response snapshots were enabled. New paid submissions will show every submitted question and answer here automatically.</div>';
+    html+=sections.map((sec,i)=>`<section class="form-section"><div class="form-section-head"><span>SECTION ${i+1}</span><h3>${esc(sec.title||`Section ${i+1}`)}</h3>${sec.help?`<p>${esc(sec.help)}</p>`:''}</div>${(sec.fields||[]).map(f=>`<div class="answer-row"><label>${esc(f.label||'Field')}</label><div class="answer-value ${String(f.value||'').trim()?'':'empty'}">${String(f.value||'').trim()?esc(f.value):'No answer provided'}</div>${f.help?`<small>${esc(f.help)}</small>`:''}</div>`).join('')}</section>`).join('');
+    $('#submittedFormBody').innerHTML=html;
+  }
+  function renderCriteria(prev){
+    $('#criteriaList').innerHTML=currentCriteria.map(c=>{
+      const scale=Math.max(1,Number(c.scale||scoring?.rules?.scoreScale||5)),value=prev.scores?.[c.id]??'';
+      const opts=scale<=10?`<div class="score-options">${Array.from({length:scale+1},(_,i)=>`<label><input type="radio" name="criterion-${esc(c.id)}" value="${i}" data-criterion="${esc(c.id)}" data-scale="${scale}" ${String(value)===String(i)?'checked':''}><span>${i}</span></label>`).join('')}</div>`:`<div class="criterion-number"><input type="number" min="0" max="${scale}" step="0.5" value="${esc(value)}" data-criterion="${esc(c.id)}" data-scale="${scale}" placeholder="Score out of ${scale}"></div>`;
+      return `<div class="criterion"><div class="criterion-top"><div><b>${esc(c.name)}</b><small>${esc(c.description||'')}</small></div><span class="weight">${Number(c.weight||0)}%</span></div>${opts}</div>`;
+    }).join('');
+    $('#scoreGuideText').innerHTML=`<b>Scoring:</b> ${currentCriteria.map(c=>`${esc(c.name)} ${Number(c.weight||0)}%`).join(' · ')}`;
+    updateWeightedScore();
+  }
+  function selectedScores(){const scores={};$$('[data-criterion]').forEach(i=>{if(i.type==='radio'&&!i.checked)return;if(i.value!=='')scores[i.dataset.criterion]=Number(i.value)});return scores}
+  function calculateTotal(scores){let total=0;currentCriteria.forEach(c=>{const raw=Number(scores[c.id]??0),scale=Number(c.scale||scoring?.rules?.scoreScale||5)||5;total+=(raw/scale)*(Number(c.weight||0)/100)*10});return total}
+  function updateWeightedScore(){const total=calculateTotal(selectedScores());$('#weightedScore').textContent=`${total.toFixed(1)} / 10`}
+  function openScore(id){
+    currentEntry=entries().find(e=>e.id===id);if(!currentEntry)return;
+    const prev=reviews[key(currentEntry)]||{scores:{},comments:''};currentCriteria=criteriaForCategory(currentEntry.category);
+    $('#scoreCategory').textContent=`${currentEntry.category} · ${currentEntry.code}`;$('#scoreTitle').textContent=currentEntry.name;$('#scoreMeta').textContent=[currentEntry.company,currentEntry.designation,currentEntry.email].filter(Boolean).join(' · ');$('#juryComments').value=prev.comments||'';
+    renderSubmittedForm(currentEntry);renderCriteria(prev);$('#reviewShell').classList.add('open');$('#reviewShell').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  }
+  function closeScore(){$('#reviewShell').classList.remove('open');$('#reviewShell').setAttribute('aria-hidden','true');document.body.style.overflow='';currentEntry=null;currentCriteria=[]}
+  function save(status){
+    if(!currentEntry)return;const scores=selectedScores();
+    if(status==='submitted'&&currentCriteria.some(c=>scores[c.id]===undefined)){alert('Please score every criterion before submitting.');return}
+    const total=calculateTotal(scores);
+    reviews[key(currentEntry)]={status,scores,comments:$('#juryComments').value.trim(),total,updatedAt:new Date().toISOString(),nominationId:currentEntry.id,category:currentEntry.category,level:levelNo,juryId:jury.id,criteriaSnapshot:currentCriteria.map(c=>({id:c.id,name:c.name,description:c.description||'',weight:Number(c.weight||0),scale:Number(c.scale||5)}))};
+    localStorage.setItem(REVIEW_KEY,JSON.stringify(reviews));closeScore();render();alert(status==='submitted'?'Evaluation submitted successfully.':'Draft saved successfully.');
+  }
 
-  $('#juryEntries').addEventListener('click',e=>{const b=e.target.closest('[data-review]');if(b)showReview(b.dataset.review)});$('#backToList').addEventListener('click',()=>showList(activeTab));$('#saveDraftScore').addEventListener('click',()=>save('draft'));$('#submitScore').addEventListener('click',()=>save('submitted'));$('#criteriaList').addEventListener('click',e=>{const b=e.target.closest('[data-score-btn]');if(!b)return;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.remove('active'));b.classList.add('active');updateWeighted()});$('#criteriaList').addEventListener('input',updateWeighted);
-  $$('.tab').forEach(b=>b.addEventListener('click',()=>{activeTab=b.dataset.tab;$$('.tab').forEach(x=>x.classList.toggle('active',x===b));renderRows()}));$('#jurySearch').addEventListener('input',renderRows);$('#juryCategoryFilter').addEventListener('change',renderRows);
-  $('#juryLogout').addEventListener('click',()=>{localStorage.removeItem(SESSION_KEY);location.href='jury-login.html'});$('#scoringGuide').addEventListener('click',()=>alert(criteria.map(c=>`${c.name}: ${c.weight}%`).join('\n')));$('#conflictsHelp').addEventListener('click',()=>alert('If you have a conflict of interest with an assigned nomination, do not evaluate it. Contact the award administrator so the nomination can be reassigned.'));
+  $('#juryEntries').addEventListener('click',e=>{const b=e.target.closest('[data-review]');if(b)openScore(b.dataset.review)});
+  $$('.review-tab').forEach(b=>b.addEventListener('click',()=>{$$('.review-tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeTab=b.dataset.reviewTab;render()}));
+  $('#reviewSearch').addEventListener('input',render);$('#reviewCategoryFilter').addEventListener('change',render);$('#backToReviews').addEventListener('click',closeScore);$('#saveDraftScore').addEventListener('click',()=>save('draft'));$('#saveDraftScoreBottom').addEventListener('click',()=>save('draft'));$('#submitScore').addEventListener('click',()=>save('submitted'));$('#submitScoreBottom').addEventListener('click',()=>save('submitted'));$('#criteriaList').addEventListener('change',updateWeightedScore);$('#criteriaList').addEventListener('input',updateWeightedScore);
+  $('#juryLogout').addEventListener('click',()=>{localStorage.removeItem(SESSION_KEY);location.href='jury-login.html'});
+  $('#scoringGuide').addEventListener('click',()=>{const cats=[...new Set(entries().map(e=>e.category))];const msg=cats.map(cat=>`${cat}\n${criteriaForCategory(cat).map(c=>`• ${c.name}: ${c.weight}%`).join('\n')}`).join('\n\n');alert(msg||'No scoring criteria are available yet.')});
+  $('#conflictsHelp').addEventListener('click',()=>alert('If you have a conflict of interest with an assigned nomination, contact the award administrator before reviewing it.'));
   render();
 })();
