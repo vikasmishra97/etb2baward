@@ -142,3 +142,19 @@
 .category-multiselect.open .category-multiselect-menu{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
 .round-config-shell,.round-config-main,.category-config-block,.premium-round-card{overflow:visible!important}
 #levelCategoryMenu{z-index:520!important;min-height:120px}
+
+
+/* ===== Reliable category dropdowns: latest baseline fix ===== */
+.category-multiselect{position:relative!important;isolation:isolate}
+.category-multiselect-trigger{position:relative;z-index:2;cursor:pointer!important;pointer-events:auto!important;user-select:none}
+.category-multiselect-trigger *{pointer-events:none}
+.category-multiselect-menu{display:none!important;visibility:hidden;opacity:0;pointer-events:none}
+.category-multiselect.open{z-index:900!important}
+.category-multiselect.open .category-multiselect-menu{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+/* Use an in-flow dropdown so no parent card/drawer can clip the category list. */
+#levelCategoryMenu,#inviteCategoryMenu,.drawer-multiselect .category-multiselect-menu{position:relative!important;left:auto!important;right:auto!important;top:7px!important;width:100%!important;margin:0 0 9px!important;z-index:910!important;box-sizing:border-box}
+#levelCategoryMenu{max-height:320px!important;min-height:0!important;box-shadow:0 16px 34px rgba(15,23,42,.12)!important}
+#inviteCategoryMenu{max-height:290px!important;box-shadow:0 12px 30px rgba(15,23,42,.10)!important}
+.category-multiselect.open .category-multiselect-trigger{border-color:#d71920!important;box-shadow:0 0 0 3px rgba(215,25,32,.07)!important}
+.judge-drawer-body,.judge-drawer-panel,.premium-round-card,.round-config-shell,.round-config-main,.category-config-block{overflow:visible!important}
+.judge-drawer-body{overflow-y:auto!important}

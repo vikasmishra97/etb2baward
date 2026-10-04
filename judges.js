@@ -80,26 +80,62 @@
     p.summary.textContent=!checked.length?'None selected':checked.length===boxes.length&&boxes.length?`All selected (${checked.length})`:`${checked.length} selected`;
     if(p.selectAll){p.selectAll.checked=!!boxes.length&&checked.length===boxes.length;p.selectAll.indeterminate=checked.length>0&&checked.length<boxes.length}
   }
+  function categoryTypeFromWrap(wrap){
+    return wrap?.id==='inviteCategoryMulti'||wrap?.classList.contains('drawer-multiselect')?'invite':'level';
+  }
+  function closeCategoryMultis(except=null){
+    document.querySelectorAll('.category-multiselect.open').forEach(w=>{
+      if(w===except)return;
+      w.classList.remove('open');
+      w.querySelector('.category-multiselect-trigger')?.setAttribute('aria-expanded','false');
+    });
+  }
   function initCategoryMulti(type){
     const p=categoryMultiParts(type);if(!p.wrap||!p.trigger||!p.list)return;
-    // Re-assign handlers on every render. Using DOM properties avoids duplicate listeners
-    // while keeping the selector reliable after jury level/category re-renders.
-    p.trigger.onclick=e=>{
-      e.preventDefault();e.stopPropagation();
-      document.querySelectorAll('.category-multiselect.open').forEach(x=>{if(x!==p.wrap)x.classList.remove('open')});
-      const opening=!p.wrap.classList.contains('open');
-      p.wrap.classList.toggle('open',opening);
-      p.trigger.setAttribute('aria-expanded',opening?'true':'false');
-      if(opening)setTimeout(()=>p.search?.focus(),0);
-    };
-    if(p.menu)p.menu.onclick=e=>e.stopPropagation();
-    if(p.search)p.search.oninput=()=>{const q=p.search.value.toLowerCase().trim();p.list.querySelectorAll('label').forEach(l=>l.style.display=!q||(l.dataset.categoryLabel||'').includes(q)?'flex':'none')};
-    if(p.selectAll)p.selectAll.onchange=()=>{p.list.querySelectorAll('input[type="checkbox"]').forEach(i=>{if(i.closest('label').style.display!=='none')i.checked=p.selectAll.checked});updateCategoryMultiSummary(type)};
-    p.list.onchange=()=>updateCategoryMultiSummary(type);
     p.trigger.setAttribute('aria-haspopup','listbox');
     p.trigger.setAttribute('aria-expanded',p.wrap.classList.contains('open')?'true':'false');
+    updateCategoryMultiSummary(type);
   }
-  document.addEventListener('click',e=>{document.querySelectorAll('.category-multiselect.open').forEach(w=>{if(!w.contains(e.target))w.classList.remove('open')})});
+  // One delegated controller handles both the Round Setup and Add Jury Member pickers.
+  // It survives re-renders because it does not bind directly to replaced DOM nodes.
+  document.addEventListener('click',e=>{
+    const trigger=e.target.closest('.category-multiselect-trigger');
+    if(trigger){
+      e.preventDefault();e.stopPropagation();
+      const wrap=trigger.closest('.category-multiselect');
+      if(!wrap)return;
+      const opening=!wrap.classList.contains('open');
+      closeCategoryMultis(wrap);
+      wrap.classList.toggle('open',opening);
+      trigger.setAttribute('aria-expanded',opening?'true':'false');
+      if(opening){
+        const search=wrap.querySelector('.category-search input, input[id$="CategorySearch"]');
+        setTimeout(()=>search?.focus(),0);
+      }
+      return;
+    }
+    if(!e.target.closest('.category-multiselect'))closeCategoryMultis();
+  });
+  document.addEventListener('input',e=>{
+    const search=e.target.closest('.category-search input, input[id$="CategorySearch"]');
+    if(!search)return;
+    const wrap=search.closest('.category-multiselect');if(!wrap)return;
+    const q=search.value.toLowerCase().trim();
+    wrap.querySelectorAll('.category-multiselect-list label').forEach(l=>{
+      const label=(l.dataset.categoryLabel||l.textContent||'').toLowerCase();
+      l.style.display=!q||label.includes(q)?'flex':'none';
+    });
+  });
+  document.addEventListener('change',e=>{
+    const wrap=e.target.closest('.category-multiselect');if(!wrap)return;
+    const type=categoryTypeFromWrap(wrap);
+    if(e.target.matches('[id$="CategorySelectAll"], .category-select-all input')){
+      wrap.querySelectorAll('.category-multiselect-list input[type="checkbox"]').forEach(i=>{
+        const row=i.closest('label');if(!row||row.style.display!=='none')i.checked=e.target.checked;
+      });
+    }
+    if(e.target.matches('input[type="checkbox"]'))updateCategoryMultiSummary(type);
+  });
   function selectedNominationIds(){return $$('.nomination-select:checked').map(i=>i.value)}
   function updateSelectionBar(){const ids=selectedNominationIds(),bar=$('#selectionActionBar');if(!bar)return;$('#selectedNominationCount').textContent=ids.length;bar.classList.toggle('show',ids.length>0);bar.setAttribute('aria-hidden',ids.length?'false':'true');const all=$$('.nomination-select');if($('#selectAllNominations')){$('#selectAllNominations').checked=all.length>0&&ids.length===all.length;$('#selectAllNominations').indeterminate=ids.length>0&&ids.length<all.length}}
   function clearNominationSelection(){$$('.nomination-select').forEach(i=>i.checked=false);if($('#selectAllNominations'))$('#selectAllNominations').checked=false;updateSelectionBar()}
