@@ -160,7 +160,6 @@
       <div class="form-grid"><div class="field"><label>Mobile</label><input id="newJudgeMobile" placeholder="Mobile number"></div><div class="field"><label>Jury level</label><select id="newJudgeLevel"><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option><option value="4">Level 4</option><option value="5">Level 5</option></select></div></div>
       <div class="field"><label>Jury portal password *</label><div class="jury-password-field"><input id="newJudgePassword" type="text" placeholder="Create or generate password"><button class="btn ghost compact" id="generateJuryPassword" type="button">Generate</button></div></div>
       <div class="field"><label>Expertise</label><div class="expertise-picker" id="expertisePicker"><button type="button" data-exp="FinTech">FinTech</button><button type="button" data-exp="Payments">Payments</button><button type="button" data-exp="AI & Data">AI & Data</button><button type="button" data-exp="Lending">Lending</button><button type="button" data-exp="Startups">Startups</button><button type="button" data-exp="Cybersecurity">Cybersecurity</button></div></div>
-      <div class="judge-ai-match"><span>✦</span><div><b>AI category matching</b><p id="matchText">Choose expertise and I’ll recommend categories.</p></div><button id="matchCategories" type="button">Match</button></div>
       <div class="field"><label>Select Categories *</label>
         <div class="category-multiselect drawer-multiselect" id="inviteCategoryMulti">
           <button type="button" class="category-multiselect-trigger" id="inviteCategoryTrigger"><span id="inviteCategorySummary">None selected</span><span class="chevron">⌄</span></button>
@@ -180,8 +179,16 @@
 <div class="judge-modal" id="assignNominationModal" aria-hidden="true">
   <div class="judge-modal-backdrop" data-close-assignment></div>
   <div class="judge-modal-card assignment-modal-card">
-    <div class="judge-modal-head"><div><span class="eyebrow">NOMINATION ASSIGNMENT</span><h2 id="assignNominationTitle">Assign nomination</h2><p id="assignNominationSubtitle">Choose one or more jury members.</p></div><button data-close-assignment>×</button></div>
-    <div class="assignment-editor-body"><div class="assignment-editor-list" id="nominationJuryPicker"></div></div>
+    <div class="judge-modal-head"><div><span class="eyebrow">NOMINATION ASSIGNMENT</span><h2 id="assignNominationTitle">Assign nomination</h2><p id="assignNominationSubtitle">Choose a jury level, then select one or more jury members.</p></div><button data-close-assignment>×</button></div>
+    <div class="assignment-editor-body">
+      <div class="assignment-level-block">
+        <label for="assignmentLevelSelect">Assign to jury level</label>
+        <select id="assignmentLevelSelect"></select>
+        <small id="assignmentLevelHint">Only jury members from the selected level will be shown.</small>
+      </div>
+      <div class="assignment-jury-head"><span>Jury members</span><small id="assignmentJuryCount"></small></div>
+      <div class="assignment-editor-list" id="nominationJuryPicker"></div>
+    </div>
     <div class="judge-drawer-foot"><button class="btn secondary" data-close-assignment>Cancel</button><button class="btn primary" id="saveNominationAssignment">Save assignment</button></div>
   </div>
 </div>

@@ -4,11 +4,11 @@
   const session=read(SESSION_KEY,null), judges=read(JUDGE_KEY,[]), jury=session&&judges.find(j=>String(j.id)===String(session.juryId));
   if(!jury||jury.enabled===false){window.location.replace('jury-login.html');return}
   const levels=read(LEVEL_KEY,[]), levelNo=Number(jury.level||1), level=levels.find(x=>Number(x.level)===levelNo)||{name:`Jury Level ${levelNo}`,type:'evaluation',categories:jury.categories||[]};
-  const nominations=read(NOM_KEY,[]), assignments=read(ASSIGN_KEY,{}), scoring=read(SCORE_KEY,null), progress=read(PROGRESS_KEY,{});
+  const nominations=read(NOM_KEY,[]), assignments=read(ASSIGN_KEY,{}), progress=read(PROGRESS_KEY,{}), scoring=read(SCORE_KEY,null);
   const criteria=scoring?.criteria?.length?scoring.criteria:[{id:1,name:'Innovation',description:'Originality and differentiation',weight:30,scale:10},{id:2,name:'Market Impact',description:'Customer and industry impact',weight:25,scale:10},{id:3,name:'Execution',description:'Quality of implementation',weight:25,scale:10},{id:4,name:'Scalability',description:'Potential for sustainable growth',weight:20,scale:10}];
   let reviews=read(REVIEW_KEY,{}), currentEntry=null;
   const esc=s=>String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
-  function entries(){const map=assignments[String(levelNo)]||{}, promoted=Number(levelNo)===1?null:new Set(progress[`level${levelNo}_ids`]||[]);return nominations.filter(n=>n.submission==='Submitted'&&n.payment==='Paid'&&(map[n.id]||[]).map(String).includes(String(jury.id))&&(!promoted||promoted.has(n.id))).map(n=>({id:n.id,category:n.category,name:n.nominee||n.company,company:n.company,code:n.id}))}
+  function entries(){const map=assignments[String(levelNo)]||{};const promoted=levelNo===1?null:new Set(progress[`level${levelNo}_ids`]||[]);return nominations.filter(n=>(map[n.id]||[]).map(String).includes(String(jury.id))&&(levelNo===1||promoted.has(n.id))).map(n=>({id:n.id,category:n.category,name:n.nominee||n.company,company:n.company,code:n.id}))}
   function key(e){return `${jury.id}:${e.id}`}
   function render(){
     const es=entries(),submitted=es.filter(e=>reviews[key(e)]?.status==='submitted').length;
