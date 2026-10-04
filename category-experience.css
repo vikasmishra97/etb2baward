@@ -614,3 +614,55 @@ body[data-nomination-page="bucket"] .nom-row-action button:focus-visible{
 .category-layout-dark-showcase{background:linear-gradient(180deg,#111621,#18121a)}.category-layout-dark-showcase .category-hero h1,.category-layout-dark-showcase .master-public-head h2,.category-layout-dark-showcase .subcategory-public-card h3{color:#fff}.category-layout-dark-showcase .category-hero p,.category-layout-dark-showcase .master-public-head p,.category-layout-dark-showcase .subcategory-public-card>p{color:#b5bcc8}.category-layout-dark-showcase .master-category-rail,.category-layout-dark-showcase .master-category-public-section,.category-layout-dark-showcase .subcategory-public-card{background:#1d2330;border-color:#303847}.category-layout-dark-showcase .master-public-head{border-color:#333b49}.category-layout-dark-showcase .subcategory-card-meta span{background:#292f3b;color:#c7cdd7}.category-layout-dark-showcase .subcategory-card-footer .view-category{background:#222936;border-color:#394150;color:#d9dee7}.category-layout-dark-showcase .subcategory-card-footer .select-category{background:#b38a3e;border-color:#b38a3e;color:#111621}.category-layout-dark-showcase .master-rail-item{color:#dbe0e8}.category-layout-dark-showcase .master-rail-item small{color:#929aa8}
 @media(max-width:1050px){.category-layout-compact-grid .subcategory-public-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.category-layout-editorial-list .category-catalog-layout{grid-template-columns:1fr}.category-layout-editorial-list .master-category-rail{position:static}}
 @media(max-width:700px){.category-layout-compact-grid .subcategory-public-grid{grid-template-columns:1fr}.category-layout-editorial-list .subcategory-public-card{grid-template-columns:1fr}.category-layout-editorial-list .subcategory-card-footer{min-width:0}}
+
+/* ===== V19.15 Categories page: inherit Website Studio theme ===== */
+.category-experience-shell{
+  --cat-red:var(--p,#a90e17)!important;
+  --cat-gold:var(--a,#d8ad59)!important;
+  --cat-ink:var(--body-text,#111621)!important;
+  background:var(--body-bg,#fff)!important;
+  color:var(--body-text,#22252e)!important;
+  font-family:var(--body-font,Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif)!important;
+}
+.category-experience-shell .category-number,
+.category-experience-shell .category-ai-heading span,
+.category-experience-shell .category-detail-grid span{
+  color:var(--a,#d8ad59)!important;
+}
+.category-experience-shell .category-card-pro:before,
+.category-experience-shell .subcategory-public-card:before{
+  background:linear-gradient(90deg,var(--p,#a90e17),var(--a,#d8ad59))!important;
+}
+.category-experience-shell .category-card-pro.selected,
+.category-experience-shell .subcategory-public-card.selected{
+  border-color:color-mix(in srgb,var(--p,#a90e17) 65%,#d7dde5)!important;
+}
+.category-experience-shell .category-card-pro.selected .select-category,
+.category-experience-shell .subcategory-public-card.selected .select-category,
+.category-experience-shell .category-primary,
+.category-experience-shell .category-dock-icon{
+  background:var(--p,#a90e17)!important;
+  border-color:var(--p,#a90e17)!important;
+}
+.category-experience-shell .category-ai-result button{
+  color:var(--p,#a90e17)!important;
+}
+.category-experience-shell .category-group-filters button.active{
+  background:var(--p,#a90e17)!important;
+  border-color:var(--p,#a90e17)!important;
+  color:#fff!important;
+}
+.category-experience-shell .category-search-pro:focus-within{
+  border-color:var(--a,#d8ad59)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--a,#d8ad59) 16%,transparent)!important;
+}
+.category-experience-shell .category-layout-luxe-panels .master-public-index,
+.category-experience-shell .category-layout-luxe-panels .subcategory-public-card:before{
+  background:linear-gradient(135deg,var(--p,#a90e17),var(--a,#d8ad59))!important;
+}
+.category-experience-shell .category-layout-luxe-panels .subcategory-card-footer .select-category{
+  background:var(--p,#a90e17)!important;border-color:var(--p,#a90e17)!important;
+}
+.category-experience-shell .category-layout-dark-showcase .subcategory-card-footer .select-category{
+  background:var(--a,#d8ad59)!important;border-color:var(--a,#d8ad59)!important;
+}

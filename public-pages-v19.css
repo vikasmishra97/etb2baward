@@ -52,3 +52,143 @@ html,body,.pp-shell,.pp-shell *{font-family:Inter,system-ui,-apple-system,"Segoe
 
 @media(max-width:850px){.guidelines-layout-checklist-cards,.guidelines-layout-split-guide,.guidelines-layout-dark-playbook,.terms-layout-policy-cards,.terms-layout-compact-clauses,.terms-layout-dark-policy{grid-template-columns:1fr 1fr}.guidelines-layout-editorial-steps .guideline-step{grid-template-columns:54px 1fr}.guidelines-layout-editorial-steps .guideline-step p{grid-column:2}.terms-layout-numbered-policy .info-card{grid-template-columns:52px 1fr}.terms-layout-numbered-policy .info-card p{grid-column:2}}
 @media(max-width:560px){.guidelines-layout-checklist-cards,.guidelines-layout-split-guide,.guidelines-layout-dark-playbook,.terms-layout-policy-cards,.terms-layout-compact-clauses,.terms-layout-dark-policy{grid-template-columns:1fr}.guidelines-layout-editorial-steps .guideline-step{grid-template-columns:44px 1fr;gap:10px}.terms-layout-numbered-policy .info-card{grid-template-columns:42px 1fr;gap:10px}.terms-layout-editorial-legal .info-card p{margin-left:0}}
+
+/* ===== V19.15 Public subpage spacing + global website theme sync ===== */
+/* PublicShell injects --p / --a / --body-* from Website Studio on .public-page-shell. */
+.public-page-shell{
+  background:var(--body-bg,#fff)!important;
+  color:var(--body-text,#22252e)!important;
+  font-family:var(--body-font,Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif)!important;
+}
+
+/* Remove the oversized blank band below the shared website navigation. */
+body[data-page="jury"] .pp-main,
+body[data-page="guidelines"] .pp-main,
+body[data-page="criteria"] .pp-main,
+body[data-page="terms"] .pp-main,
+body[data-page="faq"] .pp-main{
+  padding-top:0!important;
+}
+body[data-page="jury"] .info-hero,
+body[data-page="guidelines"] .info-hero,
+body[data-page="criteria"] .info-hero,
+body[data-page="terms"] .info-hero,
+body[data-page="faq"] .info-hero{
+  padding-top:34px!important;
+  padding-bottom:26px!important;
+}
+
+/* Use the Website Studio theme across all informational pages. */
+.public-page-shell .pp-kicker,
+.public-page-shell .info-hero .pp-kicker,
+.public-page-shell .info-card .eyebrow,
+.public-page-shell .criterion-number,
+.public-page-shell .criteria-group>header span,
+.public-page-shell .criteria-score-card small,
+.public-page-shell .criteria-editorial-row em{
+  color:var(--a,var(--p,#a90e17))!important;
+}
+.public-page-shell .info-hero{
+  border-bottom-color:color-mix(in srgb,var(--p,#a90e17) 14%,#e9edf2)!important;
+}
+.public-page-shell .info-hero h1,
+.public-page-shell .info-card h3,
+.public-page-shell .guideline-step h3,
+.public-page-shell .jury-card b,
+.public-page-shell .criteria-group>header h2,
+.public-page-shell .criteria-table-row b,
+.public-page-shell .criteria-editorial-row h3{
+  color:var(--body-text,#22252e)!important;
+}
+.public-page-shell .info-hero p,
+.public-page-shell .info-card p,
+.public-page-shell .info-card li,
+.public-page-shell .guideline-step p,
+.public-page-shell .jury-card span,
+.public-page-shell .criteria-table-row p,
+.public-page-shell .criteria-editorial-row p,
+.public-page-shell .faq-list p{
+  color:color-mix(in srgb,var(--body-text,#22252e) 70%,#fff)!important;
+}
+.public-page-shell .pp-btn,
+.public-page-shell .nomination-card button.primary{
+  background:var(--p,#a90e17)!important;
+}
+.public-page-shell .pp-btn.secondary,
+.public-page-shell .contact-directory a,
+.public-page-shell .criterion-weight,
+.public-page-shell .criteria-table-row>strong,
+.public-page-shell .criteria-table-total strong,
+.public-page-shell .criteria-score-card>strong,
+.public-page-shell .criteria-group-total b,
+.public-page-shell .criteria-editorial-row>strong{
+  color:var(--p,#a90e17)!important;
+}
+.public-page-shell .guideline-step span,
+.public-page-shell .criteria-index{
+  background:color-mix(in srgb,var(--p,#a90e17) 8%,#fff)!important;
+  color:var(--p,#a90e17)!important;
+}
+.public-page-shell .info-card,
+.public-page-shell .guideline-step,
+.public-page-shell .jury-card,
+.public-page-shell .criterion-row,
+.public-page-shell .faq-list details,
+.public-page-shell .contact-directory article,
+.public-page-shell .criteria-group,
+.public-page-shell .criteria-score-card{
+  border-color:color-mix(in srgb,var(--p,#a90e17) 12%,#e4e7ec)!important;
+}
+.public-page-shell .info-card:hover,
+.public-page-shell .guideline-step:hover,
+.public-page-shell .jury-card:hover,
+.public-page-shell .faq-list details[open]{
+  border-color:color-mix(in srgb,var(--p,#a90e17) 34%,#dfe3e9)!important;
+}
+.public-page-shell .jury-avatar{
+  background:linear-gradient(135deg,var(--p,#a90e17),var(--a,#d8ad59))!important;
+}
+.public-page-shell .previous-hero{
+  background:linear-gradient(135deg,color-mix(in srgb,var(--p,#a90e17) 74%,#08090d),var(--p,#a90e17))!important;
+}
+.public-page-shell .criteria-table-head{
+  background:color-mix(in srgb,var(--a,#d8ad59) 10%,#fff)!important;
+  color:color-mix(in srgb,var(--body-text,#22252e) 78%,var(--a,#d8ad59))!important;
+}
+.public-page-shell .criteria-note{
+  border-color:color-mix(in srgb,var(--a,#d8ad59) 34%,#e7e9ee)!important;
+  background:color-mix(in srgb,var(--a,#d8ad59) 8%,#fff)!important;
+}
+.public-page-shell .criteria-note b{color:color-mix(in srgb,var(--p,#a90e17) 72%,#3b2c15)!important}
+
+/* Theme-aware dark criteria layout while preserving the selected dark presentation. */
+.public-page-shell .criteria-layout-dark-jury-board{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--p,#a90e17) 26%,#0d1017),#11151d)!important;
+}
+.public-page-shell .criteria-layout-dark-jury-board .criteria-group{
+  background:color-mix(in srgb,var(--p,#a90e17) 15%,#151a24)!important;
+  border-color:color-mix(in srgb,var(--p,#a90e17) 38%,#2c3442)!important;
+}
+.public-page-shell .criteria-layout-dark-jury-board .criteria-group>header,
+.public-page-shell .criteria-layout-dark-jury-board .criteria-table-head{
+  background:color-mix(in srgb,var(--p,#a90e17) 34%,#171b24)!important;
+}
+.public-page-shell .criteria-layout-dark-jury-board .criteria-group>header span,
+.public-page-shell .criteria-layout-dark-jury-board .criteria-table-row>strong,
+.public-page-shell .criteria-layout-dark-jury-board .criteria-table-total strong,
+.public-page-shell .criteria-layout-dark-jury-board .criteria-index{
+  color:var(--a,#d8ad59)!important;
+}
+
+@media(max-width:560px){
+  body[data-page="jury"] .info-hero,
+  body[data-page="guidelines"] .info-hero,
+  body[data-page="criteria"] .info-hero,
+  body[data-page="terms"] .info-hero,
+  body[data-page="faq"] .info-hero{padding-top:26px!important;padding-bottom:22px!important}
+  body[data-page="jury"] .pp-main,
+  body[data-page="guidelines"] .pp-main,
+  body[data-page="criteria"] .pp-main,
+  body[data-page="terms"] .pp-main,
+  body[data-page="faq"] .pp-main{padding-left:16px!important;padding-right:16px!important}
+}
