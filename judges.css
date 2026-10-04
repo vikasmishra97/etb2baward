@@ -44,3 +44,64 @@
 .assignment-category-warning{font-size:11px;color:#b45309;font-weight:700}
 
 @media(max-width:760px){.selection-action-bar{bottom:8px;align-items:flex-start;flex-direction:column}.selection-actions{width:100%}.selection-actions .btn{flex:1}.category-multiselect-menu{position:relative;top:6px}.round-actions-panel{margin-top:8px}}
+
+/* ===== Header action alignment fix ===== */
+.jury-hero{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:start;
+  column-gap:28px;
+}
+.jury-hero-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:nowrap;
+  align-self:start;
+  padding-top:20px;
+  white-space:nowrap;
+}
+.jury-hero-actions .btn{
+  width:auto!important;
+  min-width:124px;
+  height:46px;
+  min-height:46px;
+  padding:0 18px!important;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin:0!important;
+}
+.jury-hero-actions #inviteJudge{
+  min-width:164px;
+}
+
+@media(max-width:900px){
+  .jury-hero{
+    grid-template-columns:1fr;
+    row-gap:16px;
+  }
+  .jury-hero-actions{
+    justify-content:flex-start;
+    padding-top:0;
+  }
+}
+
+@media(max-width:560px){
+  .jury-hero-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    width:100%;
+  }
+  .jury-hero-actions .btn,
+  .jury-hero-actions #inviteJudge{
+    width:100%!important;
+    min-width:0;
+  }
+}
+
+/* ===== Compact jury list: first 5 + view more ===== */
+.jury-more-row td{padding:12px 0 2px!important;background:#fff!important;border-bottom:0!important;text-align:center}
+.jury-more-btn{display:inline-flex;align-items:center;justify-content:center;min-width:190px;height:40px;padding:0 18px;border:1px solid #d9dfe8;border-radius:10px;background:#fff;color:#182033;font-size:12px;font-weight:850;cursor:pointer;transition:.18s ease;box-shadow:0 3px 10px rgba(15,23,42,.04)}
+.jury-more-btn:hover{border-color:#d71920;color:#d71920;background:#fff7f7;transform:translateY(-1px)}

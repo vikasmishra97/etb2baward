@@ -106,16 +106,21 @@
     $('#levelJuryHeading').textContent=`${l.name} · ${levelJudges().length} jury member${levelJudges().length===1?'':'s'}`;
     $('#promoteQualified').textContent=selectedLevel<levels.length?'Promote qualified →':'Complete final round';
   }
+  let showAllJury=false;
   function renderJury(){
     const q=($('#levelJurySearch').value||'').toLowerCase().trim();
     const rows=levelJudges().filter(j=>!q||`${j.name} ${j.email} ${j.company}`.toLowerCase().includes(q));
-    $('#levelJuryRows').innerHTML=rows.length?rows.map(j=>`<tr>
+    const visibleRows=(q||showAllJury)?rows:rows.slice(0,5);
+    const moreCount=Math.max(0,rows.length-visibleRows.length);
+    const memberRows=visibleRows.map(j=>`<tr>
       <td><div class="jury-person"><span>${esc((j.name||'?').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase())}</span><div><b>${esc(j.name)}</b><small>${esc(j.email)}</small></div></div></td>
       <td><div class="jury-category-chips">${(j.categories||[]).slice(0,2).map(c=>`<span>${esc(c.replace('Best ',''))}</span>`).join('')}${(j.categories||[]).length>2?`<em>+${j.categories.length-2}</em>`:''}</div></td>
       <td><b>${nominationCountForJudge(j.id)}</b> assigned</td>
       <td><label class="jury-status-toggle"><input type="checkbox" data-toggle-jury="${j.id}" ${j.enabled!==false?'checked':''}><span></span></label></td>
       <td><div class="jury-actions"><button data-edit-jury="${j.id}" title="Edit">Edit</button><button class="login-jury-btn" data-open-login="${j.id}" title="Open jury login">Login</button><button class="copy-login-btn" data-copy-login="${j.id}" title="Copy credentials">Copy</button></div></td>
-    </tr>`).join(''):`<tr><td colspan="5"><div class="empty-state">No jury members in this level yet.</div></td></tr>`;
+    </tr>`).join('');
+    const toggleRow=rows.length>5&&!q?`<tr class="jury-more-row"><td colspan="5"><button class="jury-more-btn" data-toggle-jury-list="1">${showAllJury?'Show less':`View ${moreCount} more jury member${moreCount===1?'':'s'}`}</button></td></tr>`:'';
+    $('#levelJuryRows').innerHTML=rows.length?memberRows+toggleRow:`<tr><td colspan="5"><div class="empty-state">No jury members in this level yet.</div></td></tr>`;
   }
   function renderNominationFilters(){
     const f=$('#nominationCategoryFilter'), old=f.value||'all';
@@ -209,7 +214,7 @@
   function copyLogin(id){const j=judges.find(x=>String(x.id)===String(id));if(!j)return;const text=`Jury Login\nURL: ${location.href.replace(/judges\.html.*$/,'jury-login.html')}\nEmail: ${j.email}\nPassword: ${j.password}`;navigator.clipboard?.writeText(text).then(()=>toast('Jury login copied')).catch(()=>prompt('Copy jury login:',text))}
   function promote(){const eligible=eligibleNominations(), threshold=Number(currentLevel().threshold||70), reviews=read(REVIEW_KEY,{});const qualifiedIds=[];eligible.forEach(n=>{const vals=Object.values(reviews).filter(r=>r&&r.status==='submitted'&&r.nominationId===n.id&&Number(r.level||selectedLevel)===Number(selectedLevel)).map(r=>Number(r.total||0));if(!vals.length)return;const pct=(vals.reduce((a,b)=>a+b,0)/vals.length)*10;if(pct>=threshold)qualifiedIds.push(n.id)});if(!qualifiedIds.length)return toast('No nominations have submitted scores meeting this level threshold yet');progress[`level${selectedLevel}_qualified`]=qualifiedIds.length;progress[`level${selectedLevel}_qualified_ids`]=qualifiedIds;if(selectedLevel<levels.length){progress[`level${selectedLevel+1}_available`]=qualifiedIds.length;progress[`level${selectedLevel+1}_ids`]=qualifiedIds;persist();selectedLevel++;renderAll();toast(`${qualifiedIds.length} qualified nomination${qualifiedIds.length===1?'':'s'} promoted to ${currentLevel().name}`)}else{progress.final_ids=qualifiedIds;persist();toast(`Final round completed for ${qualifiedIds.length} qualified nomination${qualifiedIds.length===1?'':'s'}`)}}
 
-  $('#juryLevelTabs').addEventListener('click',e=>{const b=e.target.closest('[data-jury-level]');if(b){selectedLevel=Number(b.dataset.juryLevel);renderAll()}});
+  $('#juryLevelTabs').addEventListener('click',e=>{const b=e.target.closest('[data-jury-level]');if(b){selectedLevel=Number(b.dataset.juryLevel);showAllJury=false;renderAll()}});
   $('#categoryIntelligenceGrid')?.addEventListener('click',e=>{const b=e.target.closest('[data-view-category]');if(!b)return;$('#nominationCategoryFilter').value=b.dataset.viewCategory;renderNominations();$('#paidSubmittedSection')?.scrollIntoView({behavior:'smooth',block:'start'});});
   $('#juryLevelCount').addEventListener('change',e=>changeLevelCount(e.target.value));$('#saveJuryLevel').addEventListener('click',saveLevel);$('#promoteQualified').addEventListener('click',promote);
   $('#inviteJudge').addEventListener('click',openDrawer);$('#addJuryFromList').addEventListener('click',openDrawer);$$('[data-close-drawer]').forEach(b=>b.addEventListener('click',closeDrawer));$('#sendInvite').addEventListener('click',saveJudge);
