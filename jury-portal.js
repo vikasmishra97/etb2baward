@@ -25,9 +25,9 @@
     const direct=nominations.find(n=>String(n.id||n.nominationId)===String(id));
     if(direct)return direct;
     const s=starters.find(n=>String(n.id||n.nominationId)===String(id));
-    if(s)return {id:s.nominationId||s.id,nominationId:s.nominationId||s.id,awardSlug:s.slug,categoryId:s.categoryId,category:s.category,company:s.company||s.name,nominee:s.entrantName||s.name,email:s.email,designation:s.designation,reportId:s.reportId,submission:'Submitted',payment:'Paid'};
+    if(s)return {id:s.nominationId||s.id,nominationId:s.nominationId||s.id,awardSlug:s.slug,categoryId:s.categoryId,category:s.category,company:s.company||s.name,nominee:s.entrantName||s.name,email:s.email,designation:s.designation,appliedFor:s.appliedFor||s.applied_for||'',reportId:s.reportId,submission:'Submitted',payment:'Paid'};
     const r=reports.find(x=>String(x.nominationId||'')===String(id));
-    if(r)return {id:r.nominationId,nominationId:r.nominationId,awardSlug:r.awardSlug,categoryId:r.categoryId,category:r.category,company:r.company,nominee:r.entrantName||r.company,email:r.email,designation:r.designation,reportId:r.id,submission:'Submitted',payment:'Paid'};
+    if(r)return {id:r.nominationId,nominationId:r.nominationId,awardSlug:r.awardSlug,categoryId:r.categoryId,category:r.category,company:r.company,nominee:r.entrantName||r.company,email:r.email,designation:r.designation,appliedFor:r.appliedFor||r.applied_for||'',reportId:r.id,submission:'Submitted',payment:'Paid'};
     return null;
   }
   function entries(){
@@ -35,7 +35,7 @@
     return Object.keys(map).filter(id=>(map[id]||[]).map(String).includes(String(jury.id))).map(id=>{
       const n=nominationById(id)||{id,category:'Uncategorised',company:'Entrant',nominee:'Entrant'};
       const report=reportForNomination(n);
-      return {id:String(n.id||n.nominationId||id),category:n.category||report?.category||'Uncategorised',categoryId:n.categoryId||report?.categoryId||'',name:n.nominee||report?.entrantName||n.company||'Entrant',company:n.company||report?.company||'',email:n.email||report?.email||'',designation:n.designation||report?.designation||'',code:String(n.id||n.nominationId||id),report};
+      return {id:String(n.id||n.nominationId||id),category:n.category||report?.category||'Uncategorised',categoryId:n.categoryId||report?.categoryId||'',name:n.nominee||report?.entrantName||n.company||'Entrant',company:n.company||report?.company||'',email:n.email||report?.email||'',designation:n.designation||report?.designation||'',appliedFor:n.appliedFor||report?.appliedFor||report?.applied_for||'',code:String(n.id||n.nominationId||id),report};
     });
   }
   function key(e){return `${jury.id}:${e.id}`}
@@ -65,7 +65,7 @@
     let rows=es.filter(e=>activeTab==='submitted'?statusFor(e)==='submitted':statusFor(e)!=='submitted');
     if(cat!=='all')rows=rows.filter(e=>e.category===cat);
     if(q)rows=rows.filter(e=>`${e.id} ${e.category} ${e.name} ${e.company}`.toLowerCase().includes(q));
-    $('#juryEntries').innerHTML=rows.length?rows.map(e=>{const r=reviews[key(e)],submitted=r?.status==='submitted';return `<article class="entry"><div><small>${esc(e.category)}</small><h3>${esc(e.name)}</h3><p><b>${esc(e.code)}</b> · ${esc(e.company||'')} · ${submitted?'Evaluation submitted':r?'Draft saved':'Assigned to you'}</p></div>${submitted?`<button data-review="${esc(e.id)}" class="secondary">View submission</button>`:`<button data-review="${esc(e.id)}">${r?'Continue evaluation':'Evaluate'} →</button>`}</article>`}).join(''):`<div class="empty">No ${activeTab} nominations match this view.</div>`;
+    $('#juryEntries').innerHTML=rows.length?`<div class="listing-summary"><b>${rows.length}</b> nomination${rows.length===1?'':'s'} in this view</div><div class="listing-wrap"><table class="jury-table"><thead><tr><th>S No.</th><th>Nomination ID</th><th>Category</th><th>Nominee</th><th>Company</th><th>Designation</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map((e,i)=>{const r=reviews[key(e)],submitted=r?.status==='submitted',draft=!!r&&!submitted;const statusClass=submitted?'submitted':draft?'draft':'pending',statusLabel=submitted?'Submitted':draft?'Draft saved':'Pending';return `<tr><td class="jury-serial">${i+1}.</td><td><span class="jury-nid">${esc(e.code)}</span></td><td class="jury-cat"><span>${esc(e.category)}</span></td><td><div class="jury-name"><b>${esc(e.name)}</b>${e.email?`<small>${esc(e.email)}</small>`:''}</div></td><td class="jury-company">${esc(e.company||'—')}</td><td class="jury-designation">${esc(e.designation||e.appliedFor||'—')}</td><td><span class="jury-review-status ${statusClass}">${statusLabel}</span></td><td>${submitted?`<button data-review="${esc(e.id)}" class="jury-action-btn secondary">View submission</button>`:`<button data-review="${esc(e.id)}" class="jury-action-btn">${draft?'Continue':'Evaluate'} →</button>`}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty">No ${activeTab} nominations match this view.</div>`;
   }
   function fallbackSections(e){
     const r=e.report;if(r?.fields?.length)return [{title:'Submitted nomination form',help:'Captured from the nomination submission.',fields:r.fields.map(f=>({label:f.label,value:f.value,help:f.help||''}))}];
