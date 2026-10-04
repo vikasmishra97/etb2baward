@@ -75,17 +75,43 @@
     custom:[{id:'classic',name:'Classic',desc:'Standard custom content block',preview:'classic'},{id:'framed',name:'Framed',desc:'Contained custom module',preview:'framed'},{id:'fullbleed',name:'Full Width',desc:'Edge-to-edge custom section',preview:'fullbleed'},{id:'minimal',name:'Minimal',desc:'No-frills custom content',preview:'minimal'},{id:'dark',name:'Dark',desc:'Dark custom section',preview:'dark'},{id:'checklist',name:'Checklist Frame',desc:'Theme-colour verified content frame',preview:'checklist'},{id:'accent-panel',name:'Accent Panel',desc:'Premium global-colour content panel',preview:'banner'}]
   };
 
-  const criteriaPageLayouts=[
-    {id:'executive-table',name:'Executive Table',desc:'Classic category tables with clear criterion and weight columns',preview:'criteria-table'},
-    {id:'category-panels',name:'Category Panels',desc:'Premium contained category panels with compact scoring rows',preview:'criteria-panels'},
-    {id:'weighted-scorecards',name:'Weighted Scorecards',desc:'Visual scorecards with prominent percentage weights',preview:'criteria-cards'},
-    {id:'editorial-matrix',name:'Editorial Matrix',desc:'Publication-style numbered criteria for long category lists',preview:'criteria-editorial'},
-    {id:'dark-jury-board',name:'Dark Jury Board',desc:'High-contrast awards-night presentation for judging frameworks',preview:'criteria-dark'}
-  ];
-  function publicPageLayoutName(pg){const id=pg?.criteriaLayout||'executive-table';return criteriaPageLayouts.find(x=>x.id===id)?.name||'Executive Table'}
-  function criteriaLayoutThumb(layout){
-    const rows='<i></i><i></i><i></i>';
-    return `<div class="public-layout-thumb ${layout.preview}"><span class="pl-kicker">CATEGORY</span><b class="pl-title">Evaluation Criteria</b><div class="pl-body">${rows}</div><span class="pl-weight">100%</span></div>`;
+  const publicPageLayouts={
+    criteria:[
+      {id:'executive-table',name:'Executive Table',desc:'Classic category tables with clear criterion and weight columns',preview:'criteria-table'},
+      {id:'category-panels',name:'Category Panels',desc:'Premium contained category panels with compact scoring rows',preview:'criteria-panels'},
+      {id:'weighted-scorecards',name:'Weighted Scorecards',desc:'Visual scorecards with prominent percentage weights',preview:'criteria-cards'},
+      {id:'editorial-matrix',name:'Editorial Matrix',desc:'Publication-style numbered criteria for long category lists',preview:'criteria-editorial'},
+      {id:'dark-jury-board',name:'Dark Jury Board',desc:'High-contrast awards-night presentation for judging frameworks',preview:'criteria-dark'}
+    ],
+    categories:[
+      {id:'catalog-rail',name:'Smart Catalog',desc:'Track rail with rich category cards and discovery tools',preview:'category-catalog'},
+      {id:'compact-grid',name:'Compact Grid',desc:'High-density layout designed for 30–50+ categories',preview:'category-compact'},
+      {id:'editorial-list',name:'Editorial List',desc:'Clean publication-style rows for fast category scanning',preview:'category-editorial'},
+      {id:'luxe-panels',name:'Luxe Panels',desc:'Premium awards cards with stronger track separation',preview:'category-luxe'},
+      {id:'dark-showcase',name:'Dark Showcase',desc:'High-contrast awards-night category presentation',preview:'category-dark'}
+    ],
+    guidelines:[
+      {id:'journey-timeline',name:'Journey Timeline',desc:'Numbered step-by-step entry journey',preview:'guideline-timeline'},
+      {id:'checklist-cards',name:'Checklist Cards',desc:'Clear action cards with completion-style markers',preview:'guideline-checklist'},
+      {id:'editorial-steps',name:'Editorial Steps',desc:'Elegant long-form guidance for detailed instructions',preview:'guideline-editorial'},
+      {id:'split-guide',name:'Split Guide',desc:'Two-column compact layout for longer guideline sets',preview:'guideline-split'},
+      {id:'dark-playbook',name:'Dark Playbook',desc:'Premium dark guidance board for award sites',preview:'guideline-dark'}
+    ],
+    terms:[
+      {id:'policy-cards',name:'Policy Cards',desc:'Easy-to-read policy cards for common terms',preview:'terms-cards'},
+      {id:'numbered-policy',name:'Numbered Policy',desc:'Structured numbered clauses with strong hierarchy',preview:'terms-numbered'},
+      {id:'editorial-legal',name:'Editorial Legal',desc:'Clean document-style presentation for detailed T&C',preview:'terms-editorial'},
+      {id:'compact-clauses',name:'Compact Clauses',desc:'Dense two-column layout for many policy blocks',preview:'terms-compact'},
+      {id:'dark-policy',name:'Dark Policy',desc:'High-contrast premium legal presentation',preview:'terms-dark'}
+    ]
+  };
+  const publicLayoutProps={criteria:'criteriaLayout',categories:'categoryLayout',guidelines:'guidelinesLayout',terms:'termsLayout'};
+  const publicLayoutDefaults={criteria:'executive-table',categories:'catalog-rail',guidelines:'journey-timeline',terms:'policy-cards'};
+  function publicPageLayoutName(pg){const list=publicPageLayouts[pg?.id]||[];const key=publicLayoutProps[pg?.id];const id=(key&&pg?.[key])||publicLayoutDefaults[pg?.id];return list.find(x=>x.id===id)?.name||list[0]?.name||'Layout'}
+  function publicPageLayoutThumb(pg,layout){
+    const labels={criteria:['CATEGORY','Evaluation Criteria','100%'],categories:['AWARD TRACK','Category title','12 open'],guidelines:['ENTRY GUIDE','Prepare your entry','06 steps'],terms:['POLICY','Terms & Conditions','01–06']};
+    const [k,t,w]=labels[pg?.id]||['PAGE','Public page',''];
+    return `<div class="public-layout-thumb ${layout.preview}"><span class="pl-kicker">${k}</span><b class="pl-title">${t}</b><div class="pl-body"><i></i><i></i><i></i></div><span class="pl-weight">${w}</span></div>`;
   }
   function setPublicPageTab(tab){
     document.querySelectorAll('[data-public-page-tab]').forEach(b=>b.classList.toggle('active',b.dataset.publicPageTab===tab));
@@ -94,12 +120,12 @@
   function renderPublicPageLayoutGallery(pg){
     const tabs=$('publicPageDesignerTabs'),gallery=$('publicPageLayoutGallery');if(!tabs||!gallery)return;
     const layoutBtn=tabs.querySelector('[data-public-page-tab="layout"]');
-    const supports=pg?.id==='criteria';
+    const list=publicPageLayouts[pg?.id]||[],key=publicLayoutProps[pg?.id],supports=!!(list.length&&key);
     if(layoutBtn){layoutBtn.hidden=!supports;layoutBtn.disabled=!supports}
     if(!supports){gallery.innerHTML='';setPublicPageTab('content');return}
-    pg.criteriaLayout=pg.criteriaLayout||'executive-table';
-    gallery.innerHTML=criteriaPageLayouts.map(l=>`<button type="button" class="public-page-layout-card ${pg.criteriaLayout===l.id?'active':''}" data-criteria-layout="${l.id}">${criteriaLayoutThumb(l)}<span><b>${l.name}</b><small>${l.desc}</small></span><i>✓</i></button>`).join('');
-    gallery.querySelectorAll('[data-criteria-layout]').forEach(btn=>btn.addEventListener('click',()=>{pg.criteriaLayout=btn.dataset.criteriaLayout;markDirty(false);save(false);renderPublicPageLayoutGallery(pg);$('publicPageSubtitle').textContent=`Judging Criteria · ${publicPageLayoutName(pg)} layout`;toast(publicPageLayoutName(pg)+' layout applied')}));
+    pg[key]=pg[key]||publicLayoutDefaults[pg.id]||list[0].id;
+    gallery.innerHTML=list.map(l=>`<button type="button" class="public-page-layout-card ${pg[key]===l.id?'active':''}" data-public-layout="${l.id}">${publicPageLayoutThumb(pg,l)}<span><b>${l.name}</b><small>${l.desc}</small></span><i>✓</i></button>`).join('');
+    gallery.querySelectorAll('[data-public-layout]').forEach(btn=>btn.addEventListener('click',()=>{pg[key]=btn.dataset.publicLayout;markDirty(false);save(false);renderPublicPageLayoutGallery(pg);$('publicPageSubtitle').textContent=`${pg.label} · ${publicPageLayoutName(pg)} layout`;toast(publicPageLayoutName(pg)+' layout applied')}));
   }
 
   function sectionKind(s){if(['overview','eventDescription'].includes(s.id))return'prose';if(['keypoints','who','why'].includes(s.id))return'list';if(s.id==='speakers')return'speakers';if(s.id==='sponsors')return'sponsors';if(s.id==='agenda')return'agenda';if(s.id==='resources')return'resources';if(s.id==='glimpse')return'glimpse';if(s.id==='contact')return'contact';if(s.id==='faqSection')return'faq';if(s.id==='aboutVertical')return'about';return'custom'}
@@ -520,7 +546,7 @@
     if(pg.id==='rewards')return `<label class="wb19-field"><span>Reward benefits · one per line as Title | Description</span><textarea class="tall" data-page-prop="items">${esc(pg.items||'')}</textarea></label>`;
     return '';
   }
-  function openPublicPageDesigner(id){const pg=pageBy(id);if(!pg)return;$('publicPageTitle').textContent=pg.label;$('publicPageSubtitle').textContent=pg.id==='criteria'?`Edit page content and choose a public criteria layout.`:'Edit the page copy. Navigation visibility is controlled from the Navigation order tab.';$('publicPagePreview').href=pageHref(pg.id);$('publicPageEditor').innerHTML=`<div class="page-editor-intro"><b>Live page controls</b><small>Changes are saved into this award website and appear on the public page after you save the draft.</small></div><label class="wb19-field"><span>Navigation label</span><input data-page-prop="navLabel" value="${attr(pg.navLabel||pg.label)}"></label><label class="wb19-field"><span>Eyebrow / kicker</span><input data-page-prop="eyebrow" value="${attr(pg.eyebrow||'')}"></label><label class="wb19-field"><span>Page title</span><input data-page-prop="title" value="${attr(pg.title||pg.label)}"></label><label class="wb19-field"><span>Intro copy</span><textarea data-page-prop="intro">${esc(pg.intro||'')}</textarea></label>${pageSpecificEditor(pg)}`;$('publicPageEditor').querySelectorAll('[data-page-prop]').forEach(el=>el.addEventListener('input',()=>{pg[el.dataset.pageProp]=el.value;if(pg.id==='rewards'){state.pages.rewards.title=pg.title;state.pages.rewards.body=pg.intro}markDirty(false);renderNavManager()}));renderPublicPageLayoutGallery(pg);setPublicPageTab('content');$('publicPageModal').dataset.pageId=id;$('publicPageModal').classList.add('open');$('publicPageModal').setAttribute('aria-hidden','false');document.body.classList.add('wb19-modal-open')}
+  function openPublicPageDesigner(id){const pg=pageBy(id);if(!pg)return;$('publicPageTitle').textContent=pg.label;$('publicPageSubtitle').textContent=publicPageLayouts[pg.id]?.length?`Edit page content and choose a public ${pg.label.toLowerCase()} layout.`:'Edit the page copy. Navigation visibility is controlled from the Navigation order tab.';$('publicPagePreview').href=pageHref(pg.id);$('publicPageEditor').innerHTML=`<div class="page-editor-intro"><b>Live page controls</b><small>Changes are saved into this award website and appear on the public page after you save the draft.</small></div><label class="wb19-field"><span>Navigation label</span><input data-page-prop="navLabel" value="${attr(pg.navLabel||pg.label)}"></label><label class="wb19-field"><span>Eyebrow / kicker</span><input data-page-prop="eyebrow" value="${attr(pg.eyebrow||'')}"></label><label class="wb19-field"><span>Page title</span><input data-page-prop="title" value="${attr(pg.title||pg.label)}"></label><label class="wb19-field"><span>Intro copy</span><textarea data-page-prop="intro">${esc(pg.intro||'')}</textarea></label>${pageSpecificEditor(pg)}`;$('publicPageEditor').querySelectorAll('[data-page-prop]').forEach(el=>el.addEventListener('input',()=>{pg[el.dataset.pageProp]=el.value;if(pg.id==='rewards'){state.pages.rewards.title=pg.title;state.pages.rewards.body=pg.intro}markDirty(false);renderNavManager()}));renderPublicPageLayoutGallery(pg);setPublicPageTab('content');$('publicPageModal').dataset.pageId=id;$('publicPageModal').classList.add('open');$('publicPageModal').setAttribute('aria-hidden','false');document.body.classList.add('wb19-modal-open')}
   function closePublicPageDesigner(){const m=$('publicPageModal');m.classList.remove('open');m.setAttribute('aria-hidden','true');document.body.classList.remove('wb19-modal-open')}
   function syncControls(){$('basicEventName').value=award.name||'';$('basicEventCategory').value=award.eventCategory||award.industry||'';$('basicDescription').value=award.description||'';$('basicVenue').value=award.venue||'';$('basicCity').value=award.city||'';$('basicEventStart').value=award.eventStart||'';$('basicEventEnd').value=award.eventEnd||'';$('basicNominationStart').value=award.nominationStart||'';$('basicNominationEnd').value=award.nominationEnd||'';$('heroDesign').value=state.header.design;$('heroPosition').value=state.header.heroPosition||'center';$('overlay').value=state.header.overlay;$('overlayValue').textContent=state.header.overlay+'%';$('illustrationSize').value=state.header.brandingWidth||84;$('illustrationSizeValue').textContent=(state.header.brandingWidth||84)+'%';$('heroHeight').value=state.header.heroHeight||690;$('heroHeightValue').textContent=(state.header.heroHeight||690)+'px';$('primaryColor').value=state.theme.primary;$('accentColor').value=state.theme.accent;$('surfaceColor').value=state.theme.surface;$('fontStyle').value=state.theme.font;$('bodyFontFamily').value=state.theme.bodyFont||'inter';$('bodyHeadingSize').value=String(state.theme.bodyHeadingSize||50);$('bodySubheadingSize').value=String(state.theme.bodySubheadingSize||16);$('bodyParagraphSize').value=String(state.theme.bodyParagraphSize||16);$('bodyTextAlign').value=state.theme.bodyTextAlign||'left';$('bodyBgColor').value=state.theme.bodyBg||'#ffffff';$('bodyTextColor').value=state.theme.bodyText||'#22252e';$('bodyThemeColor').value=state.theme.primary||'#a90e17';$('bodySectionSpacing').value=String(state.theme.bodySectionSpacing||70);$('seoTitle').value=state.header.seoTitle||award.name||'';$('seoDescription').value=state.header.seoDescription||award.description||'';$('showForm').checked=(state.form.displayMode||'banner')==='banner';$('formTitle').value=state.form.title;$('formSubtitle').value=state.form.subtitle||'';$('stickyNav').checked=state.nav.sticky;$('navRewards').checked=state.nav.showRewards!==false;$('navStyle').value=state.nav.style||'transparent';$('navBgColor').value=state.nav.background||'#4b0d13';$('navTextColor').value=state.nav.textColor||'#ffffff';$('navOpacity').value=state.nav.opacity||88;$('navOpacityValue').textContent=(state.nav.opacity||88)+'%';$('navTwoRow').checked=state.nav.twoRow!==false;document.querySelectorAll('[data-form-field]').forEach(el=>el.checked=!!state.form.fields[el.dataset.formField]);$('thankEnabled').checked=state.pages.thankyou.enabled;$('thankTitle').value=state.pages.thankyou.title;$('thankBody').value=state.pages.thankyou.body;const rewardPg=pageBy('rewards');$('rewardsEnabled').checked=rewardPg?rewardPg.enabled!==false:state.pages.rewards.enabled;$('rewardsTitle').value=rewardPg?.title||state.pages.rewards.title;$('rewardsBody').value=rewardPg?.intro||state.pages.rewards.body;document.querySelectorAll('[data-preset]').forEach(b=>b.classList.toggle('active',b.dataset.preset===state.theme.preset));renderRegistrationManager();updateHeaderAssetUI();updateSeoPreview()}
 

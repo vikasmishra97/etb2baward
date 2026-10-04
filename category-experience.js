@@ -71,6 +71,14 @@
   const categoryById=id=>openCats.find(c=>String(c.id)===String(id));
   const maxAllowed=()=>settings.selectionMode==='single'?1:Number(settings.maxSelections||0);
   const pageConfig=()=> (state.publicPages||[]).find(p=>p.id==='categories')||{};
+  function applyCategoryLayout(){
+    const layout=pageConfig().categoryLayout||'catalog-rail';
+    const shell=document.querySelector('.category-experience-shell');
+    if(!shell)return;
+    [...shell.classList].filter(c=>c.startsWith('category-layout-')).forEach(c=>shell.classList.remove(c));
+    shell.classList.add('category-layout-'+layout);
+  }
+  applyCategoryLayout();
   function niceDeadline(){if(!award.hasNominationDates||!award.nominationEnd)return 'Deadline to be announced';try{return 'Closes '+new Intl.DateTimeFormat('en-IN',{day:'numeric',month:'short',year:'numeric'}).format(new Date(award.nominationEnd))}catch(e){return 'Nomination deadline'}}
 
   function persist(){if(selectedOnly&&!selected.length)selectedOnly=false;localStorage.setItem(selectionKey,JSON.stringify(selected));renderDock();renderCatalog();renderRail();renderJourney()}
