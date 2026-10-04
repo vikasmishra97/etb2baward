@@ -211,3 +211,13 @@
 @media(max-width:1100px){.category-intelligence-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
 @media(max-width:760px){.category-intelligence-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.compact-ai-coverage-top{align-items:flex-start;flex-direction:column;gap:2px}.compact-ai-coverage-top span{white-space:normal}}
 @media(max-width:480px){.category-intelligence-grid{grid-template-columns:1fr!important}}
+
+
+/* ===== Safe jury unassignment workflow ===== */
+.assignment-removal-warning{display:none;align-items:flex-start;gap:11px;padding:12px 13px;margin:0 0 14px;border:1px solid #f3c1c5;border-radius:11px;background:#fff6f6;color:#7f1d1d}
+.assignment-removal-warning .assignment-warning-icon{width:25px;height:25px;flex:0 0 25px;border-radius:50%;display:grid;place-items:center;background:#d71920;color:#fff;font-size:13px;font-weight:900}
+.assignment-removal-warning b{display:block;font-size:12px;color:#9f1420;margin-bottom:3px}.assignment-removal-warning p{margin:0;font-size:11px;line-height:1.5;color:#7a3940}
+.assignment-editor-row.remove-choice{border-color:#f0d3d5;background:#fffafa}.assignment-editor-row.remove-choice:hover{border-color:#e49a9f;background:#fff4f4}
+.assignment-remove-tag{font-size:10px;font-weight:900;color:#c91824;background:#ffe7e9;border-radius:999px;padding:5px 8px}
+#saveNominationAssignment.danger-action{background:#c91824!important;border-color:#c91824!important;color:#fff!important}
+#saveNominationAssignment.danger-action:hover{background:#ad111c!important;border-color:#ad111c!important}

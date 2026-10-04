@@ -98,7 +98,7 @@
   syncPaidSubmittedFromReports();
   let assignments=read(ASSIGN_KEY,{});
   let progress=read(PROGRESS_KEY,{});
-  let selectedLevel=1, editingJudgeId=null, assignmentTargets=[], assignmentLevel=1;
+  let selectedLevel=1, editingJudgeId=null, assignmentTargets=[], assignmentLevel=1, assignmentMode='assign';
   write(JUDGE_KEY,judges);write(LEVEL_KEY,levels);write(NOM_KEY,nominations);write(ASSIGN_KEY,assignments);
 
   const currentLevel=()=>levels.find(l=>Number(l.level)===Number(selectedLevel))||levels[0];
@@ -189,7 +189,7 @@
   function selectedNominationIds(){return $$('.nomination-select:checked').map(i=>i.value)}
   function updateSelectionBar(){const ids=selectedNominationIds(),bar=$('#selectionActionBar');if(!bar)return;$('#selectedNominationCount').textContent=ids.length;bar.classList.toggle('show',ids.length>0);bar.setAttribute('aria-hidden',ids.length?'false':'true');const all=$$('.nomination-select');if($('#selectAllNominations')){$('#selectAllNominations').checked=all.length>0&&ids.length===all.length;$('#selectAllNominations').indeterminate=ids.length>0&&ids.length<all.length}}
   function clearNominationSelection(){$$('.nomination-select').forEach(i=>i.checked=false);if($('#selectAllNominations'))$('#selectAllNominations').checked=false;updateSelectionBar()}
-  function unassignSelected(){const ids=selectedNominationIds();if(!ids.length)return toast('Select at least one nomination');if(!assignments[String(selectedLevel)])assignments[String(selectedLevel)]={};ids.forEach(id=>delete assignments[String(selectedLevel)][id]);persist();renderAll();toast(`Jury unassigned from ${ids.length} nomination${ids.length===1?'':'s'}`)}
+  function unassignSelected(){const ids=selectedNominationIds();if(!ids.length)return toast('Select at least one nomination');openUnassign(ids)}
   function openJuryLogin(id){const j=judges.find(x=>String(x.id)===String(id));if(!j)return;const url=`jury-login.html?email=${encodeURIComponent(j.email)}`;const w=window.open(url,'_blank');if(!w)location.href=url}
   function renderLevels(){
     $('#juryLevelCount').value=String(levels.length);
@@ -342,20 +342,49 @@
 
   function assignmentIdsAtLevel(level,nomId){return (((assignments[String(level)]||{})[nomId])||[]).map(String)}
   function assignmentLoadForJudgeAtLevel(judgeId,level){const map=assignments[String(level)]||{};return Object.values(map).filter(ids=>(ids||[]).map(String).includes(String(judgeId))).length}
+  function ensureAssignmentWarning(){
+    const body=$('#assignNominationModal .assignment-editor-body');if(!body)return null;
+    let warning=$('#assignmentRemovalWarning');
+    if(!warning){warning=document.createElement('div');warning.id='assignmentRemovalWarning';warning.className='assignment-removal-warning';body.insertBefore(warning,body.firstChild)}
+    return warning;
+  }
   function renderAssignmentJuryPicker(){
     const nom=assignmentTargets.length===1?nominations.find(n=>n.id===assignmentTargets[0]):null;
-    const jurors=judges.filter(j=>Number(j.level||1)===Number(assignmentLevel)&&j.enabled!==false);
+    const allLevelJurors=judges.filter(j=>Number(j.level||1)===Number(assignmentLevel));
+    const warning=ensureAssignmentWarning();
+    const saveBtn=$('#saveNominationAssignment');
+    const head=$('.assignment-jury-head span');
+    const count=$('#assignmentJuryCount');
+    const hint=$('#assignmentLevelHint');
+    let jurors=[];
+    if(assignmentMode==='unassign'){
+      const assignedSet=new Set();
+      assignmentTargets.forEach(id=>assignmentIdsAtLevel(assignmentLevel,id).forEach(jid=>assignedSet.add(String(jid))));
+      jurors=allLevelJurors.filter(j=>assignedSet.has(String(j.id)));
+      if(warning){warning.style.display='flex';warning.innerHTML='<span class="assignment-warning-icon">!</span><div><b>Removing jury access</b><p>Selected jury members will lose these nominations from their jury queue at this level. Any saved draft or submitted score by those jury members for the selected nominations will also be removed from active scoring.</p></div>'}
+      if(saveBtn){saveBtn.textContent='Confirm unassignment';saveBtn.classList.add('danger-action')}
+      if(head)head.textContent='Currently assigned jury members';
+      if(count)count.textContent=`${jurors.length} assigned at Level ${assignmentLevel}`;
+      if(hint)hint.textContent='Choose the level first, then select only the jury members you want to remove.';
+    }else{
+      jurors=allLevelJurors.filter(j=>j.enabled!==false);
+      if(warning)warning.style.display='none';
+      if(saveBtn){saveBtn.textContent='Save assignment';saveBtn.classList.remove('danger-action')}
+      if(head)head.textContent='Jury members';
+      if(count)count.textContent=`${jurors.length} available at Level ${assignmentLevel}`;
+      if(hint)hint.textContent=assignmentLevel>1?'You can pre-assign this level now. Jurors will only see nominations after they qualify from the previous level.':'Level 1 assignments are visible to the selected jurors immediately.';
+    }
     const common=jurors.filter(j=>assignmentTargets.every(id=>assignmentIdsAtLevel(assignmentLevel,id).includes(String(j.id)))).map(j=>String(j.id));
-    const count=$('#assignmentJuryCount');if(count)count.textContent=`${jurors.length} available at Level ${assignmentLevel}`;
-    const hint=$('#assignmentLevelHint');if(hint)hint.textContent=assignmentLevel>1?'You can pre-assign this level now. Jurors will only see nominations after they qualify from the previous level.':'Level 1 assignments are visible to the selected jurors immediately.';
     $('#nominationJuryPicker').innerHTML=jurors.length?jurors.map(j=>{
       const categoryOk=!nom||(j.categories||[]).includes(nom.category);
       const load=assignmentLoadForJudgeAtLevel(j.id,assignmentLevel);
+      const assignedToCount=assignmentTargets.filter(id=>assignmentIdsAtLevel(assignmentLevel,id).includes(String(j.id))).length;
+      if(assignmentMode==='unassign')return `<label class="assignment-editor-row remove-choice"><input type="checkbox" value="${j.id}"><span class="judge-avatar">${esc(j.name.split(/\s+/).map(x=>x[0]).join('').slice(0,2))}</span><span class="assignment-person"><b>${esc(j.name)}</b><small>${esc(j.company)} · Assigned to ${assignedToCount}/${assignmentTargets.length} selected nomination${assignmentTargets.length===1?'':'s'} · Level ${assignmentLevel}</small></span><span class="assignment-remove-tag">Remove</span></label>`;
       return `<label class="assignment-editor-row ${categoryOk?'recommended':''}"><input type="checkbox" value="${j.id}" ${common.includes(String(j.id))?'checked':''}><span class="judge-avatar">${esc(j.name.split(/\s+/).map(x=>x[0]).join('').slice(0,2))}</span><span class="assignment-person"><b>${esc(j.name)}${categoryOk&&nom?'<span class="assignment-recommend">✦ AI match</span>':''}</b><small>${esc(j.company)} · ${categoryOk?'Category matched':'Category not assigned'} · Level ${assignmentLevel}</small></span><span class="assignment-load" title="Assignments at this level">${load}</span></label>`
-    }).join(''):`<div class="empty-state">No active jury members exist at Jury Level ${assignmentLevel}. Add a jury member to this level first.</div>`;
+    }).join(''):`<div class="empty-state">${assignmentMode==='unassign'?`No jury members are assigned to the selected nomination${assignmentTargets.length===1?'':'s'} at Jury Level ${assignmentLevel}.`:`No active jury members exist at Jury Level ${assignmentLevel}. Add a jury member to this level first.`}</div>`;
   }
   function openAssign(ids){
-    assignmentTargets=[...new Set(ids)];if(!assignmentTargets.length)return toast('Select at least one nomination');
+    assignmentMode='assign';assignmentTargets=[...new Set(ids)];if(!assignmentTargets.length)return toast('Select at least one nomination');
     const firstTarget=assignmentTargets[0];
     const firstOpenLevel=assignmentTargets.length===1?levels.find(l=>assignmentIdsAtLevel(l.level,firstTarget).length===0):null;
     assignmentLevel=Number(firstOpenLevel?.level||selectedLevel);
@@ -364,13 +393,38 @@
     $('#assignNominationSubtitle').textContent=nom?`${nom.company} · ${nom.category}`:'Choose a jury level first, then select the jury members for these nominations.';
     const levelSelect=$('#assignmentLevelSelect');
     levelSelect.innerHTML=levels.map(l=>`<option value="${l.level}">${esc(l.name||`Jury Level ${l.level}`)} · ${judges.filter(j=>Number(j.level||1)===Number(l.level)&&j.enabled!==false).length} jury</option>`).join('');
-    levelSelect.value=String(assignmentLevel);
-    renderAssignmentJuryPicker();
+    levelSelect.value=String(assignmentLevel);renderAssignmentJuryPicker();
     $('#assignNominationModal').classList.add('open');$('#assignNominationModal').setAttribute('aria-hidden','false')
   }
-  function closeAssign(){$('#assignNominationModal').classList.remove('open');$('#assignNominationModal').setAttribute('aria-hidden','true');assignmentTargets=[];assignmentLevel=selectedLevel}
+  function openUnassign(ids){
+    assignmentMode='unassign';assignmentTargets=[...new Set(ids)];if(!assignmentTargets.length)return toast('Select at least one nomination');
+    const firstAssignedLevel=levels.find(l=>assignmentTargets.some(id=>assignmentIdsAtLevel(l.level,id).length));
+    if(!firstAssignedLevel){assignmentTargets=[];assignmentMode='assign';return toast('Selected nominations have no jury assignments to remove')}
+    assignmentLevel=Number(firstAssignedLevel.level);
+    $('#assignNominationTitle').textContent=`Unassign jury from ${assignmentTargets.length} nomination${assignmentTargets.length===1?'':'s'}`;
+    $('#assignNominationSubtitle').textContent='Choose the jury level and the specific jury members you want to remove.';
+    const levelSelect=$('#assignmentLevelSelect');
+    levelSelect.innerHTML=levels.map(l=>{const assigned=assignmentTargets.reduce((n,id)=>n+assignmentIdsAtLevel(l.level,id).length,0);return `<option value="${l.level}" ${assigned?'':'disabled'}>${esc(l.name||`Jury Level ${l.level}`)} · ${assigned} assignment${assigned===1?'':'s'}</option>`}).join('');
+    levelSelect.value=String(assignmentLevel);renderAssignmentJuryPicker();
+    $('#assignNominationModal').classList.add('open');$('#assignNominationModal').setAttribute('aria-hidden','false')
+  }
+  function closeAssign(){$('#assignNominationModal').classList.remove('open');$('#assignNominationModal').setAttribute('aria-hidden','true');assignmentTargets=[];assignmentLevel=selectedLevel;assignmentMode='assign';const b=$('#saveNominationAssignment');if(b){b.textContent='Save assignment';b.classList.remove('danger-action')}}
   function saveAssignment(){
-    const selected=$$('#nominationJuryPicker input:checked').map(i=>String(i.value));if(!selected.length)return toast('Select at least one jury member');
+    const selected=$$('#nominationJuryPicker input:checked').map(i=>String(i.value));if(!selected.length)return toast(assignmentMode==='unassign'?'Select at least one jury member to remove':'Select at least one jury member');
+    if(assignmentMode==='unassign'){
+      const levelMap=assignments[String(assignmentLevel)]||{};
+      const affected=assignmentTargets.reduce((n,id)=>n+selected.filter(jid=>(levelMap[id]||[]).map(String).includes(jid)).length,0);
+      if(!affected)return toast('Selected jury members are not assigned to these nominations at this level');
+      const ok=confirm(`Confirm unassignment?\n\nThis will remove ${affected} jury assignment${affected===1?'':'s'} from Jury Level ${assignmentLevel}. The selected juror(s) will no longer see these nominations in their jury portal. Any saved draft or submitted score from those juror(s) for these nominations will also be removed from active scoring.`);
+      if(!ok)return;
+      assignmentTargets.forEach(id=>{
+        const remaining=(levelMap[id]||[]).map(String).filter(jid=>!selected.includes(jid));
+        if(remaining.length)levelMap[id]=remaining;else delete levelMap[id];
+      });
+      const reviews=read(REVIEW_KEY,{});
+      Object.keys(reviews).forEach(k=>{const r=reviews[k];if(!r)return;const judgeId=String(k).split(':')[0];if(selected.includes(judgeId)&&assignmentTargets.includes(String(r.nominationId))&&Number(r.level||assignmentLevel)===Number(assignmentLevel))delete reviews[k]});
+      write(REVIEW_KEY,reviews);persist();const count=assignmentTargets.length;closeAssign();renderAll();clearNominationSelection();toast(`Jury removed from ${count} nomination${count===1?'':'s'} at Level ${assignmentLevel}`);return;
+    }
     if(!assignments[String(assignmentLevel)])assignments[String(assignmentLevel)]={};
     const count=assignmentTargets.length;assignmentTargets.forEach(id=>assignments[String(assignmentLevel)][id]=[...selected]);persist();
     const levelName=levels.find(l=>Number(l.level)===Number(assignmentLevel))?.name||`Jury Level ${assignmentLevel}`;
