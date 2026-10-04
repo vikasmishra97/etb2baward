@@ -10,3 +10,43 @@
 @media(max-width:480px){.judge-kpis{grid-template-columns:1fr}.judge-copilot-actions,.judges-head .top-actions{grid-template-columns:1fr}.judge-copilot-actions .btn{width:100%}.judge-drawer-foot{display:grid;grid-template-columns:1fr 1fr}.judge-drawer-foot .btn:last-child{grid-column:1/-1}.workload-row{grid-template-columns:125px 1fr 42px}}
 
 .portal-brand>div{overflow:hidden}.portal-brand>div img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* v3 usability + functional assignment editor */
+.judges-page{font-size:13px}
+.judges-page .page-head p,.judge-panel-head p,.judge-copilot-copy p,.judge-side-card p{font-size:12px;line-height:1.55}
+.judges-page h1{font-size:28px}
+.judges-page h2{font-size:17px}
+.judges-page h3{font-size:14px}
+.judge-kpi small,.judge-kpi span,.judge-toolbar select,.judge-search input,.judge-table,.assignment-matrix,.coverage-card p,.coverage-card small,.workload-row,.judge-alert,.round-stat,.round-date,.judge-next-step p{font-size:11px}
+.judge-kpi strong{font-size:24px}
+.judge-table th,.assignment-matrix th{font-size:9px;letter-spacing:.04em}
+.judge-person b,.judge-assigned b,.judge-progress-top b,.coverage-card h3,.side-card-title h3{font-size:12px}
+.judge-person span,.judge-assigned span,.judge-progress-top span,.judge-status-line,.expertise-tags span,.judge-conflict,.judge-pill,.assignment-matrix td>span,.assignment-matrix td small{font-size:10px}
+.btn,.judge-link,.judge-view-tabs button,.judge-alert button{font-size:11px;min-height:36px}
+.judge-more{font-size:15px;min-width:34px;min-height:34px}
+.judge-drawer-head h2,.judge-modal-head h2{font-size:20px}
+.judge-drawer-head p,.judge-modal-head p{font-size:11px}
+.judge-drawer-body .field label,.judge-checkbox,.category-checks label,.expertise-picker button,.judge-ai-match b,.judge-ai-match p,.judge-ai-match button{font-size:11px}
+.judge-drawer-body input,.judge-drawer-body select{font-size:12px}
+.category-checks small{font-size:10px}
+.detail-hero b{font-size:13px}.detail-hero span{font-size:11px}.detail-stat span,.detail-timeline span{font-size:10px}.detail-section h3,.detail-category,.detail-timeline div{font-size:11px}
+.portal-shell>aside nav>*,.portal-shell>aside>small,.portal-top small,.portal-entry span,.portal-entry p,.portal-progress>div:first-child span,.portal-note{font-size:10px}
+.portal-entry h4{font-size:13px}.portal-entry button{font-size:11px;cursor:pointer}.portal-top>span{font-size:10px}
+.judge-copilot-panel b{font-size:12px}.judge-copilot-panel small,.judge-copilot-panel>p,.judge-copilot-prompts button,.judge-copilot-answer{font-size:11px}
+.judge-empty{text-align:center!important;padding:30px!important;color:#85899b!important;font-size:12px!important}
+.danger-text{color:var(--danger)!important}
+.coverage-manage{margin-top:10px}
+.assignment-modal-card{width:min(760px,100%)}
+.assignment-editor-body{padding:18px;max-height:66vh;overflow:auto;background:#fafbfe}
+.assignment-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.assignment-summary>div{background:#fff;border:1px solid var(--line);border-radius:11px;padding:12px}
+.assignment-summary span{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}
+.assignment-summary b{font-size:15px;color:#181b31}
+.assignment-editor-list{display:grid;gap:8px}
+.assignment-editor-row{display:grid;grid-template-columns:auto 38px 1fr auto;gap:10px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer;transition:.15s}
+.assignment-editor-row:hover{border-color:#cfcaff;box-shadow:0 5px 18px rgba(31,34,60,.06)}
+.assignment-editor-row input{width:17px;height:17px;accent-color:var(--brand)}
+.assignment-person b{display:block;font-size:12px}.assignment-person small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.assignment-load{font-size:11px;font-weight:800;color:#575b70;background:#f3f4f8;border-radius:8px;padding:6px 8px;white-space:nowrap}
+.assignment-editor-row.category-row{grid-template-columns:auto 1fr auto}
+@media(max-width:720px){.assignment-summary{grid-template-columns:1fr 1fr}.assignment-editor-row{grid-template-columns:auto 34px 1fr}.assignment-load{grid-column:3}.assignment-editor-row.category-row{grid-template-columns:auto 1fr}.assignment-editor-row.category-row .assignment-load{grid-column:2}}
