@@ -274,17 +274,30 @@
       const assignedAny=rows.filter(n=>hasAnyAssignment(n.id)).length;
       const unassigned=rows.length-assignedAny;
       const pct=rows.length?Math.round(assignedAny/rows.length*100):100;
-      const levelStats=levels.map(l=>{
+      const levelDetails=levels.map(l=>{
         const count=rows.filter(n=>assignmentIdsAtLevel(l.level,n.id).length).length;
         const complete=rows.length>0&&count===rows.length;
-        return `<div class="report-level-stat ${count?'has-assignment':''} ${complete?'complete':''}"><span class="report-level-name">L${l.level}</span><strong>${count}<small>/${rows.length}</small></strong><span class="report-level-dot" aria-hidden="true">${complete?'✓':count?'•':'—'}</span></div>`;
-      }).join('');
-      return `<article class="category-intel-card report-category-card">
-        <div class="category-intel-top"><h3>${esc(cat)}</h3><span class="category-total">${rows.length} paid</span></div>
-        <div class="report-coverage-line"><div class="category-progress"><span style="width:${pct}%"></span></div><b>${pct}%</b></div>
-        <div class="report-summary-row"><span><b>${assignedAny}</b> assigned</span><span class="${unassigned?'needs-attention':''}"><b>${unassigned}</b> unassigned</span></div>
-        <div class="report-level-grid">${levelStats}</div>
-        <button class="category-view-btn report-view-btn" data-view-category="${esc(cat)}"><span>View nominations</span><b>${rows.length}</b><span aria-hidden="true">→</span></button>
+        const partial=count>0&&!complete;
+        return {level:l.level,count,complete,partial};
+      });
+      const levelStats=levelDetails.map(x=>`<div class="ai-round-chip ${x.complete?'complete':x.partial?'partial':'empty'}"><span class="ai-round-code">L${x.level}</span><span class="ai-round-count"><b>${x.count}</b>/${rows.length}</span><span class="ai-round-state" aria-hidden="true">${x.complete?'✓':x.partial?'◐':'○'}</span></div>`).join('');
+      const nextGap=levelDetails.find(x=>!x.complete);
+      const aiLabel=unassigned?'Needs assignment':nextGap?`Level ${nextGap.level} needs coverage`:'Fully covered';
+      const aiText=unassigned?`${unassigned} paid nomination${unassigned===1?' is':'s are'} not assigned to any jury yet.`:nextGap?`${rows.length-nextGap.count} nomination${rows.length-nextGap.count===1?'':'s'} still need Level ${nextGap.level} jury assignment.`:'All paid nominations have jury coverage across every configured level.';
+      const aiTone=unassigned?'attention':nextGap?'watch':'ready';
+      return `<article class="category-intel-card report-category-card ai-report-card">
+        <div class="ai-report-head">
+          <div class="ai-report-title"><span class="ai-category-orb" aria-hidden="true">✦</span><div><h3>${esc(cat)}</h3><small>Paid nomination report</small></div></div>
+          <span class="ai-paid-pill"><b>${rows.length}</b> paid</span>
+        </div>
+        <div class="ai-coverage-block">
+          <div class="ai-coverage-copy"><span>Coverage</span><strong>${pct}%</strong></div>
+          <div class="ai-coverage-track"><span style="width:${pct}%"></span></div>
+          <div class="ai-coverage-metrics"><span><b>${assignedAny}</b> assigned</span><span class="${unassigned?'needs-attention':''}"><b>${unassigned}</b> open</span></div>
+        </div>
+        <div class="ai-insight ${aiTone}"><span class="ai-insight-icon" aria-hidden="true">✦</span><div><b>${esc(aiLabel)}</b><small>${esc(aiText)}</small></div></div>
+        <div class="ai-rounds"><span class="ai-rounds-label">Jury level coverage</span><div class="ai-round-grid">${levelStats}</div></div>
+        <button class="category-view-btn ai-report-view" data-view-category="${esc(cat)}"><span>Open nominations</span><span class="ai-report-view-count">${rows.length}</span><span aria-hidden="true">→</span></button>
       </article>`;
     }).join('')||'<div class="empty-state">No paid & submitted nominations yet.</div>';
   }
