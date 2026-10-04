@@ -4,7 +4,7 @@
   <link rel="icon" type="image/jpeg" href="et-logo.jpg">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Scoring - ETB2B Awards</title>
+  <title>Criteria - ETB2B Awards</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="scoring.css">
 </head>
@@ -15,7 +15,7 @@
     <div class="award-switch"><small>Current award</small><strong>India FinTech Awards 2027</strong></div>
     <nav class="nav">
       <a href="index.html"><span class="ico">&#8962;</span><span>Home</span></a>
-      <div class="nav-label">Build</div><a href="award.html"><span class="ico">&#9671;</span><span>Award</span></a><a href="website.html"><span class="ico">&#9635;</span><span>Website</span></a><a href="categories.html"><span class="ico">&#9638;</span><span>Categories</span></a><a href="entry-form.html"><span class="ico">&#9783;</span><span>Entry Form</span></a><a href="pricing.html"><span class="ico">Rs</span><span>Pricing</span></a><div class="nav-label">Operate</div>
+      <div class="nav-label">Build</div><a href="award.html"><span class="ico">&#9671;</span><span>Award</span></a><a href="website.html"><span class="ico">&#9635;</span><span>Website</span></a><a href="categories.html"><span class="ico">&#9638;</span><span>Categories</span></a><a class="active" href="scoring.html"><span class="ico">&#9733;</span><span>Criteria</span></a><a href="entry-form.html"><span class="ico">&#9783;</span><span>Entry Form</span></a><a href="pricing.html"><span class="ico">Rs</span><span>Pricing</span></a><div class="nav-label">Operate</div>
       <a href="entries.html"><span class="ico">&#8681;</span><span>Entries</span></a>
       <div class="nav-label">Grow</div>
       <a href="audience.html"><span class="ico">&#9673;</span><span>Audience</span></a>
@@ -23,7 +23,7 @@
       <a href="automations.html"><span class="ico">&#9889;</span><span>Automations</span></a>
       <div class="nav-label">Judge</div>
       <a href="judges.html"><span class="ico">J</span><span>Judges</span></a>
-      <a class="active" href="scoring.html"><span class="ico">&#9733;</span><span>Scoring</span></a>
+      
       <a href="shortlist.html"><span class="ico">&#10003;</span><span>Shortlist</span></a>
       <a href="winners.html"><span class="ico">W</span><span>Winners</span></a>
       <div class="nav-label">Celebrate</div>
@@ -39,7 +39,7 @@
 
   <div class="content">
     <header class="topbar">
-      <div class="crumb">India FinTech Awards 2027 / Scoring</div>
+      <div class="crumb">India FinTech Awards 2027 / Criteria</div>
       <div class="top-actions">
         <button class="btn ghost" id="openCopilot">&#10022; Ask Award Copilot</button>
         <div class="avatar">VM</div>
@@ -49,20 +49,20 @@
     <main class="main scoring-page">
       <div class="page-head scoring-head">
         <div>
-          <span class="eyebrow">DECIDE / SCORING</span>
-          <h1>Scoring</h1>
-          <p>Build a fair scorecard, control judging rules, and spot scoring inconsistencies before they affect the shortlist.</p>
+          <span class="eyebrow">BUILD / JUDGING CRITERIA</span>
+          <h1>Judging criteria</h1>
+          <p>Create the scorecard once here. The same criteria, weights and scoring scale automatically appear in the Jury Portal during evaluation.</p>
         </div>
         <div class="top-actions">
           <button class="btn secondary" id="previewScorecard">Preview judge scorecard</button>
-          <button class="btn primary" id="saveScoring">Save scoring</button>
+          <button class="btn primary" id="saveScoring">Save criteria</button>
         </div>
       </div>
 
-      <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage active">DECIDE</div><div class="stage">CELEBRATE</div></div>
+      <div class="stagebar"><div class="stage active">BUILD</div><div class="stage">GROW</div><div class="stage">DECIDE</div><div class="stage">CELEBRATE</div></div>
 
       <section class="sc-kpis">
-        <article class="card sc-kpi"><div class="sc-kpi-icon">#</div><div><small>Criteria</small><strong id="criteriaCount">4</strong><span>Master scorecard</span></div></article>
+        <article class="card sc-kpi"><div class="sc-kpi-icon">#</div><div><small>Criteria</small><strong id="criteriaCount">4</strong><span>Master criteria</span></div></article>
         <article class="card sc-kpi"><div class="sc-kpi-icon good">%</div><div><small>Total weight</small><strong id="weightTotal">100%</strong><span id="weightStatus">Ready to judge</span></div></article>
         <article class="card sc-kpi"><div class="sc-kpi-icon purple">3x</div><div><small>Reviews per entry</small><strong id="reviewMinimum">3</strong><span>Minimum before ranking</span></div></article>
         <article class="card sc-kpi"><div class="sc-kpi-icon warn">0.7</div><div><small>Judge variance</small><strong>Healthy</strong><span>Across active judges</span></div></article>
@@ -94,7 +94,7 @@
         <div class="sc-main-col">
           <section class="card sc-panel">
             <div class="sc-panel-head">
-              <div><h2>Master scorecard</h2><p>Every criterion contributes to a 100-point weighted total.</p></div>
+              <div><h2>Master criteria</h2><p>Every criterion contributes to a 100-point weighted total.</p></div>
               <div class="sc-panel-actions"><span class="sc-weight-pill" id="weightPill">100 / 100</span><button class="btn secondary compact" id="addCriterion">+ Add criterion</button></div>
             </div>
             <div class="sc-weight-track"><i id="weightBar" style="width:100%"></i></div>
@@ -107,10 +107,10 @@
               <button class="btn ghost compact" id="copyMaster">Apply master to all</button>
             </div>
             <div class="sc-category-list">
-              <div class="sc-category-row"><div><b>Best FinTech Startup</b><span>84 entries</span></div><span class="sc-pill good">Master scorecard</span><button data-override="Best FinTech Startup">Customize</button></div>
-              <div class="sc-category-row"><div><b>Best Digital Lending</b><span>63 entries</span></div><span class="sc-pill good">Master scorecard</span><button data-override="Best Digital Lending">Customize</button></div>
+              <div class="sc-category-row"><div><b>Best FinTech Startup</b><span>84 entries</span></div><span class="sc-pill good">Master criteria</span><button data-override="Best FinTech Startup">Customize</button></div>
+              <div class="sc-category-row"><div><b>Best Digital Lending</b><span>63 entries</span></div><span class="sc-pill good">Master criteria</span><button data-override="Best Digital Lending">Customize</button></div>
               <div class="sc-category-row"><div><b>Best Payments Innovation</b><span>72 entries</span></div><span class="sc-pill">1 override</span><button data-override="Best Payments Innovation">Edit override</button></div>
-              <div class="sc-category-row"><div><b>Best AI in Financial Services</b><span>58 entries</span></div><span class="sc-pill good">Master scorecard</span><button data-override="Best AI in Financial Services">Customize</button></div>
+              <div class="sc-category-row"><div><b>Best AI in Financial Services</b><span>58 entries</span></div><span class="sc-pill good">Master criteria</span><button data-override="Best AI in Financial Services">Customize</button></div>
             </div>
           </section>
 
@@ -216,7 +216,7 @@
   <aside class="sc-drawer-panel">
     <div class="sc-drawer-head"><div><span class="eyebrow">CATEGORY OVERRIDE</span><h2 id="overrideTitle">Customize scorecard</h2><p>Change criteria only for this category while keeping the master scorecard intact.</p></div><button data-close-override>x</button></div>
     <div class="sc-drawer-body">
-      <div class="sc-override-card"><span>Master scorecard</span><b>Innovation 30 / Market Impact 25 / Execution 25 / Scalability 20</b></div>
+      <div class="sc-override-card"><span>Master criteria</span><b>Innovation 30 / Market Impact 25 / Execution 25 / Scalability 20</b></div>
       <div class="field"><label>Override type</label><select id="overrideType"><option>Add one category-specific criterion</option><option>Change criterion weights</option><option>Use a completely custom scorecard</option></select></div>
       <div class="field"><label>Category-specific criterion</label><input id="overrideCriterion" value="Regulatory readiness"></div>
       <div class="field"><label>Weight</label><div class="sc-weight-input"><input id="overrideWeight" type="number" value="10"><span>%</span></div></div>
