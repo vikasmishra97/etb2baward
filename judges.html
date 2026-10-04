@@ -89,20 +89,6 @@
         </div>
       </section>
 
-      <section class="ai-command-card section">
-        <div class="ai-orb">✦</div>
-        <div class="ai-command-copy"><span>AWARD COPILOT</span><h2 id="aiHeadline">Assignment intelligence</h2><p id="aiInsight">I’ll highlight unassigned categories, uneven workload and the best jury match for each nomination.</p></div>
-        <div class="ai-command-actions"><button class="btn premium-secondary" id="aiRefresh">Refresh insight</button><button class="btn premium-primary" id="aiAutoAssign">✦ AI assign unassigned</button></div>
-      </section>
-
-      <section class="section">
-        <div class="premium-section-head compact-head">
-          <div><div class="jury-kicker">CATEGORY INTELLIGENCE</div><h2>Paid nominations by category</h2><p>See exactly who has paid and submitted, then jump straight into assignment.</p></div>
-          <div class="category-legend"><span><i class="dot green"></i>Assigned</span><span><i class="dot red"></i>Needs jury</span></div>
-        </div>
-        <div class="category-intelligence-grid" id="categoryIntelligenceGrid"></div>
-      </section>
-
       <div class="jury-workspace-grid premium-workspace section">
         <section class="card premium-panel jury-members-card">
           <div class="premium-section-head panel-head">
@@ -121,6 +107,21 @@
           <a class="btn premium-secondary full" href="scoring.html">Manage scoring criteria →</a>
         </aside>
       </div>
+
+
+      <section class="section">
+        <div class="premium-section-head compact-head">
+          <div><div class="jury-kicker">CATEGORY INTELLIGENCE</div><h2>Paid nominations by category</h2><p>See exactly who has paid and submitted, then jump straight into assignment.</p></div>
+          <div class="category-legend"><span><i class="dot green"></i>Assigned</span><span><i class="dot red"></i>Needs jury</span></div>
+        </div>
+        <div class="ai-command-card category-ai-command" style="margin:14px 0 16px;">
+          <div class="ai-orb">✦</div>
+          <div class="ai-command-copy"><span>AWARD COPILOT</span><h2 id="aiHeadline">Assignment intelligence</h2><p id="aiInsight">I’ll highlight unassigned categories, uneven workload and the best jury match for each nomination.</p></div>
+          <div class="ai-command-actions"><button class="btn premium-secondary" id="aiRefresh">Refresh insight</button><button class="btn premium-primary" id="aiAutoAssign">✦ AI assign unassigned</button></div>
+        </div>
+        <div class="category-intelligence-grid" id="categoryIntelligenceGrid"></div>
+      </section>
+
 
       <section class="card premium-panel nominations-card section" id="paidSubmittedSection">
         <div class="premium-section-head nomination-head">
