@@ -213,7 +213,7 @@
     const memberRows=visibleRows.map(j=>`<tr>
       <td><div class="jury-person"><span>${esc((j.name||'?').split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase())}</span><div><b>${esc(j.name)}</b><small>${esc(j.email)}</small></div></div></td>
       <td><div class="jury-category-chips">${(j.categories||[]).slice(0,2).map(c=>`<span>${esc(c.replace('Best ',''))}</span>`).join('')}${(j.categories||[]).length>2?`<em>+${j.categories.length-2}</em>`:''}</div></td>
-      <td><button type="button" class="jury-assigned-link" data-view-jury-assignments="${j.id}" title="View assigned nominations"><b>${assignmentLoadForJudgeAtLevel(j.id,selectedLevel)}</b><span>assigned</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button></td>
+      <td>${(()=>{const pc=juryProgressCounts(j.id,selectedLevel);return `<button type="button" class="jury-progress-link" data-view-jury-assignments="${j.id}" title="View assigned nominations and review progress"><span class="jury-progress-pill assigned"><b>${pc.assigned}</b><small>Assigned</small></span><span class="jury-progress-pill pending"><b>${pc.pending}</b><small>Pending</small></span><span class="jury-progress-pill submitted"><b>${pc.submitted}</b><small>Submitted</small></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>`})()}</td>
       <td><label class="jury-status-toggle"><input type="checkbox" data-toggle-jury="${j.id}" ${j.enabled!==false?'checked':''}><span></span></label></td>
       <td><div class="jury-actions" aria-label="Jury actions">
         <button class="jury-icon-btn" data-edit-jury="${j.id}" title="Edit jury member" aria-label="Edit jury member"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16v4Zm13.5-16.5 3 3 1-1a1.4 1.4 0 0 0 0-2l-1-1a1.4 1.4 0 0 0-2 0l-1 1Z"/></svg></button>
@@ -223,6 +223,18 @@
     </tr>`).join('');
     const toggleRow=rows.length>5&&!q?`<tr class="jury-more-row"><td colspan="5"><button class="jury-more-btn" data-toggle-jury-list="1">${showAllJury?'Show less':`View ${moreCount} more jury member${moreCount===1?'':'s'}`}</button></td></tr>`:'';
     $('#levelJuryRows').innerHTML=rows.length?memberRows+toggleRow:`<tr><td colspan="5"><div class="empty-state">No jury members in this level yet.</div></td></tr>`;
+  }
+
+  function juryProgressCounts(judgeId,level){
+    const levelMap=assignments[String(level)]||{};
+    const assignedNomIds=Object.keys(levelMap).filter(nomId=>(levelMap[nomId]||[]).map(String).includes(String(judgeId)));
+    let submitted=0,draft=0;
+    assignedNomIds.forEach(nomId=>{
+      const st=getJuryReviewStatus(judgeId,nomId,level);
+      if(st.cls==='submitted')submitted++;
+      else if(st.cls==='draft')draft++;
+    });
+    return {assigned:assignedNomIds.length,pending:Math.max(0,assignedNomIds.length-submitted),submitted,draft};
   }
 
   function getJuryReviewStatus(judgeId,nomId,level){
@@ -256,7 +268,8 @@
     $('#juryAssignmentsTitle').textContent=`${j.name} · assigned nominations`;
     $('#juryAssignmentsMeta').textContent=`Jury Level ${level} · ${j.email}`;
     const categoriesCount=new Set(rows.map(n=>n.category).filter(Boolean)).size;
-    $('#juryAssignmentSummary').innerHTML=`<div><span>Assigned</span><b>${rows.length}</b></div><div><span>Categories</span><b>${categoriesCount}</b></div><div><span>Jury level</span><b>L${level}</b></div>`;
+    const pc=juryProgressCounts(j.id,level);
+    $('#juryAssignmentSummary').innerHTML=`<div><span>Assigned</span><b>${pc.assigned}</b></div><div><span>Pending</span><b>${pc.pending}</b></div><div><span>Submitted</span><b>${pc.submitted}</b></div><div><span>Categories</span><b>${categoriesCount}</b></div>`;
     $('#juryAssignmentRows').innerHTML=rows.length?rows.map(n=>{const st=getJuryReviewStatus(j.id,n.id,level);return `<tr><td><b>${esc(n.id)}</b></td><td><b>${esc(n.nominee||n.company||'—')}</b><small>${esc(n.company||'')}</small></td><td><span class="jury-assignment-category">${esc(n.category||'Uncategorised')}</span></td><td><span class="jury-review-status ${st.cls}">${esc(st.label)}</span></td></tr>`}).join(''):`<tr><td colspan="4"><div class="empty-state">No nominations are assigned to this jury member at Jury Level ${level}.</div></td></tr>`;
     modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
   }
@@ -491,6 +504,14 @@
   window.addEventListener('storage',e=>{
     if(e.key!==nominationReportKey&&e.key!=='etb2b_public_nomination_starters')return;
     if(syncPaidSubmittedFromReports()){write(NOM_KEY,nominations);renderAll()}
+  });
+
+  window.addEventListener('storage',e=>{
+    if(e.key===REVIEW_KEY||e.key===ASSIGN_KEY){
+      assignments=read(ASSIGN_KEY,{});
+      renderJury();
+      updateSummary();
+    }
   });
 
   renderAll();
