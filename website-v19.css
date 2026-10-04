@@ -188,3 +188,22 @@
 .sponsor-row{grid-template-columns:24px 82px minmax(0,1fr) auto}.sponsor-row .entity-meta{min-width:0;padding-right:4px}.sponsor-row .entity-meta>b,.sponsor-row .entity-meta>span{max-width:100%;overflow:hidden;text-overflow:ellipsis}.sponsor-row .entity-meta>span{white-space:nowrap}.sponsor-row .entity-row-actions{justify-content:flex-end;flex-wrap:wrap;max-width:190px}.sponsor-row .entity-row-actions button{white-space:nowrap}
 @media(max-width:760px){.sponsor-row{grid-template-columns:24px 82px minmax(0,1fr)}.sponsor-row .entity-row-actions{grid-column:3;justify-content:flex-start;max-width:none}.premium-nav-sort .nav-sort-row{align-items:start}}
 @media(max-width:520px){.sponsor-row{grid-template-columns:24px 70px minmax(0,1fr)}.sponsor-thumb{width:70px;height:50px}.sponsor-row .entity-row-actions{grid-column:2/-1}.nav-name-editor input{font-size:10px}}
+
+/* ===== Public award page designer tabs + Judging Criteria layouts ===== */
+.page-designer-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:9px 14px;background:#fff;border-bottom:1px solid #e5e0d8}
+.page-designer-tabs button{height:42px;border:0;border-radius:10px;background:#f0f1f4;color:#687080;font-size:11px;font-weight:900;cursor:pointer;transition:.18s ease}
+.page-designer-tabs button.active{background:#fff7e8;color:#a80d17;box-shadow:inset 0 0 0 1px #e2b65e}
+.page-designer-tabs button[hidden]{display:none}
+.public-page-panel{display:none}.public-page-panel.active{display:block}
+.page-layout-note{display:grid;gap:3px;border:1px solid #eadfc9;background:#fffaf0;border-radius:13px;padding:13px 14px;margin-bottom:15px}
+.page-layout-note b{font-size:12px;color:#202532}.page-layout-note span{font-size:10px;line-height:1.45;color:#7c828d}
+.public-page-layout-gallery{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.public-page-layout-card{position:relative;border:1px solid #e1e3e8;background:#fff;border-radius:14px;padding:10px;text-align:left;cursor:pointer;transition:.18s ease;min-width:0}
+.public-page-layout-card:hover{transform:translateY(-2px);border-color:#d1a24e;box-shadow:0 12px 28px rgba(22,25,35,.08)}
+.public-page-layout-card.active{border-color:#c8101b;box-shadow:0 0 0 2px rgba(200,16,27,.09)}
+.public-page-layout-card>span{display:grid;gap:3px;padding:8px 2px 2px}.public-page-layout-card>span b{font-size:11px;color:#202633}.public-page-layout-card>span small{font-size:9px;line-height:1.35;color:#858b98}
+.public-page-layout-card>i{position:absolute;right:14px;top:14px;width:22px;height:22px;border-radius:50%;display:none;place-items:center;background:#c8101b;color:#fff;font-size:10px;font-style:normal}.public-page-layout-card.active>i{display:grid}
+.public-layout-thumb{height:122px;border-radius:10px;border:1px solid #e7e3dc;background:#faf8f3;padding:12px;position:relative;overflow:hidden}
+.public-layout-thumb .pl-kicker{display:block;font-size:7px;font-weight:900;letter-spacing:.1em;color:#a57529}.public-layout-thumb .pl-title{display:block;font-size:10px;margin-top:4px;color:#222735}.public-layout-thumb .pl-body{display:grid;gap:5px;margin-top:11px}.public-layout-thumb .pl-body i{display:block;height:16px;border:1px solid #ded9d0;border-radius:4px;background:#fff}.public-layout-thumb .pl-weight{position:absolute;right:10px;bottom:8px;font-size:9px;font-weight:900;color:#b4101a}
+.public-layout-thumb.criteria-table .pl-body i{border-radius:0;border-left:4px solid #7c171d}.public-layout-thumb.criteria-panels .pl-body{grid-template-columns:1fr 1fr}.public-layout-thumb.criteria-panels .pl-body i{height:28px;border-radius:7px}.public-layout-thumb.criteria-cards .pl-body{grid-template-columns:repeat(3,1fr)}.public-layout-thumb.criteria-cards .pl-body i{height:38px;border-radius:8px;background:linear-gradient(145deg,#fff,#fff3f3)}.public-layout-thumb.criteria-editorial .pl-body i{border:0;border-bottom:1px solid #d9d5cd;background:transparent;border-radius:0}.public-layout-thumb.criteria-dark{background:linear-gradient(145deg,#171922,#3b1015);border-color:#3e2d31}.public-layout-thumb.criteria-dark .pl-kicker{color:#e4bd70}.public-layout-thumb.criteria-dark .pl-title{color:#fff}.public-layout-thumb.criteria-dark .pl-body i{background:#282b35;border-color:#3d414d}.public-layout-thumb.criteria-dark .pl-weight{color:#f2ca77}
+@media(max-width:700px){.public-page-layout-gallery{grid-template-columns:1fr}.page-designer-tabs{grid-template-columns:1fr 1fr}}

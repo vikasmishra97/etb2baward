@@ -17,7 +17,8 @@
     <nav class="nav">
       <a href="index.html"><span class="ico">⌂</span><span>Home</span></a><div class="nav-label">Build</div><a href="award.html"><span class="ico">◇</span><span>Award</span></a><a class="active" href="website.html"><span class="ico">▣</span><span>Website</span></a><a href="categories.html"><span class="ico">▦</span><span>Categories</span></a><a href="entry-form.html"><span class="ico">☷</span><span>Entry Form</span></a><a href="pricing.html"><span class="ico">₹</span><span>Pricing</span></a><div class="nav-label">Operate</div><a href="entries.html"><span class="ico">⇩</span><span>Entries</span></a>
       <div class="nav-label">Grow</div><a href="audience.html"><span class="ico">◉</span><span>Audience</span></a><a href="campaigns.html"><span class="ico">✉</span><span>Campaigns</span></a><a href="automations.html"><span class="ico">⚡</span><span>Automations</span></a>
-      <div class="nav-label">Judge</div><a href="scoring.html"><span class="ico">★</span><span>Criteria</span></a><a href="judges.html"><span class="ico">♟</span><span>Judges</span></a><a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a><a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a><div class="nav-label">Celebrate</div><a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a><a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a><a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
+      <div class="nav-label">Judge</div><a href="judges.html"><span class="ico">♟</span><span>Judges</span></a><a href="scoring.html"><span class="ico">★</span><span>Scoring</span></a><a href="shortlist.html"><span class="ico">✓</span><span>Shortlist</span></a><a href="winners.html"><span class="ico">🏆</span><span>Winners</span></a>
+      <div class="nav-label">Celebrate</div><a href="winner-gallery.html"><span class="ico">✦</span><span>Winner Gallery</span></a><a href="certificates.html"><span class="ico">▤</span><span>Certificates</span></a><a href="ceremony.html"><span class="ico">◫</span><span>Ceremony</span></a>
       <div class="nav-label">Insights</div><a href="reports.html"><span class="ico">⌁</span><span>Reports</span></a><div class="nav-label">System</div><a href="settings.html"><span class="ico">⚙</span><span>Settings</span></a>
     </nav>
   </aside>
@@ -255,7 +256,17 @@
 <div class="page-designer-modal" id="publicPageModal" aria-hidden="true">
   <section class="page-designer-drawer" role="dialog" aria-modal="true">
     <header><div><small>AWARD PAGE DESIGNER</small><h2 id="publicPageTitle">Categories</h2><p id="publicPageSubtitle">Edit page content and navigation label.</p></div><button type="button" id="closePublicPageModal" aria-label="Close">×</button></header>
-    <div class="page-designer-body" id="publicPageEditor"></div>
+    <div class="page-designer-tabs" id="publicPageDesignerTabs">
+      <button type="button" class="active" data-public-page-tab="content">Content &amp; data</button>
+      <button type="button" data-public-page-tab="layout">Layout Design</button>
+    </div>
+    <div class="page-designer-body">
+      <div class="public-page-panel active" data-public-page-panel="content"><div id="publicPageEditor"></div></div>
+      <div class="public-page-panel" data-public-page-panel="layout">
+        <div class="page-layout-note"><b>Layout Design</b><span>Choose how category-wise judging criteria appear on the public page. The criteria data and weightage stay unchanged.</span></div>
+        <div id="publicPageLayoutGallery" class="public-page-layout-gallery"></div>
+      </div>
+    </div>
     <footer><a class="btn secondary" id="publicPagePreview" href="#" target="_blank">Open public page ↗</a><button type="button" class="btn primary" id="savePublicPage">Done</button></footer>
   </section>
 </div>
