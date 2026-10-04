@@ -71,8 +71,15 @@
               <div class="round-toggle-card"><span class="toggle-copy"><b>Previous scores</b><small>Show earlier-level scores</small></span><label class="premium-switch"><input type="checkbox" id="levelPreviousScores"><span></span></label></div>
             </div>
             <div class="category-config-block">
-              <div class="category-config-head"><div><b>Categories in this level</b><small>Choose what this jury round will evaluate</small></div><button type="button" class="text-action" id="selectAllLevelCategories">Select all</button></div>
-              <div class="premium-category-checks" id="juryLevelCategories"></div>
+              <div class="category-config-head"><div><b>Categories in this level</b><small>Choose what this jury round will evaluate</small></div></div>
+              <div class="category-multiselect" id="levelCategoryMulti">
+                <button type="button" class="category-multiselect-trigger" id="levelCategoryTrigger"><span id="levelCategorySummary">Select categories</span><span class="chevron">⌄</span></button>
+                <div class="category-multiselect-menu" id="levelCategoryMenu">
+                  <div class="category-search"><span>⌕</span><input id="levelCategorySearch" placeholder="Search categories"></div>
+                  <label class="category-select-all"><input type="checkbox" id="levelCategorySelectAll"> <b>Select all</b></label>
+                  <div class="category-multiselect-list" id="juryLevelCategories"></div>
+                </div>
+              </div>
             </div>
           </div>
           <aside class="round-actions-panel">
@@ -127,6 +134,14 @@
           <select id="nominationAssignmentFilter"><option value="all">All assignments</option><option value="unassigned">Needs jury</option><option value="assigned">Assigned</option></select>
         </div>
         <div class="nomination-table-wrap"><table class="nomination-table premium-table"><thead><tr><th><input type="checkbox" id="selectAllNominations"></th><th>Nomination ID</th><th>Nominee / Company</th><th>Category</th><th>Status</th><th>Jury assignment</th><th></th></tr></thead><tbody id="nominationRows"></tbody></table></div>
+        <div class="selection-action-bar" id="selectionActionBar" aria-hidden="true">
+          <div class="selection-copy"><span id="selectedNominationCount">0</span> nomination(s) selected</div>
+          <div class="selection-actions">
+            <button class="btn premium-primary" id="stickyAssignJury">Assign Jury</button>
+            <button class="btn premium-secondary" id="stickyUnassignJury">Unassign Jury</button>
+            <button class="btn ghost" id="stickyClearSelection">Clear</button>
+          </div>
+        </div>
       </section>
 
       <div class="judge-next-step premium-next section"><div><span>READY FOR JUDGING</span><h2>Once assignments are complete, jurors only see the nominations allocated to their login.</h2><p>Scores follow the criteria configured in the Scoring module.</p></div><a class="btn premium-primary" href="jury-login.html">Open Jury Login →</a></div>
@@ -146,7 +161,16 @@
       <div class="field"><label>Jury portal password *</label><div class="jury-password-field"><input id="newJudgePassword" type="text" placeholder="Create or generate password"><button class="btn ghost compact" id="generateJuryPassword" type="button">Generate</button></div></div>
       <div class="field"><label>Expertise</label><div class="expertise-picker" id="expertisePicker"><button type="button" data-exp="FinTech">FinTech</button><button type="button" data-exp="Payments">Payments</button><button type="button" data-exp="AI & Data">AI & Data</button><button type="button" data-exp="Lending">Lending</button><button type="button" data-exp="Startups">Startups</button><button type="button" data-exp="Cybersecurity">Cybersecurity</button></div></div>
       <div class="judge-ai-match"><span>✦</span><div><b>AI category matching</b><p id="matchText">Choose expertise and I’ll recommend categories.</p></div><button id="matchCategories" type="button">Match</button></div>
-      <div class="field"><label>Categories</label><div class="category-checks" id="inviteCategories"></div></div>
+      <div class="field"><label>Select Categories *</label>
+        <div class="category-multiselect drawer-multiselect" id="inviteCategoryMulti">
+          <button type="button" class="category-multiselect-trigger" id="inviteCategoryTrigger"><span id="inviteCategorySummary">None selected</span><span class="chevron">⌄</span></button>
+          <div class="category-multiselect-menu" id="inviteCategoryMenu">
+            <div class="category-search"><span>⌕</span><input id="inviteCategorySearch" placeholder="Search categories"></div>
+            <label class="category-select-all"><input type="checkbox" id="inviteCategorySelectAll"> <b>Select all</b></label>
+            <div class="category-multiselect-list" id="inviteCategories"></div>
+          </div>
+        </div>
+      </div>
       <label class="judge-checkbox"><input type="checkbox" id="requireConflict" checked> Require conflict-of-interest declaration</label>
     </div>
     <div class="judge-drawer-foot"><button class="btn secondary" data-close-drawer>Cancel</button><button class="btn primary" id="sendInvite">Save jury member</button></div>

@@ -3,6 +3,9 @@
   const SESSION_KEY='etb2b_jury_session_v1';
   const form=document.getElementById('juryLoginForm');
   const error=document.getElementById('juryLoginError');
+  const params=new URLSearchParams(location.search);
+  const prefill=params.get('email');
+  if(prefill)document.getElementById('juryEmail').value=prefill;
   document.getElementById('showJuryPassword').addEventListener('change',e=>document.getElementById('juryPassword').type=e.target.checked?'text':'password');
   form.addEventListener('submit',e=>{
     e.preventDefault();
