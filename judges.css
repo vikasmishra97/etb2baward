@@ -101,44 +101,12 @@
   }
 }
 
-/* Assignment modal: level-first flow */
-.assignment-level-block{display:grid;grid-template-columns:minmax(0,220px) minmax(220px,1fr);gap:7px 14px;align-items:center;padding:14px 15px;margin-bottom:16px;border:1px solid #e3e7ee;border-radius:12px;background:#f8f9fb}
-.assignment-level-block label{font-size:12px;font-weight:900;color:#242b3a}
-.assignment-level-block select{height:42px;border:1px solid #d9dee7;border-radius:9px;padding:0 12px;background:#fff;color:#171d2b;font-size:13px;font-weight:800;outline:none}
-.assignment-level-block select:focus{border-color:#d71920;box-shadow:0 0 0 3px rgba(215,25,32,.08)}
-.assignment-level-block small{grid-column:1/-1;color:#747d8e;font-size:11px;line-height:1.45}
-.assignment-jury-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 9px;font-size:12px;font-weight:900;color:#313949}
-.assignment-jury-head small{font-weight:700;color:#7e8796}
-.assignment-editor-row input[type="checkbox"]{width:16px;height:16px;accent-color:#d71920;flex:0 0 auto}
-.assignment-editor-row:hover{border-color:#cfd5df;background:#fafbfc}
-.assignment-editor-row.recommended:hover{border-color:#95d5a6;background:#f2fff5}
-@media(max-width:640px){.assignment-level-block{grid-template-columns:1fr}.assignment-level-block small{grid-column:auto}.assignment-jury-head{align-items:flex-start;flex-direction:column;gap:3px}}
 
-
-/* ===== Cumulative jury UI fixes ===== */
-.premium-workspace{grid-template-columns:minmax(0,1fr)!important}
-.assignment-health-card{display:none!important}
-.jury-more-row td{padding:12px 0 2px!important;background:#fff!important;border-bottom:0!important;text-align:center}
-.jury-more-btn{display:inline-flex;align-items:center;justify-content:center;min-width:190px;height:40px;padding:0 18px;border:1px solid #d9dfe8;border-radius:10px;background:#fff;color:#182033;font-size:12px;font-weight:850;cursor:pointer;transition:.18s ease;box-shadow:0 3px 10px rgba(15,23,42,.04)}
-.jury-more-btn:hover{border-color:#d71920;color:#d71920;background:#fff7f7;transform:translateY(-1px)}
-.jury-list-table th:nth-last-child(1),.jury-list-table td:nth-last-child(1){width:132px;min-width:132px;white-space:nowrap}
-.jury-actions{display:flex!important;align-items:center!important;justify-content:flex-start;gap:7px!important;flex-wrap:nowrap!important;white-space:nowrap}
-.jury-actions .jury-icon-btn{width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;padding:0!important;display:inline-grid!important;place-items:center!important;border:1px solid #dbe1ea!important;border-radius:9px!important;background:#fff!important;color:#344054!important;box-shadow:none!important;transition:.18s ease}
-.jury-actions .jury-icon-btn svg{width:16px;height:16px;fill:currentColor;pointer-events:none}
-.jury-actions .jury-icon-btn:hover{color:#d71920!important;border-color:#efb6b9!important;background:#fff7f7!important;transform:translateY(-1px)}
-.jury-actions .login-jury-btn{background:#171c2c!important;border-color:#171c2c!important;color:#fff!important}
-.jury-actions .login-jury-btn:hover{background:#d71920!important;border-color:#d71920!important;color:#fff!important}
-/* Compact, cleaner category picker inside Add Jury Member */
-.drawer-multiselect .category-multiselect-menu{position:relative!important;top:6px!important;margin:0 0 6px!important;padding:8px!important;max-height:250px!important;border-radius:10px!important;background:#fff!important}
-.drawer-multiselect .category-search{height:38px!important;margin-bottom:5px!important}
-.drawer-multiselect .category-select-all{padding:7px 8px!important;font-size:12px!important}
-.drawer-multiselect .category-multiselect-list{max-height:160px!important;padding:2px 0!important}
-.drawer-multiselect .category-multiselect-list label{padding:7px 8px!important;font-size:12px!important;align-items:center!important}
-.drawer-multiselect .category-multiselect-list input{margin-top:0!important}
-@media(max-width:760px){.jury-list-table th:nth-last-child(1),.jury-list-table td:nth-last-child(1){width:124px;min-width:124px}.jury-actions{gap:6px!important}.jury-actions .jury-icon-btn{width:32px!important;height:32px!important;min-width:32px!important;min-height:32px!important}}
-
-/* Category selector reliability fix */
-.category-multiselect.open{z-index:500!important}
-.category-multiselect.open .category-multiselect-menu{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
-.round-config-shell,.round-config-main,.category-config-block,.premium-round-card{overflow:visible!important}
-#levelCategoryMenu{z-index:520!important;min-height:120px}
+/* ===== Add Jury Member category dropdown reliability fix ===== */
+#inviteCategoryMulti{position:relative;z-index:6}
+#inviteCategoryMulti .category-multiselect-trigger{position:relative;z-index:2;cursor:pointer;pointer-events:auto}
+#inviteCategoryMulti .category-multiselect-menu{display:none;position:relative!important;left:auto;right:auto;top:8px!important;width:100%;max-height:320px;margin:0 0 10px;background:#fff;border:1px solid #dfe3ea;border-radius:12px;box-shadow:0 10px 28px rgba(15,23,42,.10);overflow:hidden;z-index:10;pointer-events:auto}
+#inviteCategoryMulti.open .category-multiselect-menu{display:block!important}
+#inviteCategoryMulti .category-multiselect-list{max-height:210px;overflow-y:auto;overscroll-behavior:contain}
+#inviteCategoryMulti .category-search{position:sticky;top:0;background:#fff;z-index:2}
+#inviteCategoryMulti .category-select-all{position:sticky;top:48px;background:#fff;z-index:1}
