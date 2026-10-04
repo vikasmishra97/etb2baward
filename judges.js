@@ -58,7 +58,11 @@
   const currentLevel=()=>levels.find(l=>Number(l.level)===Number(selectedLevel))||levels[0];
   const levelJudges=()=>judges.filter(j=>Number(j.level||1)===Number(selectedLevel));
   const eligibleNominations=()=>{const base=nominations.filter(n=>n.submission==='Submitted'&&n.payment==='Paid'&&currentLevel().categories.includes(n.category));if(Number(selectedLevel)===1)return base;const ids=new Set(progress[`level${selectedLevel}_ids`]||[]);return base.filter(n=>ids.has(n.id))};
+  // Common paid/submitted pool used by the reporting + assignment desk.
+  // This intentionally does not depend on the currently selected jury level.
+  const paidSubmittedNominations=()=>nominations.filter(n=>n.submission==='Submitted'&&n.payment==='Paid');
   const assignedIdsFor=(nomId)=>((assignments[String(selectedLevel)]||{})[nomId]||[]).map(String);
+  const hasAnyAssignment=(nomId)=>levels.some(l=>assignmentIdsAtLevel(l.level,nomId).length>0);
   const nominationCountForJudge=id=>eligibleNominations().filter(n=>assignedIdsFor(n.id).includes(String(id))).length;
   const persist=()=>{write(JUDGE_KEY,judges);write(LEVEL_KEY,levels);write(NOM_KEY,nominations);write(ASSIGN_KEY,assignments);write(PROGRESS_KEY,progress)};
 
@@ -176,7 +180,8 @@
   }
   function renderNominationFilters(){
     const f=$('#nominationCategoryFilter'), old=f.value||'all';
-    f.innerHTML='<option value="all">All categories</option>'+currentLevel().categories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+    const reportCategories=[...new Set(paidSubmittedNominations().map(n=>n.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    f.innerHTML='<option value="all">All categories</option>'+reportCategories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
     f.value=[...f.options].some(o=>o.value===old)?old:'all';
   }
   function assignmentHistory(nomId){
@@ -184,23 +189,27 @@
   }
   function renderNominations(){
     const q=($('#nominationSearch').value||'').toLowerCase().trim(), cat=$('#nominationCategoryFilter').value, af=$('#nominationAssignmentFilter').value;
-    let rows=eligibleNominations();
+    let rows=paidSubmittedNominations();
     rows=rows.filter(n=>!q||`${n.id} ${n.company} ${n.nominee} ${n.category} ${n.email||''}`.toLowerCase().includes(q));
     if(cat!=='all')rows=rows.filter(n=>n.category===cat);
-    if(af==='assigned')rows=rows.filter(n=>assignedIdsFor(n.id).length);if(af==='unassigned')rows=rows.filter(n=>!assignedIdsFor(n.id).length);
+    if(af==='assigned')rows=rows.filter(n=>hasAnyAssignment(n.id));
+    if(af==='unassigned')rows=rows.filter(n=>!hasAnyAssignment(n.id));
     $('#nominationRows').innerHTML=rows.length?rows.map(n=>{
-      const ids=assignedIdsFor(n.id), js=ids.map(id=>judges.find(j=>String(j.id)===id)).filter(Boolean), history=assignmentHistory(n.id);
-      const historyHtml=history.map(h=>`<span class="assignment-level-badge ${h.assigned?'assigned':''} ${Number(h.level)===Number(selectedLevel)?'current':''}">L${h.level} ${h.assigned?`Assigned · ${h.assigned}`:'Not assigned'}</span>`).join('');
+      const history=assignmentHistory(n.id);
+      const historyHtml=history.map(h=>`<span class="assignment-level-badge ${h.assigned?'assigned':''}">L${h.level} ${h.assigned?`Assigned · ${h.assigned}`:'Not assigned'}</span>`).join('');
+      const assignedHistory=history.filter(h=>h.assigned);
+      const assignmentHtml=assignedHistory.length?`<div class="assignment-history-list">${assignedHistory.map(h=>`<div class="assignment-history-row"><span class="assignment-history-level">L${h.level}</span><div class="assigned-jury-list">${h.names.map(name=>`<span>${esc(name)}</span>`).join('')||'<span>Assigned jury</span>'}</div></div>`).join('')}</div>`:'<span class="unassigned-pill">Not assigned to any level</span>';
       return `<tr>
       <td><input type="checkbox" class="nomination-select" value="${esc(n.id)}"></td>
       <td><b class="nomination-id">${esc(n.id)}</b><div class="assignment-level-strip">${historyHtml}</div></td>
       <td><b>${esc(n.nominee||n.company)}</b><small>${esc(n.company)}${n.email?` · ${esc(n.email)}`:''}</small></td>
       <td><span class="category-badge">${esc(n.category)}</span></td>
       <td><span class="paid-pill">✓ Paid & submitted</span></td>
-      <td>${js.length?`<div class="assigned-jury-list">${js.map(j=>`<span>${esc(j.name)}</span>`).join('')}</div>`:'<span class="unassigned-pill">Needs jury</span>'}</td>
-      <td><button class="btn premium-secondary compact" data-assign-nomination="${esc(n.id)}">${js.length?'Manage':'Assign'}</button></td>
+      <td>${assignmentHtml}</td>
+      <td><button class="btn premium-secondary compact" data-assign-nomination="${esc(n.id)}">${assignedHistory.length?'Manage':'Assign'}</button></td>
     </tr>`}).join(''):`<tr><td colspan="7"><div class="empty-state">No paid & submitted nominations match these filters.</div></td></tr>`;
   }
+
   function bestJurorForCategory(category){
     const jurors=levelJudges().filter(j=>j.enabled!==false);
     if(!jurors.length)return null;
@@ -212,12 +221,21 @@
   }
   function renderCategoryIntelligence(){
     const grid=$('#categoryIntelligenceGrid');if(!grid)return;
-    const eligible=eligibleNominations();
-    grid.innerHTML=currentLevel().categories.map(cat=>{
-      const rows=eligible.filter(n=>n.category===cat), assigned=rows.filter(n=>assignedIdsFor(n.id).length).length, unassigned=rows.length-assigned, pct=rows.length?Math.round(assigned/rows.length*100):100, best=bestJurorForCategory(cat);
-      return `<article class="category-intel-card"><div class="category-intel-top"><h3>${esc(cat)}</h3><span class="category-total">${rows.length} paid</span></div><div class="category-progress"><span style="width:${pct}%"></span></div><div class="category-intel-stats"><span><b>${assigned}</b> assigned</span><span><b>${unassigned}</b> need jury</span><span><b>${pct}%</b> covered</span></div><div class="category-ai-line"><div class="category-ai-copy"><small>AI best fit</small><b>${esc(best?.name||'Add jury member')}</b></div><button class="category-view-btn" data-view-category="${esc(cat)}">View ${rows.length}</button></div></article>`;
-    }).join('')||'<div class="empty-state">No categories selected for this level.</div>';
+    const paid=paidSubmittedNominations();
+    const reportCategories=[...new Set(paid.map(n=>n.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    grid.innerHTML=reportCategories.map(cat=>{
+      const rows=paid.filter(n=>n.category===cat);
+      const assignedAny=rows.filter(n=>hasAnyAssignment(n.id)).length;
+      const unassigned=rows.length-assignedAny;
+      const pct=rows.length?Math.round(assignedAny/rows.length*100):100;
+      const levelStats=levels.map(l=>{
+        const count=rows.filter(n=>assignmentIdsAtLevel(l.level,n.id).length).length;
+        return `<span class="report-level-chip ${count?'has-assignment':''}">L${l.level} <b>${count}</b>/${rows.length}</span>`;
+      }).join('');
+      return `<article class="category-intel-card report-category-card"><div class="category-intel-top"><h3>${esc(cat)}</h3><span class="category-total">${rows.length} paid</span></div><div class="category-progress"><span style="width:${pct}%"></span></div><div class="category-intel-stats"><span><b>${assignedAny}</b> assigned</span><span><b>${unassigned}</b> unassigned</span><span><b>${pct}%</b> covered</span></div><div class="report-levels"><small>Assigned by jury level</small><div>${levelStats}</div></div><div class="category-report-action"><button class="category-view-btn" data-view-category="${esc(cat)}">View ${rows.length} nominations</button></div></article>`;
+    }).join('')||'<div class="empty-state">No paid & submitted nominations yet.</div>';
   }
+
   function updateRoundStatus(){
     const title=$('#roundStatusTitle'), text=$('#roundStatusText');if(!title||!text)return;
     const cats=currentLevel().categories.length, jurors=levelJudges().length;
@@ -273,7 +291,9 @@
   }
   function openAssign(ids){
     assignmentTargets=[...new Set(ids)];if(!assignmentTargets.length)return toast('Select at least one nomination');
-    assignmentLevel=Number(selectedLevel);
+    const firstTarget=assignmentTargets[0];
+    const firstOpenLevel=assignmentTargets.length===1?levels.find(l=>assignmentIdsAtLevel(l.level,firstTarget).length===0):null;
+    assignmentLevel=Number(firstOpenLevel?.level||selectedLevel);
     const nom=assignmentTargets.length===1?nominations.find(n=>n.id===assignmentTargets[0]):null;
     $('#assignNominationTitle').textContent=nom?`Assign ${nom.id}`:`Assign ${assignmentTargets.length} nominations`;
     $('#assignNominationSubtitle').textContent=nom?`${nom.company} · ${nom.category}`:'Choose a jury level first, then select the jury members for these nominations.';
