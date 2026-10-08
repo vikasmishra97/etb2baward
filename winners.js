@@ -116,7 +116,8 @@
     }
     if(!$('#publishWebsite').checked){alert('Enable Publish website in Embargo and release settings first.');return}
     if(!confirm('Prepare '+released.length+' categories for public winner announcement? This will download a JSON file, NOT push it to GitHub.'))return;
-    var payload={type:'winners',generatedAt:new Date().toISOString(),categories:released.map(function(c){return{category:c.name,recipients:categoryRecipients(c).map(function(f){return{name:f.name,award:recipientLabel(f.award),category:c.name}})}})};
+    var awardInfo={};try{awardInfo=JSON.parse(localStorage.getItem('etb2b_awards_new_award')||'{}')||{}}catch(e){}
+    var payload={type:'winners',schemaVersion:2,awardName:awardInfo.name||'ETB2B Awards',generatedAt:new Date().toISOString(),categories:released.map(function(c){return{id:c.id,category:c.name,recipients:categoryRecipients(c).map(function(f){return{id:f.id,name:f.name,tag:f.tag||'',award:recipientLabel(f.award),category:c.name}})}})};
     var url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'})),a=document.createElement('a');a.href=url;a.download='published-winners.json';a.click();setTimeout(function(){URL.revokeObjectURL(url)},1000);
     $('#winnersPublishNote').textContent='Winner publication file prepared. Commit published-winners.json to your public website repository and connect the winner gallery to this file.';
   }
