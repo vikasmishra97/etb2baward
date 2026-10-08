@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Winners - ETB2B Awards</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="winners.css">
+  <link rel="stylesheet" href="winners.css"><link rel="stylesheet" href="publication-ui.css">
 </head>
 <body>
 <div class="app">
@@ -50,10 +50,11 @@
         </div>
         <div class="top-actions">
           <button class="btn secondary" id="previewAnnouncement">Preview announcement</button>
-          <button class="btn primary" id="saveWinners">Save decisions</button>
+          <button class="btn secondary" id="saveWinners">Save decisions</button><button class="btn primary" id="publishWinners">Publish winners ↗</button>
         </div>
       </div>
 
+      <div class="wn-publication-note" role="status" id="winnersPublishNote">Publish winners only after decisions are locked, verified and the release embargo has ended. A GitHub-ready JSON file will be downloaded.</div>
       <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage active">DECIDE</div><div class="stage">CELEBRATE</div></div>
 
       <section class="wn-kpis">
@@ -132,9 +133,6 @@
           <section class="card pad wn-audit-card section">
             <div class="section-title"><div><h2>Decision audit trail</h2><span>Winner changes, approvals, verification, and locks</span></div><button class="btn secondary compact" id="exportAudit">Export audit</button></div>
             <div class="wn-audit-list" id="auditList">
-              <div><span>13:20</span><i class="good"></i><p><b>Shortlist snapshot loaded</b><small>Finalists imported from the locked decision stage.</small></p></div>
-              <div><span>13:24</span><i class="good"></i><p><b>Jury sign-off recorded</b><small>Best Digital Lending approved by panel chair.</small></p></div>
-              <div><span>13:29</span><i class="warn"></i><p><b>Winner consent pending</b><small>NovaPay Technologies contact has not confirmed publication consent.</small></p></div>
             </div>
           </section>
         </div>
