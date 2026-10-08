@@ -104,13 +104,17 @@
     renderSubmittedForm(currentEntry);renderCriteria(prev);$('#reviewShell').classList.add('open');$('#reviewShell').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
   }
   function closeScore(){$('#reviewShell').classList.remove('open');$('#reviewShell').setAttribute('aria-hidden','true');document.body.style.overflow='';currentEntry=null;currentCriteria=[]}
-  function save(status){
+  async function save(status){
     if(!currentEntry)return;const scores=selectedScores();
     if(status==='submitted'&&currentCriteria.some(c=>scores[c.id]===undefined)){alert('Please score every criterion before submitting.');return}
     const total=calculateTotal(scores);
     // Re-read before writing so newer submissions from another tab are not overwritten.
     reviews=read(REVIEW_KEY,{});
     reviews[key(currentEntry)]={status,scores,comments:$('#juryComments').value.trim(),total,updatedAt:new Date().toISOString(),nominationId:currentEntry.id,category:currentEntry.category,level:levelNo,juryId:jury.id,criteriaSnapshot:currentCriteria.map(c=>({id:c.id,name:c.name,description:c.description||'',weight:Number(c.weight||0),scale:Number(c.scale||5)}))};
+    if(window.ETB2BSharedReviews?.enabled){
+      try { await window.ETB2BSharedReviews.saveReview(reviews[key(currentEntry)]); }
+      catch(error){ alert('Shared evaluation was NOT saved: '+error.message+'\nPlease sign into shared reviews and try again.');return; }
+    }
     localStorage.setItem(REVIEW_KEY,JSON.stringify(reviews));closeScore();render();alert(status==='submitted'?'Evaluation submitted successfully.':'Draft saved successfully.');
   }
 
@@ -121,4 +125,15 @@
   $('#scoringGuide').addEventListener('click',()=>{const cats=[...new Set(entries().map(e=>e.category))];const msg=cats.map(cat=>`${cat}\n${criteriaForCategory(cat).map(c=>`• ${c.name}: ${c.weight}%`).join('\n')}`).join('\n\n');alert(msg||'No scoring criteria are available yet.')});
   $('#conflictsHelp').addEventListener('click',()=>alert('If you have a conflict of interest with an assigned nomination, contact the award administrator before reviewing it.'));
   render();
+  if(window.ETB2BSharedReviews?.enabled){
+    (async()=>{
+      const api=window.ETB2BSharedReviews;
+      let user=await api.restore().catch(()=>null);
+      if(user?.role==='juror'&&String(user.juror_id)===String(jury.id))return;
+      const shell=document.createElement('div');shell.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(12,22,40,.80);display:grid;place-items:center;padding:20px';
+      shell.innerHTML='<form style="background:white;border-radius:16px;padding:26px;max-width:400px;width:100%;box-shadow:0 24px 64px #0003;display:grid;gap:14px"><h2 style="margin:0">Connect jury reviews</h2><p style="margin:0;color:#526073">Sign in with your shared database jury account to submit evaluations across devices.</p><input required type="email" autocomplete="username" placeholder="Email" style="padding:12px;border:1px solid #d8dfe8;border-radius:8px"><input required type="password" autocomplete="current-password" placeholder="Password" style="padding:12px;border:1px solid #d8dfe8;border-radius:8px"><small role="alert" style="color:#bf1323"></small><button type="submit" style="background:#ba0b20;color:white;border:0;border-radius:9px;padding:12px;font-weight:bold">Connect securely</button></form>';
+      document.body.appendChild(shell);
+      shell.querySelector('form').addEventListener('submit',async e=>{e.preventDefault();const [email,password]=shell.querySelectorAll('input');const error=shell.querySelector('[role=alert]');try{user=await api.login(email.value,password.value);if(user.role!=='juror'||String(user.juror_id)!==String(jury.id))throw Error('Authenticated account does not match this jury session');shell.remove()}catch(ex){error.textContent=ex.message}});
+    })();
+  }
 })();

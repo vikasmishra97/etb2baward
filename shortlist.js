@@ -12,6 +12,20 @@ const key=(cat,lev)=>awardId+'::'+cat+'::'+lev;
 const records=()=>decisions[key(category,level)]||{items:{},locked:false};
 const idOf=n=>String(n.id??n.nominationId??'');
 const number=(x,f=0)=>Number.isFinite(Number(x))?Number(x):f;
+let sharedSyncPending=false;
+async function refreshSharedReviews(){
+ const api=window.ETB2BSharedReviews;if(!api?.enabled||sharedSyncPending)return;
+ sharedSyncPending=true;
+ try{
+  const list=await api.listSubmitted();const map=read(KEYS.reviews,{});
+  list.forEach(row=>{if(row.payload?.status==='submitted'&&String(row.payload.nominationId)===String(row.nomination_id))map[`${row.level}:${row.juror_id}:${row.nomination_id}`]=row.payload});
+  reviews=map;
+  // Shared data is held in memory to avoid silently overwriting existing local jury data.
+  render();
+  const stamp=document.querySelector('#sharedReviewState');if(stamp)stamp.textContent='Shared scores synced · '+list.length+' submissions';
+ }catch(e){const stamp=document.querySelector('#sharedReviewState');if(stamp)stamp.textContent='Shared sync failed: '+e.message;}
+ finally{sharedSyncPending=false}
+}
 function refreshData(){
   nominations=read(KEYS.nominations,[]);reviews=read(KEYS.reviews,{});assignments=read(KEYS.assignments,{});judges=read(KEYS.judges,[]);levels=read(KEYS.levels,[]);
   rules=(read(KEYS.rules,{})||{}).rules||{};
@@ -25,6 +39,7 @@ function refreshData(){
   const existing=options.some(l=>String(l.level)===String(level));if(!existing)level=String(options[0].level);
   $('#levelSelect').innerHTML=options.map(l=>`<option value="${esc(l.level)}">${esc(l.name||'Jury Level '+l.level)}</option>`).join('');$('#levelSelect').value=level;
   render();
+  refreshSharedReviews();
 }
 function assignedJurors(n){
  const map=assignments[String(level)]||{};
@@ -121,4 +136,17 @@ window.addEventListener('storage',e=>{if(Object.values(KEYS).includes(e.key))ref
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshData()});
 window.addEventListener('focus',refreshData);
 refreshData();
+if(window.ETB2BSharedReviews?.enabled){
+ (async()=>{
+  const api=window.ETB2BSharedReviews;let user=await api.restore().catch(()=>null);
+  if(user?.role!=='admin'){
+   const shell=document.createElement('div');shell.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(12,22,40,.8);display:grid;place-items:center;padding:20px';
+   shell.innerHTML='<form style="background:white;border-radius:16px;padding:26px;max-width:400px;width:100%;display:grid;gap:14px"><h2 style="margin:0">Connect live jury scores</h2><p style="margin:0;color:#526073">Admin authentication is required to view synchronized submissions.</p><input required type="email" autocomplete="username" placeholder="Admin email" style="padding:12px;border:1px solid #d8dfe8;border-radius:8px"><input required type="password" autocomplete="current-password" placeholder="Password" style="padding:12px;border:1px solid #d8dfe8;border-radius:8px"><small role="alert" style="color:#bf1323"></small><button type="submit" style="background:#ba0b20;color:white;border:0;border-radius:9px;padding:12px;font-weight:bold">Connect securely</button></form>';
+   document.body.appendChild(shell);
+   await new Promise(resolve=>shell.querySelector('form').addEventListener('submit',async e=>{e.preventDefault();const [email,password]=shell.querySelectorAll('input');try{user=await api.login(email.value,password.value);if(user.role!=='admin')throw Error('Admin account required');shell.remove();resolve()}catch(ex){shell.querySelector('[role=alert]').textContent=ex.message}}));
+  }
+  await refreshSharedReviews();
+  setInterval(()=>{if(!document.hidden)refreshSharedReviews()},15000);
+ })();
+}
 })();
