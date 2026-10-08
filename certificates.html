@@ -144,8 +144,12 @@
             <div class="field"><label>Certificate title</label><input id="certificateTitle" value="Certificate of Excellence"></div>
             <div class="field"><label>Recognition copy</label><textarea id="certificateCopy" rows="3">In recognition of outstanding achievement, innovation and contribution to the future of financial technology.</textarea></div>
           </section>
+        </aside>
+      </div>
 
-          <section class="card pad cert-panel">
+      <!-- Approval and delivery controls sit directly below the live certificate workspace. -->
+      <div class="cert-approval-grid">
+        <section class="card pad cert-panel">
             <div class="panel-title"><div><small>SIGNATURES</small><h2>Approval signatures</h2></div><span class="status-pill soft">2 signers</span></div>
             <div class="signature-settings">
               <div class="signature-setting">
@@ -158,15 +162,13 @@
               </div>
             </div>
           </section>
-
-          <section class="card pad cert-panel">
+        <section class="card pad cert-panel">
             <div class="panel-title"><div><small>TRUST</small><h2>Verification & delivery</h2></div><span class="status-pill green">Recommended</span></div>
             <label class="switch-row"><span><b>Certificate verification</b><small>Issue a unique ID and verification link.</small></span><input type="checkbox" id="enableVerification" checked></label>
             <label class="switch-row"><span><b>Winner email delivery</b><small>Prepare personalized delivery after generation.</small></span><input type="checkbox" id="emailDelivery" checked></label>
             <div class="field"><label>Issue date</label><input type="date" id="issueDate" value="2027-06-15"></div>
             <div class="verify-note">Verification in this static manager demo uses the current browser's certificate registry. Production will use a server-side public verification database.</div>
           </section>
-        </aside>
       </div>
 
       <section class="cert-bottom-grid">
