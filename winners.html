@@ -129,12 +129,6 @@
             <div class="section-title"><div><h2>Winner board</h2><span>One view across every category</span></div><button class="btn ghost compact" id="exportWinnerList">Export list</button></div>
             <div class="wn-winner-board" id="winnerBoard"></div>
           </section>
-
-          <section class="card pad wn-audit-card section">
-            <div class="section-title"><div><h2>Decision audit trail</h2><span>Winner changes, approvals, verification, and locks</span></div><button class="btn secondary compact" id="exportAudit">Export audit</button></div>
-            <div class="wn-audit-list" id="auditList">
-            </div>
-          </section>
         </div>
 
         <aside class="wn-side-col">
@@ -155,24 +149,6 @@
             <label class="wn-switch-row"><span><b>Winner emails</b><small>Send after embargo lifts</small></span><input type="checkbox" id="sendEmails" checked></label>
             <label class="wn-switch-row"><span><b>Publish website</b><small>Update winner gallery automatically</small></span><input type="checkbox" id="publishWebsite" checked></label>
             <label class="wn-switch-row"><span><b>Social assets</b><small>Prepare shareable winner creatives</small></span><input type="checkbox" id="socialAssets" checked></label>
-          </section>
-
-          <section class="card pad section wn-pack-card">
-            <div class="section-title"><div><h2>Celebration pack</h2><span>Generated from approved winner data</span></div><span class="badge" id="packStatus">Draft</span></div>
-            <div class="wn-pack-list">
-              <div><span>C</span><p><b>Certificates</b><small id="certStatus">4 of 5 ready</small></p><button data-pack="cert">Open</button></div>
-              <div><span>E</span><p><b>Winner emails</b><small id="emailStatus">4 personalized drafts</small></p><button data-pack="email">Open</button></div>
-              <div><span>W</span><p><b>Website gallery</b><small id="webStatus">Ready to sync</small></p><button data-pack="web">Preview</button></div>
-              <div><span>S</span><p><b>Social creatives</b><small id="socialStatus">12 assets prepared</small></p><button data-pack="social">Preview</button></div>
-            </div>
-            <button class="btn ghost wn-full-btn" id="generatePack">Generate / refresh pack</button>
-          </section>
-
-          <section class="card pad section wn-public-card">
-            <small>PUBLIC ANNOUNCEMENT</small>
-            <h2>Winner reveal is controlled</h2>
-            <p>No winner becomes public from this screen until the release controls are satisfied.</p>
-            <button class="btn secondary wn-full-btn" id="previewFromCard">Preview visitor view</button>
           </section>
         </aside>
       </div>
