@@ -254,3 +254,19 @@
 .workload-chip b{color:#b61824;font-size:10px}
 @media(max-width:1050px){.nomination-toolbar.premium-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))}.nomination-toolbar.premium-toolbar .premium-search{grid-column:1/-1}}
 @media(max-width:600px){.nomination-toolbar.premium-toolbar{grid-template-columns:1fr}.nomination-toolbar.premium-toolbar .premium-search{grid-column:auto}.workload-heading{align-items:flex-start;flex-direction:column}}
+
+/* Nomination review and level-specific desk actions */
+.nomination-row-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:178px}
+.nomination-row-actions .btn{white-space:nowrap}
+.nomination-row-actions .view-entry-btn{color:#c91a24;border-color:#efcfd2;background:#fff9f9}
+.entry-review-card{width:min(800px,96vw);display:flex;flex-direction:column;overflow:hidden}
+.entry-review-body{overflow:auto;padding:18px 22px;max-height:62vh}
+.entry-review-body h3{font-size:13px;color:#243044;margin:3px 0 12px}
+.entry-review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.entry-review-field{padding:10px 12px;border:1px solid #e8ebf0;border-radius:9px;background:#fbfcfe;min-width:0}
+.entry-review-field span{display:block;font-size:10px;color:#7e8797;margin-bottom:5px;text-transform:capitalize}
+.entry-review-field strong{display:block;font-size:12px;color:#172033;overflow-wrap:anywhere}
+.entry-review-level{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #e9edf2;padding:10px 2px;font-size:12px}
+.entry-review-level span{color:#667085;text-align:right}
+.entry-review-note{color:#7a8291;font-size:11px;line-height:1.6}
+@media(max-width:640px){.entry-review-grid{grid-template-columns:1fr}.entry-review-card .judge-drawer-foot{flex-wrap:wrap}.entry-review-card .judge-drawer-foot button{flex:1}.nomination-row-actions{min-width:150px}}

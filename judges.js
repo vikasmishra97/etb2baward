@@ -318,11 +318,33 @@
       <td><b>${esc(n.nominee||n.company)}</b><small>${esc(n.company)}${n.email?` · ${esc(n.email)}`:''}</small></td>
       <td><span class="category-badge">${esc(n.category)}</span></td>
       <td><span class="paid-pill">✓ Paid & submitted</span></td>
-      <td>${assignmentHtml}</td>
-      <td><button class="btn premium-secondary compact" data-assign-nomination="${esc(n.id)}">${assignedHistory.length?'Manage':'Assign'}</button></td>
+      <td>${level==='all'?assignmentHtml:(()=>{const current=history.find(x=>String(x.level)===String(level));return current?.assigned?`<div class="assignment-history-list"><div class="assignment-history-row"><span class="assignment-history-level">L${esc(level)}</span><div class="assigned-jury-list">${current.names.map(name=>`<span>${esc(name)}</span>`).join('')||'<span>Assigned jury</span>'}</div></div></div>`:`<span class="unassigned-pill">L${esc(level)} · Needs jury</span>`})()}</td>
+      <td><div class="nomination-row-actions"><button type="button" class="btn premium-secondary compact view-entry-btn" data-view-nomination="${esc(n.id)}">View entry</button><button type="button" class="btn premium-secondary compact" data-assign-nomination="${esc(n.id)}">${(level==='all'?assignedHistory.length:assignmentIdsAtLevel(level,n.id).length)?'Manage':'Assign'}</button></div></td>
     </tr>`}).join(''):`<tr><td colspan="7"><div class="empty-state">No paid & submitted nominations match these filters.</div></td></tr>`;
   }
 
+  // Read-only nomination review: the same paid/submitted record used by this desk.
+  // Do not invent responses for seeded records that have no full application data.
+  function openNominationPreview(id){
+    const nom=paidSubmittedNominations().find(n=>String(n.id)===String(id));
+    if(!nom)return toast('Nomination not found');
+    const modal=$('#nominationPreviewModal');
+    const report=[...read(nominationReportKey,[]),...read('etb2b_public_nomination_starters',[])].find(r=>String(r.nominationId||r.id)===String(id));
+    const merged={...(report||{}),...nom};
+    const field=(label,value)=>value!==undefined&&value!==null&&String(value).trim()!==''?`<div class="entry-review-field"><span>${esc(label)}</span><strong>${esc(Array.isArray(value)?value.join(', '):typeof value==='object'?'Available in original entry data':value)}</strong></div>`:'';
+    const omit=new Set(['id','nominationId','nominee','entrantName','company','name','category','submission','status','payment','paymentStatus','paid','paymentId','email','mobile','submittedAt','createdAt','updatedAt','formCompleted','awardSlug','awardId','slug']);
+    const extra=Object.entries(merged).filter(([key,value])=>!omit.has(key)&&value!=null&&value!==''&&typeof value!=='object').map(([key,value])=>field(key.replace(/([A-Z])/g,' $1').replace(/[_-]/g,' ').replace(/^./,a=>a.toUpperCase()),value)).join('');
+    $('#nominationPreviewTitle').textContent=`Nomination ${nom.id}`;
+    $('#nominationPreviewSubtitle').textContent=`${nom.nominee||nom.company} · ${nom.category}`;
+    const level=$('#nominationLevelFilter')?.value||'all';
+    $('#nominationPreviewDetails').innerHTML=`<div class="entry-review-grid">${field('Nomination ID',nom.id)}${field('Nominee',nom.nominee)}${field('Company',nom.company)}${field('Category',nom.category)}${field('Email',nom.email)}${field('Mobile',nom.mobile)}${field('Submission','Submitted')}${field('Payment','Paid')}${field('Submitted at',nom.submittedAt)}${extra}</div>${!extra?'<p class="entry-review-note">Only the nomination information available in this project is shown. Full application answers are not stored in this record.</p>':''}`;
+    $('#nominationPreviewLevels').innerHTML=assignmentHistory(nom.id).map(item=>`<div class="entry-review-level"><b>Level ${item.level}</b><span>${item.assigned?item.names.map(esc).join(', ')||`${item.assigned} juror(s)`:'Needs jury assignment'}</span></div>`).join('');
+    $('#previewAssignBtn').dataset.previewAssign=id;
+    $('#previewUnassignBtn').dataset.previewUnassign=id;
+    $('#previewUnassignBtn').disabled=level==='all'?!hasAnyAssignment(id):!assignmentIdsAtLevel(level,id).length;
+    modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+  }
+  function closeNominationPreview(){const modal=$('#nominationPreviewModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true')}
   function bestJurorForCategory(category){
     const jurors=levelJudges().filter(j=>j.enabled!==false);
     if(!jurors.length)return null;
@@ -454,7 +476,8 @@
     assignmentMode='assign';assignmentTargets=[...new Set(ids)];if(!assignmentTargets.length)return toast('Select at least one nomination');
     const firstTarget=assignmentTargets[0];
     const firstOpenLevel=assignmentTargets.length===1?levels.find(l=>assignmentIdsAtLevel(l.level,firstTarget).length===0):null;
-    assignmentLevel=Number(firstOpenLevel?.level||selectedLevel);
+    const filterLevel=$('#nominationLevelFilter')?.value;
+    assignmentLevel=filterLevel&&filterLevel!=='all'?Number(filterLevel):Number(firstOpenLevel?.level||selectedLevel);
     const nom=assignmentTargets.length===1?nominations.find(n=>n.id===assignmentTargets[0]):null;
     $('#assignNominationTitle').textContent=nom?`Assign ${nom.id}`:`Assign ${assignmentTargets.length} nominations`;
     $('#assignNominationSubtitle').textContent=nom?`${nom.company} · ${nom.category}`:'Choose a jury level first, then select the jury members for these nominations.';
@@ -511,7 +534,10 @@
   $$('#expertisePicker button').forEach(b=>b.addEventListener('click',()=>b.classList.toggle('active')));
   $('#levelJurySearch').addEventListener('input',renderJury);$('#levelJuryRows').addEventListener('click',e=>{const more=e.target.closest('[data-toggle-jury-list]'),assigned=e.target.closest('[data-view-jury-assignments]'),edit=e.target.closest('[data-edit-jury]'),copy=e.target.closest('[data-copy-login]'),login=e.target.closest('[data-open-login]'),toggle=e.target.closest('[data-toggle-jury]');if(more){showAllJury=!showAllJury;renderJury();return}if(assigned){openJuryAssignments(assigned.dataset.viewJuryAssignments);return}if(edit)editJudge(edit.dataset.editJury);if(copy)copyLogin(copy.dataset.copyLogin);if(login)openJuryLogin(login.dataset.openLogin);if(toggle){const j=judges.find(x=>String(x.id)===String(toggle.dataset.toggleJury));if(j){j.enabled=toggle.checked;persist();renderAll()}}});
   $('#nominationSearch').addEventListener('input',renderNominations);$('#nominationCategoryFilter').addEventListener('change',renderNominations);$('#nominationLevelFilter').addEventListener('change',renderNominations);$('#nominationAssignmentFilter').addEventListener('change',renderNominations);$('#clearNominationFilters').addEventListener('click',()=>{$('#nominationSearch').value='';$('#nominationCategoryFilter').value='all';$('#nominationLevelFilter').value='all';$('#nominationAssignmentFilter').value='all';renderNominations()});
-  $('#nominationRows').addEventListener('click',e=>{const b=e.target.closest('[data-assign-nomination]');if(b)openAssign([b.dataset.assignNomination]);if(e.target.matches('.nomination-select'))updateSelectionBar()});$('#assignSelectedBtn').addEventListener('click',()=>openAssign(selectedNominationIds()));$('#selectAllNominations').addEventListener('change',e=>{$$('.nomination-select').forEach(i=>i.checked=e.target.checked);updateSelectionBar()});$('#stickyAssignJury')?.addEventListener('click',()=>openAssign(selectedNominationIds()));$('#stickyUnassignJury')?.addEventListener('click',unassignSelected);$('#stickyClearSelection')?.addEventListener('click',clearNominationSelection);
+  $('#nominationRows').addEventListener('click',e=>{const v=e.target.closest('[data-view-nomination]'),b=e.target.closest('[data-assign-nomination]');if(v)openNominationPreview(v.dataset.viewNomination);else if(b)openAssign([b.dataset.assignNomination]);if(e.target.matches('.nomination-select'))updateSelectionBar()});$('#assignSelectedBtn').addEventListener('click',()=>openAssign(selectedNominationIds()));$('#selectAllNominations').addEventListener('change',e=>{$$('.nomination-select').forEach(i=>i.checked=e.target.checked);updateSelectionBar()});$('#stickyAssignJury')?.addEventListener('click',()=>openAssign(selectedNominationIds()));$('#stickyUnassignJury')?.addEventListener('click',unassignSelected);$('#stickyClearSelection')?.addEventListener('click',clearNominationSelection);
+  $$('[data-close-nomination-preview]').forEach(b=>b.addEventListener('click',closeNominationPreview));
+  $('#previewAssignBtn').addEventListener('click',e=>{const id=e.currentTarget.dataset.previewAssign;closeNominationPreview();openAssign([id])});
+  $('#previewUnassignBtn').addEventListener('click',e=>{const id=e.currentTarget.dataset.previewUnassign;closeNominationPreview();openUnassign([id])});
   $$('[data-close-assignment]').forEach(b=>b.addEventListener('click',closeAssign));$('#saveNominationAssignment').addEventListener('click',saveAssignment);$('#assignmentLevelSelect')?.addEventListener('change',e=>{assignmentLevel=Number(e.target.value||selectedLevel);renderAssignmentJuryPicker()});
   $('#aiAutoAssign').addEventListener('click',aiAssign);$('#aiRefresh').addEventListener('click',()=>{renderAiInsight();toast('Copilot insight refreshed')});$('#openJuryLogin').addEventListener('click',()=>window.open('jury-login.html','_blank'));
   $('#importJury').addEventListener('click',()=>$('#importJuryFile').click());$('#importJuryFile').addEventListener('change',e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{const lines=String(r.result).split(/\r?\n/).filter(Boolean);let added=0;lines.slice(1).forEach(line=>{const [name,email,company,role,level]=line.split(',').map(x=>x?.trim());if(name&&email&&!judges.some(j=>j.email.toLowerCase()===email.toLowerCase())){judges.push({id:Date.now()+added,name,email,company:company||'Independent',role:role||'Jury Member',level:Number(level||selectedLevel),password:`ET${Math.random().toString(36).slice(2,8).toUpperCase()}#`,expertise:[],categories:[...currentLevel().categories],enabled:true,status:'active',requireConflict:true});added++}});persist();renderAll();toast(`${added} jury member${added===1?'':'s'} imported`)};r.readAsText(f);e.target.value=''});
