@@ -270,3 +270,20 @@
 .entry-review-level span{color:#667085;text-align:right}
 .entry-review-note{color:#7a8291;font-size:11px;line-height:1.6}
 @media(max-width:640px){.entry-review-grid{grid-template-columns:1fr}.entry-review-card .judge-drawer-foot{flex-wrap:wrap}.entry-review-card .judge-drawer-foot button{flex:1}.nomination-row-actions{min-width:150px}}
+
+/* One-action nomination desk: entry review and jury operations live inside Manage. */
+.nomination-manage-btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-width:104px;border-radius:10px!important;padding:10px 14px!important;font-weight:700;white-space:nowrap}
+.nomination-manage-btn span{font-size:17px;color:#d21d29;line-height:1}
+.nomination-preview-modal .entry-review-card{width:min(760px,calc(100vw - 32px));max-height:min(90vh,860px);border-radius:18px}
+.nomination-preview-modal .judge-modal-head{padding:20px 24px 16px}
+.nomination-preview-modal .entry-review-body{padding:20px 24px;max-height:none;flex:1;min-height:0;overflow-y:auto}
+.entry-review-section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 12px}
+.entry-review-section-head h3{margin:0;font-size:14px;font-weight:800}
+.entry-review-section-head span{color:#7f899c;font-size:11px}
+.nomination-preview-modal .entry-review-grid{gap:10px;margin-bottom:22px}
+.nomination-preview-modal .entry-review-field{border-radius:11px;padding:12px 14px}
+.nomination-preview-modal .entry-review-level{padding:13px 4px}
+.nomination-preview-modal .judge-drawer-foot{display:flex;gap:10px;align-items:center;justify-content:flex-end;padding:16px 24px;border-top:1px solid #e8ebf1;background:#fff}
+.nomination-preview-modal .judge-drawer-foot button{white-space:nowrap}
+.nomination-preview-modal #previewUnassignBtn:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:640px){.nomination-preview-modal .judge-modal-head{padding:18px 16px}.nomination-preview-modal .entry-review-body{padding:16px}.nomination-preview-modal .judge-drawer-foot{padding:14px 16px;flex-wrap:wrap}.nomination-preview-modal .judge-drawer-foot button{flex:1 1 auto}.nomination-preview-modal .entry-review-section-head span{display:none}}
