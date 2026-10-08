@@ -1,85 +1,87 @@
 (function(){
-  var entries=[
-    {id:1,name:'NovaPay Technologies',tag:'Digital-first payment infrastructure',score:91.4,raw:9.1,reviews:5,min:3,variance:'Low',eligible:true,decision:'shortlist',innovation:9.4,impact:9.2,execution:8.8,scale:9.0,judges:[9.2,9.4,8.9,9.1,9.0]},
-    {id:2,name:'CredStack',tag:'Embedded credit infrastructure',score:89.7,raw:8.9,reviews:5,min:3,variance:'Low',eligible:true,decision:'shortlist',innovation:9.0,impact:9.1,execution:8.7,scale:8.8,judges:[8.8,9.1,8.9,9.0,8.7]},
-    {id:3,name:'AstraLedger',tag:'SME treasury automation',score:88.4,raw:8.8,reviews:4,min:3,variance:'Medium',eligible:true,decision:'shortlist',innovation:8.8,impact:8.9,execution:8.5,scale:8.7,judges:[8.4,9.1,8.8,8.9]},
-    {id:4,name:'PulseCredit',tag:'Alternative underwriting platform',score:87.6,raw:8.6,reviews:5,min:3,variance:'High',eligible:true,decision:'hold',innovation:8.9,impact:8.7,execution:8.1,scale:8.4,judges:[6.2,9.4,8.9,9.1,8.8]},
-    {id:5,name:'FinBridge Labs',tag:'Open-finance connectivity',score:86.8,raw:8.6,reviews:5,min:3,variance:'Medium',eligible:true,decision:'shortlist',innovation:9.1,impact:8.5,execution:8.3,scale:8.4,judges:[8.2,8.9,8.5,8.8,8.7]},
-    {id:6,name:'Lumen Money',tag:'Cross-border SME banking',score:86.7,raw:8.5,reviews:5,min:3,variance:'Low',eligible:true,decision:'exclude',innovation:8.7,impact:8.8,execution:8.2,scale:8.3,judges:[8.5,8.7,8.4,8.6,8.5]},
-    {id:7,name:'Orbit Finance',tag:'Working-capital marketplace',score:85.9,raw:8.7,reviews:2,min:3,variance:'Medium',eligible:true,decision:'exclude',innovation:8.8,impact:8.7,execution:8.6,scale:8.4,judges:[8.4,9.0]},
-    {id:8,name:'MintRoute',tag:'B2B settlement rails',score:84.8,raw:8.4,reviews:4,min:3,variance:'Low',eligible:true,decision:'exclude',innovation:8.5,impact:8.4,execution:8.2,scale:8.5,judges:[8.4,8.3,8.6,8.2]}
-  ];
-  var selected=new Set();
-  var activeEntry=null;
-  var issues={review:false,tie:false,variance:false};
-  var locked=false;
-  var stateKey='etb2b_awards.shortlist.v12';
-  var $=function(s){return document.querySelector(s)};
-  var $$=function(s){return Array.prototype.slice.call(document.querySelectorAll(s))};
-  function toast(msg){var el=$('#toast');if(!el)return;el.textContent=msg;el.classList.add('show');clearTimeout(window.__slToast);window.__slToast=setTimeout(function(){el.classList.remove('show')},2200)}
-  function scoreFor(e){return $('#scoreMode').value==='raw'?(e.raw*10):e.score}
-  function rankEntries(){return entries.slice().sort(function(a,b){return scoreFor(b)-scoreFor(a)})}
-  function decisionLabel(v){return v==='shortlist'?'Shortlist':v==='hold'?'Hold':'Exclude'}
-  function rowClass(e,rank,cutoff){var c=[];if(e.decision==='shortlist')c.push('shortlisted');if(e.reviews<e.min)c.push('provisional');if(rank===cutoff||rank===cutoff+1)c.push('boundary');return c.join(' ')}
-  function render(){
-    var ranked=rankEntries(),cutoff=Number($('#cutoffSize').value),body=$('#rankingBody');body.innerHTML='';
-    ranked.forEach(function(e,i){
-      var rank=i+1;
-      var tr=document.createElement('tr');tr.className=rowClass(e,rank,cutoff);tr.innerHTML='<td><input class="sl-select-entry" type="checkbox" data-id="'+e.id+'" '+(selected.has(e.id)?'checked':'')+'></td><td><span class="sl-rank">#'+rank+'</span></td><td><div class="sl-entry-name"><b>'+e.name+'</b><span>'+e.tag+'</span></div></td><td><div class="sl-score"><strong>'+scoreFor(e).toFixed(1)+'</strong><small>'+($('#scoreMode').value==='raw'?'raw / 100':'normalized / 100')+'</small></div></td><td><span class="sl-review-count '+(e.reviews<e.min?'warn':'')+'">'+e.reviews+'/'+e.min+' min</span></td><td><span class="sl-variance '+e.variance.toLowerCase()+'"><i></i>'+e.variance+'</span></td><td><span class="sl-eligibility '+(!e.eligible?'warn':'')+'">'+(e.eligible?'&#10003; Eligible':'! Check')+'</span></td><td><select class="sl-decision" data-decision="'+e.id+'" '+(locked?'disabled':'')+'><option value="shortlist" '+(e.decision==='shortlist'?'selected':'')+'>Shortlist</option><option value="hold" '+(e.decision==='hold'?'selected':'')+'>Hold</option><option value="exclude" '+(e.decision==='exclude'?'selected':'')+'>Exclude</option></select></td><td><button class="sl-row-menu" data-open-entry="'+e.id+'">...</button></td>';
-      body.appendChild(tr);
-      if(rank===cutoff){var cut=document.createElement('tr');cut.className='sl-cutoff-line';cut.innerHTML='<td colspan="9"><div class="sl-cutoff-marker"><span>SHORTLIST CUT-OFF - '+scoreFor(e).toFixed(1)+'</span></div></td>';body.appendChild(cut)}
-    });
-    bindRows();updateSummary();
-    var cutEntry=ranked[Math.min(cutoff-1,ranked.length-1)];$('#cutoffScore').textContent=cutEntry?scoreFor(cutEntry).toFixed(1):'-';
-  }
-  function bindRows(){
-    $$('.sl-select-entry').forEach(function(cb){cb.addEventListener('change',function(){var id=Number(this.dataset.id);if(this.checked)selected.add(id);else selected.delete(id);$('#compareSelected').disabled=selected.size!==2})});
-    $$('[data-decision]').forEach(function(sel){sel.addEventListener('change',function(){var e=findEntry(Number(this.dataset.decision));var old=e.decision;e.decision=this.value;addAudit('Decision changed',e.name+' changed from '+decisionLabel(old)+' to '+decisionLabel(e.decision)+'.','good');save();render();toast('Decision updated')})});
-    $$('[data-open-entry]').forEach(function(btn){btn.addEventListener('click',function(){openEntry(Number(this.dataset.openEntry))})})
-  }
-  function findEntry(id){return entries.filter(function(e){return e.id===id})[0]}
-  function updateSummary(){
-    var shortlisted=entries.filter(function(e){return e.decision==='shortlist'}).length,held=entries.filter(function(e){return e.decision==='hold'}).length,excluded=entries.length-shortlisted-held;
-    $('#shortlistedCount').textContent=shortlisted;$('#selectedStat').textContent=shortlisted;$('#heldStat').textContent=held;$('#excludedStat').textContent=excluded;
-    $('#shortlistDonut').style.background='conic-gradient(var(--brand) 0 '+((shortlisted/entries.length)*100)+'%,#e9eaf0 '+((shortlisted/entries.length)*100)+'% 100%)';
-    $('#summaryNote').textContent='Top '+$('#cutoffSize').value+' target. '+held+' entr'+(held===1?'y is':'ies are')+' held for manual review.';
-    var open=Object.keys(issues).filter(function(k){return !issues[k]}).length;var readiness=Math.max(72,(3-open)*9+72);if(open===0)readiness=100;
-    $('#readinessScore').textContent=readiness+'%';$('#readinessBar').style.width=readiness+'%';$('#issuePill').textContent=open+' open';$('#reviewCount').textContent=open;$('#tieCount').textContent=issues.tie?'0':'2';
-    $('#lockFromCard').textContent=open===0?(locked?'Category locked':'Lock shortlist'):'Resolve issues to lock';
-    $('#summaryStatus').textContent=locked?'Locked':'Draft';$('#summaryStatus').style.color=locked?'var(--success)':'var(--warn)';
-    $('#lockedCount').textContent=(locked?'1':'0')+' / 5';
-  }
-  function openEntry(id){activeEntry=findEntry(id);if(!activeEntry)return;$('#drawerEntryName').textContent=activeEntry.name;$('#drawerEntryMeta').textContent='Best FinTech Startup - '+activeEntry.tag;$('#drawerScore').textContent=activeEntry.score.toFixed(1);$('#drawerRaw').textContent=activeEntry.raw.toFixed(1);$('#drawerReviews').textContent=activeEntry.reviews+'/'+activeEntry.min+' min';
-    var criteria=[['Innovation',activeEntry.innovation],['Market Impact',activeEntry.impact],['Execution',activeEntry.execution],['Scalability',activeEntry.scale]];$('#drawerCriteria').innerHTML=criteria.map(function(c){return '<div><b>'+c[0]+'</b><div class="bar"><span style="width:'+(c[1]*10)+'%"></span></div><strong>'+c[1].toFixed(1)+'</strong></div>'}).join('');
-    $('#drawerJudges').innerHTML=activeEntry.judges.map(function(v,i){return '<div><b>Judge '+(i+1)+'</b><span>Submitted review</span><strong>'+v.toFixed(1)+'</strong></div>'}).join('');
-    $('#drawerEligibility').innerHTML=activeEntry.eligible?'&#10003; Eligibility passed. Required declarations and supporting documents are complete.':'! Eligibility requires manual verification before shortlisting.';$('#decisionNote').value='';openLayer('entryDrawer')
-  }
-  function openLayer(id){var el=document.getElementById(id);if(el){el.classList.add('open');el.setAttribute('aria-hidden','false')}}
-  function closeLayer(id){var el=document.getElementById(id);if(el){el.classList.remove('open');el.setAttribute('aria-hidden','true')}}
-  function addAudit(title,note,type){var now=new Date(),time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'),row=document.createElement('div');row.innerHTML='<span>'+time+'</span><i class="'+(type||'')+'"></i><p><b>'+title+'</b><small>'+note+'</small></p>';$('#auditList').insertBefore(row,$('#auditList').firstChild)}
-  function resolveIssue(type,msg){issues[type]=true;var map={review:'missing-review',tie:'tie',variance:'variance'},article=document.querySelector('[data-check="'+map[type]+'"]');if(article){article.classList.add('resolved');article.querySelector('.sl-check-icon').textContent='✓'}if(type==='review'){$('#reviewReadyItem').classList.remove('pending');$('#reviewReadyItem').querySelector('span').textContent='✓';$('#reviewReadyItem').querySelector('small').textContent='Minimum review requirement met'}if(type==='tie'){$('#tieReadyItem').classList.remove('pending');$('#tieReadyItem').querySelector('span').textContent='✓';$('#tieReadyItem').querySelector('small').textContent='Tie decision documented'}addAudit('Issue resolved',msg,'good');updateSummary();save()}
-  function compare(ids){var items=ids.map(findEntry).filter(Boolean);if(items.length!==2)return;$('#compareBody').innerHTML='<div class="sl-compare-grid">'+items.map(function(e,i){return '<article class="sl-compare-card '+(i===0?'highlight':'')+'"><span>CANDIDATE '+(i+1)+'</span><h3>'+e.name+'</h3><div class="sl-compare-score"><b>'+e.score.toFixed(1)+'</b><span>'+e.reviews+' reviews - '+e.variance+' variance</span></div><div class="sl-compare-criterion"><b>Innovation</b><strong>'+e.innovation.toFixed(1)+'</strong></div><div class="sl-compare-criterion"><b>Market Impact</b><strong>'+e.impact.toFixed(1)+'</strong></div><div class="sl-compare-criterion"><b>Execution</b><strong>'+e.execution.toFixed(1)+'</strong></div><div class="sl-compare-criterion"><b>Scalability</b><strong>'+e.scale.toFixed(1)+'</strong></div></article>'}).join('')+'</div><div class="sl-compare-note"><b>Tie-break insight:</b> '+items[0].name+' leads on Innovation, the configured first tie-break criterion. Record a rationale if this changes the automatic rank order.</div>';openLayer('compareModal')}
-  function buildPreview(){var finalists=entries.filter(function(e){return e.decision==='shortlist'});$('#previewCards').innerHTML=finalists.map(function(e){return '<div class="sl-preview-entry"><span>BEST FINTECH STARTUP</span><b>'+e.name+'</b></div>'}).join('')||'<div class="sl-preview-entry"><b>No finalists selected yet.</b></div>';openLayer('previewModal')}
-  function save(){try{localStorage.setItem(stateKey,JSON.stringify({entries:entries.map(function(e){return{id:e.id,decision:e.decision}}),issues:issues,locked:locked,cutoff:$('#cutoffSize').value}))}catch(e){}}
-  function load(){try{var s=JSON.parse(localStorage.getItem(stateKey)||'null');if(!s)return;if(s.entries)s.entries.forEach(function(saved){var e=findEntry(saved.id);if(e)e.decision=saved.decision});if(s.issues)issues=s.issues;if(s.locked)locked=true;if(s.cutoff)$('#cutoffSize').value=s.cutoff}catch(e){}}
-  function exportAudit(){var lines=['time,event,detail'];$$('#auditList>div').forEach(function(row){var spans=row.querySelectorAll('span'),b=row.querySelector('b'),small=row.querySelector('small');lines.push('"'+(spans[0]?spans[0].textContent:'')+'","'+(b?b.textContent:'')+'","'+(small?small.textContent:'').replace(/"/g,'""')+'"')});var blob=new Blob([lines.join('\n')],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='etb2b_awards-shortlist-audit.csv';a.click();URL.revokeObjectURL(a.href);toast('Audit CSV downloaded')}
-  function updateSimulator(){var sizes={3:88.4,4:87.6,5:86.8,6:86.7,7:85.9,8:84.8},v=Number($('#cutoffRange').value);$('#simulatedSize').textContent=v+' finalists';$('#simulatedScore').textContent=sizes[v].toFixed(1);$('#simulatedNote').textContent=v===5?'1 near-tie at the boundary':v===6?'Ranks 5 and 6 both included':'No automatic decision changes'}
-  load();render();updateSummary();updateSimulator();
-  if(issues.review)resolveIssue('review','Review requirement was previously resolved.');if(issues.tie)resolveIssue('tie','Tie decision was previously resolved.');if(issues.variance)resolveIssue('variance','Variance was previously reviewed.');
-  $('#scoreMode').addEventListener('change',render);$('#cutoffSize').addEventListener('change',function(){render();$('#cutoffRange').value=this.value;updateSimulator();addAudit('Cut-off changed','Shortlist target changed to top '+this.value+'.','warn');save()});$('#cutoffRange').addEventListener('input',updateSimulator);
-  $('#compareSelected').addEventListener('click',function(){compare(Array.from(selected))});
-  $$('[data-action]').forEach(function(btn){btn.addEventListener('click',function(){var a=this.dataset.action;if(a==='request-review'){resolveIssue('review','A final judge review was requested for Orbit Finance.');this.textContent='Requested';toast('Review request queued')}if(a==='compare-tie'){compare([5,6])}if(a==='inspect-variance'){openEntry(4);toast('Judge variance opened')}})});
-  $('#confirmComparison').addEventListener('click',function(){resolveIssue('tie','Cut-off tie reviewed using Innovation as the first tie-break criterion.');closeLayer('compareModal');toast('Tie decision documented')});
-  $('#drawerHold').addEventListener('click',function(){if(!activeEntry)return;activeEntry.decision='hold';addAudit('Entry held',activeEntry.name+' was held for manual review.','warn');save();render();closeLayer('entryDrawer');toast('Entry moved to Hold')});
-  $('#drawerShortlist').addEventListener('click',function(){if(!activeEntry)return;activeEntry.decision='shortlist';if(activeEntry.id===4)resolveIssue('variance','High judge variance for PulseCredit was reviewed and accepted.');addAudit('Entry shortlisted',activeEntry.name+' was manually added to the shortlist.','good');save();render();closeLayer('entryDrawer');toast('Entry shortlisted')});
-  $('#previewShortlist').addEventListener('click',buildPreview);$('#saveShortlist').addEventListener('click',function(){save();toast('Shortlist decisions saved')});$('#exportAudit').addEventListener('click',exportAudit);
-  function requestLock(){var open=Object.keys(issues).filter(function(k){return !issues[k]}).length;if(open>0){toast('Resolve '+open+' decision issue'+(open===1?'':'s')+' before locking');document.querySelector('.sl-check-list').scrollIntoView({behavior:'smooth',block:'center'});return}if(locked){toast('This category is already locked');return}$('#lockConfirm').checked=false;$('#confirmLock').disabled=true;openLayer('lockModal')}
-  $('#lockCategory').addEventListener('click',requestLock);$('#lockFromCard').addEventListener('click',requestLock);$('#lockConfirm').addEventListener('change',function(){$('#confirmLock').disabled=!this.checked});$('#confirmLock').addEventListener('click',function(){locked=true;save();updateSummary();render();closeLayer('lockModal');addAudit('Category locked','Best FinTech Startup shortlist locked with '+entries.filter(function(e){return e.decision==='shortlist'}).length+' finalists.','good');toast('Category shortlist locked')});
-  $('#resolveIssues').addEventListener('click',function(){document.querySelector('.sl-check-list').scrollIntoView({behavior:'smooth',block:'center'})});
-  $('#applyRecommendations').addEventListener('click',function(){resolveIssue('review','ETB2B Awards requested the missing review from the next available judge.');resolveIssue('variance','PulseCredit variance was flagged for organizer acknowledgement.');toast('Safe recommendations applied - tie still needs your decision')});
-  $('#openCopilot').addEventListener('click',function(){$('#copilotPanel').classList.add('open')});$('#closeCopilot').addEventListener('click',function(){$('#copilotPanel').classList.remove('open')});
-  $$('.sl-copilot-prompts button').forEach(function(btn){btn.addEventListener('click',function(){var answers={ready:'The main blockers are one missing review, one high-variance entry, and a cut-off tie. Score weights and eligibility are already valid.',cutoff:'The top-5 cut-off is defensible only after the rank 5/6 tie is reviewed. Their total scores differ by 0.1, so your configured Innovation tie-break is relevant.',ties:'Use the published tie-break rule first. If totals remain tied, compare judge comments and document any manual decision in the audit log.',size:'Top 5 keeps the finalist group selective, but top 8 would remove the current boundary pressure. Use the simulator to see how the score threshold changes.'};$('#copilotAnswer').textContent=answers[this.dataset.prompt]})});
-  $$('#categoryTabs button').forEach(function(btn){btn.addEventListener('click',function(){$$('#categoryTabs button').forEach(function(b){b.classList.remove('active')});this.classList.add('active');$('#activeCategoryTitle').textContent=this.dataset.category;toast(this.dataset.category+' loaded')})});
-  $$('[data-close]').forEach(function(el){el.addEventListener('click',function(){closeLayer(this.dataset.close)})});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape'){$$('.sl-modal.open,.sl-drawer.open').forEach(function(el){closeLayer(el.id)});$('#copilotPanel').classList.remove('open')}})
+'use strict';
+const KEYS={nominations:'etb2b_awards_nominations_v1',reviews:'etb2b_jury_reviews_v1',assignments:'etb2b_awards_jury_assignments_v1',judges:'etb2b_awards_judges_v3',levels:'etb2b_awards_jury_levels_v1',rules:'etb2b_awards_scoring_v11',shortlist:'etb2b_awards.shortlist.live.v1'};
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||'null')??f}catch{return f}};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const award=read('etb2b_awards_new_award',{})||{};
+const awardId=String(award.slug||'demo');
+let nominations=[],reviews={},assignments={},judges=[],levels=[],rules={},decisions={},category='',level='1',tab='scores';
+const key=(cat,lev)=>awardId+'::'+cat+'::'+lev;
+const records=()=>decisions[key(category,level)]||{items:{},locked:false};
+const idOf=n=>String(n.id??n.nominationId??'');
+const number=(x,f=0)=>Number.isFinite(Number(x))?Number(x):f;
+function refreshData(){
+  nominations=read(KEYS.nominations,[]);reviews=read(KEYS.reviews,{});assignments=read(KEYS.assignments,{});judges=read(KEYS.judges,[]);levels=read(KEYS.levels,[]);
+  rules=(read(KEYS.rules,{})||{}).rules||{};
+  decisions=read(KEYS.shortlist,{});
+  const cats=[...new Set(nominations.filter(n=>n.submission==='Submitted'&&n.payment==='Paid').map(n=>n.category).filter(Boolean))];
+  const oldCat=category; category=cats.includes(oldCat)?oldCat:(cats[0]||'');
+  $('#categorySelect').innerHTML=cats.length?cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''):'<option value="">No submitted nominations</option>';
+  $('#categorySelect').value=category;
+  const options=levels.length?levels:[{level:1,name:'Jury Level 1'}];
+  const existing=options.some(l=>String(l.level)===String(level));if(!existing)level=String(options[0].level);
+  $('#levelSelect').innerHTML=options.map(l=>`<option value="${esc(l.level)}">${esc(l.name||'Jury Level '+l.level)}</option>`).join('');$('#levelSelect').value=level;
+  $('#dataBanner').textContent='Live source: judges’ jury submissions on this browser · '+(Object.values(reviews).filter(r=>r&&r.status==='submitted').length)+' submitted reviews recorded. Only submitted reviews count; no sample scores are used.';
+  render();
+}
+function submitted(n){
+ const nom=idOf(n);const assigned=((assignments[String(level)]||{})[nom]||[]).map(String);
+ return Object.values(reviews).filter(r=>r&&r.status==='submitted'&&String(r.nominationId)===nom&&String(r.level)===String(level)&&assigned.includes(String(r.juryId??r.judgeId))&&(!r.category||r.category===n.category));
+}
+function entryRows(){
+ const required=Math.max(1,number(rules.minReviews,3));
+ return nominations.filter(n=>n.submission==='Submitted'&&n.payment==='Paid'&&n.category===category).map(n=>{
+  const arr=submitted(n),scores=arr.map(r=>number(r.total)*10),avg=scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:null;
+  const variance=scores.length>1?Math.max(...scores)-Math.min(...scores):null;
+  const ready=arr.length>=required,record=records().items[idOf(n)]||{};
+  return {n,id:idOf(n),reviews:arr,count:arr.length,required,avg,variance,ready,decision:record.decision||'hold',note:record.note||''};
+ }).sort((a,b)=>(b.avg??-1)-(a.avg??-1)||a.id.localeCompare(b.id));
+}
+function statePersist(){localStorage.setItem(KEYS.shortlist,JSON.stringify(decisions))}
+function saveDecision(e,decision,note){
+ if(records().locked)return false;
+ if(decision==='shortlist'&&!e.ready){alert('This nomination requires '+e.required+' submitted jury reviews at this level before it can be shortlisted.');return false}
+ const k=key(category,level),r=decisions[k]||{items:{},locked:false};r.items=r.items||{};
+ r.items[e.id]={decision,note:note??e.note,updatedAt:new Date().toISOString(),score:e.avg,reviewCount:e.count};decisions[k]=r;statePersist();render();return true;
+}
+function statusMatches(e,filter){return filter==='all'||filter==='complete'&&e.ready||filter==='pending'&&!e.ready||filter===e.decision}
+function render(){
+ const all=entryRows(),search=$('#scoreSearch').value.trim().toLowerCase(),status=$('#statusSelect').value;
+ const rows=all.filter(e=>statusMatches(e,status)&&(!search||[e.id,e.n.nominee,e.n.company,e.n.category].some(s=>String(s||'').toLowerCase().includes(search))));
+ $('#statEntries').textContent=all.length;$('#statReady').textContent=all.filter(e=>e.ready).length;$('#statPending').textContent=all.filter(e=>!e.ready).length;$('#statShortlisted').textContent=all.filter(e=>e.decision==='shortlist').length;
+ $('#visibleCount').textContent=rows.length+' of '+all.length+' nominations';
+ $('#resultsHeading').textContent=tab==='scores'?'Live nomination ranking':'Shortlist management';
+ $('#resultsHint').textContent=tab==='scores'?'Criterion-weighted average of submitted jury scores':'Choose Hold, Exclude or Shortlist after sufficient reviews have been submitted.';
+ $$('.sl-workspace-tabs button').forEach(b=>{const active=b.dataset.view===tab;b.classList.toggle('active',active);b.setAttribute('aria-selected',active)});
+ $('#lockShortlist').hidden=tab!=='shortlist';$('#lockShortlist').disabled=records().locked||!all.length;
+ $('#lockShortlist').textContent=records().locked?'Shortlist locked':'Lock shortlist';
+ $('#lockStateText').textContent=records().locked?'This category and jury level are locked. Decisions are read-only.':'Category: '+(category||'None')+' · '+($('#levelSelect').selectedOptions[0]?.textContent||'')+' · Draft decisions';
+ $('#liveScoreRows').innerHTML=rows.length?rows.map(e=>{
+ const rank=all.indexOf(e)+1,score=e.avg===null?'—':e.avg.toFixed(1),variance=e.variance===null?'—':e.variance.toFixed(1)+' pts';
+ const decision=tab==='scores'?`<span class="sl-decision-pill ${esc(e.decision)}">${esc(e.decision)}</span>`:`<select data-id="${esc(e.id)}" class="sl-inline-decision" ${records().locked?'disabled':''}><option value="hold" ${e.decision==='hold'?'selected':''}>Hold</option><option value="shortlist" ${e.decision==='shortlist'?'selected':''}>Shortlist</option><option value="exclude" ${e.decision==='exclude'?'selected':''}>Exclude</option></select>`;
+ return `<tr><td><span class="sl-rank">#${rank}</span></td><td><div class="sl-entry-name"><b>${esc(e.n.nominee||e.n.company||'Nomination')}</b><span>${esc(e.id)} · ${esc(e.n.company||'')}</span></div></td><td><div class="sl-score"><strong>${score}</strong><small>/ 100</small></div></td><td><span class="sl-review-count ${e.ready?'':'warn'}">${e.count} / ${e.required} ${e.ready?'✓':'pending'}</span></td><td>${variance}</td><td>${decision}</td><td><button class="btn secondary compact" data-review-id="${esc(e.id)}">Review</button></td></tr>`;
+ }).join(''):'<tr><td colspan="7"><div class="sl-empty-results">No nominations match these filters. Submitted and paid nominations from Judges will appear here.</div></td></tr>';
+ $$('[data-review-id]').forEach(b=>b.addEventListener('click',()=>showReview(all.find(e=>e.id===b.dataset.reviewId))));
+ $$('[data-id].sl-inline-decision').forEach(sel=>sel.addEventListener('change',()=>{const entry=all.find(e=>e.id===sel.dataset.id);saveDecision(entry,sel.value)}));
+}
+function showReview(e){if(!e)return;$('#reviewTitle').textContent=e.n.nominee||e.n.company||e.id;
+ $('#reviewSubtitle').textContent=e.id+' · '+e.n.category+' · '+($('#levelSelect').selectedOptions[0]?.textContent||'');
+ const criteria=new Map();e.reviews.forEach(r=>(r.criteriaSnapshot||[]).forEach(c=>{const key=String(c.id),row=criteria.get(key)||{c,values:[]};if(r.scores&&r.scores[key]!==undefined)row.values.push(number(r.scores[key]));criteria.set(key,row)}));
+ const criterionHtml=[...criteria.values()].map(({c,values})=>`<div class="sl-criterion-row"><div><b>${esc(c.name)}</b><span>${number(c.weight)}% weight</span></div><strong>${values.length?(values.reduce((a,b)=>a+b,0)/values.length).toFixed(1):'—'} / ${number(c.scale,5)}</strong></div>`).join('');
+ const judgeHtml=e.reviews.map(r=>{const j=judges.find(j=>String(j.id)===String(r.juryId));return `<div class="sl-jury-review"><div><b>${esc(j?.name||'Juror '+r.juryId)}</b><small>${esc(r.updatedAt?new Date(r.updatedAt).toLocaleString():'Submitted')}</small>${r.comments?`<p>${esc(r.comments)}</p>`:''}</div><strong>${(number(r.total)*10).toFixed(1)} / 100</strong></div>`}).join('');
+ $('#reviewDetails').innerHTML=`<div class="sl-review-metrics"><div><span>Average score</span><b>${e.avg===null?'Not scored':e.avg.toFixed(1)+'/100'}</b></div><div><span>Submitted reviews</span><b>${e.count} / ${e.required}</b></div><div><span>Assignment status</span><b>${e.ready?'Ready':'Pending'}</b></div></div><h3>Criterion breakdown</h3>${criterionHtml||'<p>No submitted criterion scores yet.</p>'}<h3>Individual jury submissions</h3>${judgeHtml||'<p>Waiting for assigned jurors to submit their evaluations.</p>'}<h3>Decision note</h3><textarea id="reviewDecisionNote" rows="3" placeholder="Reason for shortlist decision..." ${records().locked?'disabled':''}>${esc(e.note)}</textarea><div class="sl-review-controls"><button class="btn secondary" data-set-decision="hold" ${records().locked?'disabled':''}>Hold</button><button class="btn secondary" data-set-decision="exclude" ${records().locked?'disabled':''}>Exclude</button><button class="btn primary" data-set-decision="shortlist" ${records().locked||!e.ready?'disabled':''}>Shortlist</button></div>`;
+ $$('[data-set-decision]').forEach(b=>b.addEventListener('click',()=>{if(saveDecision(e,b.dataset.setDecision,$('#reviewDecisionNote').value.trim()))hideReview()}));
+ $('#scoreReviewModal').hidden=false;document.body.classList.add('sl-modal-visible');
+}
+function hideReview(){$('#scoreReviewModal').hidden=true;document.body.classList.remove('sl-modal-visible')}
+function lock(){const list=entryRows(),selected=list.filter(e=>e.decision==='shortlist');if(!selected.length){alert('Shortlist at least one fully reviewed nomination before locking.');return}if(selected.some(e=>!e.ready)){alert('One or more selected nominations do not meet minimum review requirements.');return}if(!confirm('Lock '+selected.length+' shortlisted nominations for '+category+', Jury Level '+level+'? This cannot be undone from this page.'))return;
+ const k=key(category,level);decisions[k]=decisions[k]||{items:{}};decisions[k].locked=true;decisions[k].lockedAt=new Date().toISOString();statePersist();render();}
+function exportCSV(){const rows=entryRows(),cells=[['Nomination ID','Nominee','Company','Category','Level','Score /100','Submitted reviews','Required reviews','Decision']];rows.forEach(e=>cells.push([e.id,e.n.nominee||'',e.n.company||'',category,level,e.avg===null?'':e.avg.toFixed(2),e.count,e.required,e.decision]));const csv=cells.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='etb2b-nomination-scores.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+$('#refreshScores').addEventListener('click',refreshData);$('#saveDecisions').addEventListener('click',()=>{statePersist();alert('Shortlist decisions saved.')});$('#exportScores').addEventListener('click',exportCSV);$('#lockShortlist').addEventListener('click',lock);
+$('#categorySelect').addEventListener('change',e=>{category=e.target.value;render()});$('#levelSelect').addEventListener('change',e=>{level=e.target.value;render()});$('#statusSelect').addEventListener('change',render);$('#scoreSearch').addEventListener('input',render);
+$$('[data-view]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.view;render()}));
+$('#closeScoreReview').addEventListener('click',hideReview);$('#dismissScoreReview').addEventListener('click',hideReview);$('#scoreReviewModal').addEventListener('click',e=>{if(e.target.id==='scoreReviewModal')hideReview()});document.addEventListener('keydown',e=>{if(e.key==='Escape')hideReview()});
+window.addEventListener('storage',e=>{if(Object.values(KEYS).includes(e.key))refreshData()});
+refreshData();
 })();
