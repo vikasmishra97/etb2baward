@@ -473,7 +473,7 @@
       });
       const reviews=read(REVIEW_KEY,{});
       Object.keys(reviews).forEach(k=>{const r=reviews[k];if(!r)return;const judgeId=String(k).split(':')[0];if(selected.includes(judgeId)&&assignmentTargets.includes(String(r.nominationId))&&Number(r.level||assignmentLevel)===Number(assignmentLevel))delete reviews[k]});
-      write(REVIEW_KEY,reviews);persist();const count=assignmentTargets.length;closeAssign();renderAll();clearNominationSelection();toast(`Jury removed from ${count} nomination${count===1?'':'s'} at Level ${assignmentLevel}`);return;
+      write(REVIEW_KEY,reviews);persist();const count=assignmentTargets.length, completedLevel=assignmentLevel;closeAssign();renderAll();clearNominationSelection();toast(`Jury removed from ${count} nomination${count===1?'':'s'} at Level ${completedLevel}`);return;
     }
     if(!assignments[String(assignmentLevel)])assignments[String(assignmentLevel)]={};
     const count=assignmentTargets.length;assignmentTargets.forEach(id=>assignments[String(assignmentLevel)][id]=[...selected]);persist();

@@ -181,7 +181,15 @@
   <div class="judge-modal-backdrop" data-close-assignment></div>
   <div class="judge-modal-card assignment-modal-card">
     <div class="judge-modal-head"><div><span class="eyebrow">NOMINATION ASSIGNMENT</span><h2 id="assignNominationTitle">Assign nomination</h2><p id="assignNominationSubtitle">Choose one or more jury members.</p></div><button data-close-assignment>×</button></div>
-    <div class="assignment-editor-body"><div class="assignment-editor-list" id="nominationJuryPicker"></div></div>
+    <div class="assignment-editor-body">
+      <div class="assignment-level-block">
+        <label for="assignmentLevelSelect">Jury level</label>
+        <select id="assignmentLevelSelect" aria-label="Select jury level"></select>
+        <small id="assignmentLevelHint">Choose the jury level and jury members for these nominations.</small>
+      </div>
+      <div class="assignment-jury-head"><span>Jury members</span><small id="assignmentJuryCount">0 available</small></div>
+      <div class="assignment-editor-list" id="nominationJuryPicker"></div>
+    </div>
     <div class="judge-drawer-foot"><button class="btn secondary" data-close-assignment>Cancel</button><button class="btn primary" id="saveNominationAssignment">Save assignment</button></div>
   </div>
 </div>
