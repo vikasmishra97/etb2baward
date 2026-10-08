@@ -38,7 +38,8 @@
       return {id:String(n.id||n.nominationId||id),category:n.category||report?.category||'Uncategorised',categoryId:n.categoryId||report?.categoryId||'',name:n.nominee||report?.entrantName||n.company||'Entrant',company:n.company||report?.company||'',email:n.email||report?.email||'',designation:n.designation||report?.designation||'',appliedFor:n.appliedFor||report?.appliedFor||report?.applied_for||'',code:String(n.id||n.nominationId||id),report};
     });
   }
-  function key(e){return `${jury.id}:${e.id}`}
+  function key(e){return `${levelNo}:${jury.id}:${e.id}`}
+  function savedReview(e){const current=reviews[key(e)];if(current)return current;const legacy=reviews[`${jury.id}:${e.id}`];return legacy && Number(legacy.level||1)===levelNo ? legacy : null}
   function criteriaForCategory(category){
     const all=scoring?.criteria?.length?scoring.criteria:[];
     const filtered=all.filter(c=>!Array.isArray(c.categories)||!c.categories.length||c.categories.includes(category));
@@ -50,7 +51,7 @@
       {id:'fallback-4',name:'Scalability',description:'Potential for sustainable growth',weight:20,scale:10}
     ];
   }
-  function statusFor(e){return reviews[key(e)]?.status||'pending'}
+  function statusFor(e){return savedReview(e)?.status||'pending'}
   function renderFilters(es){
     const select=$('#reviewCategoryFilter'),old=select.value||'all',cats=[...new Set(es.map(e=>e.category).filter(Boolean))];
     select.innerHTML='<option value="all">All categories</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
@@ -65,7 +66,7 @@
     let rows=es.filter(e=>activeTab==='submitted'?statusFor(e)==='submitted':statusFor(e)!=='submitted');
     if(cat!=='all')rows=rows.filter(e=>e.category===cat);
     if(q)rows=rows.filter(e=>`${e.id} ${e.category} ${e.name} ${e.company}`.toLowerCase().includes(q));
-    $('#juryEntries').innerHTML=rows.length?`<div class="listing-summary"><b>${rows.length}</b> nomination${rows.length===1?'':'s'} in this view</div><div class="listing-wrap"><table class="jury-table"><thead><tr><th>S No.</th><th>Nomination ID</th><th>Category</th><th>Nominee</th><th>Company</th><th>Designation</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map((e,i)=>{const r=reviews[key(e)],submitted=r?.status==='submitted',draft=!!r&&!submitted;const statusClass=submitted?'submitted':draft?'draft':'pending',statusLabel=submitted?'Submitted':draft?'Draft saved':'Pending';return `<tr><td class="jury-serial">${i+1}.</td><td><span class="jury-nid">${esc(e.code)}</span></td><td class="jury-cat"><span>${esc(e.category)}</span></td><td><div class="jury-name"><b>${esc(e.name)}</b>${e.email?`<small>${esc(e.email)}</small>`:''}</div></td><td class="jury-company">${esc(e.company||'—')}</td><td class="jury-designation">${esc(e.designation||e.appliedFor||'—')}</td><td><span class="jury-review-status ${statusClass}">${statusLabel}</span></td><td>${submitted?`<button data-review="${esc(e.id)}" class="jury-action-btn secondary">View submission</button>`:`<button data-review="${esc(e.id)}" class="jury-action-btn">${draft?'Continue':'Evaluate'} →</button>`}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty">No ${activeTab} nominations match this view.</div>`;
+    $('#juryEntries').innerHTML=rows.length?`<div class="listing-summary"><b>${rows.length}</b> nomination${rows.length===1?'':'s'} in this view</div><div class="listing-wrap"><table class="jury-table"><thead><tr><th>S No.</th><th>Nomination ID</th><th>Category</th><th>Nominee</th><th>Company</th><th>Designation</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map((e,i)=>{const r=savedReview(e),submitted=r?.status==='submitted',draft=!!r&&!submitted;const statusClass=submitted?'submitted':draft?'draft':'pending',statusLabel=submitted?'Submitted':draft?'Draft saved':'Pending';return `<tr><td class="jury-serial">${i+1}.</td><td><span class="jury-nid">${esc(e.code)}</span></td><td class="jury-cat"><span>${esc(e.category)}</span></td><td><div class="jury-name"><b>${esc(e.name)}</b>${e.email?`<small>${esc(e.email)}</small>`:''}</div></td><td class="jury-company">${esc(e.company||'—')}</td><td class="jury-designation">${esc(e.designation||e.appliedFor||'—')}</td><td><span class="jury-review-status ${statusClass}">${statusLabel}</span></td><td>${submitted?`<button data-review="${esc(e.id)}" class="jury-action-btn secondary">View submission</button>`:`<button data-review="${esc(e.id)}" class="jury-action-btn">${draft?'Continue':'Evaluate'} →</button>`}</td></tr>`}).join('')}</tbody></table></div>`:`<div class="empty">No ${activeTab} nominations match this view.</div>`;
   }
   function fallbackSections(e){
     const r=e.report;if(r?.fields?.length)return [{title:'Submitted nomination form',help:'Captured from the nomination submission.',fields:r.fields.map(f=>({label:f.label,value:f.value,help:f.help||''}))}];
@@ -98,7 +99,7 @@
   function updateWeightedScore(){const total=calculateTotal(selectedScores());$('#weightedScore').textContent=`${total.toFixed(1)} / 10`}
   function openScore(id){
     currentEntry=entries().find(e=>e.id===id);if(!currentEntry)return;
-    const prev=reviews[key(currentEntry)]||{scores:{},comments:''};currentCriteria=criteriaForCategory(currentEntry.category);
+    const prev=savedReview(currentEntry)||{scores:{},comments:''};currentCriteria=criteriaForCategory(currentEntry.category);
     $('#scoreCategory').textContent=`${currentEntry.category} · ${currentEntry.code}`;$('#scoreTitle').textContent=currentEntry.name;$('#scoreMeta').textContent=[currentEntry.company,currentEntry.designation,currentEntry.email].filter(Boolean).join(' · ');$('#juryComments').value=prev.comments||'';
     renderSubmittedForm(currentEntry);renderCriteria(prev);$('#reviewShell').classList.add('open');$('#reviewShell').setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
   }
@@ -107,6 +108,8 @@
     if(!currentEntry)return;const scores=selectedScores();
     if(status==='submitted'&&currentCriteria.some(c=>scores[c.id]===undefined)){alert('Please score every criterion before submitting.');return}
     const total=calculateTotal(scores);
+    // Re-read before writing so newer submissions from another tab are not overwritten.
+    reviews=read(REVIEW_KEY,{});
     reviews[key(currentEntry)]={status,scores,comments:$('#juryComments').value.trim(),total,updatedAt:new Date().toISOString(),nominationId:currentEntry.id,category:currentEntry.category,level:levelNo,juryId:jury.id,criteriaSnapshot:currentCriteria.map(c=>({id:c.id,name:c.name,description:c.description||'',weight:Number(c.weight||0),scale:Number(c.scale||5)}))};
     localStorage.setItem(REVIEW_KEY,JSON.stringify(reviews));closeScore();render();alert(status==='submitted'?'Evaluation submitted successfully.':'Draft saved successfully.');
   }

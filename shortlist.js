@@ -6,7 +6,7 @@ const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||'null')??f}cat
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const award=read('etb2b_awards_new_award',{})||{};
 const awardId=String(award.slug||'demo');
-let nominations=[],reviews={},assignments={},judges=[],levels=[],rules={},decisions={},category='',level='1',tab='shortlist';
+let nominations=[],reviews={},assignments={},judges=[],levels=[],rules={},decisions={},category='',level='1',tab='shortlist',scoreSort='desc';
 const selectedIds=new Set();
 const key=(cat,lev)=>awardId+'::'+cat+'::'+lev;
 const records=()=>decisions[key(category,level)]||{items:{},locked:false};
@@ -17,7 +17,7 @@ function refreshData(){
   rules=(read(KEYS.rules,{})||{}).rules||{};
   decisions=read(KEYS.shortlist,{});
   const evaluatedIds=new Set(Object.values(reviews).filter(r=>r&&String(r.status).toLowerCase()==='submitted').map(r=>String(r.nominationId)));
-  const cats=[...new Set(nominations.filter(n=>n.submission==='Submitted'&&n.payment==='Paid'&&evaluatedIds.has(idOf(n))).map(n=>n.category).filter(Boolean))];
+  const cats=[...new Set(nominations.filter(n=>evaluatedIds.has(idOf(n))).map(n=>n.category).filter(Boolean))];
   const oldCat=category; category=cats.includes(oldCat)?oldCat:(cats[0]||'');
   $('#categorySelect').innerHTML=cats.length?cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(''):'<option value="">No submitted nominations</option>';
   $('#categorySelect').value=category;
@@ -42,9 +42,9 @@ function submitted(n){
  return [...byJurorRound.values()].sort((a,b)=>Number(a.level||1)-Number(b.level||1));
 }
 function entryRows(){
- return nominations.filter(n=>n.submission==='Submitted'&&n.payment==='Paid'&&n.category===category).map(n=>{
+ return nominations.filter(n=>n.category===category).map(n=>{
   const assigned=assignedJurors(n), history=submitted(n), current=history.filter(r=>String(r.level??'1')===String(level));
-  const scores=history.map(r=>number(r.total,NaN)*10).filter(Number.isFinite);
+  const scores=history.map(r=>Number(r.total)*10).filter((v,i)=>Number.isFinite(v)&&history[i].total!==null&&history[i].total!==undefined);
   const avg=scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:null;
   const variance=scores.length>1?Math.max(...scores)-Math.min(...scores):null;
   const required=assigned.length,assignedSet=new Set(assigned);
@@ -52,7 +52,7 @@ function entryRows(){
   const ready=required>0&&completedAssigned>=required;
   const record=records().items[idOf(n)]||{};
   return {n,id:idOf(n),reviews:history,current,count:history.length,currentCount:current.length,required,completedAssigned,avg,variance,ready,decision:record.decision||'hold',note:record.note||''};
- }).filter(e=>e.count>0).sort((a,b)=>(b.avg??-1)-(a.avg??-1)||a.id.localeCompare(b.id));
+ }).filter(e=>e.count>0).sort((a,b)=>{if(a.avg===null)return 1;if(b.avg===null)return -1;return (scoreSort==='asc'?a.avg-b.avg:b.avg-a.avg)||a.id.localeCompare(b.id)});
 }
 function statePersist(){localStorage.setItem(KEYS.shortlist,JSON.stringify(decisions))}
 function saveDecision(e,decision,note){
@@ -114,7 +114,7 @@ $('#bulkShortlist').addEventListener('click',()=>{const chosen=entryRows().filte
 $('#publishShortlist').addEventListener('click',prepareShortlistPublication);
 $('#quickReady').addEventListener('click',()=>{$('#statusSelect').value='complete';render()});
 $('#refreshScores').addEventListener('click',refreshData);$('#saveDecisions').addEventListener('click',()=>{statePersist();alert('Shortlist decisions saved.')});$('#exportScores').addEventListener('click',exportCSV);$('#lockShortlist').addEventListener('click',lock);
-$('#categorySelect').addEventListener('change',e=>{category=e.target.value;selectedIds.clear();render()});$('#levelSelect').addEventListener('change',e=>{level=e.target.value;selectedIds.clear();render()});$('#statusSelect').addEventListener('change',render);$('#scoreSearch').addEventListener('input',render);
+$('#categorySelect').addEventListener('change',e=>{category=e.target.value;selectedIds.clear();render()});$('#levelSelect').addEventListener('change',e=>{level=e.target.value;selectedIds.clear();render()});$('#statusSelect').addEventListener('change',render);$('#scoreSearch').addEventListener('input',render);$('#scoreSort').addEventListener('change',e=>{scoreSort=e.target.value;render()});
 
 $('#closeScoreReview').addEventListener('click',hideReview);$('#dismissScoreReview').addEventListener('click',hideReview);$('#scoreReviewModal').addEventListener('click',e=>{if(e.target.id==='scoreReviewModal')hideReview()});document.addEventListener('keydown',e=>{if(e.key==='Escape')hideReview()});
 window.addEventListener('storage',e=>{if(Object.values(KEYS).includes(e.key))refreshData()});
