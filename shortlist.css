@@ -103,3 +103,21 @@
 .score-workspace .sl-workspace-filters :is(select,input){height:38px}
 @media(max-width:900px){.score-workspace .sl-overview-panel .sl-live-stats article{padding:10px!important}.score-workspace .sl-overview-panel .sl-live-stats strong{font-size:21px}}
 @media(max-width:600px){.score-workspace .sl-overview-panel{padding:11px;margin:12px 0}.score-workspace .sl-overview-panel .sl-section-label{align-items:flex-start;gap:2px}.score-workspace .sl-overview-panel .sl-live-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.score-workspace .sl-overview-panel .sl-live-stats article{padding:10px!important}.score-workspace .sl-overview-panel .sl-live-stats span{font-size:10px}.score-workspace .sl-overview-panel .sl-live-stats strong{font-size:21px}.score-workspace .sl-workspace-filters{padding:12px}}
+
+/* Single premium management workspace */
+.score-workspace .sl-workspace-tabs{display:none!important}
+.score-workspace .sl-results-section{margin-top:12px;overflow:hidden}
+.score-workspace .sl-overview-panel{margin-bottom:12px}
+.score-workspace .sl-workspace-filters{margin-top:0;margin-bottom:0}
+.score-workspace .sl-results-head{gap:12px}
+.score-workspace .sl-results-head h2{font-size:18px}
+.score-workspace .sl-results-head p{font-size:12px;margin-top:3px}
+.score-workspace .sl-live-table td{vertical-align:middle}
+.score-workspace .sl-inline-decision{min-width:112px;border:1px solid #dce4ee;border-radius:9px;background:#fff;font-weight:650;color:#24364f;padding:9px}
+.score-workspace .sl-inline-decision:focus-visible,.score-workspace button:focus-visible{outline:3px solid #a2cbf4;outline-offset:2px}
+.score-workspace .sl-deploy-hint{background:#f7f9fc;border:1px solid #e0e8f2;border-radius:13px;padding:14px 18px;margin:12px 0;color:#364b63;font-size:12px;line-height:1.55}
+.score-workspace .sl-deploy-hint strong{font-size:13px;color:#1c314c}
+.score-workspace .sl-deploy-hint p{margin:5px 0 6px}
+.score-workspace .sl-deploy-hint a{font-weight:700;color:#1d548d}
+@media(max-width:740px){.score-workspace .sl-workspace-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.score-workspace .sl-results-head{align-items:flex-start}.score-workspace .sl-results-actions{flex-wrap:wrap}}
+@media(max-width:500px){.score-workspace .sl-workspace-filters{grid-template-columns:1fr}.score-workspace .sl-live-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}

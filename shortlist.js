@@ -6,7 +6,7 @@ const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||'null')??f}cat
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const award=read('etb2b_awards_new_award',{})||{};
 const awardId=String(award.slug||'demo');
-let nominations=[],reviews={},assignments={},judges=[],levels=[],rules={},decisions={},category='',level='1',tab='scores';
+let nominations=[],reviews={},assignments={},judges=[],levels=[],rules={},decisions={},category='',level='1',tab='shortlist';
 const selectedIds=new Set();
 const key=(cat,lev)=>awardId+'::'+cat+'::'+lev;
 const records=()=>decisions[key(category,level)]||{items:{},locked:false};
@@ -23,7 +23,7 @@ function refreshData(){
   const options=levels.length?levels:[{level:1,name:'Jury Level 1'}];
   const existing=options.some(l=>String(l.level)===String(level));if(!existing)level=String(options[0].level);
   $('#levelSelect').innerHTML=options.map(l=>`<option value="${esc(l.level)}">${esc(l.name||'Jury Level '+l.level)}</option>`).join('');$('#levelSelect').value=level;
-
+  $('#dataBanner').textContent='Live source: judges’ jury submissions on this browser · '+(Object.values(reviews).filter(r=>r&&r.status==='submitted').length)+' submitted reviews recorded. Only submitted reviews count; no sample scores are used.';
   render();
 }
 function submitted(n){
@@ -61,16 +61,16 @@ function render(){
  $('#selectAllReady').checked=eligible.length>0&&eligible.every(e=>selectedIds.has(e.id));
  $('#selectAllReady').indeterminate=selectedIds.size>0&&!$('#selectAllReady').checked;
  $('#bulkBar').classList.toggle('is-locked',records().locked);
- $('#resultsHeading').textContent=tab==='scores'?'Live nomination ranking':'Shortlist management';
- $('#resultsHint').textContent=tab==='scores'?'Criterion-weighted average of submitted jury scores':'Choose Hold, Exclude or Shortlist after sufficient reviews have been submitted.';
- $$('.sl-workspace-tabs button').forEach(b=>{const active=b.dataset.view===tab;b.classList.toggle('active',active);b.setAttribute('aria-selected',active)});
- $('#lockShortlist').hidden=tab!=='shortlist';$('#lockShortlist').disabled=records().locked||!all.length;
+ $('#resultsHeading').textContent='Shortlist management';
+ $('#resultsHint').textContent='Review jury scores, set a decision, then lock the final shortlist.';
+
+ $('#lockShortlist').hidden=false;$('#lockShortlist').disabled=records().locked||!all.length||!all.some(e=>e.decision==='shortlist');
  $('#lockShortlist').textContent=records().locked?'Shortlist locked':'Lock shortlist';
  $('#publishShortlist').disabled=!records().locked || !all.some(e=>e.decision==='shortlist');
  $('#lockStateText').textContent=records().locked?'This category and jury level are locked. Decisions are read-only.':'Category: '+(category||'None')+' · '+($('#levelSelect').selectedOptions[0]?.textContent||'')+' · Draft decisions';
  $('#liveScoreRows').innerHTML=rows.length?rows.map(e=>{
  const rank=all.indexOf(e)+1,score=e.avg===null?'—':e.avg.toFixed(1),variance=e.variance===null?'—':e.variance.toFixed(1)+' pts';
- const decision=tab==='scores'?`<span class="sl-decision-pill ${esc(e.decision)}">${esc(e.decision==='shortlist'?'Shortlisted':e.decision==='exclude'?'Excluded':'On hold')}</span>`:`<select data-id="${esc(e.id)}" class="sl-inline-decision" ${records().locked?'disabled':''}><option value="hold" ${e.decision==='hold'?'selected':''}>Hold</option><option value="shortlist" ${e.decision==='shortlist'?'selected':''}>Shortlist</option><option value="exclude" ${e.decision==='exclude'?'selected':''}>Exclude</option></select>`;
+ const decision=`<select data-id="${esc(e.id)}" class="sl-inline-decision" aria-label="Decision for ${esc(e.n.nominee||e.n.company||e.id)}" ${records().locked?'disabled':''}><option value="hold" ${e.decision==='hold'?'selected':''}>Hold</option><option value="shortlist" ${e.decision==='shortlist'?'selected':''}>Shortlist</option><option value="exclude" ${e.decision==='exclude'?'selected':''}>Exclude</option></select>`;
  return `<tr class="${e.ready?'sl-is-ready':'sl-is-pending'}"><td class="sl-check-col"><input type="checkbox" class="sl-row-check" data-select-id="${esc(e.id)}" aria-label="Select ${esc(e.n.nominee||e.n.company||e.id)}" ${selectedIds.has(e.id)?'checked':''} ${!e.ready||records().locked||e.decision==='shortlist'?'disabled':''}></td><td><span class="sl-rank">${String(rank).padStart(2,'0')}</span></td><td><div class="sl-entry-name"><b>${esc(e.n.nominee||e.n.company||'Nomination')}</b><span class="sl-entry-meta"><span class="sl-entry-id">${esc(e.id)}</span>${e.n.company&&e.n.company!==e.n.nominee?`<span>${esc(e.n.company)}</span>`:''}</span></div></td><td><div class="sl-score"><strong>${score}</strong><small> / 100</small></div></td><td><div class="sl-progress-top"><strong>${e.count} of ${e.required}</strong><span class="sl-coverage-state ${e.ready?'ready':'pending'}">${e.ready?'Ready':'Pending'}</span></div><div class="sl-progress-track"><span style="width:${Math.min(100,e.count/e.required*100)}%"></span></div></td><td><span class="sl-variance">${variance}</span></td><td>${decision}</td><td><div class="sl-row-actions"><button class="btn secondary compact" data-review-id="${esc(e.id)}">Details</button>${!records().locked&&e.ready&&e.decision!=='shortlist'?`<button class="btn primary compact sl-shortlist-action" data-quick-id="${esc(e.id)}">Shortlist</button>`:''}</div></td></tr>`;
  }).join(''):'<tr><td colspan="8"><div class="sl-empty-results">No nominations match these filters. Submitted and paid nominations from Judges will appear here.</div></td></tr>';
  $$('[data-select-id]').forEach(box=>box.addEventListener('change',()=>{if(box.checked)selectedIds.add(box.dataset.selectId);else selectedIds.delete(box.dataset.selectId);render()}));
@@ -92,7 +92,7 @@ function lock(){const list=entryRows(),selected=list.filter(e=>e.decision==='sho
  const k=key(category,level);decisions[k]=decisions[k]||{items:{}};decisions[k].locked=true;decisions[k].lockedAt=new Date().toISOString();statePersist();render();}
 function exportCSV(){const rows=entryRows(),cells=[['Nomination ID','Nominee','Company','Category','Level','Score /100','Submitted reviews','Required reviews','Decision']];rows.forEach(e=>cells.push([e.id,e.n.nominee||'',e.n.company||'',category,level,e.avg===null?'':e.avg.toFixed(2),e.count,e.required,e.decision]));const csv=cells.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='etb2b-nomination-scores.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function downloadJson(filename,obj){const url=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-function prepareShortlistPublication(){const rec=records(),selected=entryRows().filter(e=>e.decision==='shortlist');if(!rec.locked||!selected.length){alert('Lock your shortlist before preparing publication.');return}if(selected.some(e=>!e.ready)){alert('Selected nominations must have completed the required reviews.');return}if(!confirm('Prepare '+selected.length+' shortlisted nominations for public release? This downloads a JSON file; it will NOT update GitHub automatically.'))return;downloadJson('published-shortlist.json',{type:'shortlist',awardId,category,level,generatedAt:new Date().toISOString(),items:selected.map(e=>({nominationId:e.id,name:e.n.nominee||e.n.company||'',company:e.n.company||'',category:e.n.category||category}))});}
+function prepareShortlistPublication(){const rec=records(),selected=entryRows().filter(e=>e.decision==='shortlist');if(!rec.locked||!selected.length){alert('Lock your shortlist before preparing publication.');return}if(selected.some(e=>!e.ready)){alert('Selected nominations must have completed the required reviews.');return}if(!confirm('Prepare '+selected.length+' shortlisted nominations for public release? This downloads a JSON file; it will NOT update GitHub automatically.'))return;downloadJson('published-shortlist.json',{type:'shortlist',awardId,category,level,generatedAt:new Date().toISOString(),items:selected.map(e=>({nominationId:e.id,name:e.n.nominee||e.n.company||'',company:e.n.company||'',category:e.n.category||category}))});alert('Public shortlist file downloaded. Commit published-shortlist.json to the deployed GitHub Pages repository next to public-shortlist.html to make the finalists visible.')}
 $('#selectAllReady').addEventListener('change',e=>{const search=$('#scoreSearch').value.trim().toLowerCase(),status=$('#statusSelect').value;const eligible=entryRows().filter(x=>x.ready&&x.decision!=='shortlist'&&!records().locked&&statusMatches(x,status)&&(!search||[x.id,x.n.nominee,x.n.company,x.n.category].some(v=>String(v||'').toLowerCase().includes(search))));eligible.forEach(x=>e.target.checked?selectedIds.add(x.id):selectedIds.delete(x.id));render()});
 $('#clearSelection').addEventListener('click',()=>{selectedIds.clear();render()});
 $('#bulkShortlist').addEventListener('click',()=>{const chosen=entryRows().filter(e=>selectedIds.has(e.id)&&e.ready&&e.decision!=='shortlist');if(!chosen.length||records().locked)return;if(!confirm('Shortlist '+chosen.length+' fully reviewed nominations?'))return;const k=key(category,level),r=decisions[k]||{items:{},locked:false};r.items=r.items||{};chosen.forEach(e=>{r.items[e.id]={decision:'shortlist',note:e.note,updatedAt:new Date().toISOString(),score:e.avg,reviewCount:e.count}});decisions[k]=r;selectedIds.clear();statePersist();render()});
@@ -100,7 +100,7 @@ $('#publishShortlist').addEventListener('click',prepareShortlistPublication);
 $('#quickReady').addEventListener('click',()=>{$('#statusSelect').value='complete';render()});
 $('#refreshScores').addEventListener('click',refreshData);$('#saveDecisions').addEventListener('click',()=>{statePersist();alert('Shortlist decisions saved.')});$('#exportScores').addEventListener('click',exportCSV);$('#lockShortlist').addEventListener('click',lock);
 $('#categorySelect').addEventListener('change',e=>{category=e.target.value;selectedIds.clear();render()});$('#levelSelect').addEventListener('change',e=>{level=e.target.value;selectedIds.clear();render()});$('#statusSelect').addEventListener('change',render);$('#scoreSearch').addEventListener('input',render);
-$$('[data-view]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.view;render()}));
+
 $('#closeScoreReview').addEventListener('click',hideReview);$('#dismissScoreReview').addEventListener('click',hideReview);$('#scoreReviewModal').addEventListener('click',e=>{if(e.target.id==='scoreReviewModal')hideReview()});document.addEventListener('keydown',e=>{if(e.key==='Escape')hideReview()});
 window.addEventListener('storage',e=>{if(Object.values(KEYS).includes(e.key))refreshData()});
 refreshData();
