@@ -121,3 +121,18 @@
 .score-workspace .sl-deploy-hint a{font-weight:700;color:#1d548d}
 @media(max-width:740px){.score-workspace .sl-workspace-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.score-workspace .sl-results-head{align-items:flex-start}.score-workspace .sl-results-actions{flex-wrap:wrap}}
 @media(max-width:500px){.score-workspace .sl-workspace-filters{grid-template-columns:1fr}.score-workspace .sl-live-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Jury review synchronization and compact premium ranking rows */
+.score-workspace .sl-live-table td{padding:13px 12px;vertical-align:middle}
+.score-workspace .sl-entry-name{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:190px}
+.score-workspace .sl-entry-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.score-workspace .sl-progress-top{display:flex;flex-wrap:wrap;align-items:center;gap:5px 9px;line-height:1.45}
+.score-workspace .sl-progress-top strong{font-size:12px;white-space:nowrap}
+.score-workspace .sl-level-coverage{font-size:11px;color:#627187;white-space:nowrap}
+.score-workspace .sl-coverage-state{font-size:11px;white-space:nowrap}
+.score-workspace .sl-score{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px}
+.score-workspace .sl-score-scope{width:100%;font-size:10px;font-weight:500;color:#7b8798}
+.score-workspace .sl-row-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.score-workspace .sl-live-table{min-width:940px}
+.score-workspace .sl-live-table tbody tr:hover{background:#f8faff}
+@media(max-width:760px){.score-workspace .sl-live-table td{padding:11px 9px}.score-workspace .sl-live-table{min-width:900px}}
