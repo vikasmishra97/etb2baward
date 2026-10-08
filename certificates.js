@@ -30,9 +30,23 @@
     {id:'leader',name:'FinTech Leader of the Year',locked:true,finalists:[{id:'neha',name:'Neha Rao - Orbit Finance',tag:'Founder and CEO',award:'winner',email:'neha@orbitfinance.example',nameVerified:true,brandVerified:true,consent:true,juryApproved:true},{id:'arjun',name:'Arjun Mehta - NovaPay',tag:'Co-founder',award:'finalist',email:'arjun@novapay.example',nameVerified:true,brandVerified:true,consent:true,juryApproved:true}]}
   ];
 
-  function loadWinnerState(){var cats=JSON.parse(JSON.stringify(baseCategories));try{var s=JSON.parse(localStorage.getItem(winnersKey)||'null');if(s&&s.categories){s.categories.forEach(function(sc){var c=cats.filter(function(x){return x.id===sc.id})[0];if(!c)return;if(typeof sc.locked==='boolean')c.locked=sc.locked;if(sc.finalists)sc.finalists.forEach(function(sf){var f=c.finalists.filter(function(x){return x.id===sf.id})[0];if(!f){f={id:sf.id,name:sf.name||sf.id,tag:'',email:'winner@etb2b_awards.example'};c.finalists.push(f)}Object.keys(sf).forEach(function(k){if(k!=='id')f[k]=sf[k]})})})}}catch(e){}return cats}
+  function loadWinnerState(){
+    var cats=JSON.parse(JSON.stringify(baseCategories));
+    try{
+      var saved=JSON.parse(localStorage.getItem(winnersKey)||'null');
+      if(saved&&Array.isArray(saved.categories)){
+        // Use the exact shortlist-derived Winners data; no demo recipient leakage.
+        cats=saved.categories.map(function(sc){return {
+          id:sc.id,name:sc.name||sc.id,locked:!!sc.locked,
+          finalists:(sc.finalists||[]).map(function(sf){return Object.assign({name:sf.id,award:'finalist',nameVerified:false,brandVerified:false,consent:false,juryApproved:false,email:''},sf)})
+        }});
+      }
+    }catch(e){console.error('Unable to load winner recipients',e)}
+    return cats;
+  }
   var categories=loadWinnerState();
-  function allAwardRecipients(){var out=[];categories.forEach(function(c){c.finalists.forEach(function(f){if(isAward(f.award))out.push({id:c.id+'::'+f.id,categoryId:c.id,category:c.name,categoryLocked:c.locked,name:f.name,email:f.email||('winner@'+String(f.id).replace(/[^a-z0-9]/gi,'').toLowerCase()+'.example'),tag:f.tag||'',award:f.award,verified:verified(f),source:f})})});return out}
+  window.addEventListener('focus',function(){categories=loadWinnerState();renderAll()});
+  function allAwardRecipients(){var out=[];categories.forEach(function(c){c.finalists.forEach(function(f){if(isAward(f.award))out.push({id:c.id+'::'+f.id,categoryId:c.id,category:c.name,categoryLocked:c.locked,name:f.name,email:f.email||'',tag:f.tag||'',award:f.award,verified:verified(f),source:f})})});return out}
   function eligible(){return allAwardRecipients().filter(function(r){return r.categoryLocked&&r.verified})}
   function protectedRecipients(){return allAwardRecipients().filter(function(r){return !(r.categoryLocked&&r.verified)})}
   function findRecipient(id){return allAwardRecipients().filter(function(r){return r.id===id})[0]||null}

@@ -50,13 +50,19 @@
   function copy(obj){return JSON.parse(JSON.stringify(obj))}
   function mergeWinnerState(){
     var cats=copy(baseCategories);
-    try{
-      var saved=JSON.parse(localStorage.getItem(winnersKey)||'null');
-      if(saved&&saved.categories){saved.categories.forEach(function(sc){var c=cats.filter(function(x){return x.id===sc.id})[0];if(!c)return;if(typeof sc.locked==='boolean')c.locked=sc.locked;if(sc.finalists)sc.finalists.forEach(function(sf){var f=c.finalists.filter(function(x){return x.id===sf.id})[0];if(!f)return;Object.keys(sf).forEach(function(k){if(k!=='id')f[k]=sf[k]})})})}
-      return {categories:cats,releaseMode:saved&&saved.releaseMode||'scheduled',releaseDate:saved&&saved.releaseDate||'2027-06-15',releaseTime:saved&&saved.releaseTime||'10:00'};
-    }catch(e){return {categories:cats,releaseMode:'scheduled',releaseDate:'2027-06-15',releaseTime:'10:00'}}
+    var saved=null;
+    try{saved=JSON.parse(localStorage.getItem(winnersKey)||'null')}catch(e){}
+    // A saved Winners workspace is authoritative; never blend real nominees with demo categories.
+    if(saved&&Array.isArray(saved.categories)){
+      cats=saved.categories.map(function(sc){return {
+        id:sc.id,name:sc.name||sc.id,locked:!!sc.locked,
+        finalists:(sc.finalists||[]).map(function(sf){return Object.assign({award:'finalist',nameVerified:false,brandVerified:false,consent:false,juryApproved:false},sf)})
+      }});
+    }
+    return {categories:cats,releaseMode:saved&&saved.releaseMode||'scheduled',releaseDate:saved&&saved.releaseDate||'2027-06-15',releaseTime:saved&&saved.releaseTime||'10:00'};
   }
   var winnerState=mergeWinnerState();
+  window.addEventListener('focus',function(){winnerState=mergeWinnerState();renderAll()});
 
   function load(){try{var saved=JSON.parse(localStorage.getItem(stateKey)||'null');if(saved)Object.keys(saved).forEach(function(k){state[k]=saved[k]})}catch(e){}}
   function save(show){try{localStorage.setItem(stateKey,JSON.stringify(state));if(show)toast('Winner gallery draft saved')}catch(e){}}

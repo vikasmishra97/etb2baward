@@ -2,3 +2,24 @@
 @media(max-width:1250px){.wn-layout{grid-template-columns:1fr}.wn-side-col{position:static;display:grid;grid-template-columns:1fr 1fr;gap:14px}.wn-side-col .section{margin-top:0}.wn-category-tabs{grid-template-columns:repeat(3,1fr)}.wn-winner-board{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:900px){.wn-kpis{grid-template-columns:1fr 1fr}.wn-copilot-card{grid-template-columns:42px 1fr}.wn-copilot-actions{grid-column:1/-1}.wn-category-tabs{grid-template-columns:repeat(2,1fr)}.wn-side-col{grid-template-columns:1fr 1fr}.wn-check-grid{grid-template-columns:1fr}.wn-preview-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:720px){.wn-head{flex-direction:column}.wn-kpis{grid-template-columns:1fr}.wn-copilot-card{grid-template-columns:1fr}.wn-copilot-actions{display:grid;grid-template-columns:1fr 1fr}.wn-category-head{flex-direction:column;align-items:flex-start}.wn-category-actions{width:100%;align-items:stretch}.wn-compact-field{flex:1}.wn-category-tabs{display:flex;overflow:auto}.wn-category-tabs button{min-width:170px}.wn-panel-head{flex-direction:column;align-items:flex-start}.wn-panel-actions{width:100%}.wn-panel-actions .btn{flex:1}.wn-side-col{grid-template-columns:1fr}.wn-winner-board{grid-template-columns:1fr}.wn-next-step{align-items:flex-start;flex-direction:column}.wn-score-grid{grid-template-columns:1fr}.wn-preview-grid{grid-template-columns:1fr}.wn-two-col{grid-template-columns:1fr}}
+
+/* Premium readability update — scoped to the Winners workspace. */
+.wn-page{font-size:14px;line-height:1.5}
+.wn-kpi small,.wn-kpi span,.wn-category-head small,.wn-category-tabs button span,.wn-category-tabs button b,.wn-panel-head p,.wn-panel-head .eyebrow,.wn-table th,.wn-table td,.wn-finalist-name span,.wn-score small,.wn-jury,.wn-verify,.wn-award-select,.wn-check b,.wn-check small,.wn-board-item>span,.wn-board-item h3,.wn-board-recipient b,.wn-board-recipient small,.wn-board-footer span,.wn-board-footer b,.wn-ready-list b,.wn-ready-list small,.wn-pack-list b,.wn-pack-list small,.wn-pack-list button,.wn-embargo-card .field label,.wn-embargo-card .field input,.wn-embargo-card .field select,.wn-public-card p,.wn-next-step p,.wn-drawer-section textarea,.wn-verify-row b,.wn-verify-row small,.wn-context-box,.wn-confirm-check,.wn-copilot-prompts button{font-size:12px}
+.wn-panel-head h2,.wn-category-head h2{font-size:18px}
+.wn-table th{font-size:12px;font-weight:750;letter-spacing:.01em}
+.wn-table td{padding:13px 10px;vertical-align:middle}
+.wn-finalist-name b{font-size:14px;line-height:1.35}
+.wn-score strong{font-size:19px}
+.wn-award-select{min-width:132px;padding:10px;font-size:12px}
+.wn-row-menu{width:36px;height:36px;font-size:16px}
+.wn-category-tabs button{padding:12px 13px}
+.wn-category-tabs button b{font-size:12px}
+.wn-kpi strong{font-size:25px}
+.wn-kpi small{font-size:12px}
+.wn-check>span{font-size:12px}
+.wn-drawer-section h3{font-size:14px}
+.wn-compact-field,.wn-compact-field select{font-size:12px}
+.wn-table{min-width:760px}
+.wn-finalists-card{overflow-x:auto}
+@media(max-width:900px){.wn-table{min-width:820px}.wn-layout{grid-template-columns:minmax(0,1fr)}.wn-side-col{position:static}}
