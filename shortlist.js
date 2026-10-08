@@ -25,23 +25,38 @@ function refreshData(){
   $('#levelSelect').innerHTML=options.map(l=>`<option value="${esc(l.level)}">${esc(l.name||'Jury Level '+l.level)}</option>`).join('');$('#levelSelect').value=level;
   render();
 }
+function assignedJurors(n){
+ const map=assignments[String(level)]||{};
+ return [...new Set((map[idOf(n)]||[]).map(String))];
+}
 function submitted(n){
- const nom=idOf(n);const assigned=((assignments[String(level)]||{})[nom]||[]).map(String);
- return Object.values(reviews).filter(r=>r&&r.status==='submitted'&&String(r.nominationId)===nom&&String(r.level)===String(level)&&assigned.includes(String(r.juryId??r.judgeId))&&(!r.category||r.category===n.category));
+ const nom=idOf(n), byJuror=new Map();
+ // Submissions are stored by juror + nomination, and include their original level.
+ // Keep valid submitted history even if a juror was subsequently reassigned.
+ Object.values(reviews).forEach(r=>{
+  if(!r||String(r.status).toLowerCase()!=='submitted'||String(r.nominationId)!==nom||String(r.level)!==String(level)|| (r.category&&r.category!==n.category))return;
+  const id=String(r.juryId??r.judgeId??'');if(!id)return;
+  const previous=byJuror.get(id);
+  if(!previous||String(r.updatedAt||'')>=String(previous.updatedAt||''))byJuror.set(id,r);
+ });
+ return [...byJuror.values()];
 }
 function entryRows(){
- const required=Math.max(1,number(rules.minReviews,3));
  return nominations.filter(n=>n.submission==='Submitted'&&n.payment==='Paid'&&n.category===category).map(n=>{
-  const arr=submitted(n),scores=arr.map(r=>number(r.total)*10),avg=scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:null;
+  const assigned=assignedJurors(n),arr=submitted(n),scores=arr.map(r=>number(r.total)*10),avg=scores.length?scores.reduce((a,b)=>a+b,0)/scores.length:null;
   const variance=scores.length>1?Math.max(...scores)-Math.min(...scores):null;
-  const ready=arr.length>=required,record=records().items[idOf(n)]||{};
-  return {n,id:idOf(n),reviews:arr,count:arr.length,required,avg,variance,ready,decision:record.decision||'hold',note:record.note||''};
+  const required=assigned.length;
+  const assignedSet=new Set(assigned);
+  const completedAssigned=arr.filter(r=>assignedSet.has(String(r.juryId??r.judgeId))).length;
+  const ready=required>0&&completedAssigned>=required;
+  const record=records().items[idOf(n)]||{};
+  return {n,id:idOf(n),reviews:arr,count:arr.length,required,completedAssigned,avg,variance,ready,decision:record.decision||'hold',note:record.note||''};
  }).sort((a,b)=>(b.avg??-1)-(a.avg??-1)||a.id.localeCompare(b.id));
 }
 function statePersist(){localStorage.setItem(KEYS.shortlist,JSON.stringify(decisions))}
 function saveDecision(e,decision,note){
  if(records().locked)return false;
- if(decision==='shortlist'&&!e.ready){alert('This nomination requires '+e.required+' submitted jury reviews at this level before it can be shortlisted.');return false}
+ if(decision==='shortlist'&&!e.ready){alert('This nomination requires submitted reviews from all '+e.required+' currently assigned jurors at this level before it can be shortlisted.');return false}
  const k=key(category,level),r=decisions[k]||{items:{},locked:false};r.items=r.items||{};
  r.items[e.id]={decision,note:note??e.note,updatedAt:new Date().toISOString(),score:e.avg,reviewCount:e.count};decisions[k]=r;statePersist();render();return true;
 }
@@ -70,7 +85,7 @@ function render(){
  $('#liveScoreRows').innerHTML=rows.length?rows.map(e=>{
  const rank=all.indexOf(e)+1,score=e.avg===null?'—':e.avg.toFixed(1),variance=e.variance===null?'—':e.variance.toFixed(1)+' pts';
  const decision=`<select data-id="${esc(e.id)}" class="sl-inline-decision" aria-label="Decision for ${esc(e.n.nominee||e.n.company||e.id)}" ${records().locked?'disabled':''}><option value="hold" ${e.decision==='hold'?'selected':''}>Hold</option><option value="shortlist" ${e.decision==='shortlist'?'selected':''}>Shortlist</option><option value="exclude" ${e.decision==='exclude'?'selected':''}>Exclude</option></select>`;
- return `<tr class="${e.ready?'sl-is-ready':'sl-is-pending'}"><td class="sl-check-col"><input type="checkbox" class="sl-row-check" data-select-id="${esc(e.id)}" aria-label="Select ${esc(e.n.nominee||e.n.company||e.id)}" ${selectedIds.has(e.id)?'checked':''} ${!e.ready||records().locked||e.decision==='shortlist'?'disabled':''}></td><td><span class="sl-rank">${String(rank).padStart(2,'0')}</span></td><td><div class="sl-entry-name"><b>${esc(e.n.nominee||e.n.company||'Nomination')}</b><span class="sl-entry-meta"><span class="sl-entry-id">${esc(e.id)}</span>${e.n.company&&e.n.company!==e.n.nominee?`<span>${esc(e.n.company)}</span>`:''}</span></div></td><td><div class="sl-score"><strong>${score}</strong><small> / 100</small></div></td><td><div class="sl-progress-top"><strong>${e.count} of ${e.required}</strong><span class="sl-coverage-state ${e.ready?'ready':'pending'}">${e.ready?'Ready':'Pending'}</span></div><div class="sl-progress-track"><span style="width:${Math.min(100,e.count/e.required*100)}%"></span></div></td><td><span class="sl-variance">${variance}</span></td><td>${decision}</td><td><div class="sl-row-actions"><button class="btn secondary compact" data-review-id="${esc(e.id)}">Details</button>${!records().locked&&e.ready&&e.decision!=='shortlist'?`<button class="btn primary compact sl-shortlist-action" data-quick-id="${esc(e.id)}">Shortlist</button>`:''}</div></td></tr>`;
+ return `<tr class="${e.ready?'sl-is-ready':'sl-is-pending'}"><td class="sl-check-col"><input type="checkbox" class="sl-row-check" data-select-id="${esc(e.id)}" aria-label="Select ${esc(e.n.nominee||e.n.company||e.id)}" ${selectedIds.has(e.id)?'checked':''} ${!e.ready||records().locked||e.decision==='shortlist'?'disabled':''}></td><td><span class="sl-rank">${String(rank).padStart(2,'0')}</span></td><td><div class="sl-entry-name"><b>${esc(e.n.nominee||e.n.company||'Nomination')}</b><span class="sl-entry-meta"><span class="sl-entry-id">${esc(e.id)}</span>${e.n.company&&e.n.company!==e.n.nominee?`<span>${esc(e.n.company)}</span>`:''}</span></div></td><td><div class="sl-score"><strong>${score}</strong><small> / 100</small></div></td><td><div class="sl-progress-top"><strong>${e.count} submitted · ${e.required} assigned</strong><span class="sl-coverage-state ${e.ready?'ready':'pending'}">${e.ready?'Ready':'Pending'}</span></div><div class="sl-progress-track"><span style="width:${e.required?Math.min(100,e.completedAssigned/e.required*100):0}%"></span></div></td><td><span class="sl-variance">${variance}</span></td><td>${decision}</td><td><div class="sl-row-actions"><button class="btn secondary compact" data-review-id="${esc(e.id)}">Details</button>${!records().locked&&e.ready&&e.decision!=='shortlist'?`<button class="btn primary compact sl-shortlist-action" data-quick-id="${esc(e.id)}">Shortlist</button>`:''}</div></td></tr>`;
  }).join(''):'<tr><td colspan="8"><div class="sl-empty-results">No nominations match these filters. Submitted and paid nominations from Judges will appear here.</div></td></tr>';
  $$('[data-select-id]').forEach(box=>box.addEventListener('change',()=>{if(box.checked)selectedIds.add(box.dataset.selectId);else selectedIds.delete(box.dataset.selectId);render()}));
  $$('[data-quick-id]').forEach(b=>b.addEventListener('click',()=>{const entry=all.find(e=>e.id===b.dataset.quickId);if(entry&&confirm('Shortlist '+(entry.n.nominee||entry.n.company||entry.id)+'?'))saveDecision(entry,'shortlist')}));
@@ -81,8 +96,8 @@ function showReview(e){if(!e)return;$('#reviewTitle').textContent=e.n.nominee||e
  $('#reviewSubtitle').textContent=e.id+' · '+e.n.category+' · '+($('#levelSelect').selectedOptions[0]?.textContent||'');
  const criteria=new Map();e.reviews.forEach(r=>(r.criteriaSnapshot||[]).forEach(c=>{const key=String(c.id),row=criteria.get(key)||{c,values:[]};if(r.scores&&r.scores[key]!==undefined)row.values.push(number(r.scores[key]));criteria.set(key,row)}));
  const criterionHtml=[...criteria.values()].map(({c,values})=>`<div class="sl-criterion-row"><div><b>${esc(c.name)}</b><span>${number(c.weight)}% weight</span></div><strong>${values.length?(values.reduce((a,b)=>a+b,0)/values.length).toFixed(1):'—'} / ${number(c.scale,5)}</strong></div>`).join('');
- const judgeHtml=e.reviews.map(r=>{const j=judges.find(j=>String(j.id)===String(r.juryId));return `<div class="sl-jury-review"><div><b>${esc(j?.name||'Juror '+r.juryId)}</b><small>${esc(r.updatedAt?new Date(r.updatedAt).toLocaleString():'Submitted')}</small>${r.comments?`<p>${esc(r.comments)}</p>`:''}</div><strong>${(number(r.total)*10).toFixed(1)} / 100</strong></div>`}).join('');
- $('#reviewDetails').innerHTML=`<div class="sl-review-metrics"><div><span>Average score</span><b>${e.avg===null?'Not scored':e.avg.toFixed(1)+'/100'}</b></div><div><span>Submitted reviews</span><b>${e.count} / ${e.required}</b></div><div><span>Assignment status</span><b>${e.ready?'Ready':'Pending'}</b></div></div><h3>Criterion breakdown</h3>${criterionHtml||'<p>No submitted criterion scores yet.</p>'}<h3>Individual jury submissions</h3>${judgeHtml||'<p>Waiting for assigned jurors to submit their evaluations.</p>'}<h3>Decision note</h3><textarea id="reviewDecisionNote" rows="3" placeholder="Reason for shortlist decision..." ${records().locked?'disabled':''}>${esc(e.note)}</textarea><div class="sl-review-controls"><button class="btn secondary" data-set-decision="hold" ${records().locked?'disabled':''}>Hold</button><button class="btn secondary" data-set-decision="exclude" ${records().locked?'disabled':''}>Exclude</button><button class="btn primary" data-set-decision="shortlist" ${records().locked||!e.ready?'disabled':''}>Shortlist</button></div>`;
+ const judgeHtml=e.reviews.map(r=>{const j=judges.find(j=>String(j.id)===String(r.juryId??r.judgeId));return `<div class="sl-jury-review"><div><b>${esc(j?.name||'Juror '+(r.juryId??r.judgeId))}</b><small>${esc(r.updatedAt?new Date(r.updatedAt).toLocaleString():'Submitted')}</small>${r.comments?`<p>${esc(r.comments)}</p>`:''}</div><strong>${(number(r.total)*10).toFixed(1)} / 100</strong></div>`}).join('');
+ $('#reviewDetails').innerHTML=`<div class="sl-review-metrics"><div><span>Average score</span><b>${e.avg===null?'Not scored':e.avg.toFixed(1)+'/100'}</b></div><div><span>Submitted reviews</span><b>${e.count} submitted · ${e.required} assigned</b></div><div><span>Assignment status</span><b>${e.ready?'Ready':'Pending'}</b></div></div><h3>Criterion breakdown</h3>${criterionHtml||'<p>No submitted criterion scores yet.</p>'}<h3>Individual jury submissions</h3>${judgeHtml||'<p>Waiting for assigned jurors to submit their evaluations.</p>'}<h3>Decision note</h3><textarea id="reviewDecisionNote" rows="3" placeholder="Reason for shortlist decision..." ${records().locked?'disabled':''}>${esc(e.note)}</textarea><div class="sl-review-controls"><button class="btn secondary" data-set-decision="hold" ${records().locked?'disabled':''}>Hold</button><button class="btn secondary" data-set-decision="exclude" ${records().locked?'disabled':''}>Exclude</button><button class="btn primary" data-set-decision="shortlist" ${records().locked||!e.ready?'disabled':''}>Shortlist</button></div>`;
  $$('[data-set-decision]').forEach(b=>b.addEventListener('click',()=>{if(saveDecision(e,b.dataset.setDecision,$('#reviewDecisionNote').value.trim()))hideReview()}));
  $('#scoreReviewModal').hidden=false;document.body.classList.add('sl-modal-visible');
 }
