@@ -77,3 +77,11 @@
 .score-workspace .sl-head .sl-publish-btn{background:#174f86;border-color:#174f86}
 .score-workspace .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(max-width:700px){.score-workspace .sl-section-label{flex-direction:column;gap:4px}.score-workspace .sl-results-head{padding:18px}.score-workspace .sl-bulkbar{padding:12px 15px}.score-workspace .sl-bulkbar span{margin-left:0}.score-workspace .sl-live-table{min-width:1040px}}
+
+/* Decision overview: prominent, uncluttered summary above workspace tabs */
+.score-workspace .sl-overview-panel{margin:22px 0 24px;padding:21px 22px 22px;border:1px solid #e2e7ef;border-radius:18px;background:linear-gradient(145deg,#fff 0%,#f9fbfe 100%);box-shadow:0 10px 30px rgba(22,37,59,.045)}
+.score-workspace .sl-overview-panel .sl-section-label{margin:0 0 16px;font-size:15px;letter-spacing:-.2px}
+.score-workspace .sl-overview-panel .sl-live-stats{margin:0;gap:12px}
+.score-workspace .sl-overview-panel .sl-live-stats article{min-height:110px;border:1px solid #e5eaf1;border-radius:13px;box-shadow:0 3px 12px rgba(26,39,63,.03);background:#fff}
+.score-workspace .sl-overview-panel .sl-live-stats strong{font-variant-numeric:tabular-nums}
+@media(max-width:700px){.score-workspace .sl-overview-panel{padding:16px;margin:16px 0 20px}.score-workspace .sl-overview-panel .sl-section-label{align-items:flex-start;flex-direction:column;gap:5px}.score-workspace .sl-overview-panel .sl-live-stats{gap:9px}.score-workspace .sl-overview-panel .sl-live-stats article{min-height:96px;padding:14px}}
