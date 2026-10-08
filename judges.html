@@ -131,8 +131,11 @@
         <div class="nomination-toolbar premium-toolbar">
           <div class="premium-search"><span>⌕</span><input id="nominationSearch" placeholder="Search Nomination ID, nominee, company or category"></div>
           <select id="nominationCategoryFilter"><option value="all">All categories</option></select>
+          <select id="nominationLevelFilter" aria-label="Filter by jury level"><option value="all">All jury levels</option></select>
           <select id="nominationAssignmentFilter"><option value="all">All assignments</option><option value="unassigned">Needs jury</option><option value="assigned">Assigned</option></select>
         </div>
+        <div id="nominationFilterSummary" class="nomination-filter-summary" aria-live="polite"></div>
+        <div id="nominationJuryWorkload" class="nomination-jury-workload" aria-live="polite"></div>
         <div class="nomination-table-wrap"><table class="nomination-table premium-table"><thead><tr><th><input type="checkbox" id="selectAllNominations"></th><th>Nomination ID</th><th>Nominee / Company</th><th>Category</th><th>Status</th><th>Jury assignment</th><th></th></tr></thead><tbody id="nominationRows"></tbody></table></div>
         <div class="selection-action-bar" id="selectionActionBar" aria-hidden="true">
           <div class="selection-copy"><span id="selectedNominationCount">0</span> nomination(s) selected</div>

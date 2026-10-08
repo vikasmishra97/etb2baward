@@ -280,16 +280,33 @@
     f.innerHTML='<option value="all">All categories</option>'+reportCategories.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
     f.value=[...f.options].some(o=>o.value===old)?old:'all';
   }
+  function renderNominationLevelFilter(){
+    const filter=$('#nominationLevelFilter'), previous=filter.value||'all';
+    filter.innerHTML='<option value="all">All jury levels</option>'+levels.map(l=>`<option value="${l.level}">${esc(l.name||`Jury Level ${l.level}`)}</option>`).join('');
+    filter.value=[...filter.options].some(o=>o.value===previous)?previous:'all';
+  }
+  function renderNominationWorkload(rows, level){
+    const summary=$('#nominationFilterSummary'), panel=$('#nominationJuryWorkload');
+    const relevantLevels=level==='all'?levels:levels.filter(l=>Number(l.level)===Number(level));
+    if(summary)summary.textContent=`Showing ${rows.length} nomination${rows.length===1?'':'s'} · ${level==='all'?'All jury levels':`Level ${level}`}`;
+    if(!panel)return;
+    const activeJudges=judges.filter(j=>j.enabled!==false&&relevantLevels.some(l=>Number(l.level)===Number(j.level||1)));
+    if(!activeJudges.length){panel.innerHTML='<span class="workload-empty">No active jurors at the selected level.</span>';return}
+    const items=activeJudges.map(j=>({judge:j,count:assignmentLoadForJudgeAtLevel(j.id,Number(j.level||1))})).sort((a,b)=>b.count-a.count||a.judge.name.localeCompare(b.judge.name));
+    const average=(items.reduce((n,x)=>n+x.count,0)/items.length).toFixed(1);
+    panel.innerHTML=`<div class="workload-heading"><strong>Jury workload</strong><span>${items.length} active juror${items.length===1?'':'s'} · Average ${average} nominations</span></div><div class="workload-chips">${items.map(({judge,count})=>`<span class="workload-chip" title="Level ${Number(judge.level||1)} · ${esc(judge.company||'')}">${esc(judge.name)} <b>L${Number(judge.level||1)} · ${count}</b></span>`).join('')}</div>`;
+  }
   function assignmentHistory(nomId){
     return levels.map(l=>{const ids=((assignments[String(l.level)]||{})[nomId]||[]).map(String);return {level:l.level,assigned:ids.length,names:ids.map(id=>judges.find(j=>String(j.id)===id)?.name).filter(Boolean)}});
   }
   function renderNominations(){
-    const q=($('#nominationSearch').value||'').toLowerCase().trim(), cat=$('#nominationCategoryFilter').value, af=$('#nominationAssignmentFilter').value;
+    const q=($('#nominationSearch').value||'').toLowerCase().trim(), cat=$('#nominationCategoryFilter').value, af=$('#nominationAssignmentFilter').value, level=$('#nominationLevelFilter').value;
     let rows=paidSubmittedNominations();
     rows=rows.filter(n=>!q||`${n.id} ${n.company} ${n.nominee} ${n.category} ${n.email||''}`.toLowerCase().includes(q));
     if(cat!=='all')rows=rows.filter(n=>n.category===cat);
-    if(af==='assigned')rows=rows.filter(n=>hasAnyAssignment(n.id));
-    if(af==='unassigned')rows=rows.filter(n=>!hasAnyAssignment(n.id));
+    if(af==='assigned')rows=rows.filter(n=>level==='all'?hasAnyAssignment(n.id):assignmentIdsAtLevel(level,n.id).length>0);
+    if(af==='unassigned')rows=rows.filter(n=>level==='all'?!hasAnyAssignment(n.id):assignmentIdsAtLevel(level,n.id).length===0);
+    renderNominationWorkload(rows,level);
     $('#nominationRows').innerHTML=rows.length?rows.map(n=>{
       const history=assignmentHistory(n.id);
       const historyHtml=history.map(h=>`<span class="assignment-level-badge ${h.assigned?'assigned':''}">L${h.level} ${h.assigned?`Assigned · ${h.assigned}`:'Not assigned'}</span>`).join('');
@@ -379,7 +396,7 @@
     $('#aiHeadline').textContent=`${unassigned.length} nominations need assignment`;
     $('#aiInsight').innerHTML=`Priority: <b>${esc(gap?.[0]||'—')}</b> has ${gap?.[1]||0} open. Best current fit: <b>${esc(suggested?.name||light?.j.name||'—')}</b>. Lowest workload: ${esc(light?.j.name||'—')} (${light?.n||0}).`;
   }
-  function renderAll(){renderLevels();renderConfig();renderJury();renderNominationFilters();renderNominations();renderCategoryIntelligence();updateSummary();initCategoryMulti('level');initCategoryMulti('invite');updateSelectionBar()}
+  function renderAll(){renderLevels();renderConfig();renderJury();renderNominationFilters();renderNominationLevelFilter();renderNominations();renderCategoryIntelligence();updateSummary();initCategoryMulti('level');initCategoryMulti('invite');updateSelectionBar()}
 
   function saveLevel(){const l=currentLevel();l.type=$('#juryRoundType').value;l.threshold=Math.max(0,Math.min(100,Number($('#juryThreshold').value||0)));l.categories=$$('#juryLevelCategories input:checked').map(i=>i.value);l.juryEvaluate=$('#levelJuryEvaluate').checked;l.showPreviousScores=$('#levelPreviousScores').checked;persist();renderAll();toast('Jury level saved')}
   function changeLevelCount(v){const count=Math.max(1,Math.min(5,Number(v)));while(levels.length<count){const n=levels.length+1;levels.push({level:n,name:`Jury Level ${n}`,type:n===1?'verification':n===count?'final':'evaluation',threshold:n===1?70:75,categories:[...categories],juryEvaluate:true,showPreviousScores:n>1})}if(levels.length>count){const affected=judges.some(j=>Number(j.level)>count);if(affected&&!confirm(`Jury members above Level ${count} will be moved to Level ${count}. Continue?`)){renderLevels();return}judges.forEach(j=>{if(Number(j.level)>count)j.level=count});levels=levels.slice(0,count);Object.keys(assignments).forEach(k=>{if(Number(k)>count)delete assignments[k]})}selectedLevel=Math.min(selectedLevel,count);persist();renderAll();toast(`Jury workflow set to ${count} level${count===1?'':'s'}`)}
@@ -493,7 +510,7 @@
   $('#generateJuryPassword').addEventListener('click',()=>{$('#newJudgePassword').value=`ET${Math.random().toString(36).slice(2,8).toUpperCase()}#${String(new Date().getFullYear()).slice(-2)}`});
   $$('#expertisePicker button').forEach(b=>b.addEventListener('click',()=>b.classList.toggle('active')));
   $('#levelJurySearch').addEventListener('input',renderJury);$('#levelJuryRows').addEventListener('click',e=>{const more=e.target.closest('[data-toggle-jury-list]'),assigned=e.target.closest('[data-view-jury-assignments]'),edit=e.target.closest('[data-edit-jury]'),copy=e.target.closest('[data-copy-login]'),login=e.target.closest('[data-open-login]'),toggle=e.target.closest('[data-toggle-jury]');if(more){showAllJury=!showAllJury;renderJury();return}if(assigned){openJuryAssignments(assigned.dataset.viewJuryAssignments);return}if(edit)editJudge(edit.dataset.editJury);if(copy)copyLogin(copy.dataset.copyLogin);if(login)openJuryLogin(login.dataset.openLogin);if(toggle){const j=judges.find(x=>String(x.id)===String(toggle.dataset.toggleJury));if(j){j.enabled=toggle.checked;persist();renderAll()}}});
-  $('#nominationSearch').addEventListener('input',renderNominations);$('#nominationCategoryFilter').addEventListener('change',renderNominations);$('#nominationAssignmentFilter').addEventListener('change',renderNominations);$('#clearNominationFilters').addEventListener('click',()=>{$('#nominationSearch').value='';$('#nominationCategoryFilter').value='all';$('#nominationAssignmentFilter').value='all';renderNominations()});
+  $('#nominationSearch').addEventListener('input',renderNominations);$('#nominationCategoryFilter').addEventListener('change',renderNominations);$('#nominationLevelFilter').addEventListener('change',renderNominations);$('#nominationAssignmentFilter').addEventListener('change',renderNominations);$('#clearNominationFilters').addEventListener('click',()=>{$('#nominationSearch').value='';$('#nominationCategoryFilter').value='all';$('#nominationLevelFilter').value='all';$('#nominationAssignmentFilter').value='all';renderNominations()});
   $('#nominationRows').addEventListener('click',e=>{const b=e.target.closest('[data-assign-nomination]');if(b)openAssign([b.dataset.assignNomination]);if(e.target.matches('.nomination-select'))updateSelectionBar()});$('#assignSelectedBtn').addEventListener('click',()=>openAssign(selectedNominationIds()));$('#selectAllNominations').addEventListener('change',e=>{$$('.nomination-select').forEach(i=>i.checked=e.target.checked);updateSelectionBar()});$('#stickyAssignJury')?.addEventListener('click',()=>openAssign(selectedNominationIds()));$('#stickyUnassignJury')?.addEventListener('click',unassignSelected);$('#stickyClearSelection')?.addEventListener('click',clearNominationSelection);
   $$('[data-close-assignment]').forEach(b=>b.addEventListener('click',closeAssign));$('#saveNominationAssignment').addEventListener('click',saveAssignment);$('#assignmentLevelSelect')?.addEventListener('change',e=>{assignmentLevel=Number(e.target.value||selectedLevel);renderAssignmentJuryPicker()});
   $('#aiAutoAssign').addEventListener('click',aiAssign);$('#aiRefresh').addEventListener('click',()=>{renderAiInsight();toast('Copilot insight refreshed')});$('#openJuryLogin').addEventListener('click',()=>window.open('jury-login.html','_blank'));

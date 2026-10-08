@@ -240,3 +240,17 @@
 .jury-progress-reference .jury-progress-pill:hover{filter:brightness(.985);box-shadow:0 2px 6px rgba(15,23,42,.06)}
 @media(max-width:980px){.jury-progress-link.jury-progress-reference{gap:5px}.jury-progress-reference .jury-progress-pill{height:27px;padding:0 7px;font-size:10px}.jury-progress-reference .jury-progress-pill b{font-size:10px}}
 @media(max-width:700px){.jury-progress-link.jury-progress-reference{flex-wrap:wrap;white-space:normal}.jury-progress-reference .jury-progress-pill{flex:0 0 auto}}
+
+/* Nomination desk: level-aware filters and workload overview */
+.nomination-toolbar.premium-toolbar{display:grid;grid-template-columns:minmax(230px,2fr) repeat(3,minmax(140px,1fr));gap:10px;align-items:center}
+.nomination-toolbar.premium-toolbar .premium-search{min-width:0;width:100%}
+.nomination-toolbar.premium-toolbar select{min-width:0;width:100%}
+.nomination-filter-summary{font-size:12px;color:#677184;margin:2px 0 9px}
+.nomination-jury-workload{margin:0 0 14px;padding:12px 14px;background:#f8fafc;border:1px solid #e5eaf1;border-radius:10px}
+.workload-heading{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:9px;color:#172135;font-size:12px}
+.workload-heading span,.workload-empty{font-size:11px;color:#727d91}
+.workload-chips{display:flex;flex-wrap:wrap;gap:7px;max-height:110px;overflow:auto}
+.workload-chip{display:inline-flex;gap:8px;align-items:center;background:white;border:1px solid #e3e8ef;border-radius:7px;padding:6px 9px;font-size:11px;color:#303b4b}
+.workload-chip b{color:#b61824;font-size:10px}
+@media(max-width:1050px){.nomination-toolbar.premium-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))}.nomination-toolbar.premium-toolbar .premium-search{grid-column:1/-1}}
+@media(max-width:600px){.nomination-toolbar.premium-toolbar{grid-template-columns:1fr}.nomination-toolbar.premium-toolbar .premium-search{grid-column:auto}.workload-heading{align-items:flex-start;flex-direction:column}}
