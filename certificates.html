@@ -44,9 +44,9 @@
     <main class="main cert-main">
       <div class="page-head cert-head">
         <div>
-          <div class="eyebrow">CELEBRATE · PAGE 14</div>
+          <div class="eyebrow">AWARDS / CERTIFICATES</div>
           <h1>Certificates</h1>
-          <p>Turn approved winner decisions into branded, verifiable certificates — without re-entering winner data.</p>
+          <p>Manage recipients, generate certificates and prepare verified award records in one place.</p>
         </div>
         <div class="top-actions">
           <button class="btn secondary" id="syncRecipients">↻ Sync winners</button>
@@ -73,6 +73,27 @@
         </div>
         <button class="btn secondary" id="insightAction">Generate selected</button>
       </section>
+
+      <section class="card cert-batch-card">
+        <div class="batch-head">
+          <div><small>BATCH GENERATION</small><h2>Certificate recipients</h2><p>Select verified winners and generate their certificates.</p></div>
+          <div class="top-actions"><button class="btn secondary" id="exportCertificates">Export CSV</button><button class="btn primary" id="generateSelected">Generate selected</button></div>
+        </div>
+        <div class="batch-toolbar">
+          <label class="check-all"><input type="checkbox" id="selectAll" checked> Select all eligible</label>
+          <div class="batch-filters"><button class="chip active" data-filter="all">All</button><button class="chip" data-filter="generated">Generated</button><button class="chip" data-filter="pending">Not generated</button></div>
+          <div class="batch-search"><span>⌕</span><input id="recipientSearch" placeholder="Search recipient or category"></div>
+        </div>
+        <div class="table-wrap">
+          <table class="cert-table">
+            <thead><tr><th></th><th>Recipient</th><th>Award</th><th>Category</th><th>Decision</th><th>Certificate</th><th>Delivery</th><th></th></tr></thead>
+            <tbody id="certificateRows"></tbody>
+          </table>
+        </div>
+        <div id="blockedWinnerSummary" aria-live="polite" style="margin:12px 0;display:grid;gap:8px"></div>
+        <div class="protected-row" id="protectedRow"><div><b id="protectedCount">0 protected winner records</b><span>Not eligible until winner decisions are locked and verification is complete.</span></div><button class="btn ghost" id="reviewProtected">Review protected</button></div>
+      </section>
+
 
       <div class="cert-workspace">
         <section class="card cert-preview-card">
@@ -148,26 +169,6 @@
         </aside>
       </div>
 
-      <section class="card cert-batch-card">
-        <div class="batch-head">
-          <div><small>BATCH GENERATION</small><h2>Certificate recipients</h2><p>Synced from locked winner decisions. Select recipients, generate certificates, then prepare delivery.</p></div>
-          <div class="top-actions"><button class="btn secondary" id="exportCertificates">Export CSV</button><button class="btn primary" id="generateSelected">Generate selected</button></div>
-        </div>
-        <div class="batch-toolbar">
-          <label class="check-all"><input type="checkbox" id="selectAll" checked> Select all eligible</label>
-          <div class="batch-filters"><button class="chip active" data-filter="all">All</button><button class="chip" data-filter="generated">Generated</button><button class="chip" data-filter="pending">Not generated</button></div>
-          <div class="batch-search"><span>⌕</span><input id="recipientSearch" placeholder="Search recipient or category"></div>
-        </div>
-        <div class="table-wrap">
-          <table class="cert-table">
-            <thead><tr><th></th><th>Recipient</th><th>Award</th><th>Category</th><th>Decision</th><th>Certificate</th><th>Delivery</th><th></th></tr></thead>
-            <tbody id="certificateRows"></tbody>
-          </table>
-        </div>
-        <div id="blockedWinnerSummary" aria-live="polite" style="margin:12px 0;display:grid;gap:8px"></div>
-        <div class="protected-row" id="protectedRow"><div><b id="protectedCount">0 protected winner records</b><span>Not eligible until winner decisions are locked and verification is complete.</span></div><button class="btn ghost" id="reviewProtected">Review protected</button></div>
-      </section>
-
       <section class="cert-bottom-grid">
         <div class="card pad">
           <div class="panel-title"><div><small>DELIVERY</small><h2>Send certificates</h2></div><span class="status-pill" id="deliveryReadiness">0 ready</span></div>
@@ -192,7 +193,7 @@
       </section>
 
       <div class="continue-bar"><div><b>Certificates ready?</b><span>Next, plan the ceremony experience and winner communications.</span></div><a class="btn primary" href="ceremony.html">Continue to Ceremony →</a></div>
-      <div class="footer-note">Vikas Mishra</div>
+      
     </main>
   </div>
 </div>
