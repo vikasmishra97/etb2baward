@@ -23,7 +23,6 @@ function refreshData(){
   const options=levels.length?levels:[{level:1,name:'Jury Level 1'}];
   const existing=options.some(l=>String(l.level)===String(level));if(!existing)level=String(options[0].level);
   $('#levelSelect').innerHTML=options.map(l=>`<option value="${esc(l.level)}">${esc(l.name||'Jury Level '+l.level)}</option>`).join('');$('#levelSelect').value=level;
-  $('#dataBanner').textContent='Live source: judges’ jury submissions on this browser · '+(Object.values(reviews).filter(r=>r&&r.status==='submitted').length)+' submitted reviews recorded. Only submitted reviews count; no sample scores are used.';
   render();
 }
 function submitted(n){
