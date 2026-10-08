@@ -2,3 +2,28 @@
 @media(max-width:1250px){.wg-layout{grid-template-columns:1fr}.wg-side-col{position:static;display:grid;grid-template-columns:1fr 1fr;gap:14px}.wg-side-col .section{margin-top:0}.wg-public-grid{grid-template-columns:repeat(2,1fr)}.wg-health-grid{grid-template-columns:1fr 1fr}.wg-share-modal-card .wg-modal-body{grid-template-columns:1fr}}
 @media(max-width:900px){.wg-kpis{grid-template-columns:1fr 1fr}.wg-copilot-card{grid-template-columns:42px 1fr}.wg-copilot-actions{grid-column:1/-1}.wg-style-row{grid-template-columns:1fr 1fr}.wg-style-row>.wg-switch{grid-column:1/-1}.wg-side-col{grid-template-columns:1fr 1fr}.wg-public-grid,.wg-public-grid.layout-feature{grid-template-columns:1fr 1fr}.wg-winner-card.featured{grid-column:span 2}.wg-public-grid.layout-feature .wg-winner-card.featured{min-height:230px;grid-row:auto}}
 @media(max-width:720px){.wg-head{flex-direction:column}.wg-kpis{grid-template-columns:1fr}.wg-copilot-card{grid-template-columns:1fr}.wg-copilot-actions{display:grid;grid-template-columns:1fr 1fr}.wg-panel-head{flex-direction:column}.wg-panel-actions{width:100%}.wg-panel-actions .btn{flex:1}.wg-style-row{grid-template-columns:1fr}.wg-style-row>.wg-switch{grid-column:auto}.wg-preview-top{padding:25px 20px;flex-direction:column}.wg-filter-row{padding:0 20px 12px}.wg-public-grid,.wg-public-grid.layout-feature,.wg-public-grid.layout-list{grid-template-columns:1fr;padding:0 20px 22px}.wg-winner-card.featured{grid-column:auto}.wg-public-grid.layout-feature .wg-winner-card.featured{min-height:220px}.wg-health-grid{grid-template-columns:1fr}.wg-side-col{grid-template-columns:1fr}.wg-two-col{grid-template-columns:1fr}.wg-drawer-foot{flex-wrap:wrap}.wg-drawer-foot>span{display:none}.wg-next-step{flex-direction:column;align-items:flex-start}.wg-share-modal-card .wg-modal-body{grid-template-columns:1fr}.wg-social-preview{padding:20px}.wg-social-preview h2{font-size:22px}}
+
+/* Gallery refinement: focus on winner profiles, status and publication. */
+.wg-page .wg-copilot-card,
+.wg-page .wg-insight-card,
+.wg-page .wg-share-card {display:none!important}
+.wg-page .wg-kpis {grid-template-columns:repeat(2,minmax(0,1fr));}
+.wg-page .wg-kpis .wg-kpi:nth-child(3),
+.wg-page .wg-kpis .wg-kpi:nth-child(4) {display:none!important}
+.wg-page .wg-kpi small,.wg-page .wg-kpi span {font-size:12px;line-height:1.5}
+.wg-page .wg-kpi strong {font-size:24px}
+.wg-page .wg-panel-head p,.wg-page .wg-control-group small,.wg-page .wg-switch small {font-size:12px;line-height:1.5}
+.wg-page .wg-panel-head h2,.wg-page .section-title h2 {font-size:19px;line-height:1.3}
+.wg-page .wg-segment button,.wg-page .btn.compact {font-size:12px;min-height:36px}
+.wg-page .wg-switch b,.wg-page .wg-filter-row button {font-size:12px}
+.wg-page .wg-preview-top small,.wg-page .wg-preview-badge small,.wg-page .wg-winner-card>small,.wg-page .wg-card-level {font-size:11px}
+.wg-page .wg-preview-top p,.wg-page .wg-winner-card p {font-size:13px;line-height:1.6}
+.wg-page .wg-winner-card h3 {font-size:18px;line-height:1.3}
+.wg-page .wg-mini-logo {font-size:14px}
+.wg-page .wg-layout {grid-template-columns:minmax(0,1.65fr) minmax(290px,.65fr)}
+.wg-page .wg-table th,.wg-page .wg-table td {font-size:12px;line-height:1.5}
+.wg-page .wg-table small,.wg-page .wg-status,.wg-page .wg-table-action {font-size:11px}
+.wg-page .wg-gate-list small,.wg-page .wg-release-box small,.wg-page .wg-release-box span {font-size:12px;line-height:1.5}
+.wg-page .wg-next-step p {font-size:13px;line-height:1.5}
+@media(max-width:900px){.wg-page .wg-layout{grid-template-columns:1fr}.wg-page .wg-side-col{position:static}}
+@media(max-width:600px){.wg-page .wg-kpis{grid-template-columns:1fr 1fr}.wg-page .wg-preview-top{padding:22px 17px}.wg-page .wg-public-grid{padding:0 17px 20px}.wg-page .wg-kpi{padding:11px}.wg-page .wg-kpi strong{font-size:22px}}

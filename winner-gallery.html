@@ -45,11 +45,11 @@
       <div class="page-head wg-head">
         <div>
           <span class="eyebrow">CELEBRATE / WINNER GALLERY</span>
-          <h1>Turn winners into stories people want to share</h1>
-          <p>Sync approved winners, create premium profiles, control what becomes public, and publish one searchable winner experience across your award website.</p>
+          <h1>Winner gallery</h1>
+          <p>Manage approved winner profiles, preview the gallery and prepare winner announcements.</p>
         </div>
         <div class="top-actions">
-          <a class="btn secondary" href="winner-gallery-preview.html" target="_blank">Preview as visitor</a>
+          <a class="btn secondary" href="winner-gallery-preview.html" target="_blank">Preview gallery</a>
           <button class="btn primary" id="publishGallery">Publish gallery</button>
         </div>
       </div>
@@ -57,17 +57,17 @@
       <div class="stagebar"><div class="stage done">BUILD</div><div class="stage done">GROW</div><div class="stage done">DECIDE</div><div class="stage active">CELEBRATE</div></div>
 
       <section class="wg-kpis">
-        <article class="card wg-kpi"><div class="wg-kpi-icon purple">W</div><div><small>Public-ready winners</small><strong id="readyWinnerCount">3</strong><span id="readyWinnerSub">From 5 categories</span></div></article>
-        <article class="card wg-kpi"><div class="wg-kpi-icon good">P</div><div><small>Profiles complete</small><strong id="profileCount">2 / 3</strong><span>Story, links and SEO</span></div></article>
-        <article class="card wg-kpi"><div class="wg-kpi-icon blue">S</div><div><small>Share cards ready</small><strong id="shareCount">6</strong><span>LinkedIn and WhatsApp</span></div></article>
-        <article class="card wg-kpi"><div class="wg-kpi-icon warn">SEO</div><div><small>Gallery readiness</small><strong id="seoReadiness">82%</strong><span>Search and social preview</span></div></article>
+        <article class="card wg-kpi"><div class="wg-kpi-icon purple">W</div><div><small>Public-ready winners</small><strong id="readyWinnerCount">3</strong><span id="readyWinnerSub">Across award categories</span></div></article>
+        <article class="card wg-kpi"><div class="wg-kpi-icon good">P</div><div><small>Profiles complete</small><strong id="profileCount">2 / 3</strong><span>Completed winner profiles</span></div></article>
+        <article class="card wg-kpi"><div class="wg-kpi-icon blue">S</div><div><small>Share cards ready</small><strong id="shareCount">6</strong><span>Available share options</span></div></article>
+        <article class="card wg-kpi"><div class="wg-kpi-icon warn">SEO</div><div><small>Gallery readiness</small><strong id="seoReadiness">82%</strong><span>Publication checks</span></div></article>
       </section>
 
       <section class="wg-copilot-card section">
         <div class="wg-copilot-icon">&#10022;</div>
         <div class="wg-copilot-copy">
           <span>Award Copilot / Publish readiness</span>
-          <h2 id="copilotHeadline">Three locked winners can be published now. Two categories are still protected.</h2>
+          <h2 id="copilotHeadline">Only approved winners are available for gallery publication.</h2>
           <p id="copilotDetail">ETB2B Awards only exposes winners whose category is locked and whose public verification is complete. You can prepare draft stories for the remaining categories without revealing them.</p>
         </div>
         <div class="wg-copilot-actions">
@@ -82,8 +82,8 @@
             <div class="wg-panel-head">
               <div>
                 <span class="eyebrow">GALLERY BUILDER</span>
-                <h2>Winner experience</h2>
-                <p>Choose the presentation, filter the preview, and open any winner to edit the public story.</p>
+                <h2>Approved winners</h2>
+                <p>Manage how verified, locked winners appear in the gallery.</p>
               </div>
               <div class="wg-panel-actions">
                 <button class="btn ghost compact" id="syncWinners">Sync from Winners</button>
@@ -99,8 +99,8 @@
 
             <div class="wg-preview-shell" id="galleryPreview">
               <div class="wg-preview-top">
-                <div><small id="previewKicker">2027 WINNERS</small><h2 id="galleryHeadline" contenteditable="true">Meet the innovators shaping the future of fintech.</h2><p id="galleryIntro" contenteditable="true">Explore the winning companies and leaders recognized by the India FinTech Awards 2027.</p></div>
-                <div class="wg-preview-badge"><span id="previewReadyCount">3</span><small>Winners live</small></div>
+                <div><small id="previewKicker">2027 WINNERS</small><h2 id="galleryHeadline" contenteditable="true">Meet our award winners</h2><p id="galleryIntro" contenteditable="true">Explore award-winning organizations and their achievements.</p></div>
+                <div class="wg-preview-badge"><span id="previewReadyCount">3</span><small>Approved winners</small></div>
               </div>
               <div class="wg-filter-row" id="galleryFilters"></div>
               <div class="wg-public-grid" id="winnerCards"></div>
@@ -109,13 +109,13 @@
           </section>
 
           <section class="card pad wg-story-health section">
-            <div class="section-title"><div><h2>Winner story quality</h2><span>Help every profile feel publication-ready, not like a database record</span></div><b id="storyHealth">76%</b></div>
+            <div class="section-title"><div><h2>Winner story quality</h2><span>Check required winner profile information</span></div><b id="storyHealth">76%</b></div>
             <div class="progress"><span id="storyHealthBar" style="width:76%"></span></div>
             <div class="wg-health-grid" id="storyHealthChecks"></div>
           </section>
 
           <section class="card pad section">
-            <div class="section-title"><div><h2>Winner content queue</h2><span>What is ready, incomplete, or protected before publishing</span></div><button class="btn ghost compact" id="exportGalleryCsv">Export CSV</button></div>
+            <div class="section-title"><div><h2>Winner content queue</h2><span>Review recipients and their publication status</span></div><button class="btn ghost compact" id="exportGalleryCsv">Export CSV</button></div>
             <div class="table-wrap">
               <table class="table wg-table">
                 <thead><tr><th>Category</th><th>Recipient</th><th>Decision</th><th>Profile</th><th>Public status</th><th></th></tr></thead>
@@ -135,7 +135,7 @@
           </section>
 
           <section class="card pad section wg-seo-card">
-            <div class="section-title"><div><h2>SEO and discovery</h2><span>One searchable page for every winner</span></div><b id="seoScore">82%</b></div>
+            <div class="section-title"><div><h2>SEO and discovery</h2><span>Gallery title and search visibility</span></div><b id="seoScore">82%</b></div>
             <div class="field"><label>Gallery page title</label><input id="seoTitle" value="India FinTech Awards 2027 Winners"></div>
             <div class="field"><label>Meta description</label><textarea id="seoDescription" rows="3">Meet the winners of the India FinTech Awards 2027 and discover the companies and leaders shaping financial technology.</textarea></div>
             <label class="wg-switch compact-switch"><span><b>Index winner profiles</b><small>Create searchable profile URLs</small></span><input type="checkbox" id="indexProfiles" checked></label>
@@ -143,7 +143,7 @@
           </section>
 
           <section class="card pad section wg-share-card">
-            <div class="section-title"><div><h2>Social share kit</h2><span>Generated from the same winner profile</span></div><span class="badge green" id="shareStatus">Ready</span></div>
+            <div class="section-title"><div><h2>Social share kit</h2><span>Preview share formats for approved winners</span></div><span class="badge green" id="shareStatus">Ready</span></div>
             <div class="wg-share-list">
               <button data-share-format="linkedin"><span>in</span><p><b>LinkedIn winner card</b><small>1200 x 627 preview</small></p><em>Preview</em></button>
               <button data-share-format="square"><span>1:1</span><p><b>Square social tile</b><small>1080 x 1080 preview</small></p><em>Preview</em></button>
@@ -161,11 +161,11 @@
       </div>
 
       <section class="wg-next-step section">
-        <div><span>CELEBRATE / NEXT</span><h2>Turn approved winner data into certificates.</h2><p>Certificate names, categories, award levels and public brand assets can flow directly from the gallery profile.</p></div>
+        <div><span>CELEBRATE / NEXT</span><h2>Generate winner certificates</h2><p>Use verified winner details for certificate batch generation.</p></div>
         <a class="btn primary" href="certificates.html">Continue to Certificates &#8594;</a>
       </section>
 
-      <div class="footer-note">Vikas Mishra</div>
+      
     </main>
   </div>
 </div>
@@ -173,7 +173,7 @@
 <div class="wg-drawer" id="profileDrawer" aria-hidden="true">
   <div class="wg-drawer-backdrop" data-close="profileDrawer"></div>
   <div class="wg-drawer-panel">
-    <div class="wg-drawer-head"><div><span class="eyebrow">WINNER PROFILE</span><h2 id="drawerWinnerName">NovaPay Technologies</h2><p id="drawerWinnerMeta">Best FinTech Startup / Winner</p></div><button data-close="profileDrawer">x</button></div>
+    <div class="wg-drawer-head"><div><span class="eyebrow">WINNER PROFILE</span><h2 id="drawerWinnerName">Winner profile</h2><p id="drawerWinnerMeta">Best FinTech Startup / Winner</p></div><button data-close="profileDrawer">x</button></div>
     <div class="wg-drawer-body">
       <div class="wg-profile-hero"><div class="wg-logo-placeholder" id="drawerLogo">NP</div><div><span id="drawerAwardLabel">WINNER</span><b id="drawerCategory">Best FinTech Startup</b><small id="drawerPublicStatus">Protected until approved</small></div></div>
       <div class="field"><label>Public headline</label><input id="profileHeadline" placeholder="A short line explaining why this winner stands out"></div>
@@ -198,7 +198,7 @@
   <div class="wg-modal-backdrop" data-close="shareModal"></div>
   <div class="wg-modal-card wg-share-modal-card">
     <div class="wg-modal-head"><div><span class="eyebrow">SOCIAL SHARE KIT</span><h2 id="shareModalTitle">LinkedIn winner card</h2><p>Generated from the same approved winner profile.</p></div><button data-close="shareModal">x</button></div>
-    <div class="wg-modal-body"><div class="wg-social-preview" id="socialPreview"><small>INDIA FINTECH AWARDS 2027</small><span>WINNER</span><h2 id="shareWinnerName">ClearLend</h2><p id="shareCategoryName">Best Digital Lending</p><b>2027</b></div><div class="wg-share-copy"><label>Suggested post</label><textarea id="shareCopy" rows="5"></textarea><div class="wg-modal-actions"><button class="btn secondary" id="copyShareText">Copy text</button><button class="btn ghost" id="regenerateShareText">&#10022; Regenerate</button></div></div></div>
+    <div class="wg-modal-body"><div class="wg-social-preview" id="socialPreview"><small>INDIA FINTECH AWARDS 2027</small><span>WINNER</span><h2 id="shareWinnerName">Winner</h2><p id="shareCategoryName">Best Digital Lending</p><b>2027</b></div><div class="wg-share-copy"><label>Suggested post</label><textarea id="shareCopy" rows="5"></textarea><div class="wg-modal-actions"><button class="btn secondary" id="copyShareText">Copy text</button><button class="btn ghost" id="regenerateShareText">&#10022; Regenerate</button></div></div></div>
     <div class="wg-modal-foot"><button class="btn secondary" data-close="shareModal">Close</button><button class="btn primary" id="downloadShareDemo">Download preview</button></div>
   </div>
 </div>
