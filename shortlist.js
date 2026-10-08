@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-const KEYS={nominations:'etb2b_awards_nominations_v1',reviews:'etb2b_jury_reviews_v1',assignments:'etb2b_awards_jury_assignments_v1',judges:'etb2b_awards_judges_v3',levels:'etb2b_awards_jury_levels_v1',rules:'etb2b_awards_scoring_v11',shortlist:'etb2b_awards.shortlist.live.v1',quotas:'etb2b_awards.shortlist.quotas.v1'};
+const KEYS={nominations:'etb2b_awards_nominations_v1',reviews:'etb2b_jury_reviews_v1',assignments:'etb2b_awards_jury_assignments_v1',judges:'etb2b_awards_judges_v3',levels:'etb2b_awards_jury_levels_v1',rules:'etb2b_awards_scoring_v11',shortlist:'etb2b_awards.shortlist.live.v1'};
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||'null')??f}catch{return f}};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -8,12 +8,6 @@ const award=read('etb2b_awards_new_award',{})||{};
 const awardId=String(award.slug||'demo');
 let nominations=[],reviews={},assignments={},judges=[],levels=[],rules={},decisions={},category='',level='1',tab='scores';
 const selectedIds=new Set();
-let quotas=read(KEYS.quotas,{});
-const quotaFor=(cat=category,lev=level)=>Math.max(0,Number(quotas[key(cat,lev)])||0);
-const shortlistedCount=()=>entryRows().filter(e=>e.decision==='shortlist').length;
-function fitsQuota(extra=1){const q=quotaFor();return !q||shortlistedCount()+extra<=q}
-function quotaWarning(extra=1){const q=quotaFor();if(q&&shortlistedCount()+extra>q){alert('Shortlist limit reached for '+category+' (Jury Level '+level+'). '+shortlistedCount()+' of '+q+' slots used. Increase the limit or remove existing shortlisted nominations.');return false}return true}
-
 const key=(cat,lev)=>awardId+'::'+cat+'::'+lev;
 const records=()=>decisions[key(category,level)]||{items:{},locked:false};
 const idOf=n=>String(n.id??n.nominationId??'');
@@ -29,7 +23,7 @@ function refreshData(){
   const options=levels.length?levels:[{level:1,name:'Jury Level 1'}];
   const existing=options.some(l=>String(l.level)===String(level));if(!existing)level=String(options[0].level);
   $('#levelSelect').innerHTML=options.map(l=>`<option value="${esc(l.level)}">${esc(l.name||'Jury Level '+l.level)}</option>`).join('');$('#levelSelect').value=level;
-  quotas=read(KEYS.quotas,{});
+  $('#dataBanner').textContent='Live source: judges’ jury submissions on this browser · '+(Object.values(reviews).filter(r=>r&&r.status==='submitted').length)+' submitted reviews recorded. Only submitted reviews count; no sample scores are used.';
   render();
 }
 function submitted(n){
@@ -48,14 +42,12 @@ function entryRows(){
 function statePersist(){localStorage.setItem(KEYS.shortlist,JSON.stringify(decisions))}
 function saveDecision(e,decision,note){
  if(records().locked)return false;
- if(decision==='shortlist'&&e.decision!=='shortlist'&&!quotaWarning())return false;
  if(decision==='shortlist'&&!e.ready){alert('This nomination requires '+e.required+' submitted jury reviews at this level before it can be shortlisted.');return false}
  const k=key(category,level),r=decisions[k]||{items:{},locked:false};r.items=r.items||{};
  r.items[e.id]={decision,note:note??e.note,updatedAt:new Date().toISOString(),score:e.avg,reviewCount:e.count};decisions[k]=r;statePersist();render();return true;
 }
 function statusMatches(e,filter){return filter==='all'||filter==='complete'&&e.ready||filter==='pending'&&!e.ready||filter===e.decision}
 function render(){
- renderCategories();
  const all=entryRows(),search=$('#scoreSearch').value.trim().toLowerCase(),status=$('#statusSelect').value;
  const rows=all.filter(e=>statusMatches(e,status)&&(!search||[e.id,e.n.nominee,e.n.company,e.n.category].some(s=>String(s||'').toLowerCase().includes(search))));
  $('#statEntries').textContent=all.length;$('#statReady').textContent=all.filter(e=>e.ready).length;$('#statPending').textContent=all.filter(e=>!e.ready).length;$('#statShortlisted').textContent=all.filter(e=>e.decision==='shortlist').length;
@@ -64,7 +56,7 @@ function render(){
  const eligibleIds=new Set(eligible.map(e=>e.id));
  for(const id of selectedIds){if(!eligibleIds.has(id))selectedIds.delete(id)}
  $('#selectedCount').textContent=selectedIds.size+' selected';
- $('#bulkShortlist').disabled=!selectedIds.size||!fitsQuota(selectedIds.size);
+ $('#bulkShortlist').disabled=!selectedIds.size;
  $('#selectAllReady').disabled=!eligible.length;
  $('#selectAllReady').checked=eligible.length>0&&eligible.every(e=>selectedIds.has(e.id));
  $('#selectAllReady').indeterminate=selectedIds.size>0&&!$('#selectAllReady').checked;
@@ -96,36 +88,14 @@ function showReview(e){if(!e)return;$('#reviewTitle').textContent=e.n.nominee||e
  $('#scoreReviewModal').hidden=false;document.body.classList.add('sl-modal-visible');
 }
 function hideReview(){$('#scoreReviewModal').hidden=true;document.body.classList.remove('sl-modal-visible')}
-function lock(){const list=entryRows(),selected=list.filter(e=>e.decision==='shortlist');if(!selected.length){alert('Shortlist at least one fully reviewed nomination before locking.');return}if(selected.some(e=>!e.ready)){alert('One or more selected nominations do not meet minimum review requirements.');return}if(quotaFor()&&selected.length>quotaFor()){alert('The shortlist exceeds the category limit. Adjust the selection before locking.');return}if(!confirm('Lock '+selected.length+' shortlisted nominations for '+category+', Jury Level '+level+'? This cannot be undone from this page.'))return;
+function lock(){const list=entryRows(),selected=list.filter(e=>e.decision==='shortlist');if(!selected.length){alert('Shortlist at least one fully reviewed nomination before locking.');return}if(selected.some(e=>!e.ready)){alert('One or more selected nominations do not meet minimum review requirements.');return}if(!confirm('Lock '+selected.length+' shortlisted nominations for '+category+', Jury Level '+level+'? This cannot be undone from this page.'))return;
  const k=key(category,level);decisions[k]=decisions[k]||{items:{}};decisions[k].locked=true;decisions[k].lockedAt=new Date().toISOString();statePersist();render();}
 function exportCSV(){const rows=entryRows(),cells=[['Nomination ID','Nominee','Company','Category','Level','Score /100','Submitted reviews','Required reviews','Decision']];rows.forEach(e=>cells.push([e.id,e.n.nominee||'',e.n.company||'',category,level,e.avg===null?'':e.avg.toFixed(2),e.count,e.required,e.decision]));const csv=cells.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='etb2b-nomination-scores.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function downloadJson(filename,obj){const url=URL.createObjectURL(new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-function prepareShortlistPublication(){const rec=records(),selected=entryRows().filter(e=>e.decision==='shortlist');if(!rec.locked||!selected.length){alert('Lock your shortlist before preparing publication.');return}if(selected.some(e=>!e.ready)){alert('Selected nominations must have completed the required reviews.');return}if(!confirm('Prepare '+selected.length+' shortlisted nominations for public release? This downloads a JSON file; it will NOT update GitHub automatically.'))return;downloadJson('published-shortlist.json',{type:'shortlist',awardId,category,level,generatedAt:new Date().toISOString(),items:selected.map(e=>({nominationId:e.id,name:e.n.nominee||e.n.company||'',company:e.n.company||'',category:e.n.category||category}))});alert('Publication JSON downloaded. Upload it to your public website repository to make the shortlist visible.')}
-function renderCategories(){
- const cats=[...new Set(nominations.filter(n=>n.submission==='Submitted'&&n.payment==='Paid').map(n=>n.category).filter(Boolean))];
- const current=quotaFor(),count=shortlistedCount();
- $('#categoryQuota').value=current;$('#categoryQuota').disabled=records().locked;
- $('#quotaHelp').textContent=records().locked?'Locked rounds cannot change limits':'0 means unlimited slots';
- $('#categoryQuotaStatus').textContent=category?(current?`${count} of ${current} finalist slots used · ${Math.max(0,current-count)} remaining`:`${count} shortlisted · No limit set`):'No submitted nominations yet';
- $('#categoryCompare').innerHTML=cats.map(cat=>{
-  const items=nominations.filter(n=>n.submission==='Submitted'&&n.payment==='Paid'&&n.category===cat);
-  const stored=decisions[key(cat,level)]||{items:{}};
-  const shortlisted=items.filter(n=>stored.items?.[idOf(n)]?.decision==='shortlist').length;
-  const q=quotaFor(cat,level),percent=q?Math.min(100,shortlisted/q*100):0;
-  return `<button type="button" class="sl-category-tile ${cat===category?'is-active':''}" data-category-choice="${esc(cat)}" aria-pressed="${cat===category}"><span class="sl-cat-title">${esc(cat)}</span><span class="sl-cat-metrics"><strong>${shortlisted}<small>${q?' / '+q:' shortlisted'}</small></strong><span>${items.length} entries</span></span><span class="sl-cat-track"><i style="width:${percent}%"></i></span><span class="sl-cat-footer">${stored.locked?'Locked':q?(Math.max(0,q-shortlisted)+' slots available'):'Unlimited shortlist'} <span aria-hidden="true">→</span></span></button>`
- }).join('')||'<p class="sl-no-categories">Categories will appear when submitted and paid nominations are available.</p>';
- $$('[data-category-choice]').forEach(b=>b.addEventListener('click',()=>{category=b.dataset.categoryChoice;$('#categorySelect').value=category;selectedIds.clear();render()}));
-}
-$('#categoryQuota').addEventListener('change',e=>{
- if(records().locked)return;
- const raw=e.target.value.trim(),n=Number(raw);
- if(!raw||!Number.isSafeInteger(n)||n<0){alert('Enter a whole number of slots (0 for unlimited).');render();return}
- const selected=shortlistedCount();if(n&&n<selected){alert('This category already has '+selected+' shortlisted entries. Choose at least '+selected+' slots, or remove entries first.');render();return}
- quotas[key(category,level)]=n;localStorage.setItem(KEYS.quotas,JSON.stringify(quotas));selectedIds.clear();render();
-});
+function prepareShortlistPublication(){const rec=records(),selected=entryRows().filter(e=>e.decision==='shortlist');if(!rec.locked||!selected.length){alert('Lock your shortlist before preparing publication.');return}if(selected.some(e=>!e.ready)){alert('Selected nominations must have completed the required reviews.');return}if(!confirm('Prepare '+selected.length+' shortlisted nominations for public release? This downloads a JSON file; it will NOT update GitHub automatically.'))return;downloadJson('published-shortlist.json',{type:'shortlist',awardId,category,level,generatedAt:new Date().toISOString(),items:selected.map(e=>({nominationId:e.id,name:e.n.nominee||e.n.company||'',company:e.n.company||'',category:e.n.category||category}))});$('#shortlistPublishNote').textContent='Publication file prepared. Commit published-shortlist.json to your public website repository and connect the public shortlist section to that file.'}
 $('#selectAllReady').addEventListener('change',e=>{const search=$('#scoreSearch').value.trim().toLowerCase(),status=$('#statusSelect').value;const eligible=entryRows().filter(x=>x.ready&&x.decision!=='shortlist'&&!records().locked&&statusMatches(x,status)&&(!search||[x.id,x.n.nominee,x.n.company,x.n.category].some(v=>String(v||'').toLowerCase().includes(search))));eligible.forEach(x=>e.target.checked?selectedIds.add(x.id):selectedIds.delete(x.id));render()});
 $('#clearSelection').addEventListener('click',()=>{selectedIds.clear();render()});
-$('#bulkShortlist').addEventListener('click',()=>{const chosen=entryRows().filter(e=>selectedIds.has(e.id)&&e.ready&&e.decision!=='shortlist');if(!chosen.length||records().locked)return;if(!quotaWarning(chosen.length))return;if(!confirm('Shortlist '+chosen.length+' fully reviewed nominations?'))return;const k=key(category,level),r=decisions[k]||{items:{},locked:false};r.items=r.items||{};chosen.forEach(e=>{r.items[e.id]={decision:'shortlist',note:e.note,updatedAt:new Date().toISOString(),score:e.avg,reviewCount:e.count}});decisions[k]=r;selectedIds.clear();statePersist();render()});
+$('#bulkShortlist').addEventListener('click',()=>{const chosen=entryRows().filter(e=>selectedIds.has(e.id)&&e.ready&&e.decision!=='shortlist');if(!chosen.length||records().locked)return;if(!confirm('Shortlist '+chosen.length+' fully reviewed nominations?'))return;const k=key(category,level),r=decisions[k]||{items:{},locked:false};r.items=r.items||{};chosen.forEach(e=>{r.items[e.id]={decision:'shortlist',note:e.note,updatedAt:new Date().toISOString(),score:e.avg,reviewCount:e.count}});decisions[k]=r;selectedIds.clear();statePersist();render()});
 $('#publishShortlist').addEventListener('click',prepareShortlistPublication);
 $('#quickReady').addEventListener('click',()=>{$('#statusSelect').value='complete';render()});
 $('#refreshScores').addEventListener('click',refreshData);$('#saveDecisions').addEventListener('click',()=>{statePersist();alert('Shortlist decisions saved.')});$('#exportScores').addEventListener('click',exportCSV);$('#lockShortlist').addEventListener('click',lock);
