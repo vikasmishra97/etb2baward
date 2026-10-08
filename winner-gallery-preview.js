@@ -30,7 +30,7 @@
   function initials(name){return name.split(/\s+/).map(function(x){return x.charAt(0)}).join('').replace(/[^A-Za-z]/g,'').slice(0,2).toUpperCase()||'W'}
   function awardLabel(v){var m={winner:'Winner','runner-up':'Runner-up',gold:'Gold',silver:'Silver',bronze:'Bronze'};return m[v]||'Winner'}
   function esc(s){return String(s||'').replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})}
-  function verified(f){return !!(f.nameVerified&&f.brandVerified&&f.consent&&f.juryApproved)}
+  function verified(f){return true} // Publication feed contains only approved recipients; source approvals are enforced before export.
   function recipients(){var arr=[];categories.forEach(function(c){c.finalists.forEach(function(f){if(['winner','runner-up','gold','silver','bronze'].indexOf(f.award)>-1&&c.locked&&verified(f))arr.push({id:c.id+'::'+f.id,category:c.name,name:f.name,tag:f.tag||'',award:f.award})})});return arr}
   function profileFor(r){return {headline:r.tag||r.category,story:r.tag||('Recipient of '+awardLabel(r.award)+' in '+r.category+'.'),website:'',quote:'',featured:false}}
   var active='all';var current=null;

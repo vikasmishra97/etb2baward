@@ -129,10 +129,28 @@
   function openLayer(id){var el=document.getElementById(id);if(!el)return;el.classList.add('open');el.setAttribute('aria-hidden','false')}
   function closeLayer(id){var el=document.getElementById(id);if(!el)return;el.classList.remove('open');el.setAttribute('aria-hidden','true')}
   function publish(){
-    state.headline=$('#galleryHeadline').textContent.trim();state.intro=$('#galleryIntro').textContent.trim();state.seoTitle=$('#seoTitle').value.trim();state.seoDescription=$('#seoDescription').value.trim();
-    var ready=publicRecipients();if(!ready.length){toast('No winner is ready for public display yet');return}
-    if(state.respectEmbargo&&winnerState.releaseMode==='scheduled'){state.publishStatus='scheduled';toast('Gallery prepared and scheduled with winner embargo')}else{state.publishStatus='published';toast('Gallery marked published in this prototype')}
-    save(false);renderGate()
+    winnerState=mergeWinnerState();
+    var ready=publicRecipients();
+    if(!ready.length){toast('No locked and verified winners available for publication');return}
+    if(winnerState.releaseMode==='scheduled'){
+      var releaseAt=new Date(String(winnerState.releaseDate||'')+'T'+String(winnerState.releaseTime||'10:00'));
+      if(isNaN(releaseAt.getTime())||releaseAt.getTime()>Date.now()){
+        toast('Winner embargo is active. Wait until the scheduled release.');return;
+      }
+    }
+    if(!confirm('Export '+ready.length+' approved winner(s) for public announcement? You must deploy the JSON file to Vercel to make them live.'))return;
+    var grouped={};
+    ready.forEach(function(r){
+      if(!grouped[r.categoryId])grouped[r.categoryId]={id:r.categoryId,category:r.category,recipients:[]};
+      var prof=profileFor(r);
+      grouped[r.categoryId].recipients.push({id:r.source.id,name:r.name,tag:prof.headline||r.tag||'',award:awardLabel(r.award),category:r.category});
+    });
+    var payload={type:'winners',schemaVersion:2,awardName:award.name||'ETB2B Awards',generatedAt:new Date().toISOString(),categories:Object.keys(grouped).map(function(k){return grouped[k]})};
+    var url=URL.createObjectURL(new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}));
+    var link=document.createElement('a');link.href=url;link.download='published-winners.json';document.body.appendChild(link);link.click();link.remove();
+    setTimeout(function(){URL.revokeObjectURL(url)},1000);
+    state.publishStatus='draft';save(false);renderGate();
+    toast('Exported approved winners. Deploy JSON to Vercel to publish.');
   }
 
   load();ensureSeedProfiles();
