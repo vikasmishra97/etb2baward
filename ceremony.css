@@ -4,3 +4,46 @@
 @media(max-width:720px){.ce-head-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}.ce-head-actions .btn:last-child{grid-column:1/-1}.ce-stats{grid-template-columns:1fr 1fr}.ce-stat{padding:12px}.ce-stat strong{font-size:20px}.ce-layout{display:block}.ce-side-col{display:block}.ce-side-card{margin-top:14px!important}.ce-event-grid,.ce-two-col{grid-template-columns:1fr}.ce-span-2{grid-column:auto}.ce-section-toolbar{flex-direction:column}.ce-section-toolbar .top-actions{width:100%}.ce-section-toolbar .top-actions .btn{flex:1}.ce-award-row{grid-template-columns:28px 1fr}.ce-award-row>.ce-presenter,.ce-award-row>.ce-stage-status,.ce-award-row>.ce-award-controls{grid-column:2}.ce-cue{grid-template-columns:54px 28px 1fr}.ce-cue-actions{grid-column:2/-1;justify-content:flex-end}.ce-bottom-actions{flex-direction:column;align-items:stretch}.ce-bottom-actions .top-actions{display:grid;grid-template-columns:1fr 1fr}.ce-checkin-footer{grid-template-columns:1fr 1fr}.ce-checkin-footer .btn{grid-column:1/-1}.ce-seat-map{grid-template-columns:repeat(5,1fr)}}
 @media(max-width:480px){.ce-stats{grid-template-columns:1fr}.ce-filter-row{display:grid;grid-template-columns:1fr 1fr}.ce-section-toolbar .top-actions{display:grid;grid-template-columns:1fr}.ce-side-col{display:block}.ce-seat-map{grid-template-columns:repeat(4,1fr)}}
 @media print{.sidebar,.topbar,.ce-head,.stagebar,.ce-stats,.ce-insight,.ce-side-col,.ce-bottom-actions,.footer-note,.ce-section-toolbar .top-actions,.ce-guest-tools,.ce-table-footer,.ce-card:not(#runCard):not(#presentationCard){display:none!important}.app{display:block}.main{padding:0;max-width:none}.ce-layout{display:block}.ce-card{border:0;box-shadow:none}.ce-section-toolbar{padding:0 0 12px}.ce-rundown,.ce-award-list{padding:0}.ce-cue-actions,.ce-award-controls{display:none}.ce-award-head{display:grid}.ce-main-col{width:100%}}
+
+/* Ceremony usability refinement: readable type, restrained spacing, intact controls */
+.ce-main{max-width:1480px}
+.ce-head p{font-size:14px;line-height:1.5}
+.ce-stats{gap:10px;margin-bottom:12px}
+.ce-stat{padding:12px 14px;border-radius:13px;min-height:85px}
+.ce-stat small{font-size:11px;line-height:1.35;letter-spacing:.02em}
+.ce-stat em{font-size:11px;line-height:1.35}
+.ce-stat strong{font-size:25px}
+.ce-insight{padding:11px 14px;margin-bottom:12px;border-radius:12px}
+.ce-insight small,.ce-card-head small,.ce-section-toolbar small,.ce-side-head small,.ce-drawer-head small,.ce-copilot-head small{font-size:10px;letter-spacing:.07em}
+.ce-insight h3{font-size:16px}.ce-insight p{font-size:12px;line-height:1.5}
+.ce-layout{gap:12px}.ce-card+.ce-card,.ce-side-card+.ce-side-card{margin-top:12px}
+.ce-card-head h2,.ce-section-toolbar h2,.ce-side-head h2{font-size:19px;line-height:1.25}
+.ce-card-head p,.ce-section-toolbar p{font-size:12px;line-height:1.5}
+.ce-status-pill{font-size:11px}
+.ce-event-grid{gap:10px;margin-top:12px}
+.ce-event-grid .field label{font-size:12px;line-height:1.35}
+.ce-event-grid .field input,.ce-event-grid .field select{font-size:13px;min-height:39px}
+.ce-section-toolbar{padding:14px 16px 12px}
+.ce-guest-tools{padding:10px 16px}
+.ce-search input,.ce-checkin-search input{font-size:13px}
+.ce-filter-row button{font-size:11px;min-height:32px;padding:6px 9px}
+.ce-guest-table th{font-size:11px}.ce-guest-table td{font-size:12px}
+.ce-guest-name b,.ce-cue-info b,.ce-award-name b{font-size:13px}
+.ce-guest-name small,.ce-cue-info small,.ce-award-name small,.ce-presenter small{font-size:11px}
+.ce-type,.ce-rsvp,.ce-seat-pill,.ce-check-btn{font-size:11px}
+.ce-table-footer,.text-btn{font-size:12px}
+.ce-cue-time{font-size:13px}.ce-cue-time small{font-size:11px}
+.ce-cue-icon{font-size:13px}.ce-cue-actions button{font-size:12px;min-width:30px;min-height:30px}
+.ce-award-head{font-size:11px}.ce-award-order{font-size:12px}
+.ce-winner-line em,.ce-presenter,.ce-stage-status,.ce-award-controls button{font-size:11px}
+.ce-award-controls button{min-height:32px;padding:7px 9px}
+.ce-health-item b{font-size:12px}.ce-health-item small{font-size:11px}
+.ce-health-item>span{font-size:11px;width:21px;height:21px}
+.ce-checkin-item b,.ce-winner-lock b{font-size:12px}
+.ce-checkin-item small,.ce-checkin-footer span{font-size:11px}
+.ce-checkin-item button,.ce-confirm-modal p,.ce-copilot>p,.ce-copilot-prompts button,.ce-copilot-answer,.ce-empty{font-size:12px}
+.ce-copilot-head h2{font-size:18px}
+.ce-main button:focus-visible,.ce-main input:focus-visible,.ce-main select:focus-visible,.ce-main textarea:focus-visible{outline:2px solid #215eab;outline-offset:2px}
+@media(max-width:980px){.ce-side-col{position:static}.ce-guest-tools{grid-template-columns:1fr}.ce-filter-row{order:unset}}
+@media(max-width:720px){.ce-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.ce-stat{min-width:0}.ce-stat strong{font-size:22px}.ce-event-grid{grid-template-columns:1fr}.ce-guest-tools{padding:12px}.ce-table-footer{gap:10px;flex-wrap:wrap}.ce-award-controls button{min-height:36px}}
+@media(max-width:480px){.ce-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.ce-stat{padding:10px;gap:7px}.ce-stat-icon{width:30px;height:30px}.ce-stat small{font-size:10px}.ce-stat em{font-size:10px}.ce-stat strong{font-size:20px}}
